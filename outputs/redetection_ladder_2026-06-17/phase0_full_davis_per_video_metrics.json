@@ -1,439 +1,748 @@
 {
   "cotracker3_online": {
     "status": "complete",
-    "reentry_n": 1385,
-    "reentry_median": 3.859,
-    "longocc20_n": 146,
-    "longocc20_median": 6.393,
+    "reentry_n": 2736,
+    "reentry_median": 11.65,
+    "longocc20_n": 488,
+    "longocc20_median": 35.875,
     "per_video": [
       {
         "video_id": "bike-packing",
-        "n_reentry": 62,
-        "reentry_median": 7.244,
-        "n_longocc20": 20,
-        "longocc_median": 6.288
+        "n_reentry": 140,
+        "reentry_median": 15.812891279570733,
+        "reentry_mean": 37.41463355241607,
+        "n_longocc20": 28,
+        "longocc_median": 5.148439755041014
       },
       {
         "video_id": "blackswan",
         "n_reentry": 0,
         "reentry_median": null,
+        "reentry_mean": null,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "bmx-trees",
-        "n_reentry": 205,
-        "reentry_median": 3.693,
-        "n_longocc20": 33,
-        "longocc_median": 4.299
+        "n_reentry": 246,
+        "reentry_median": 23.828219918129243,
+        "reentry_mean": 62.848117037883746,
+        "n_longocc20": 1,
+        "longocc_median": 3.4313538061198647
       },
       {
         "video_id": "breakdance",
-        "n_reentry": 110,
-        "reentry_median": 1.947,
-        "n_longocc20": 17,
-        "longocc_median": 2.787
+        "n_reentry": 144,
+        "reentry_median": 2.677680529135798,
+        "reentry_mean": 16.33894253233227,
+        "n_longocc20": 45,
+        "longocc_median": 2.2345481378628755
       },
       {
         "video_id": "camel",
-        "n_reentry": 4,
-        "reentry_median": 1.608,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 61,
+        "reentry_median": 87.97860545589391,
+        "reentry_mean": 78.47323654261949,
+        "n_longocc20": 46,
+        "longocc_median": 93.1379556819615
       },
       {
         "video_id": "car-roundabout",
-        "n_reentry": 10,
-        "reentry_median": 171.709,
-        "n_longocc20": 3,
-        "longocc_median": 335.596
+        "n_reentry": 43,
+        "reentry_median": 17.329680131434458,
+        "reentry_mean": 63.10443290590029,
+        "n_longocc20": 11,
+        "longocc_median": 54.72771570762019
       },
       {
         "video_id": "car-shadow",
-        "n_reentry": 21,
-        "reentry_median": 1.636,
+        "n_reentry": 87,
+        "reentry_median": 2.098222255311169,
+        "reentry_mean": 73.96370403809546,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "cows",
-        "n_reentry": 10,
-        "reentry_median": 3.737,
+        "n_reentry": 21,
+        "reentry_median": 4.236409850643639,
+        "reentry_mean": 14.884128452726388,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "dance-twirl",
-        "n_reentry": 109,
-        "reentry_median": 4.0,
-        "n_longocc20": 23,
-        "longocc_median": 20.816
+        "n_reentry": 345,
+        "reentry_median": 79.21145747730492,
+        "reentry_mean": 129.0637484002755,
+        "n_longocc20": 47,
+        "longocc_median": 23.135808982998753
       },
       {
         "video_id": "dog",
-        "n_reentry": 0,
-        "reentry_median": null,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 2,
+        "reentry_median": 2.560378941953176,
+        "reentry_mean": 2.560378941953176,
+        "n_longocc20": 2,
+        "longocc_median": 2.560378941953176
       },
       {
         "video_id": "dogs-jump",
-        "n_reentry": 77,
-        "reentry_median": 3.557,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 212,
+        "reentry_median": 11.953732834767454,
+        "reentry_mean": 29.275882144995045,
+        "n_longocc20": 21,
+        "longocc_median": 155.44269676086236
       },
       {
         "video_id": "drift-chicane",
-        "n_reentry": 1,
-        "reentry_median": 7.862,
-        "n_longocc20": 1,
-        "longocc_median": 7.862
+        "n_reentry": 25,
+        "reentry_median": 174.96364767635868,
+        "reentry_mean": 150.6701892173658,
+        "n_longocc20": 3,
+        "longocc_median": 3.0319313940080956
       },
       {
         "video_id": "drift-straight",
-        "n_reentry": 34,
-        "reentry_median": 2.836,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 49,
+        "reentry_median": 2.8089253148683264,
+        "reentry_mean": 29.597448746578554,
+        "n_longocc20": 2,
+        "longocc_median": 559.3080159475738
       },
       {
         "video_id": "goat",
         "n_reentry": 0,
         "reentry_median": null,
+        "reentry_mean": null,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "gold-fish",
-        "n_reentry": 16,
-        "reentry_median": 5.724,
-        "n_longocc20": 5,
-        "longocc_median": 4.506
+        "n_reentry": 29,
+        "reentry_median": 5.645708567791631,
+        "reentry_mean": 24.907738812480694,
+        "n_longocc20": 15,
+        "longocc_median": 4.916964717660192
       },
       {
         "video_id": "horsejump-high",
-        "n_reentry": 67,
-        "reentry_median": 3.208,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 137,
+        "reentry_median": 5.383471963007153,
+        "reentry_mean": 26.520134637726297,
+        "n_longocc20": 5,
+        "longocc_median": 2.7288453985360945
       },
       {
         "video_id": "india",
-        "n_reentry": 181,
-        "reentry_median": 3.694,
-        "n_longocc20": 13,
-        "longocc_median": 2.341
+        "n_reentry": 283,
+        "reentry_median": 5.133202353390259,
+        "reentry_mean": 35.11135534999046,
+        "n_longocc20": 11,
+        "longocc_median": 2.0562607136729136
       },
       {
         "video_id": "judo",
-        "n_reentry": 49,
-        "reentry_median": 8.99,
-        "n_longocc20": 3,
-        "longocc_median": 227.079
+        "n_reentry": 68,
+        "reentry_median": 8.805169100470566,
+        "reentry_mean": 70.2294994947323,
+        "n_longocc20": 4,
+        "longocc_median": 225.39563582337615
       },
       {
         "video_id": "kite-surf",
-        "n_reentry": 0,
-        "reentry_median": null,
+        "n_reentry": 18,
+        "reentry_median": 35.31064973540673,
+        "reentry_mean": 92.79442426696386,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "lab-coat",
-        "n_reentry": 7,
-        "reentry_median": 109.907,
+        "n_reentry": 8,
+        "reentry_median": 108.16837485356795,
+        "reentry_mean": 98.94629350379753,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "libby",
-        "n_reentry": 40,
-        "reentry_median": 4.817,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 61,
+        "reentry_median": 7.470233763089244,
+        "reentry_mean": 47.83681889385561,
+        "n_longocc20": 26,
+        "longocc_median": 4.895550778878764
       },
       {
         "video_id": "loading",
-        "n_reentry": 38,
-        "reentry_median": 3.685,
-        "n_longocc20": 4,
-        "longocc_median": 363.832
+        "n_reentry": 44,
+        "reentry_median": 3.6846401784845773,
+        "reentry_mean": 37.52002594761903,
+        "n_longocc20": 9,
+        "longocc_median": 14.434554426347004
       },
       {
         "video_id": "mbike-trick",
-        "n_reentry": 46,
-        "reentry_median": 5.929,
+        "n_reentry": 74,
+        "reentry_median": 11.363662077931021,
+        "reentry_mean": 32.56567077950733,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "motocross-jump",
-        "n_reentry": 6,
-        "reentry_median": 35.555,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 47,
+        "reentry_median": 34.46302441175453,
+        "reentry_mean": 63.831636362392395,
+        "n_longocc20": 26,
+        "longocc_median": 9.926295672967282
       },
       {
         "video_id": "paragliding-launch",
-        "n_reentry": 19,
-        "reentry_median": 8.425,
-        "n_longocc20": 12,
-        "longocc_median": 12.006
+        "n_reentry": 56,
+        "reentry_median": 38.84689593656315,
+        "reentry_mean": 49.28992232913559,
+        "n_longocc20": 30,
+        "longocc_median": 24.017011232904444
       },
       {
         "video_id": "parkour",
-        "n_reentry": 97,
-        "reentry_median": 18.047,
-        "n_longocc20": 3,
-        "longocc_median": 50.798
+        "n_reentry": 182,
+        "reentry_median": 99.43429208781596,
+        "reentry_mean": 107.30051510523246,
+        "n_longocc20": 65,
+        "longocc_median": 103.89971543154859
       },
       {
         "video_id": "pigs",
-        "n_reentry": 30,
-        "reentry_median": 4.619,
-        "n_longocc20": 9,
-        "longocc_median": 5.742
+        "n_reentry": 61,
+        "reentry_median": 6.336926372288692,
+        "reentry_mean": 81.2924163740463,
+        "n_longocc20": 26,
+        "longocc_median": 27.277126481733035
       },
       {
         "video_id": "scooter-black",
-        "n_reentry": 0,
-        "reentry_median": null,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 32,
+        "reentry_median": 90.88146097866135,
+        "reentry_mean": 119.16659132085132,
+        "n_longocc20": 5,
+        "longocc_median": 81.55851636356759
       },
       {
         "video_id": "shooting",
-        "n_reentry": 14,
-        "reentry_median": 6.254,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 45,
+        "reentry_median": 6.852709491680597,
+        "reentry_mean": 19.86654721614305,
+        "n_longocc20": 4,
+        "longocc_median": 1.4087027956128968
       },
       {
         "video_id": "soapbox",
-        "n_reentry": 132,
-        "reentry_median": 2.631,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 216,
+        "reentry_median": 3.5442413004374824,
+        "reentry_mean": 54.18623261175167,
+        "n_longocc20": 56,
+        "longocc_median": 123.32783452617451
       }
     ]
   },
   "cotracker3_offline": {
     "status": "complete",
-    "reentry_n": 1385,
-    "reentry_median": 3.71,
-    "longocc20_n": 146,
-    "longocc20_median": 5.575,
+    "reentry_n": 2736,
+    "reentry_median": 3.152,
+    "longocc20_n": 488,
+    "longocc20_median": 3.479,
     "per_video": [
       {
         "video_id": "bike-packing",
-        "n_reentry": 62,
-        "reentry_median": 5.989,
-        "n_longocc20": 20,
-        "longocc_median": 6.147
+        "n_reentry": 140,
+        "reentry_median": 4.388225148151982,
+        "reentry_mean": 9.604542354085487,
+        "n_longocc20": 28,
+        "longocc_median": 4.193883695002736
       },
       {
         "video_id": "blackswan",
         "n_reentry": 0,
         "reentry_median": null,
+        "reentry_mean": null,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "bmx-trees",
-        "n_reentry": 205,
-        "reentry_median": 3.652,
-        "n_longocc20": 33,
-        "longocc_median": 5.098
+        "n_reentry": 246,
+        "reentry_median": 3.9133398387098683,
+        "reentry_mean": 5.026245651337744,
+        "n_longocc20": 1,
+        "longocc_median": 2.8040610876722223
       },
       {
         "video_id": "breakdance",
-        "n_reentry": 110,
-        "reentry_median": 1.97,
-        "n_longocc20": 17,
-        "longocc_median": 2.506
+        "n_reentry": 144,
+        "reentry_median": 1.8071499503296455,
+        "reentry_mean": 9.305181255001832,
+        "n_longocc20": 45,
+        "longocc_median": 1.73804684563658
       },
       {
         "video_id": "camel",
-        "n_reentry": 4,
-        "reentry_median": 2.099,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 61,
+        "reentry_median": 1.6605888506671638,
+        "reentry_mean": 1.7615690996104532,
+        "n_longocc20": 46,
+        "longocc_median": 1.8575601043026104
       },
       {
         "video_id": "car-roundabout",
-        "n_reentry": 10,
-        "reentry_median": 165.402,
-        "n_longocc20": 3,
-        "longocc_median": 218.959
+        "n_reentry": 43,
+        "reentry_median": 5.246643714319581,
+        "reentry_mean": 33.562576837403554,
+        "n_longocc20": 11,
+        "longocc_median": 5.752915739171465
       },
       {
         "video_id": "car-shadow",
-        "n_reentry": 21,
-        "reentry_median": 1.35,
+        "n_reentry": 87,
+        "reentry_median": 1.163690278956671,
+        "reentry_mean": 1.3529103627685664,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "cows",
-        "n_reentry": 10,
-        "reentry_median": 3.263,
+        "n_reentry": 21,
+        "reentry_median": 3.0409154678161765,
+        "reentry_mean": 2.78212276370321,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "dance-twirl",
-        "n_reentry": 109,
-        "reentry_median": 3.683,
-        "n_longocc20": 23,
-        "longocc_median": 11.09
+        "n_reentry": 345,
+        "reentry_median": 2.236647038608596,
+        "reentry_mean": 5.426909095360958,
+        "n_longocc20": 47,
+        "longocc_median": 6.776842800201246
       },
       {
         "video_id": "dog",
-        "n_reentry": 0,
-        "reentry_median": null,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 2,
+        "reentry_median": 2.7303061812019385,
+        "reentry_mean": 2.7303061812019385,
+        "n_longocc20": 2,
+        "longocc_median": 2.7303061812019385
       },
       {
         "video_id": "dogs-jump",
-        "n_reentry": 77,
-        "reentry_median": 3.415,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 212,
+        "reentry_median": 2.7412776096278426,
+        "reentry_mean": 4.045953478357364,
+        "n_longocc20": 21,
+        "longocc_median": 4.722618282503361
       },
       {
         "video_id": "drift-chicane",
-        "n_reentry": 1,
-        "reentry_median": 4.624,
-        "n_longocc20": 1,
-        "longocc_median": 4.624
+        "n_reentry": 25,
+        "reentry_median": 3.3188405935638032,
+        "reentry_mean": 4.187690168138874,
+        "n_longocc20": 3,
+        "longocc_median": 0.9744697403188934
       },
       {
         "video_id": "drift-straight",
-        "n_reentry": 34,
-        "reentry_median": 2.847,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 49,
+        "reentry_median": 2.6450749202099706,
+        "reentry_mean": 2.4156085829816094,
+        "n_longocc20": 2,
+        "longocc_median": 7.853341241638455
       },
       {
         "video_id": "goat",
         "n_reentry": 0,
         "reentry_median": null,
+        "reentry_mean": null,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "gold-fish",
-        "n_reentry": 16,
-        "reentry_median": 6.054,
-        "n_longocc20": 5,
-        "longocc_median": 4.52
+        "n_reentry": 29,
+        "reentry_median": 4.519977330516862,
+        "reentry_mean": 4.513240967457545,
+        "n_longocc20": 15,
+        "longocc_median": 3.583037646167686
       },
       {
         "video_id": "horsejump-high",
-        "n_reentry": 67,
-        "reentry_median": 3.347,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 137,
+        "reentry_median": 2.60988763867166,
+        "reentry_mean": 8.785540229765104,
+        "n_longocc20": 5,
+        "longocc_median": 1.7971807260660229
       },
       {
         "video_id": "india",
-        "n_reentry": 181,
-        "reentry_median": 3.605,
-        "n_longocc20": 13,
-        "longocc_median": 3.2
+        "n_reentry": 283,
+        "reentry_median": 2.968591083848025,
+        "reentry_mean": 3.8586047468922913,
+        "n_longocc20": 11,
+        "longocc_median": 2.4124295173016574
       },
       {
         "video_id": "judo",
-        "n_reentry": 49,
-        "reentry_median": 5.953,
-        "n_longocc20": 3,
-        "longocc_median": 236.202
+        "n_reentry": 68,
+        "reentry_median": 5.339787143783693,
+        "reentry_mean": 42.20123222290695,
+        "n_longocc20": 4,
+        "longocc_median": 221.47007003546244
       },
       {
         "video_id": "kite-surf",
-        "n_reentry": 0,
-        "reentry_median": null,
+        "n_reentry": 18,
+        "reentry_median": 5.986691275824628,
+        "reentry_mean": 6.994065003581945,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "lab-coat",
-        "n_reentry": 7,
-        "reentry_median": 93.401,
+        "n_reentry": 8,
+        "reentry_median": 91.6271875069476,
+        "reentry_mean": 83.60007998806172,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "libby",
-        "n_reentry": 40,
-        "reentry_median": 4.669,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 61,
+        "reentry_median": 3.892053093547166,
+        "reentry_mean": 30.31177439003808,
+        "n_longocc20": 26,
+        "longocc_median": 3.111451253657811
       },
       {
         "video_id": "loading",
-        "n_reentry": 38,
-        "reentry_median": 3.579,
-        "n_longocc20": 4,
-        "longocc_median": 1.788
+        "n_reentry": 44,
+        "reentry_median": 2.946709781924625,
+        "reentry_mean": 3.465017554292403,
+        "n_longocc20": 9,
+        "longocc_median": 2.484145899531085
       },
       {
         "video_id": "mbike-trick",
-        "n_reentry": 46,
-        "reentry_median": 6.452,
+        "n_reentry": 74,
+        "reentry_median": 4.745829205667576,
+        "reentry_mean": 7.108998644470786,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
         "video_id": "motocross-jump",
-        "n_reentry": 6,
-        "reentry_median": 33.683,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 47,
+        "reentry_median": 3.7780982838904915,
+        "reentry_mean": 8.388977858668063,
+        "n_longocc20": 26,
+        "longocc_median": 2.6052113232857934
       },
       {
         "video_id": "paragliding-launch",
-        "n_reentry": 19,
-        "reentry_median": 5.752,
-        "n_longocc20": 12,
-        "longocc_median": 4.563
+        "n_reentry": 56,
+        "reentry_median": 3.3991432951023945,
+        "reentry_mean": 5.662972884639804,
+        "n_longocc20": 30,
+        "longocc_median": 3.4256737433974678
       },
       {
         "video_id": "parkour",
-        "n_reentry": 97,
-        "reentry_median": 16.854,
-        "n_longocc20": 3,
-        "longocc_median": 21.771
+        "n_reentry": 182,
+        "reentry_median": 16.212740386226066,
+        "reentry_mean": 32.554270617253465,
+        "n_longocc20": 65,
+        "longocc_median": 9.052685605686264
       },
       {
         "video_id": "pigs",
-        "n_reentry": 30,
-        "reentry_median": 4.771,
-        "n_longocc20": 9,
-        "longocc_median": 28.831
+        "n_reentry": 61,
+        "reentry_median": 3.7601263114771153,
+        "reentry_mean": 6.939520215695837,
+        "n_longocc20": 26,
+        "longocc_median": 3.9994119425445787
       },
       {
         "video_id": "scooter-black",
-        "n_reentry": 0,
-        "reentry_median": null,
-        "n_longocc20": 0,
-        "longocc_median": null
+        "n_reentry": 32,
+        "reentry_median": 2.5520191267698045,
+        "reentry_mean": 3.053986072131089,
+        "n_longocc20": 5,
+        "longocc_median": 0.904379267220604
       },
       {
         "video_id": "shooting",
-        "n_reentry": 14,
-        "reentry_median": 5.781,
+        "n_reentry": 45,
+        "reentry_median": 4.818695259611278,
+        "reentry_mean": 7.136965106544055,
+        "n_longocc20": 4,
+        "longocc_median": 2.371821209699106
+      },
+      {
+        "video_id": "soapbox",
+        "n_reentry": 216,
+        "reentry_median": 2.3278261674994436,
+        "reentry_mean": 2.7095068675917937,
+        "n_longocc20": 56,
+        "longocc_median": 2.4440046188207862
+      }
+    ]
+  },
+  "trackon2": {
+    "status": "complete",
+    "reentry_n": 2736,
+    "reentry_median": 405.04,
+    "longocc20_n": 488,
+    "longocc20_median": 413.484,
+    "per_video": [
+      {
+        "video_id": "bike-packing",
+        "n_reentry": 140,
+        "reentry_median": 497.61543065574415,
+        "reentry_mean": 378.4592764255923,
+        "n_longocc20": 28,
+        "longocc_median": 8.971774328706946
+      },
+      {
+        "video_id": "blackswan",
+        "n_reentry": 0,
+        "reentry_median": null,
+        "reentry_mean": null,
         "n_longocc20": 0,
         "longocc_median": null
       },
       {
-        "video_id": "soapbox",
-        "n_reentry": 132,
-        "reentry_median": 2.654,
+        "video_id": "bmx-trees",
+        "n_reentry": 246,
+        "reentry_median": 465.84128229989403,
+        "reentry_mean": 332.16046570829553,
+        "n_longocc20": 1,
+        "longocc_median": 335.75435536608796
+      },
+      {
+        "video_id": "breakdance",
+        "n_reentry": 144,
+        "reentry_median": 469.52972092984453,
+        "reentry_mean": 360.93129180203096,
+        "n_longocc20": 45,
+        "longocc_median": 540.4856457207604
+      },
+      {
+        "video_id": "camel",
+        "n_reentry": 61,
+        "reentry_median": 356.0919279372119,
+        "reentry_mean": 318.62124672996356,
+        "n_longocc20": 46,
+        "longocc_median": 356.0919279372119
+      },
+      {
+        "video_id": "car-roundabout",
+        "n_reentry": 43,
+        "reentry_median": 320.73645670364266,
+        "reentry_mean": 315.38129578327596,
+        "n_longocc20": 11,
+        "longocc_median": 372.6007578589725
+      },
+      {
+        "video_id": "car-shadow",
+        "n_reentry": 87,
+        "reentry_median": 525.2402035972578,
+        "reentry_mean": 391.15070446762337,
         "n_longocc20": 0,
         "longocc_median": null
+      },
+      {
+        "video_id": "cows",
+        "n_reentry": 21,
+        "reentry_median": 388.04698815072703,
+        "reentry_mean": 204.95394898575415,
+        "n_longocc20": 0,
+        "longocc_median": null
+      },
+      {
+        "video_id": "dance-twirl",
+        "n_reentry": 345,
+        "reentry_median": 436.54823563355103,
+        "reentry_mean": 364.09892065286584,
+        "n_longocc20": 47,
+        "longocc_median": 476.6992356301575
+      },
+      {
+        "video_id": "dog",
+        "n_reentry": 2,
+        "reentry_median": 512.4558644647138,
+        "reentry_mean": 512.4558644647138,
+        "n_longocc20": 2,
+        "longocc_median": 512.4558644647138
+      },
+      {
+        "video_id": "dogs-jump",
+        "n_reentry": 212,
+        "reentry_median": 458.6453191260118,
+        "reentry_mean": 383.9963132191691,
+        "n_longocc20": 21,
+        "longocc_median": 323.4754827622587
+      },
+      {
+        "video_id": "drift-chicane",
+        "n_reentry": 25,
+        "reentry_median": 315.2840271044217,
+        "reentry_mean": 345.7154360403778,
+        "n_longocc20": 3,
+        "longocc_median": 444.2612576589417
+      },
+      {
+        "video_id": "drift-straight",
+        "n_reentry": 49,
+        "reentry_median": 3.292637119797453,
+        "reentry_mean": 159.27240179793324,
+        "n_longocc20": 2,
+        "longocc_median": 816.1402595647259
+      },
+      {
+        "video_id": "goat",
+        "n_reentry": 0,
+        "reentry_median": null,
+        "reentry_mean": null,
+        "n_longocc20": 0,
+        "longocc_median": null
+      },
+      {
+        "video_id": "gold-fish",
+        "n_reentry": 29,
+        "reentry_median": 90.54797408820883,
+        "reentry_mean": 250.4644265678362,
+        "n_longocc20": 15,
+        "longocc_median": 551.3564257426202
+      },
+      {
+        "video_id": "horsejump-high",
+        "n_reentry": 137,
+        "reentry_median": 327.97829697447,
+        "reentry_mean": 216.12075885042015,
+        "n_longocc20": 5,
+        "longocc_median": 437.42180377144774
+      },
+      {
+        "video_id": "india",
+        "n_reentry": 283,
+        "reentry_median": 5.653088838595447,
+        "reentry_mean": 241.16665207358747,
+        "n_longocc20": 11,
+        "longocc_median": 4.613626759488507
+      },
+      {
+        "video_id": "judo",
+        "n_reentry": 68,
+        "reentry_median": 187.7124344193117,
+        "reentry_mean": 209.59602696335935,
+        "n_longocc20": 4,
+        "longocc_median": 239.94190631541125
+      },
+      {
+        "video_id": "kite-surf",
+        "n_reentry": 18,
+        "reentry_median": 397.3622672922752,
+        "reentry_mean": 397.3622672922752,
+        "n_longocc20": 0,
+        "longocc_median": null
+      },
+      {
+        "video_id": "lab-coat",
+        "n_reentry": 8,
+        "reentry_median": 15.604119014331578,
+        "reentry_mean": 109.07633783563105,
+        "n_longocc20": 0,
+        "longocc_median": null
+      },
+      {
+        "video_id": "libby",
+        "n_reentry": 61,
+        "reentry_median": 606.903005563763,
+        "reentry_mean": 502.9839904118683,
+        "n_longocc20": 26,
+        "longocc_median": 839.2973998827874
+      },
+      {
+        "video_id": "loading",
+        "n_reentry": 44,
+        "reentry_median": 5.316914759760542,
+        "reentry_mean": 120.48628120379172,
+        "n_longocc20": 9,
+        "longocc_median": 374.423493194866
+      },
+      {
+        "video_id": "mbike-trick",
+        "n_reentry": 74,
+        "reentry_median": 15.290648696402457,
+        "reentry_mean": 210.93288934848107,
+        "n_longocc20": 0,
+        "longocc_median": null
+      },
+      {
+        "video_id": "motocross-jump",
+        "n_reentry": 47,
+        "reentry_median": 467.307757186214,
+        "reentry_mean": 481.9555728294617,
+        "n_longocc20": 26,
+        "longocc_median": 461.35653620855766
+      },
+      {
+        "video_id": "paragliding-launch",
+        "n_reentry": 56,
+        "reentry_median": 482.5422259178804,
+        "reentry_mean": 350.8031286254436,
+        "n_longocc20": 30,
+        "longocc_median": 478.3857671526231
+      },
+      {
+        "video_id": "parkour",
+        "n_reentry": 182,
+        "reentry_median": 563.0819180926293,
+        "reentry_mean": 473.24249320820195,
+        "n_longocc20": 65,
+        "longocc_median": 633.92785254159
+      },
+      {
+        "video_id": "pigs",
+        "n_reentry": 61,
+        "reentry_median": 290.4019414820079,
+        "reentry_mean": 231.16191553062507,
+        "n_longocc20": 26,
+        "longocc_median": 290.4019414820079
+      },
+      {
+        "video_id": "scooter-black",
+        "n_reentry": 32,
+        "reentry_median": 625.3236362046281,
+        "reentry_mean": 611.3118298551608,
+        "n_longocc20": 5,
+        "longocc_median": 541.766458076679
+      },
+      {
+        "video_id": "shooting",
+        "n_reentry": 45,
+        "reentry_median": 508.8473760654995,
+        "reentry_mean": 429.24089479324516,
+        "n_longocc20": 4,
+        "longocc_median": 545.1791002692688
+      },
+      {
+        "video_id": "soapbox",
+        "n_reentry": 216,
+        "reentry_median": 6.325789006404515,
+        "reentry_mean": 133.25727887800372,
+        "n_longocc20": 56,
+        "longocc_median": 280.11675557495295
       }
     ]
   }

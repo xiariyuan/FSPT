@@ -1,7 +1,7 @@
 {
   "phase": 0,
   "protocol": "strided+original",
-  "note": "Track-On2 has runtime dtype bug (fixable), needs rerun — not unsupported",
+  "all_baselines_complete": true,
   "baselines": {
     "cotracker3_online": {
       "status": "complete",
@@ -14,17 +14,28 @@
         "delta_4px": 47.71
       },
       "reentry": {
-        "n": 1385,
-        "median_px": 3.86,
-        "mean_px": 14.73,
-        "p95_px": 74.95,
-        "oracle_gap_mean_px": 14.73,
-        "oracle_better_4px_frac": 0.487
+        "n": 2736,
+        "median": 11.650347635704605,
+        "mean": 61.55798812567522,
+        "p95": 267.03879925481544,
+        "lt4_pct": 33.55263157894737,
+        "oracle_gap_mean": 61.55798812567522,
+        "model_lt4px_frac": 0.3355263157894737,
+        "model_gt4px_frac": 0.6644736842105263,
+        "model_lt16px_frac": 0.5380116959064327,
+        "model_lt32px_frac": 0.6008771929824561
       },
       "longocc20": {
-        "n": 146,
-        "median_px": 6.39,
-        "oracle_better_4px_frac": 0.685
+        "n": 488,
+        "median": 35.875279076384274,
+        "mean": 74.68249602545822,
+        "p95": 282.05845457457343,
+        "lt4_pct": 29.098360655737704,
+        "oracle_gap_mean": 74.68249602545822,
+        "model_lt4px_frac": 0.29098360655737704,
+        "model_gt4px_frac": 0.709016393442623,
+        "model_lt16px_frac": 0.44672131147540983,
+        "model_lt32px_frac": 0.49385245901639346
       }
     },
     "cotracker3_offline": {
@@ -38,22 +49,65 @@
         "delta_4px": 68.01
       },
       "reentry": {
-        "n": 1385,
-        "median_px": 3.71,
-        "mean_px": 12.21,
-        "p95_px": 44.97,
-        "oracle_gap_mean_px": 12.21,
-        "oracle_better_4px_frac": 0.462
+        "n": 2736,
+        "median": 3.152229040413695,
+        "mean": 9.242875646728214,
+        "p95": 31.562275681188904,
+        "lt4_pct": 61.038011695906434,
+        "oracle_gap_mean": 9.242875646728214,
+        "model_lt4px_frac": 0.6103801169590644,
+        "model_gt4px_frac": 0.38961988304093564,
+        "model_lt16px_frac": 0.9115497076023392,
+        "model_lt32px_frac": 0.9502923976608187
       },
       "longocc20": {
-        "n": 146,
-        "median_px": 5.58,
-        "oracle_better_4px_frac": 0.685
+        "n": 488,
+        "median": 3.4793745505888065,
+        "mean": 10.077375319152127,
+        "p95": 36.000426022197175,
+        "lt4_pct": 55.73770491803278,
+        "oracle_gap_mean": 10.077375319152127,
+        "model_lt4px_frac": 0.5573770491803278,
+        "model_gt4px_frac": 0.4426229508196722,
+        "model_lt16px_frac": 0.8831967213114754,
+        "model_lt32px_frac": 0.9364754098360656
       }
     },
     "trackon2": {
-      "status": "needs_rerun",
-      "reason": "dtype mismatch bug in trackon.py (user fixed locally), probe showed 14+ npz written, full run not completed"
+      "status": "complete",
+      "source": "attempt0_eval_strided_original.py --model_name trackon2",
+      "cache": "caches/trackon2_strided_original.pt",
+      "npz_count": 30,
+      "metrics": {
+        "AJ": 28.38,
+        "OA": 58.33,
+        "delta_avg": 33.23,
+        "delta_4px": 35.9
+      },
+      "reentry": {
+        "n": 2736,
+        "median": 405.0402501864254,
+        "mean": 318.5951700397523,
+        "p95": 679.9006326130634,
+        "lt4_pct": 20.431286549707604,
+        "oracle_gap_mean": 318.5951700397523,
+        "model_lt4px_frac": 0.20431286549707603,
+        "model_gt4px_frac": 0.7956871345029239,
+        "model_lt16px_frac": 0.3132309941520468,
+        "model_lt32px_frac": 0.3336988304093567
+      },
+      "longocc20": {
+        "n": 488,
+        "median": 413.48437579322325,
+        "mean": 391.5083374025076,
+        "p95": 730.8454501136601,
+        "lt4_pct": 8.811475409836065,
+        "oracle_gap_mean": 391.5083374025076,
+        "model_lt4px_frac": 0.08811475409836066,
+        "model_gt4px_frac": 0.9118852459016393,
+        "model_lt16px_frac": 0.13524590163934427,
+        "model_lt32px_frac": 0.1557377049180328
+      }
     }
   }
 }

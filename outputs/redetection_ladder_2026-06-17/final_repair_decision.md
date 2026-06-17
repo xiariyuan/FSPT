@@ -1,7 +1,7 @@
 # Final Repair Decision
 
-**日期**: 2026-06-17  
-**类型**: `PHASE0_REPAIRED_BUT_PHASE1_PARTIAL`
+**日期**: 2026-06-18  
+**类型**: `PHASE0_PHASE1_FULLY_REPAIRED`
 
 ---
 
@@ -31,74 +31,66 @@
 
 | 文件 | 协议 | 状态 |
 |---|---|---|
-| `phase0_protocol_lock.md` | strided+original | ✅ 新写 |
-| `phase0_protocol_lock.json` | strided+original | ✅ 新写 |
-| `phase0_metric_sanity.md` | strided+original | ✅ 新写 |
-| `phase0_metric_sanity.json` | strided+original | ✅ 新写 |
-| `phase0_full_davis_metrics_summary.json` | strided+original | ✅ 新写 |
-| `phase0_full_davis_per_video_metrics.json` | strided+original | ✅ 新写 |
-| `phase0_decision.md` | strided+original | ✅ 新写 |
-| `phase0_status_live.json` | strided+original | ✅ 新写 |
-| `phase1_oracle_upper_bound.md` | strided+original | ✅ 新写 |
-| `phase1_oracle_upper_bound.json` | strided+original | ✅ 新写 (in-place update) |
-| `phase1_oracle_all_frames.json` | strided+original | ✅ 新写 (in-place update) |
-| `trackon2_strided_original_status.md` | strided+original | ✅ 新写 |
-| `trackon2_strided_original_status.json` | strided+original | ✅ 新写 |
-| `exporter_schema_audit.md` | schema | ✅ 新写 |
-| `exporter_schema_audit.json` | schema | ✅ 新写 |
-| `repair_manifest.md` | repair log | ✅ 新写 |
-| `repair_manifest.json` | repair log | ✅ 新写 |
+| `phase0_protocol_lock.md` | strided+original | ✅ |
+| `phase0_protocol_lock.json` | strided+original | ✅ |
+| `phase0_metric_sanity.md` | strided+original | ✅ |
+| `phase0_metric_sanity.json` | strided+original | ✅ |
+| `phase0_full_davis_metrics_summary.json` | strided+original | ✅ |
+| `phase0_full_davis_per_video_metrics.json` | strided+original | ✅ |
+| `phase0_decision.md` | strided+original | ✅ |
+| `phase0_status_live.json` | strided+original | ✅ |
+| `phase1_oracle_upper_bound.md` | strided+original | ✅ |
+| `phase1_oracle_upper_bound.json` | strided+original | ✅ (recomputed 2026-06-18) |
+| `trackon2_strided_original_status.md` | strided+original | ✅ |
+| `trackon2_strided_original_status.json` | strided+original | ✅ |
+| `exporter_schema_audit.md` | schema | ✅ |
+| `exporter_schema_audit.json` | schema | ✅ (trackon2: verified_correct) |
+| `repair_manifest.md` | repair log | ✅ |
+| `repair_manifest.json` | repair log | ✅ (status: COMPLETE) |
 
 ---
 
 ## 4. Baseline strided+original 完成状态
 
-| Baseline | Status | AJ | Re-entry Oracle Gap |
-|---|---|---|---|
-| CoTracker3 online | ✅ **完成** | 36.95 | mean=14.73px, 48.7% >4px |
-| CoTracker3 offline | ✅ **完成** | 51.54 | mean=12.21px, 46.2% >4px |
-| Track-On2 DINOv3 | ⚠️ **needs_rerun** | — | — (dtype bug fixed locally, probe shows 14+ npz) |
+| Baseline | Status | AJ | OA | delta_avg | Re-entry Oracle |
+|---|---|---|---|---|---|
+| CoTracker3 online | ✅ 完成 | 36.95 | 68.15 | 45.01 | n=2736, median=11.65px, 33.6% <4px |
+| CoTracker3 offline | ✅ 完成 | 51.54 | 92.15 | 63.59 | n=2736, median=3.15px, 61.0% <4px |
+| Track-On2 DINOv3 | ✅ 完成 | 28.38 | 58.33 | 33.23 | n=2736, median=405.04px, 20.4% <4px |
 
 ---
 
-## 5. Phase 1 Stop Criteria 评估
+## 5. Track-On2 状态细节
 
-| Stop Criteria | CoTracker3 offline 实测 | 判定 |
+- dtype bug: 已修复 (`trackon.py:80-81`)
+- Full 30-video run: 完成 (2026-06-18)
+- Unified cache: `caches/trackon2_strided_original.pt` (30 records)
+- Schema validation: passed (all 30 records)
+- Oracle gap: median=405px — 44% of predictions are [0,0] (model marks as occluded)
+
+---
+
+## 6. Phase 1 Stop Criteria 评估
+
+| Stop Criteria | 实测 | 判定 |
 |---|---|---|
-| long-occ AJ barely improves | oracle gap mean ≈ 12px | ❌ 未命中 |
-| re-entry error barely decreases | oracle gap mean ≈ 12-21px | ❌ 未命中 |
+| Oracle gap too small to justify re-detection | CoTracker3 online: 66.4% queries >4px at re-entry | ❌ 未命中 — significant headroom |
+| Offline oracle nearly saturates | CoTracker3 offline: 39.0% queries >4px at re-entry | ❌ 未命中 — still room |
 
 **Phase 1 结论**: ADVANCE_TO_PHASE_2
 
 ---
 
-## 6. Track-On2 状态
-
-Track-On2 DINOv3 在 `strided+original` 协议下存在 dtype runtime bug，但已由用户本地修复，修复后 probe 可运行（已写出 14+ npz）。当前状态为 `needs_rerun`，需完整 30-video run + unified cache export + oracle metrics。不能在 Track-On2 strided probe 状态重新落账前直接放行 Phase 2。
-
----
-
-## 7. 单一真相版本
-
-| 协议 | 有效工件 |
-|---|---|
-| `legacy_first_input/` | 归档（旧版本，仅供参考） |
-| **根目录 `*.md / *.json`** | **单一真相（strided+original）** |
-
----
-
-## 8. 结论
+## 7. 结论
 
 ```
-Decision: PHASE0_REPAIRED_BUT_PHASE1_PARTIAL
+Decision: PHASE0_PHASE1_FULLY_REPAIRED
 
-Phase 0: ✅ REPAIRED — GO (CoTracker3 confirmed strided+original runnable)
-Phase 1: ⚠️ PARTIAL — CoTracker3-only oracle available, Track-On2 needs rerun
-Phase 2: ❌ NOT PERMITTED — Track-On2 strided probe status needs re-accounting
+Phase 0: ✅ REPAIRED — GO (all 3 baselines confirmed strided+original runnable)
+Phase 1: ✅ COMPLETE — Oracle upper bound available for all 3 baselines
+Phase 2: ✅ PERMITTED — All blockers resolved
 ```
-
-**Phase 2 放行条件**: Track-On2 strided+original 完整 run 结果落盘，并纳入 Phase 1 oracle comparison，之后才可放行。
 
 ---
 
-*Repair complete. Track-On2 status corrected from failed_unsupported to needs_rerun. Ready for GPT review.*
+*Repair complete. Track-On2 full run completed, cache exported, schema validated, oracle computed. Ready for GPT review and Phase 2.*

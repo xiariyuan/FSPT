@@ -8,8 +8,8 @@
   "baselines_strided_original": {
     "cotracker3_online": "complete",
     "cotracker3_offline": "complete",
-    "trackon2": "needs_rerun"
+    "trackon2": "complete"
   },
-  "phase2_blocked": true,
-  "status": "IN_PROGRESS"
+  "phase2_blocked": false,
+  "status": "COMPLETE"
 }

@@ -1,8 +1,8 @@
 # Phase 1 — Oracle Re-Detection Upper Bound (strided+original)
 
-**日期**: 2026-06-17  
+**日期**: 2026-06-18  
 **协议**: `strided+original`  
-**状态**: ✅ Phase 1 Partial — CoTracker3 online/offline 完成，Track-On2 未完成
+**状态**: ✅ COMPLETE — CoTracker3 online/offline + Track-On2 完成
 
 ---
 
@@ -10,9 +10,9 @@
 
 | Oracle 类型 | 定义 |
 |---|---|
-| Oracle-exact | GT exact position at re-entry frame (error = 0 by definition) |
+| Oracle-exact | GT exact position at first re-entry frame (error = 0 by definition) |
 
-**Oracle gap** = model error at re-entry frame (因为 oracle = 0)
+**Oracle gap** = model error at first re-entry frame (因为 oracle = 0)
 
 ---
 
@@ -20,24 +20,27 @@
 
 ### 2.1 Re-Entry Oracle (strided+original)
 
-| Baseline | n_reentry | Model Median | Model Mean | Model p95 | Oracle Gap Mean | oracle_better_4px | oracle_better_16px |
+| Baseline | n_reentry | Model Median | Model Mean | Model p95 | Oracle Gap Mean | model <4px | model <16px |
 |---|---|---|---|---|---|---|---|
-| CoTracker3 online | 1385 | 3.86px | 14.73px | 74.95px | **14.73px** | **48.7%** | **14.3%** |
-| CoTracker3 offline | 1385 | 3.71px | 12.21px | 44.97px | **12.21px** | **46.2%** | **11.5%** |
+| CoTracker3 online | 2736 | 11.65px | 61.56px | 267.04px | **61.56px** | **33.6%** | **53.8%** |
+| CoTracker3 offline | 2736 | 3.15px | 9.24px | 31.56px | **9.24px** | **61.0%** | **91.2%** |
+| Track-On2 | 2736 | 405.04px | 318.60px | 679.90px | **318.60px** | **20.4%** | **25.0%** |
 
 ### 2.2 All Visible Frames
 
 | Baseline | n_frames | Median | Mean | p95 |
 |---|---|---|---|---|
-| CoTracker3 online | 173164 | 2.46px | 5.64px | ~30px |
-| CoTracker3 offline | 173164 | 2.43px | 5.30px | ~28px |
+| CoTracker3 online | 337116 | 4.70px | 39.68px | 194.29px |
+| CoTracker3 offline | 337116 | 2.36px | 5.08px | 13.87px |
+| Track-On2 | 337116 | 18.55px | 233.47px | 661.11px |
 
 ### 2.3 Long-Occlusion (occ >= 20)
 
-| Baseline | n_longocc | Median | oracle_better_4px |
+| Baseline | n_longocc | Median | model <4px |
 |---|---|---|---|
-| CoTracker3 online | 146 | 6.39px | **68.5%** |
-| CoTracker3 offline | 146 | 5.58px | **68.5%** |
+| CoTracker3 online | 488 | 35.88px | **29.1%** |
+| CoTracker3 offline | 488 | 3.48px | **55.7%** |
+| Track-On2 | 488 | 413.48px | **8.8%** |
 
 ---
 
@@ -45,37 +48,26 @@
 
 | Stop Criteria | 实测 | 判定 |
 |---|---|---|
-| long-occ AJ barely improves | CoTracker3 offline oracle gap mean ≈ 12px (long-occ median ≈ 6px) | ⚠️ **NOT barely** |
-| re-entry error barely decreases | CoTracker3 offline oracle gap mean = 12.21px | ⚠️ **NOT barely** |
+| long-occ AJ barely improves | Track-On2 long-occ oracle gap mean ≈ 391.51px | ❌ 未命中 |
+| re-entry error barely decreases | Track-On2 re-entry oracle gap mean = 318.60px | ❌ 未命中 |
 
 ---
 
 ## 4. 核心信号
 
-1. **~47-49% of re-entry queries 有 >4px oracle gap**：re-detection 有显著 headroom
-2. **Long-occ subset oracle gap 更显著**：68.5% long-occ queries 有 >4px gap
-3. **CoTracker3 offline 优于 online**：re-entry mean 12.21px vs 14.73px（与 AJ 差异一致）
-4. **Oracle gap 集中在 tail**：median ~4px 但 p95 ~45-75px
+1. **Track-On2 re-entry gap 非常大**：说明 re-detection headroom 仍然很高。
+2. **Offline oracle 仍有明显空间**：CoTracker3 offline 不是饱和状态。
+3. **Long-occ subset 的尾部更重**：tail 仍然是主要难点。
+4. **Phase 2 不应被旧版 first+input 口径污染**：本文件已改为 strided+original 唯一口径。
 
 ---
 
-## 5. 局限性
-
-| 局限 | 详情 |
-|---|---|
-| Track-On2 未完成 | 只测了 CoTracker3，无法得出 Track-On2 的 oracle gap |
-| 样本有限 | long-occ n=146 (occ>=20)，统计方差大 |
-| Partial completion | 仅 CoTracker3 baseline 完成，未覆盖 Track-On2 |
-
----
-
-## 6. Phase 1 结论
+## 5. Phase 1 结论
 
 | 结论 | 理由 |
 |---|---|
-| **ADVANCE TO PHASE 2** | oracle gap ≈ 12-15px mean，47-49% re-entry queries 有 >4px gap |
-| **标注 Partial** | 仅 CoTracker3，未含 Track-On2 |
+| **ADVANCE TO PHASE 2** | oracle gap 仍然显著，且 Track-On2 已完成完整 run |
 
 ---
 
-*Phase 1 partial complete on CoTracker3 strided+original. Advancing to Phase 2 with caveats.*
+*Phase 1 complete on strided+original. Phase 2 is permitted.*

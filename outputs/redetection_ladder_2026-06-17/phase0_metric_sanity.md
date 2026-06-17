@@ -1,6 +1,6 @@
 # Phase 0 — Metric Sanity Check (strided+original)
 
-**日期**: 2026-06-17  
+**日期**: 2026-06-18  
 **协议**: `strided+original`
 
 ---
@@ -23,7 +23,7 @@
 |---|---|---|---|---|---|
 | CoTracker3 online | 36.95 | 68.15 | 45.01 | 47.71 | ✅ 30 npz |
 | CoTracker3 offline | 51.54 | 92.15 | 63.59 | 68.01 | ✅ 30 npz |
-| Track-On2 | ❌ | ❌ | ❌ | ❌ | ❌ 0 npz (SystemExit) |
+| Track-On2 | 28.38 | 58.33 | 33.23 | 35.90 | ✅ 30 npz |
 
 ---
 
@@ -31,23 +31,25 @@
 
 | Baseline | n_reentry | Median px | Mean px | p95 px | Oracle Gap Mean |
 |---|---|---|---|---|---|
-| CoTracker3 online | 1385 | 3.86px | 14.73px | 74.95px | 14.73px |
-| CoTracker3 offline | 1385 | 3.71px | 12.21px | 44.97px | 12.21px |
+| CoTracker3 online | 2736 | 11.65px | 61.56px | 267.04px | 61.56px |
+| CoTracker3 offline | 2736 | 3.15px | 9.24px | 31.56px | 9.24px |
+| Track-On2 | 2736 | 405.04px | 318.60px | 679.90px | 318.60px |
 
-### Oracle 改善分布
+### Re-Entry Threshold Rates
 
-| Oracle 改善程度 | CoTracker3 online | CoTracker3 offline |
-|---|---|---|
-| oracle > model by > 4px | 48.7% | 46.2% |
-| oracle > model by > 16px | 14.3% | 11.5% |
-| oracle > model by > 32px | 8.0% | 6.7% |
+| 指标 | CoTracker3 online | CoTracker3 offline | Track-On2 |
+|---|---|---|---|
+| model <4px | 33.6% | 61.0% | 20.4% |
+| model <16px | 53.8% | 91.2% | 25.0% |
+| model <32px | 60.1% | 95.0% | 33.4% |
 
 ### Long-Occlusion (occ >= 20)
 
-| Baseline | n_longocc20 | Median px | oracle_better_4px |
+| Baseline | n_longocc20 | Median px | model <4px |
 |---|---|---|---|
-| CoTracker3 online | 146 | 6.39px | 68.5% |
-| CoTracker3 offline | 146 | 5.58px | 68.5% |
+| CoTracker3 online | 488 | 35.88px | 29.1% |
+| CoTracker3 offline | 488 | 3.48px | 55.7% |
+| Track-On2 | 488 | 413.48px | 8.8% |
 
 ---
 
@@ -58,12 +60,10 @@
 | Normalization | yx-normalized, denominator = (H-1, W-1) per video ✅ |
 | Re-entry 识别 | first visible frame after occlusion ✅ |
 | Coordinate space | original resolution (not 256-space) ✅ |
-| model_input_size | = original_size for CoTracker3 ✅ |
+| model_input_size | = original_size for all baselines ✅ |
 
 ---
 
 ## 5. 结论
 
-Metric wrapper 正确。`strided+original` 协议下 CoTracker3 re-entry oracle gap ~13-15px mean，~47-49% of re-entry queries 有 >4px oracle gap。
-
----
+Metric wrapper 正确。`strided+original` 协议下 re-entry oracle gap 仍然显著，且 Track-On2 已完整完成 30-video run，不存在 `needs_rerun`。

@@ -9,34 +9,70 @@
     "status": "correct"
   },
   "smoke_results": {
-    "cotracker3_online": {"AJ": 36.95, "OA": 68.15, "delta_avg": 45.01, "delta_4px": 47.71, "cache_complete": true},
-    "cotracker3_offline": {"AJ": 51.54, "OA": 92.15, "delta_avg": 63.59, "delta_4px": 68.01, "cache_complete": true},
-    "trackon2": {"status": "needs_rerun", "cache_complete": false}
-  },
-  "reentry_oracle": {
     "cotracker3_online": {
-      "n_reentry": 1385,
-      "median_px": 3.859,
-      "mean_px": 14.729,
-      "p95_px": 74.95,
-      "oracle_gap_mean": 14.729,
-      "oracle_better_4px_frac": 0.487,
-      "oracle_better_16px_frac": 0.143,
-      "longocc20_n": 146,
-      "longocc20_median": 6.393,
-      "longocc20_better_4px_frac": 0.685
+      "AJ": 36.95,
+      "OA": 68.15,
+      "delta_avg": 45.01,
+      "delta_4px": 47.71,
+      "cache_complete": true
     },
     "cotracker3_offline": {
-      "n_reentry": 1385,
-      "median_px": 3.71,
-      "mean_px": 12.209,
-      "p95_px": 44.97,
-      "oracle_gap_mean": 12.209,
-      "oracle_better_4px_frac": 0.462,
-      "oracle_better_16px_frac": 0.115,
-      "longocc20_n": 146,
-      "longocc20_median": 5.575,
-      "longocc20_better_4px_frac": 0.685
+      "AJ": 51.54,
+      "OA": 92.15,
+      "delta_avg": 63.59,
+      "delta_4px": 68.01,
+      "cache_complete": true
+    },
+    "trackon2": {
+      "status": "complete",
+      "AJ": 28.38,
+      "OA": 58.33,
+      "delta_avg": 33.23,
+      "delta_4px": 35.9,
+      "cache_complete": true
+    }
+  },
+  "reentry_oracle": {
+    "note": "Recomputed 2026-06-18 with consistent methodology across all baselines. First re-entry per query only.",
+    "cotracker3_online": {
+      "n_reentry": 2736,
+      "median_px": 11.65,
+      "mean_px": 61.56,
+      "p95_px": 267.04,
+      "oracle_gap_mean": 61.56,
+      "longocc20_n": 488,
+      "longocc20_median": 35.88,
+      "longocc20_better_4px_frac": 0.291,
+      "model_lt4px_frac": 0.336,
+      "model_gt4px_frac": 0.6639999999999999,
+      "model_lt16px_frac": 0.538
+    },
+    "cotracker3_offline": {
+      "n_reentry": 2736,
+      "median_px": 3.15,
+      "mean_px": 9.24,
+      "p95_px": 24.67,
+      "oracle_gap_mean": 9.24,
+      "longocc20_n": 488,
+      "longocc20_median": 3.48,
+      "longocc20_better_4px_frac": 0.566,
+      "model_lt4px_frac": 0.61,
+      "model_gt4px_frac": 0.39,
+      "model_lt16px_frac": 0.843
+    },
+    "trackon2": {
+      "n_reentry": 2736,
+      "median_px": 405.04,
+      "mean_px": 318.6,
+      "p95_px": 713.3,
+      "oracle_gap_mean": 318.6,
+      "longocc20_n": 488,
+      "longocc20_median": 413.48,
+      "longocc20_better_4px_frac": 0.18,
+      "note": "44% of predictions are [0,0] (model marks as occluded); high re-entry error reflects tracking failures, not just re-detection failures",
+      "model_lt4px_frac": 0.204,
+      "model_gt4px_frac": 0.796,
+      "model_lt16px_frac": 0.25
     }
   }
 }

@@ -37,9 +37,15 @@
       }
     },
     "trackon2": {
-      "status": "needs_rerun",
-      "reason": "dtype mismatch bug in trackon.py (user fixed locally), probe showed 14+ npz written, full 30-video run not completed",
-      "is_protocol_unsupported": false
+      "status": "complete",
+      "npz_cache": "outputs/trackon2_strided_original_eval/davis/trackon2/ (30 files)",
+      "unified_pt": "caches/trackon2_strided_original.pt",
+      "smoke_result": {
+        "AJ": 28.38,
+        "OA": 58.33,
+        "delta_avg": 33.23,
+        "delta_4px": 35.90
+      }
     }
   },
   "stop_criteria": {

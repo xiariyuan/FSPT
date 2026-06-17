@@ -21,7 +21,7 @@
 | query_mode | `strided` (query_stride=5) |
 | metric_resolution_mode | `original` (actual video dimensions, varies per video) |
 | normalization | `yx-normalized`, denominator = `(H-1, W-1)` per video |
-| model_input_size | = original_size for CoTracker3; needs rerun for Track-On2 after dtype bug fix |
+| model_input_size | = original_size for all baselines (verified via schema audit) |
 
 ---
 
@@ -31,7 +31,7 @@
 |---|---|---|
 | CoTracker3 online (cotracker3_video) | ✅ Complete | model_input_size = original_size |
 | CoTracker3 offline (cotracker3_window) | ✅ Complete | model_input_size = original_size |
-| Track-On2 DINOv3 | ⚠️ Needs rerun | dtype mismatch bug (已由用户修复)，修复后可运行，但完整 30-video run 尚未完成 |
+| Track-On2 DINOv3 | ✅ Complete | dtype mismatch bug fixed; full 30-video strided+original run completed 2026-06-18 |
 
 ---
 
@@ -41,7 +41,7 @@
 |---|---|---|
 | cotracker3_online | `caches/davis/cotracker3_video/00000X.npz` (30 files) | `caches/cotracker3_online_strided_original.pt` ✅ |
 | cotracker3_offline | `caches/davis/cotracker3_window/00000X.npz` (30 files) | `caches/cotracker3_offline_strided_original.pt` ✅ |
-| trackon2 | ⚠️ probe (14 npz) | 修复后可运行，完整 run 未完成 |
+| trackon2 | `caches/trackon2_strided_original.pt` ✅ | Full 30-video run completed, unified cache exported |
 
 ---
 
@@ -57,6 +57,6 @@
 
 **✅ GO — ADVANCE TO PHASE 1**
 
-CoTracker3 online + offline 完整跑通 strided+original。Track-On2 有 dtype bug 但修复后可运行，需 rerun。
+CoTracker3 online + offline + Track-On2 全部完成 strided+original 30-video eval。统一 cache 已导出，schema 验证通过。
 
 ---

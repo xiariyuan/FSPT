@@ -5,11 +5,40 @@
   "decision": "ADVANCE_TO_PHASE_1",
   "stop_criteria_hit": false,
   "baselines": {
-    "cotracker3_online": {"status": "complete", "AJ": 36.95},
-    "cotracker3_offline": {"status": "complete", "AJ": 51.54},
-    "trackon2": {"status": "needs_rerun"}
+    "cotracker3_online": {
+      "status": "complete",
+      "AJ": 36.95
+    },
+    "cotracker3_offline": {
+      "status": "complete",
+      "AJ": 51.54
+    },
+    "trackon2": {
+      "status": "complete",
+      "AJ": 28.38
+    }
   },
   "phase1_decision": "ADVANCE_TO_PHASE_2",
-  "phase2_blocked": true,
-  "phase2_reason": "Track-On2 strided probe needs rerun and re-accounting"
+  "phase1_oracle_summary": {
+    "cotracker3_online": {
+      "n_reentry": 2736,
+      "median_px": 11.65,
+      "model_lt4px_frac": 0.336,
+      "model_gt4px_frac": 0.664
+    },
+    "cotracker3_offline": {
+      "n_reentry": 2736,
+      "median_px": 3.15,
+      "model_lt4px_frac": 0.61,
+      "model_gt4px_frac": 0.39
+    },
+    "trackon2": {
+      "n_reentry": 2736,
+      "median_px": 405.04,
+      "model_lt4px_frac": 0.204,
+      "model_gt4px_frac": 0.796
+    }
+  },
+  "phase2_blocked": false,
+  "phase2_reason": "All baselines complete; Phase 0/1 fully closed with strided+original protocol"
 }
