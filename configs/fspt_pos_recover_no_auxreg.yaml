@@ -1,0 +1,18 @@
+# =============================================================================
+# FSPT Position-Recovery Ablation: disable auxiliary regularizers
+# =============================================================================
+
+defaults:
+  - fspt_pos_recover_from_e16
+  - _self_
+
+experiment:
+  name: "fspt_pos_recover_no_auxreg"
+  description: "Position recovery ablation with semantic/frequency auxiliary losses disabled"
+
+loss:
+  semantic_consistency:
+    weight: 0.0
+  frequency_ortho:
+    weight: 0.0
+

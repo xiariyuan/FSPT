@@ -1,0 +1,57 @@
+# =============================================================================
+# FSPT Kubric (TFDS) Configuration
+# =============================================================================
+#
+# This config is intended for training when you only have the public Kubric TFDS
+# (MOVi-E) data and do NOT have the official TAP-Vid-Kubric pickle annotations.
+#
+# It enables `use_tfds=true` and `allow_synthetic_tracks=true`, which makes the
+# dataloader generate sparse point tracks on-the-fly from ground-truth optical
+# flow + segmentations (TFDS fields: forward_flow/backward_flow/segmentations).
+#
+# NOTE:
+# - For paper-quality results, prefer official TAP-Vid Kubric annotations when
+#   available. TFDS mode is still synthetic-label generation.
+# - TFDS directory layout expected under `data.*.root`:
+#     <root>/movi_e/256x256/1.0.0/...
+#
+defaults:
+  - fspt_base
+  - _self_
+
+experiment:
+  name: "fspt_kubric_tfds"
+  description: "Train on Kubric TFDS (MOVi-E) with flow-generated sparse tracks"
+
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/tapvid_kubric"
+    use_tfds: true
+    allow_synthetic_tracks: true
+    annotation_file: null
+
+  # For quick sanity-check, validate on Kubric TFDS validation split.
+  # For real reporting, you likely want TAP-Vid DAVIS/Kinetics in `fspt_base.yaml`.
+  val:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/tapvid_kubric"
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+    use_tfds: true
+    allow_synthetic_tracks: true
+    annotation_file: null
+
+training:
+  # Single GPU defaults. Override on the CLI if you have more VRAM.
+  batch_size: 4
+  num_workers: 4
+
+hardware:
+  gpus: [0]
+
+logging:
+  # Disable WandB by default for server convenience; enable if you use it.
+  wandb:
+    enabled: false

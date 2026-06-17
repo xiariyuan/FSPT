@@ -1,0 +1,125 @@
+# =============================================================================
+# Route A Stage-2: build on finemapupdate and train residual head (bigger gains)
+# =============================================================================
+#
+# Motivation
+# - The "corr-only + map_update" setup is safe and finally yields AJ_delta > 0,
+#   but gains are tiny (1e-4 ~ 1e-3). This is expected when we only do a single
+#   matching step and keep the temporal/residual heads frozen.
+# - Stage-2 unfreezes `temporal_transformer` + `residual_decoder` to learn
+#   *when* and *how* to apply small residual corrections on top of the matching
+#   step, while keeping strong guardrails to avoid harming the CoTracker3 base.
+#
+# Key design choices
+# - Warm-start from the best Stage-1 checkpoint.
+# - Keep visibility anchored to base (occlusion branch disabled => visibility is
+#   otherwise unsupervised and can collapse).
+# - Use hard-mining weights based on base error to focus gradients on truly bad
+#   points, while still training on enough samples (no overly strict filtering).
+# - Keep trust-region clamp + no-harm hinge so we do not regress below base.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_finemapupdate_stage2_residual"
+  description: "Route A Stage-2: finemapupdate warm-start + unfreeze temporal/residual for larger AJ_delta"
+
+# Warm-start from Stage-1 best.
+pretrained: "checkpoints/fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate/best_aj.pth"
+
+model:
+  refiner:
+    # Allow learned residual updates (small, gated).
+    delta_scale: 0.02
+    delta_gate:
+      enabled: true
+      # Start conservative but not "frozen".
+      init_bias: -2.0
+
+    # Keep trust region (residual + corr steps).
+    delta_max_step: 0.03
+    delta_max_total: 0.06
+    delta_max_total_adaptive:
+      enabled: true
+      # Low-conf points stay near base; high-conf can move more.
+      min_scale: 0.5
+      max_scale: 2.0
+      threshold: 0.10
+      power: 2.0
+
+    # Train temporal + residual heads (matching/projections stay trainable too).
+    trainable_modules:
+      - geo_backbone
+      - temporal_transformer
+      - residual_decoder
+    freeze_modules:
+      - occlusion_predictor
+      - semantic_encoder
+      - freq_semantic
+
+loss:
+  position:
+    # Do NOT filter too aggressively; instead, up-weight hard points.
+    selective:
+      enabled: false
+
+    hard_mining:
+      enabled: true
+      # ~2px at 512-wide training resolution (roughly).
+      tau: 0.004
+      power: 1.0
+      min_weight: 1.0
+      max_weight: 10.0
+      detach_base: true
+
+    # Encourage improvement (by a small margin) only where base is not already perfect.
+    no_harm_vs_base:
+      enabled: true
+      weight: 5.0
+      margin: 0.0005
+      base_error_threshold: 0.004
+      min_points: 256
+      detach_base: true
+
+    # Directly supervise delta = (GT - base) for residual stability.
+    delta_supervision:
+      enabled: true
+      weight: 1.0
+      type: "smooth_l1"
+      clamp: 0.06
+      detach_base: true
+
+  # Keep strong correlation supervision so steps do not drift.
+  correlation_supervision:
+    enabled: true
+    weight: 5.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+training:
+  epochs: 25
+
+  optimizer:
+    # Lower LR than the aggressive stage-1 to avoid drift after unfreezing.
+    lr: 5.0e-05
+    backbone_lr_scale: 0.05
+
+  # Stage-2 is subtle; don't stop too aggressively.
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 8
+    min_delta: 0.0001
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 6
+    patience: 6
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+

@@ -1,0 +1,49 @@
+# =============================================================================
+# Route A Stage-3 v3: last-visible template + sharper confidence gating
+# =============================================================================
+#
+# Motivation
+# - For re-localization after long occlusion, the *query frame* appearance can
+#   be stale. Using the last visible frame before occlusion as the template
+#   makes the global match closer to a "re-id" step.
+# - Add peak-sharpness (margin) and "must beat current" (shift) gates to reduce
+#   negative videos where global argmax jumps to a wrong but confident mode.
+#
+# Expected outcome
+# - Higher `AJ_longocc20_delta` / `AJ_longocc30_delta` with minimal harm overall.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v2.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage3_relocal_longocc_m20_v3_lastvis"
+  description: "Stage-3 v3: last-visible relocal template + margin/shift gating; monitor AJ_longocc20_delta"
+
+model:
+  refiner:
+    relocalization:
+      # Use last-visible-before-occlusion template instead of the query frame.
+      template_mode: "last_visible"   # query | last_visible
+
+      # More precise global search (only applied to a small subset of frames).
+      downsample: 1
+
+      # Avoid repeated global jumps within the same forward pass.
+      apply_only_first_iter: true
+
+      # Extra gating signals (all in [0,1]):
+      # - margin = max_prob - second_prob  (peak sharpness / ambiguity)
+      # - shift  = max_prob - prob_at_current_location (must beat current)
+      margin_threshold: 0.02
+      margin_power: 1.0
+      shift_threshold: 0.05
+      shift_power: 1.0
+
+training:
+  # Slightly looser deadline than v2 to give the new logic time.
+  deadline_guard:
+    deadline_epoch: 12
+    threshold: 0.0015
+

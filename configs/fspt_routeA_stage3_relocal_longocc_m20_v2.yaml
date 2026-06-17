@@ -1,0 +1,45 @@
+# =============================================================================
+# Route A Stage-3 v2: more aggressive re-localization on re-appearance
+# =============================================================================
+#
+# This variant is tuned to push `AJ_longocc20_delta` over the stop-loss bar by:
+# - triggering only on long occlusions (>=20 frames)
+# - applying the relocal step for more frames after re-appearance
+# - using argmax (decisive jump) instead of softargmax (averaging)
+#
+# It warm-starts from the best Stage-3 checkpoint (epoch 5 in the previous run).
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage3_relocal_longocc_m20_v2"
+  description: "Stage-3 v2: aggressive long-occlusion re-localization (argmax, more frames); monitor AJ_longocc20_delta"
+
+# Start from the best long-occ checkpoint of Stage-3.
+pretrained: "checkpoints/fspt_routeA_stage3_relocal_longocc_m20/best.pth"
+
+model:
+  refiner:
+    relocalization:
+      # Focus on the long-occ >=20 subset we monitor.
+      min_occlusion_len: 20
+      # Apply on more frames after re-appearance (better chance to recover).
+      frames_after: 8
+      # Use a decisive jump at re-appearance; softargmax tends to under-step on
+      # multi-modal correlations.
+      step_mode: "argmax"
+      temperature: 0.5
+      # Be slightly more conservative about applying a global jump.
+      conf_threshold: 0.20
+      # Let later refinement iterations re-apply global matching if needed.
+      apply_only_first_iter: false
+
+training:
+  # Tighter stop-loss to avoid wasting GPU if the gains don't materialize.
+  deadline_guard:
+    deadline_epoch: 10
+    threshold: 0.0015
+

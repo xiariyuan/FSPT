@@ -1,0 +1,20 @@
+{
+  "command": "scripts/trackon2_memory_hygiene_diagnostic.py --dataset-path /gemini/code/datasets/tapvid_davis/tapvid_davis.pkl --config baselines/track_on/config/test.yaml --checkpoint baselines/track_on/checkpoints_trackon2_dinov3.pt --dinov3-local-dir /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m --max-videos 0 --output-dir outputs/memory_hygiene_oracle_2026-06-16_full",
+  "dataset_name": "davis",
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+  "config": "/gemini/code/FSPT/baselines/track_on/config/test.yaml",
+  "checkpoint": "/gemini/code/FSPT/baselines/track_on/checkpoints_trackon2_dinov3.pt",
+  "dinov3_local_dir": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m",
+  "variants": [
+    "baseline",
+    "oracle_mask",
+    "anchor_only",
+    "oracle_mask_anchor"
+  ],
+  "query_mode": "first",
+  "max_videos": 0,
+  "long_occ_min_run": 20,
+  "support_grid_size": 20,
+  "memory_size_eval": 24,
+  "device": "cuda"
+}

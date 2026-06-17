@@ -1,0 +1,47 @@
+# =============================================================================
+# Route A Stage-3 v19 (eval-only): reappearance-based long-occ query focus (len=20)
+# =============================================================================
+#
+# Motivation
+# - max_run gating keeps longocc gains but slightly hurts overall AJ_delta.
+# - reappearance gating removes false positives (good) but was too strict at len=30,
+#   killing longocc gains.
+#
+# This config relaxes the long-occ criterion:
+# - long_occlusion_mode: reappearance
+# - long_occlusion_len: 20 (still "long", but easier for base visibility to detect)
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v19_focus_longocc_reapp_len20_nf000_eval_from_v6best
+  description: "Eval-only: long-occ focus using reappearance-based run>=20; non_focus_scale=0 to protect easy queries"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_mode: reappearance
+      long_occlusion_len: 20
+      long_occlusion_vis_threshold: 0.5
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

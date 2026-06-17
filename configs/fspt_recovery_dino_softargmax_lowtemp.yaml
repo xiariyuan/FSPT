@@ -1,0 +1,20 @@
+defaults:
+  - fspt_online_recovery_dino_real_eval256
+  - _self_
+experiment:
+  name: fspt_recovery_dino_softargmax_lowtemp
+model:
+  refiner:
+    relocalization:
+      conf_threshold: 0.005
+      step_mode: softargmax
+      temperature: 0.01
+    online_recovery:
+      search:
+        feature_source: "dino"
+      retracking:
+        enabled: true
+        min_conf: 0.005
+    retracking:
+      enabled: true
+      min_conf: 0.005

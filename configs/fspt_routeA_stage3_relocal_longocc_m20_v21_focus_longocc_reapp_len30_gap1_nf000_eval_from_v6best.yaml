@@ -1,0 +1,48 @@
+# =============================================================================
+# Route A Stage-3 v21 (eval-only): reappearance long-occ>=30 with gap-filling
+# =============================================================================
+#
+# Idea:
+# - Base visibility can flicker (0/1), breaking long occlusion runs.
+# - Fill 1-frame visible gaps before computing run length.
+#
+# Settings:
+# - long_occlusion_mode: reappearance
+# - long_occlusion_len: 30
+# - long_occlusion_fill_gaps: 1
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v21_focus_longocc_reapp_len30_gap1_nf000_eval_from_v6best
+  description: "Eval-only: reappearance run>=30 with 1-frame gap fill; non_focus_scale=0"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_mode: reappearance
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_fill_gaps: 1
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

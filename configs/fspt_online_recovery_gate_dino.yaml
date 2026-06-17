@@ -1,0 +1,21 @@
+# M1 Gate dataset config using DINO recovery
+defaults:
+  - fspt_online_recovery_dino_real_eval256
+  - _self_
+
+experiment:
+  name: fspt_online_recovery_gate_dino
+  description: Gate dataset with DINO recovery (min_conf=0.005)
+
+model:
+  refiner:
+    online_recovery:
+      enabled: true
+      search:
+        feature_source: "dino"
+      retracking:
+        enabled: true
+        min_conf: 0.005
+    retracking:
+      enabled: true
+      min_conf: 0.005

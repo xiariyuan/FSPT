@@ -1,0 +1,71 @@
+# =============================================================================
+# Route A Stage-3 v7: mild long-occ drift + freeze geo backbone
+# =============================================================================
+# Objective
+# - Improve longocc30 over v6 while recovering AJ_delta to non-negative.
+#
+# Strategy
+# - A: add moderate base_occlusion_drift to increase long-occlusion failure signal
+# - C: freeze geo_backbone to reduce global metric damage
+# - keep relocalization trigger conservative enough to avoid broad harm
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name:  fspt_routeA_stage3_relocal_longocc_m20_v7_milddrift_freezegeo_l30
+  description: v7 from v5 epoch9 mild occ-drift plus freeze geo backbone optimize longocc30 with AJ guardrail
+
+# Always start from clean v5 longocc30-best baseline.
+pretrained: checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v5_bank_confirm_20260228_111126/epoch_9.pth
+
+model:
+  refiner:
+    # Freeze high-capacity visual backbone to protect overall AJ/OA.
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+
+    relocalization:
+      # Keep repeated relocalization, but do not loosen further at this stage.
+      apply_only_first_iter: false
+      conf_threshold: 0.20
+
+    # Moderate training-only failure injection (milder than v4).
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.20
+      min_len: 20
+      max_len: 24
+      after_frames: 6
+      drift_std_px: 14.0
+      drift_max_px: 56.0
+      drift_mode: constant
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+loss:
+  position:
+    delta_supervision:
+      base_error_threshold: 0.0075
+      min_points: 192
+
+training:
+  epochs: 35
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 10
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 15
+    threshold: 0.0048

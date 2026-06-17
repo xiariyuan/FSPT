@@ -1,0 +1,43 @@
+# =============================================================================
+# Route A: policy-gated refinement (learn when to trust refiner vs base)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_twoview_v2_relaxed_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_policy_gate_eval256"
+  description: "Policy-gated refinement with supervised gate + pre-gate training @eval256"
+
+model:
+  refiner:
+    policy_gate:
+      enabled: true
+      hidden_dim: 64
+      init_bias: -1.0
+      extra_features:
+        - "delta_norm"
+        - "corr_conf"
+        - "relocal_conf"
+        - "base_vis"
+
+loss:
+  policy_gate:
+    enabled: true
+    weight: 0.5
+    margin: 0.0005
+    base_error_threshold: 0.004
+    min_points: 64
+    detach_pred: true
+    detach_base: true
+    use_pre_gate_tracks: true
+    type: "bce"
+
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 0.5
+      margin: 0.0
+      base_error_threshold: 0.004
+      min_points: 64

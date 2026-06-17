@@ -1,0 +1,130 @@
+# =============================================================================
+# Route A Stage-3 v10: dual-stage long-occ guard (v9 -> stronger relocalization)
+# =============================================================================
+#
+# Design
+# - Stage 1 (epochs 0-8): stronger guardrails to keep global AJ stable.
+# - Stage 2 (epochs 9+): relax constraints and allow larger relocal corrections.
+# - Keep long-occ focused monitor: AJ_longocc30_delta.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v9_residual_reloc_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v10_dual_stage_longocc_guard
+  description: Stage-3 v10 dual-stage long-occ guard; warm-start from v9 monitor-best
+
+# Warm-start from v9 monitor-best checkpoint to reduce cold-start noise.
+pretrained: checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v9_residual_reloc_l30/best.pth
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+      - relocalization_residual
+
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    relocalization:
+      conf_threshold: 0.14
+      topk: 9
+      temporal_sigma: 0.05
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.06
+      max_total: 0.26
+
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 512
+      scale: 0.034
+      gate_init_bias: -1.2
+      conf_threshold: 0.10
+      conf_power: 1.3
+      max_step: 0.05
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+    # Keep correction focus, but reduce attenuation so long-occ frames can move more.
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.45
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.14
+      include_occluded: false
+
+    # Keep mild long-occ drift simulation, avoid v4-style over-aggressive drift.
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.22
+      min_len: 20
+      max_len: 26
+      after_frames: 7
+      drift_std_px: 14.0
+      drift_max_px: 56.0
+      drift_mode: constant
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+loss:
+  # Dual-stage by schedule: early anchor stronger, then decay.
+  base_track_consistency:
+    weight: 1.2
+    type: smooth_l1
+    smooth_l1_beta: 1.0
+    mask: gt_visible
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 8
+      start_weight: 1.2
+      end_weight: 0.25
+
+  base_visibility_consistency:
+    weight: 0.02
+    type: bce
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 8
+      start_weight: 0.02
+      end_weight: 0.005
+
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 2.0
+      margin: 0.0005
+      base_error_threshold: 0.008
+      min_points: 256
+      detach_base: true
+
+training:
+  epochs: 32
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 10
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 14
+    threshold: 0.0065
+
+evaluation:
+  compare_base: true

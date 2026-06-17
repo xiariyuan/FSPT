@@ -1,0 +1,346 @@
+{
+  "baseline_name": "cotracker3_baseline",
+  "dataset_type": "davis",
+  "query_protocol": "first",
+  "space": "input",
+  "input_size_hw": [
+    256,
+    256
+  ],
+  "num_videos_total": 30,
+  "num_videos_exported": 30,
+  "total_queries": 650,
+  "errors": [],
+  "per_video": [
+    {
+      "video_id": "bike-packing",
+      "index": 0,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 69,
+      "original_size_hw": [
+        480,
+        910
+      ]
+    },
+    {
+      "video_id": "blackswan",
+      "index": 1,
+      "status": "ok",
+      "num_queries": 5,
+      "frame_count": 50,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "bmx-trees",
+      "index": 2,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 80,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "breakdance",
+      "index": 3,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 84,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "camel",
+      "index": 4,
+      "status": "ok",
+      "num_queries": 10,
+      "frame_count": 90,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "car-roundabout",
+      "index": 5,
+      "status": "ok",
+      "num_queries": 20,
+      "frame_count": 75,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "car-shadow",
+      "index": 6,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 40,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "cows",
+      "index": 7,
+      "status": "ok",
+      "num_queries": 10,
+      "frame_count": 104,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "dance-twirl",
+      "index": 8,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 90,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "dog",
+      "index": 9,
+      "status": "ok",
+      "num_queries": 10,
+      "frame_count": 60,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "dogs-jump",
+      "index": 10,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 66,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "drift-chicane",
+      "index": 11,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 52,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "drift-straight",
+      "index": 12,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 50,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "goat",
+      "index": 13,
+      "status": "ok",
+      "num_queries": 5,
+      "frame_count": 90,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "gold-fish",
+      "index": 14,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 78,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "horsejump-high",
+      "index": 15,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 50,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "india",
+      "index": 16,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 81,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "judo",
+      "index": 17,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 34,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "kite-surf",
+      "index": 18,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 50,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "lab-coat",
+      "index": 19,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 47,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "libby",
+      "index": 20,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 49,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "loading",
+      "index": 21,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 50,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "mbike-trick",
+      "index": 22,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 79,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "motocross-jump",
+      "index": 23,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 40,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "paragliding-launch",
+      "index": 24,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 80,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "parkour",
+      "index": 25,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 100,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "pigs",
+      "index": 26,
+      "status": "ok",
+      "num_queries": 15,
+      "frame_count": 79,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "scooter-black",
+      "index": 27,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 43,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    },
+    {
+      "video_id": "shooting",
+      "index": 28,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 40,
+      "original_size_hw": [
+        480,
+        1152
+      ]
+    },
+    {
+      "video_id": "soapbox",
+      "index": 29,
+      "status": "ok",
+      "num_queries": 25,
+      "frame_count": 99,
+      "original_size_hw": [
+        480,
+        854
+      ]
+    }
+  ]
+}

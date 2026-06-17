@@ -1,0 +1,46 @@
+# =============================================================================
+# Route A (aggressive, v2): add RAFT-style update head for fine correlation map
+# =============================================================================
+#
+# Why this exists
+# - Soft-argmax over a local window can be biased / overly smooth.
+# - We already use a tiny "map_update" head for the coarse (CoTracker fnet) map.
+# - This config enables the same idea for the fine (geo c2, stride~4) map so the
+#   refiner can learn subpixel corrections from the full correlation shape.
+#
+# Guard rails
+# - Visibility is forced to base (no OA collapse).
+# - Residual decoder is frozen; motion comes from matching steps only.
+# - Monitor `AJ_delta` and stop quickly if it doesn't improve.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate"
+  description: "Route A: corrproj+query (aggressive) + fine map_update head"
+
+model:
+  refiner:
+    local_correlation_fine:
+      map_update:
+        enabled: true
+        hidden_dim: 64
+        gate_init_bias: -1.0
+        step_scale: 1.0
+
+training:
+  # Tighten guard: stop earlier if we keep harming base.
+  early_stopping:
+    patience: 4
+    min_delta: 0.0002
+
+  plateau_guard:
+    start_epoch: 2
+    patience: 3
+    min_delta_aj: 0.0002
+    min_delta_4px: 0.0002
+    min_delta_error: 0.0
+

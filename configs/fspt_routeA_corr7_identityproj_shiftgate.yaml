@@ -1,0 +1,76 @@
+# =============================================================================
+# Route A (SOTA-focused): Identity-projected local correlation + confidence gating
+# =============================================================================
+#
+# Motivation
+# - CoTracker3 base is already very strong on TAP-Vid DAVIS.
+# - Most failed refiners harm tight thresholds (<1px/<2px) via tiny jitter.
+# - Domain gap: learned projections on CoTracker fnet features can drift and
+#   produce wrong correlation peaks on DAVIS.
+#
+# This recipe makes local matching as "domain-gap-free" as possible:
+# - Use CoTracker fnet features directly for correlation (projection=identity).
+# - Apply correlation step only when correlation peak confidently shifts away
+#   from the center (step_gate=confidence with confidence_mode=shift).
+# - Also gate the learned residual update by the same confidence (gate_residual).
+#
+# Goal
+# - Achieve AJ_delta > 0 (refined beats base) under official TAP-Vid metrics.
+#
+
+defaults:
+  - fspt_routeA_rebuild_cotrackerfeat_kinetics_strided.yaml
+  - _self_
+
+experiment:
+  # NOTE: keep this unique per run to avoid mixing metrics in one output dir.
+  name: "fspt_routeA_corr7_identityproj_shiftgate_20260221_002245"
+  description: "Route A: raw CoTracker fnet correlation + shift-confidence gating; train Kinetics, val DAVIS"
+
+model:
+  refiner:
+    # Keep visibility identical to base (AJ is highly sensitive to visibility).
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Keep a tight trust region; let confidence gating decide when to move.
+    delta_scale: 0.02
+    delta_max_step: 0.01
+    delta_max_total: 0.02
+
+    local_correlation:
+      # Use CoTracker fnet features directly for correlation (no learned proj drift).
+      corr_dim: 128
+      projection: "identity"      # learned | identity
+
+      # Make correlation supervision / inference stable.
+      reference_mode: "query"     # query is the cleanest reference under TAP-Vid protocol
+      step_mode: "softargmax"     # less jitter than hard argmax
+      confidence_mode: "shift"    # confidence=max_prob-center_prob (0 when centered)
+
+      # Apply correlation step only when the peak clearly shifts away from center.
+      step_gate: "confidence"
+      gate_threshold: 0.05
+      gate_power: 2.0
+
+      # Also gate the learned residual update (eval-only by default).
+      gate_residual: true
+      residual_gate_threshold: 0.05
+      residual_gate_power: 2.0
+
+loss:
+  position:
+    # Focus learning capacity on points where base is wrong.
+    hard_mining:
+      enabled: true
+      tau: 0.0075        # ~4px @ 512-wide (normalized coords use /W,/H)
+      power: 2.0
+      min_weight: 1.0
+      max_weight: 5.0
+      detach_base: true
+
+training:
+  optimizer:
+    # Conservative to reduce drift on strong base.
+    lr: 2.0e-05

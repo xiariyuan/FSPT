@@ -1,0 +1,47 @@
+defaults:
+  - fspt_megadepth_pairs_pretrain
+  - _self_
+
+experiment:
+  name: "fspt_megadepth_pairs_pretrain_position_first"
+  description: "Position-first fine-tuning from the current MegaDepth checkpoint with occlusion fusion disabled."
+
+# Fine-tune from the current checkpoint instead of resuming optimizer state.
+pretrained: "checkpoints/fspt_megadepth_pairs_pretrain_full/latest.pth"
+
+model:
+  occlusion:
+    enabled: false
+    track_fusion_train: false
+    track_fusion_eval: false
+
+training:
+  # Keep this as a short stabilization run first; plateau guard will stop early
+  # if AJ / <4px / error stop improving.
+  epochs: 12
+  optimizer:
+    lr: 5.0e-5
+  scheduler:
+    warmup_epochs: 1
+
+loss:
+  # Remove the semantic side loss for the stabilization run. The current model
+  # already over-predicts occlusion; we want the position decoder to recover first.
+  semantic_consistency:
+    weight: 0.0
+  base_visibility_consistency:
+    weight: 0.0
+    schedule:
+      type: "constant"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 0.0
+      end_weight: 0.0
+  base_track_consistency:
+    weight: 0.0
+    schedule:
+      type: "constant"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 0.0
+      end_weight: 0.0

@@ -1,0 +1,28 @@
+{
+  "phase": 0,
+  "protocol": "first+input (256-space)",
+  "query_mode": "first",
+  "metric_resolution_mode": "input (256x256)",
+  "normalization": {
+    "pred_tracks": "yx-normalized, scale by 255",
+    "gt_tracks": "yx-normalized, scale by 255",
+    "model_input_size": [256, 256],
+    "original_size": "stored per-video, varies"
+  },
+  "bridge_version": "first_input_bridge_v2",
+  "re-entry_metric_protocol": {
+    "reentry_first_error_mean": "mean of first re-entry frame pixel error (256-space)",
+    "reentry_first_error_median": "median of first re-entry frame pixel error",
+    "reentry_<4px": "fraction of re-entry errors < 4px",
+    "reentry_<8px": "fraction of re-entry errors < 8px",
+    "reentry_p95": "95th percentile of re-entry errors",
+    "long_occ_threshold": 20,
+    "n_reentry_queries": "total count of re-entry queries",
+    "n_longocc20_queries": "re-entry queries with occ_run >= 20"
+  },
+  "strided_plus_original": {
+    "status": "NOT AVAILABLE",
+    "reason": "DAVIS pkl GCS 404; Track-On2 fixed 384x512 resize; predictor re-runs required",
+    "required_for_paper_protocol": true
+  }
+}

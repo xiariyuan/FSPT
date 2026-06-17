@@ -1,0 +1,110 @@
+# =============================================================================
+# Route A Pivot: lightweight test-time adaptation for long-occlusion tracking
+# =============================================================================
+#
+# Goal
+# - Move away from the heavy post-hoc relocalization branch.
+# - Adapt only lightweight refiner modules at test time.
+# - Keep the base tracker frozen.
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256
+  - _self_
+
+experiment:
+  name: fspt_routeA_tta_longocc_eval256_light
+  description: "Lightweight TTA for long-occlusion tracking @eval256"
+
+# The checkpoint stays the same strong base; adaptation is done per test video.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256/best_aj.pth
+
+model:
+  refiner:
+    # Keep the adaptation surface small and move away from explicit relocalization.
+    trainable_modules:
+      - temporal_transformer
+      - occlusion_predictor
+    relocalization:
+      enabled: false
+      candidate_fusion:
+        enabled: false
+    framewise_init:
+      enabled: false
+
+temporal:
+  # Enable gradient checkpointing during TTA to reduce peak activation memory.
+  use_gradient_checkpointing: true
+
+loss:
+  # These losses are used only by the TTA script as unsupervised anchors.
+  base_track_consistency:
+    weight: 0.25
+    type: "smooth_l1"
+    smooth_l1_beta: 1.0
+    mask: "gt_visible"
+    adaptive:
+      enabled: true
+      tau: 0.01
+      power: 2.0
+      min_weight: 0.05
+
+  base_visibility_consistency:
+    weight: 0.10
+    type: "bce"
+    mask: "all"
+
+  two_view_consistency:
+    enabled: true
+    weight: 0.40
+    schedule:
+      type: "none"
+      unit: "epoch"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 0.40
+      end_weight: 0.40
+    visibility_weight: 0.0
+    teacher: "student"
+    stop_grad: true
+    require_base_tracks: true
+    apply_prob: 1.0
+    max_points: 16
+    max_resample: 1
+    min_in_bounds_fraction: 0.7
+    oom_safe: true
+    augmentation:
+      flip: true
+      flip_prob: 0.5
+      rotation_deg: 5.0
+      scale: [0.90, 1.10]
+      translate: [0.05, 0.05]
+      padding_mode: "zeros"
+      mode: "bilinear"
+      align_corners: false
+
+tta:
+  # Keep the inner-loop tiny for first-pass validation.
+  steps: 1
+  lr: 1.0e-5
+  weight_decay: 0.0
+  grad_clip: 1.0
+  max_points: 16
+  adapt_threshold: 20
+  continual: false
+  modules:
+    - temporal_transformer
+    - occlusion_predictor
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  metric_resolution_mode: "original"
+  aux_metric_resolution_mode: "original"
+  num_workers: 0
+
+training:
+  # Present for compatibility with `load_config()` and helper utilities.
+  num_workers: 0
+  amp:
+    enabled: true
+    dtype: "float16"

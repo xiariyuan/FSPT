@@ -1,0 +1,89 @@
+# =============================================================================
+# Route A (SOTA push): learned-gate correlation + tiny residual refiner (no jitter)
+# =============================================================================
+#
+# Claude's concerns are valid:
+# - base_jitter introduces a train/test distribution mismatch (may learn to denoise noise).
+# - corrproj-only can be too weak to produce a measurable AJ gain over a very strong base.
+#
+# This recipe addresses both:
+# - Disable base_jitter (train/test aligned).
+# - Unfreeze ONLY the temporal_transformer + residual_decoder (moderate capacity),
+#   while keeping geo_backbone frozen to avoid large feature drift.
+# - Keep guardrails:
+#     - delta_max_total trust region clamp (0.02 ~= 5px @ 256)
+#     - shift-confidence gating (evaluation)
+#     - no_harm_vs_base hinge with a small positive margin
+#
+# Important: we disable confidence gating *during training* to avoid the
+# "dead-zone" where the model learns nothing. Evaluation remains gated/safe.
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_learnedgate_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_learnedgate_residualtiny_eval256"
+  description: "No jitter; train temporal+residual with tiny delta_scale under trust region; aim measurable AJ_delta>0"
+
+# Start from the stable, do-no-harm corrproj-only learned-gate checkpoint.
+pretrained: "checkpoints/fspt_routeA_corrproj_only_learnedgate_eval256_20260215_135113/best.pth"
+
+model:
+  refiner:
+    # Unfreeze a bit more capacity than corrproj-only.
+    # This freezes geo_backbone/freq/semantic/occlusion automatically.
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+
+    # Allow the residual head to move tracks a tiny amount.
+    # The hard clamp (delta_max_total=0.02 from defaults) is the real safety net.
+    delta_scale: 0.02
+
+    # Train/test aligned (no synthetic noise).
+    base_jitter:
+      enabled: false
+
+    local_correlation:
+      # Let the transformer "see" correlation structure.
+      scale: 0.5
+
+      # Avoid train-time learning dead-zone: train without confidence gating,
+      # but keep evaluation gated (safe).
+      gate_step_train: false
+      gate_residual_train: false
+
+loss:
+  base_track_consistency:
+    # We rely on trust-region + hinge(no_harm) instead of an L1 anchor,
+    # which can over-constrain and prevent real improvements.
+    weight: 0.0
+    schedule: null
+
+  position:
+    hard_mining:
+      # Strong focus on rare hard cases where base is wrong.
+      max_weight: 20.0
+    no_harm_vs_base:
+      # Encourage "strictly better than base" by a tiny margin.
+      weight: 2.0
+      margin: 0.001
+
+training:
+  epochs: 30
+  optimizer:
+    # More parameters are trainable now; reduce LR from corrproj-only.
+    lr: 5.0e-05
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 10
+    min_delta: 0.00005
+
+  plateau_guard:
+    enabled: false
+

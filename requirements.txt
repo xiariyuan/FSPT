@@ -1,0 +1,68 @@
+# =============================================================================
+# FSPT - Python Dependencies
+# =============================================================================
+
+# Core
+numpy>=1.24.0
+scipy>=1.10.0
+pillow>=9.0.0
+opencv-python>=4.7.0
+
+# Deep Learning
+torch>=2.0.0
+torchvision>=0.15.0
+einops>=0.6.0
+timm>=0.9.0
+transformers>=4.30.0
+
+# Vision-Language (CLIP)
+# Install separately: pip install git+https://github.com/openai/CLIP.git
+open-clip-torch>=2.20.0
+ftfy>=6.1.0
+regex>=2023.0.0
+
+# Point Tracking specific
+kornia>=0.7.0
+mediapy>=1.1.0
+
+# Experiment tracking
+wandb>=0.15.0
+tensorboard>=2.13.0
+
+# Configuration
+omegaconf>=2.3.0
+hydra-core>=1.3.0
+pyyaml>=6.0
+
+# Utilities
+tqdm>=4.65.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+pandas>=2.0.0
+
+# Development
+ipython>=8.0.0
+jupyter>=1.0.0
+black>=23.0.0
+isort>=5.12.0
+flake8>=6.0.0
+
+# Evaluation
+scikit-learn>=1.2.0
+scikit-image>=0.21.0
+h5py>=3.10.0
+
+# Video processing
+imageio>=2.31.0
+imageio-ffmpeg>=0.4.8
+av>=10.0.0
+
+# Optional: Mamba (for frequency-aware modules)
+# mamba-ssm>=1.2.0  # Install separately with CUDA
+
+# Optional: Flash Attention (for efficient attention)
+# flash-attn>=2.0.0  # Install separately with CUDA
+
+# Testing
+pytest>=7.3.0
+pytest-cov>=4.1.0

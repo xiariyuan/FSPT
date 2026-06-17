@@ -1,0 +1,127 @@
+# =============================================================================
+# Route A Stage-3R: risk-aware visible-bank relocalization for long occlusion
+# =============================================================================
+#
+# Idea
+# - Keep the strongest part of prior long-occ experiments: visible-bank global
+#   re-localization with top-k temporal scoring.
+# - Replace "always trust the relocalized track" with a learned acceptor that
+#   decides whether the relocalized candidate should override the base tracker.
+# - This follows a more defensible paper story: long-occlusion recovery should
+#   be selective and uncertainty-aware, not a free residual update everywhere.
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v10_visiblebank_l30
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256
+  description: Stage-3R visible-bank relocalization with risk-aware acceptor; optimize long-occ30 without harming base
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+      - relocalization_residual
+      - relocal_acceptor
+
+    relocalization:
+      template_mode: "visible_bank"
+      template_bank_size: 6
+      template_bank_stride: 2
+      topk: 9
+      conf_threshold: 0.15
+      temporal_sigma: 0.05
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.06
+      max_total: 0.26
+
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 384
+      scale: 0.02
+      gate_init_bias: -2.0
+      conf_threshold: 0.12
+      conf_power: 1.25
+      max_step: 0.03
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+    relocal_acceptor:
+      enabled: true
+      hidden_dim: 128
+      init_bias: -2.5
+      extra_features:
+        - relocal_conf
+        - corr_conf
+        - base_vis
+        - delta_norm
+        - relocal_mask
+
+    policy_gate:
+      enabled: false
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.25
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.12
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+data:
+  train:
+    resolution: [256, 256]
+  val:
+    resolution: [256, 256]
+
+loss:
+  relocal_acceptor:
+    enabled: true
+    weight: 1.0
+    margin: 0.0
+    base_error_threshold: 0.0075
+    min_points: 64
+    detach_pred: true
+    detach_base: true
+    type: "bce"
+
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 0.5
+      margin: 0.0
+      base_error_threshold: 0.0075
+      min_points: 128
+
+training:
+  epochs: 25
+
+  optimizer:
+    lr: 8.0e-05
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 8
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 10
+    threshold: 0.0030

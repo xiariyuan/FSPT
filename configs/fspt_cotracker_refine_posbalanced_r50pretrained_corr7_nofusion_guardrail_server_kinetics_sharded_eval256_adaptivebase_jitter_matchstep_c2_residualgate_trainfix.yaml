@@ -1,0 +1,43 @@
+# =============================================================================
+# Route A: fix training-time confidence gating dead-zone (for SOTA push)
+# =============================================================================
+#
+# Problem observed:
+# - `local_correlation` confidence gating + hard clamp could result in *zero*
+#   position-module learning: the refiner keeps outputting the (jittered) base
+#   tracks, and validation metrics stay bitwise-identical for many epochs.
+#
+# Fix (code-side):
+# - Training-time step/residual gating is disabled by default
+#   (`gate_step_train=false`, `gate_residual_train=false`).
+# - Evaluation-time gating uses a non-dead-zone ramp (conf/threshold) so
+#   updates are never completely blocked when confidence is low.
+#
+# This config focuses on official comparability: we monitor `AJ_original_delta`
+# (refined - base, original-resolution thresholds).
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_relax_residualgate.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_matchstep_c2_residualgate_trainfix_eval256"
+  description: "Route A refiner: enable position-module learning (disable train gating) + monitor AJ_original_delta"
+
+# Warm-start from the previous run (weights-only). This preserves any useful
+# geo_backbone / occlusion improvements, while the position modules can now learn.
+pretrained: "checkpoints/fspt_routeA_kinetics_matchstep_c2_residualgate_eval256_20260214_160849/best_aj.pth"
+
+model:
+  refiner:
+    local_correlation:
+      # Critical: allow gradients to flow through position modules during training.
+      gate_step_train: false
+      gate_residual_train: false
+
+training:
+  early_stopping:
+    enabled: false
+    monitor: "AJ_original_delta"
+    mode: "max"

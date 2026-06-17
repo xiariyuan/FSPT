@@ -1,0 +1,15 @@
+{
+  "root": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m",
+  "present": {
+    "config.json": true,
+    "configuration_dinov3.py": false,
+    "model.safetensors": true,
+    "pytorch_model.bin": false,
+    "model.safetensors.index.json": false,
+    "preprocessor_config.json": true
+  },
+  "num_files": 9,
+  "sample_files": [".mdl", ".msc", ".mv", "LICENSE.md", "README.md", "config.json", "configuration.json", "model.safetensors", "preprocessor_config.json"],
+  "status": "download_complete",
+  "next_action": "waiting for PyTorch upgrade to run load smoke"
+}

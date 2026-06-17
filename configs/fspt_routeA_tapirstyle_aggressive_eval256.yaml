@@ -1,0 +1,84 @@
+# =============================================================================
+# TAPIR-style aggressive: geo c2 framewise init + explicit supervision
+# =============================================================================
+
+defaults:
+  - fspt_routeA_tapirstyle_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_tapirstyle_aggressive_eval256"
+  description: "Aggressive framewise init (geo c2) + init supervision + relaxed no-harm"
+
+model:
+  refiner:
+    trainable_modules: []
+    stages:
+      - start_epoch: 0
+        trainable_modules:
+          - temporal_transformer
+          - residual_decoder
+          - relocalization_residual
+      - start_epoch: 3
+        trainable_modules:
+          - temporal_transformer
+          - residual_decoder
+          - relocalization_residual
+          - geo_backbone
+    policy_gate:
+      enabled: false
+    framewise_init:
+      feature_source: "geo"
+      feature_level: "c2"
+      downsample: 1
+      conf_threshold: 0.05
+      gate_power: 1.0
+
+    delta_scale: 0.06
+    delta_max_step: 0.03
+    delta_max_total: 0.10
+
+loss:
+  policy_gate:
+    enabled: false
+    weight: 0.0
+
+  position:
+    selective:
+      enabled: true
+      base_error_threshold: 0.004
+      min_points: 128
+      detach_base: true
+    no_harm_vs_base:
+      enabled: true
+      weight: 0.3
+      margin: 0.0
+      base_error_threshold: 0.004
+      min_points: 128
+      detach_base: true
+
+  framewise_init_supervision:
+    enabled: true
+    weight: 1.0
+    type: "smooth_l1"
+    base_error_threshold: 0.004
+    min_points: 64
+    detach_init: true
+
+training:
+  optimizer:
+    lr: 8.0e-05
+    backbone_lr_scale: 0.05
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 5
+    min_delta: 0.00005
+
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    deadline_epoch: 6
+    threshold: 0.0002

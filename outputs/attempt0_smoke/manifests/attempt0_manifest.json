@@ -1,0 +1,31 @@
+{
+  "run_name": "attempt0_smoke",
+  "created_at": "2026-06-14T00:39:57",
+  "main_protocol": {
+    "datasets": [
+      "tapvid_davis",
+      "tapvid_kinetics"
+    ],
+    "query_mode": "strided",
+    "metric_resolution_mode": "original",
+    "metrics": [
+      "AJ",
+      "OA",
+      "<avg",
+      "<4px"
+    ]
+  },
+  "aux_tables": [
+    "long-occ>20",
+    "re-entry first-frame",
+    "AJ_RD-if-available"
+  ],
+  "models": [
+    "cotracker3_baseline",
+    "cotracker3_offline",
+    "trackon2",
+    "trackonr",
+    "tapnextpp",
+    "alltracker"
+  ]
+}

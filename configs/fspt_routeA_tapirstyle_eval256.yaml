@@ -1,0 +1,34 @@
+# =============================================================================
+# Route A: TAPIR-style frame-wise init + policy gate + temporal consistency
+# =============================================================================
+
+defaults:
+  - fspt_routeA_policy_gate_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_tapirstyle_eval256"
+  description: "Frame-wise global init (query-matching) + policy gate + temporal two-view @eval256"
+
+model:
+  refiner:
+    framewise_init:
+      enabled: true
+      feature_source: "cotracker"
+      feature_level: "fused"
+      template_mode: "query"
+      downsample: 2
+      after_query: true
+      exclude_query_frame: true
+      stride: 1
+      apply_prob: 1.0
+      conf_threshold: 0.12
+      gate_power: 1.0
+
+loss:
+  two_view_consistency:
+    temporal:
+      enabled: true
+      reverse_prob: 1.0
+      roll_prob: 0.0
+      roll_max: 0

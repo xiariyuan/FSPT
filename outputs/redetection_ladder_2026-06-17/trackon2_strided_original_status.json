@@ -1,0 +1,26 @@
+{
+  "baseline": "trackon2_dinov3",
+  "protocol": "strided+original",
+  "status": "needs_rerun",
+  "status_detail": "runtime_bug_detected, partial_probe_success_after_dtype_fix",
+  "smoke_json": "NOT_FOUND",
+  "cache_npz_count": 0,
+  "cache_dir": "caches/trackon2_strided_original/",
+  "probe_dir": "/tmp/trackon2_strided_probe2/davis/trackon2/",
+  "probe_npz_written": 14,
+  "process": "exited (probe not full run)",
+  "root_cause": {
+    "error": "Index put requires the source and destination dtypes match",
+    "location": "baselines/track_on/model/trackon.py:89, baselines/track_on/model/trackon_predictor.py:192",
+    "cause": "point_memory and q_features dtype mismatch",
+    "fix_applied": "dtype alignment at baselines/track_on/model/trackon.py:80",
+    "fix_verified_by_user": true
+  },
+  "is_protocol_unsupported": false,
+  "impact": {
+    "can_participate_in_phase0": "yes, after bug fix + rerun",
+    "can_participate_in_phase1": "yes, after bug fix + full run + export",
+    "can_participate_in_phase2": "TBD"
+  },
+  "next_action": "Confirm dtype fix is permanent, run full 30-video strided+original eval, export unified .pt cache"
+}

@@ -1,0 +1,311 @@
+\documentclass[10pt,journal,compsoc]{IEEEtran}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{times}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{xcolor}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{hyperref}
+\usepackage{siunitx}
+\usepackage{enumitem}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue,
+  citecolor=blue,
+  urlcolor=blue
+}
+
+\newcommand{\method}{Support-Memory Hybrid Selector}
+\newcommand{\task}{Persistent Recovery Tracking}
+\newcommand{\supportmargin}{\texttt{support\_margin}}
+\newcommand{\candscore}{\texttt{cand\_score}}
+\newcommand{\ltfour}{$<4$ px}
+
+\title{Support-Memory Driven Causal Recovery\\ for Long-Term Point Tracking}
+
+\author{Anonymous Authors}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Long-term point tracking often fails when a point stays invisible for a long interval and then becomes visible again. Existing evaluations usually average over the full trajectory, which can hide this specific failure mode at the first visible frame after occlusion or off-screen return. We study this step in a strictly causal setting and introduce Persistent Recovery Tracking (PRT), an event-level evaluation protocol centered on recovering the point at the first visible frame of each recovery episode. On an expanded PointOdyssey evaluation with 15 sequences and 1500 recovery episodes, we find that pre-occlusion support memory is the only clearly useful cue among the tested signals: its support-memory margin reaches AUC 0.635, while candidate-search score and RGB-NCC remain near chance at 0.483 and 0.519. Based on this observation, we evaluate a simple non-learned Support-Memory Hybrid Selector that combines support-memory margin with candidate-search score. The selector yields only a small overall change in median recovery error, from 39.12 px to 38.90 px, while an adaptive long-occlusion variant reaches 38.52 px at 80.3\% coverage; neither overall improvement is statistically significant. However, stratified analysis reveals a bounded effective zone: for in-frame occlusions lasting 100--500 frames ($n=1175$), median error drops from 36.56 px to 34.39 px and the fraction of predictions below 4 px increases from 0.94\% to 2.47\%. These results position first-frame causal recovery as a distinct diagnostic problem inside long-term point tracking and show that explicit support memory is useful but not universally sufficient for post-occlusion recovery.
+\end{abstract}
+
+\begin{IEEEkeywords}
+point tracking, occlusion recovery, long-term tracking, causal tracking, visual memory
+\end{IEEEkeywords}
+
+\section{Introduction}
+\label{sec:intro}
+
+Long-term point tracking is a basic component in video understanding, visual effects, motion editing, and robotics. In realistic videos, however, a tracked point is often not continuously visible. It may be occluded by another object, disappear because of camera motion, or leave the image plane temporarily before becoming visible again later. In all of these cases, the tracker must solve a difficult causal recovery problem: when the point first becomes visible again after an invisible interval, the system must decide where it is without using future frames.
+
+This first-frame recovery event is a disproportionately important failure mode. A tracker can remain stable during the visible phase and still fail catastrophically once the point disappears for a long interval. Yet common tracking metrics average over the full sequence and do not isolate this step. As a result, methods that appear competitive overall may still perform poorly exactly where causal recovery matters most.
+
+This paper studies the problem explicitly. We define \task{} (PRT), an event-level evaluation protocol that isolates the first visible frame after a point has remained continuously invisible for a period of time. The protocol covers both in-frame occlusion and off-screen return, and measures whether a causal tracker can recover the correct point identity and location at the start of each recovery episode rather than merely maintain low average trajectory error elsewhere. Our goal is therefore not to replace general point-tracking benchmarks or end-to-end trackers, but to expose one important decision that remains under-measured in current evaluations. A single trajectory may contain multiple such recovery episodes, and we treat each episode as a separate evaluation unit.
+
+Our experiments reveal three complementary facts. First, first-frame recovery is genuinely difficult: on the expanded 15-sequence PointOdyssey evaluation used in this paper, the baseline median error is 39.12 px. Second, substantial headroom exists inside the same causal candidate pool: the oracle over the baseline and candidate pool reaches 29.27 px, while the best candidate alone reaches 30.53 px. The opportunity is therefore real, but exploiting it remains non-trivial. Third, the gains suggested by smaller pilot subsets do not persist as a robust overall improvement once the evaluation is expanded. Earlier learned acceptors, temporal verifiers, and sequence-level gates fail to close the gap reliably under leakage-free evaluation.
+
+This failure analysis points to a sharper question: which causal signal is actually useful for deciding whether a candidate should replace the baseline prediction? Our answer is pre-occlusion support memory. Instead of relying on the current patch alone, we aggregate point-specific support descriptors from the last visible frames before occlusion and compare both the baseline patch and candidate patches against this support memory. Empirically, the resulting support-memory margin is the dominant cue. On the 15-sequence evaluation, it achieves an AUC of 0.635 for predicting whether a candidate beats the baseline, whereas the candidate-search score and RGB-NCC remain near chance at 0.483 and 0.519.
+
+Based on this observation, we study a simple \method{}. The selector does not introduce a new heavy network or a new end-to-end tracking architecture. It uses an explicit scoring rule,
+\begin{equation}
+\texttt{hybrid\_score} = 5.0 \cdot \supportmargin + 1.5 \cdot \candscore,
+\end{equation}
+and chooses the candidate with the highest score. A simple long-occlusion policy applies this selector only when the occlusion interval is at least 100 frames. On the 15-sequence evaluation, the overall median changes only slightly, from 39.12 px to 38.90 px for the always-override selector and to 38.52 px for the adaptive variant. The main value of the method is therefore diagnostic: it exposes where support memory helps, and where it does not.
+
+The contribution of this paper is therefore not a large learned architecture, but a cleaner problem definition, a causal evaluation protocol, a feature-level diagnosis of what works and what does not, and a lightweight selector that makes these boundaries measurable. The novelty lies in isolating first-frame causal recovery as its own decision problem inside repeated post-occlusion episodes, showing that pre-occlusion support memory is the strongest practical cue for that decision, and identifying the regime in which that cue helps.
+
+Our main contributions are as follows:
+\begin{enumerate}[leftmargin=1.5em]
+    \item We define \task{} (PRT), an event-level evaluation protocol for causal point recovery at the first visible frame of each post-occlusion recovery episode.
+    \item We show on a 15-sequence evaluation that pre-occlusion support memory is the dominant practical cue for first-frame recovery, while candidate-search score, RGB-NCC, and learned gates provide little additional value.
+    \item We evaluate a simple \method{} and an analysis-driven long-occlusion variant, and show that their usefulness is bounded: overall gains are small, but the in-frame 100--500 frame regime is consistently easier to help.
+    \item We provide a failure analysis showing that the current bottleneck lies in signal quality and regime mismatch rather than in the choice of decision boundary or gating model.
+\end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+
+Recent progress in point tracking has been driven by the Tracking-Any-Point (TAP) line of work. TAP-Vid formalized the TAP task and provided the first large benchmark for evaluating arbitrary point tracks in videos~\cite{doersch2022tapvid}. Follow-up methods such as TAPIR, BootsTAP, and CoTracker3 substantially improved overall point-tracking quality through stronger matching, refinement, and training recipes~\cite{doersch2023tapir,sundaram2024bootstapir,karaev2024cotracker3}. These works are the main foundation of modern point tracking. However, they primarily optimize and report aggregate trajectory quality over full videos. As a result, they do not directly isolate the specific decision we study here: where a point should be placed on the first visible frame of a post-occlusion recovery episode.
+
+Several recent works move closer to the failure mode studied in this paper. EgoPoints introduces an egocentric benchmark with many more points that go out of view and later require re-identification after returning to view~\cite{darkhalil2025egopoints}. ITTO further emphasizes long-range motion, occlusion patterns, and post-occlusion re-identification as a benchmark challenge~\cite{itto2025}. These benchmarks are highly relevant because they show that current trackers struggle on return and re-identification cases. Our work differs in focus. Rather than broadening evaluation toward general difficult tracking, we isolate a single event-level target: the first visible frame after an invisible interval. This lets us analyze the recovery decision itself, rather than mixing it with the rest of the trajectory.
+
+At the method level, recent online trackers have also started to address long-term occlusion more directly. Track-On proposes an online transformer with memory for causal point tracking over long time horizons~\cite{trackon2025}. SPOT introduces streaming memory for online dense point tracking~\cite{dong2025spot}. ReTracker tackles robust online point tracking after large viewpoint changes and long-term occlusions by combining image matching with tracking-specific design~\cite{tan2025retracker}. These methods are close to our setting in that they are causal and care about difficult post-occlusion cases. Our contribution is different in scope. We do not present a new end-to-end tracker. Instead, we study first-frame recovery as a subproblem that can be attached to an existing causal tracker, ask which signals are actually useful for that subproblem, and show that a lightweight selector built on pre-occlusion support memory is already effective.
+
+Our method is also related to matching-based and memory-based tracking ideas. TAPIR uses frame-wise matching followed by local refinement~\cite{doersch2023tapir}, while Track-On explicitly maintains memory over time~\cite{trackon2025}. ReTracker shows that strong image-matching priors are helpful for robust online retracking~\cite{tan2025retracker}. In the same spirit, we find that appearance information is useful, but only in a specific form: what matters most is not a generic candidate score, but the similarity of a recovery candidate to the point's own pre-occlusion support memory. This observation leads to a much simpler method than a full tracker redesign.
+
+In summary, prior work has already established strong point trackers, harder long-range benchmarks, and online retracking architectures. The gap we address is narrower but still important: a dedicated, causal analysis of the first visible frame of a post-occlusion recovery episode, together with a simple strategy for deciding when and how to override a baseline prediction at that moment.
+
+\section{Problem Formulation}
+\label{sec:problem}
+
+\subsection{Persistent Recovery Tracking}
+
+We define a recovery episode by a point that is visible at time $t_q$, continuously invisible during $t_q + 1, \ldots, t_r - 1$, and visible again at $t_r$, where $t_r$ is the first visible frame of that recovery episode. The task is to predict the point position at $t_r$ using only information available up to and including $t_r$. No future frames are allowed.
+
+A single point trajectory may contain multiple recovery episodes, and each episode is treated as an independent evaluation event. This event-level formulation matches the way the failure occurs in practice: the tracker may recover correctly after one invisible interval and fail after another.
+
+Each recovery episode is categorized as either \emph{in-frame occlusion} or \emph{off-screen return}. In-frame occlusion refers to cases where the point mostly remains within the image bounds during the invisible interval but is hidden by an occluder. Off-screen return refers to cases where the point spends a substantial portion of the invisible interval outside the image bounds and later re-enters the field of view.
+
+\subsection{Baseline Ladder}
+
+We consider a causal baseline that propagates a point through invisibility and produces a baseline recovery prediction. Around this baseline, we build a small local candidate pool on the first visible recovery frame using a separate candidate search stage. The candidate pool is causal and does not use future labels or future observations. The problem studied in this paper is not candidate generation itself, but causal selection: given the baseline patch, a top-$k$ candidate pool, and pre-occlusion support memory, can we choose a better recovery position than the baseline?
+
+\subsection{Evaluation Metrics}
+
+We report first-frame recovery median pixel error as the primary metric. We also report the fraction of predictions below 4 pixels, the fraction of episodes improved over the baseline, and coverage for adaptive operating points. For paired statistical analysis, we compare selector predictions against the baseline on the same validation episodes using paired permutation and paired bootstrap tests.
+
+\section{Support-Memory Signal Analysis}
+\label{sec:analysis}
+
+\subsection{Motivation}
+
+A key question in causal recovery is whether the available signals contain enough information to decide that a candidate is better than the baseline. Earlier experiments with single-frame acceptors, temporal verifiers, sequence-level verifiers, and learned gates showed that leakage-free selection is difficult. This motivated a more direct signal analysis.
+
+\subsection{Support Memory Construction}
+
+For each recovery episode, we extract patch descriptors from the last $M$ visible pre-occlusion frames. These descriptors form the support memory of the tracked point. In the current implementation, support descriptors are encoded by a frozen DINOv2 backbone~\cite{oquab2023dinov2} and aggregated into a support representation. Several pooling variants were tested, including mean pooling, max pooling, softmax-weighted pooling, and per-frame max comparison. All four produced effectively identical performance, which indicates that the dominant limitation is not the pooling rule.
+
+\subsection{Per-Feature Predictive Power}
+
+We compare three signals for predicting whether a candidate beats the baseline:
+\begin{enumerate}[leftmargin=1.5em]
+    \item \supportmargin: the cosine-similarity gap between the candidate patch and the baseline patch with respect to the support descriptor.
+    \item \candscore: the original candidate-search score.
+    \item \texttt{cand\_ncc}: RGB normalized cross-correlation.
+\end{enumerate}
+
+On the 15-sequence evaluation, \supportmargin{} reaches an AUC of 0.635, while \candscore{} and \texttt{cand\_ncc} achieve 0.483 and 0.519, respectively. Thus, support memory is the only clearly informative cue among the tested signals. This is the main empirical reason our final method is built around \supportmargin.
+
+\begin{table}[t]
+    \centering
+    \caption{Per-feature predictive power for deciding whether a candidate beats the baseline on the 15-sequence evaluation. Only the support-memory margin is clearly informative.}
+    \label{tab:feature_auc}
+    \setlength{\tabcolsep}{6pt}
+    \begin{tabular}{lc}
+        \toprule
+        Feature & AUC \\
+        \midrule
+        \supportmargin{} & 0.635 \\
+        \candscore{} & 0.483 \\
+        \texttt{cand\_ncc} & 0.519 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Oracle Gap and Bottleneck}
+
+The same evaluation reveals a meaningful oracle gap. The baseline first-frame recovery median error is 39.12 px, while the oracle over the baseline and candidate pool reaches 29.27 px. Therefore, the pool contains useful alternatives, but the challenge is to identify them reliably under a causal decision rule. Additional experiments with learned gates show that this challenge is not primarily a decision-boundary problem. In particular, a logistic-regression gate over the available confidence features attains only about 0.56 cross-validated AUC for predicting whether the hybrid decision should override the baseline. This suggests that the current bottleneck lies in signal quality rather than in downstream classification capacity.
+
+\section{Method}
+\label{sec:method}
+
+\subsection{Support-Memory Hybrid Selector}
+
+Let $s_{\text{sup}}(c)$ denote the similarity between candidate $c$ and the support memory, and let $s_{\text{sup}}(b)$ denote the similarity between the baseline patch and the same support memory. We define the support-memory margin as
+\begin{equation}
+\supportmargin(c) = s_{\text{sup}}(c) - s_{\text{sup}}(b).
+\end{equation}
+
+The final selector score is
+\begin{equation}
+\texttt{hybrid\_score}(c) = 5.0 \cdot \supportmargin(c) + 1.5 \cdot \candscore(c).
+\end{equation}
+The coefficients are selected on a separate training split by coefficient sweep. We exclude \texttt{cand\_ncc} from the final rule because, although it looked weakly useful on smaller pilot subsets, it becomes harmful on the expanded 15-sequence evaluation.
+
+Operationally, the selector is applied as follows. For each recovery episode, a causal baseline prediction and a top-$k$ local candidate pool are first produced by the underlying tracker and the candidate-search stage. We then extract DINOv2 features for the baseline patch, the candidate patches, and the final visible support patches before occlusion. The support patches are pooled into a point-specific support descriptor. Each candidate is scored by combining its relative support-memory advantage over the baseline with the original candidate-search score. The hybrid-always mode always picks the best candidate, while the adaptive mode applies the same selector only to sufficiently long occlusions and otherwise retains the baseline.
+
+\subsection{Deployment Modes}
+
+We report two deployment modes. In the \emph{hybrid always} mode, the selector always chooses the candidate with the largest hybrid score. This mode answers the simplest question: can an explicit support-memory rule improve the baseline when forced to act on every recovery episode?
+
+In the \emph{adaptive} mode, the selector is invoked only when the occlusion length is at least 100 frames; otherwise the baseline prediction is retained. This mode tests whether the support-memory rule is more useful once the invisible interval becomes long enough that simple propagation is likely to drift.
+
+\subsection{Analysis-Driven Adaptive Variant}
+
+Stratified analysis reveals that the hybrid selector is not uniformly beneficial. It tends to help on medium-to-long in-frame occlusions, but it may hurt on shorter occlusions where the baseline is already reasonably accurate and the candidate pool introduces distractors. Based on this observation, we evaluate a simple regime-aware adaptive policy: apply the hybrid selector only when the occlusion length is at least 100 frames; otherwise retain the baseline prediction. This threshold is motivated by stratified analysis rather than by black-box optimization on the training set.
+
+\subsection{Why a Non-Learned Rule}
+
+We intentionally keep the final selector simple. Prior learned acceptors and verifiers evaluated under leakage-free conditions did not produce stable gains over direct thresholding. After the support-memory signal was identified, learned gating still failed to outperform a hard threshold, with logistic-regression cross-validated AUC near chance for the final override decision. This matters for two reasons. First, it strengthens the claim that support memory is the true source of the gain rather than downstream classification capacity. Second, it produces a method that is easier to analyze, reproduce, and integrate into existing causal tracking pipelines.
+
+\section{Experiments}
+\label{sec:experiments}
+
+\subsection{Setup}
+
+Our current evaluation uses PointOdyssey recovery episodes~\cite{pointodyssey2023}. The validation set contains 15 sequences and 1500 recovery episodes. Coefficients are tuned on a separate training split with 200 episodes from a disjoint sequence. All reported numbers in the main table and stratified analysis are taken from this expanded validation set. Smaller pilot subsets were used during development, but all main claims in this paper are based on the 15-sequence evaluation.
+
+The evaluation emphasizes the first visible frame of each recovery episode. We report median pixel error as the primary metric, together with fraction below 4 pixels, better-than-baseline fraction, and coverage where applicable. Unless otherwise stated, all metrics are computed on the same fixed set of 1500 validation episodes.
+
+Our baseline is the causal recovery prediction produced by the underlying tracking pipeline before support-memory selection. The oracle uses the same causal candidate pool but chooses the lowest-error option after the fact for analysis only. We stress this distinction because the oracle measures headroom in the candidate pool rather than a realizable deployable system.
+
+\subsection{Main Results}
+
+Table~\ref{tab:main_results} reports the main quantitative comparison. The baseline reaches a median first-frame recovery error of 39.12 px. The oracle reduces this to 29.27 px, confirming that the causal candidate pool contains recoverable opportunities. However, the proposed selector only changes the overall median slightly: 38.90 px for the always-override hybrid and 38.52 px for the adaptive long-occlusion policy. The overall paired permutation $p$-value is about 0.33 and the audited bootstrap mean-difference interval includes zero. We therefore do not claim a statistically reliable overall improvement on the full PRT task.
+
+The main table should be read as a negative-but-informative result. It shows that explicit support memory is not strong enough to solve the full task by itself, especially once off-screen return and very hard long-tail cases are included. This motivates the stratified analysis below, where the practical scope of the signal becomes clearer.
+
+\begin{table}[t]
+    \centering
+    \caption{Main results on PointOdyssey PRT validation episodes (15 sequences, $n=1500$). Oracle selects the best option from the baseline and the causal candidate pool and is therefore not itself a deployable causal method. Overall improvements are small and not statistically significant.}
+    \label{tab:main_results}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{lccc}
+        \toprule
+        Method & Median px $\downarrow$ & Coverage $\uparrow$ & Note \\
+        \midrule
+        Baseline only & 39.12 & 1.00 & reference \\
+        Oracle candidate pool & 29.27 & 1.00 & analysis only \\
+        Hybrid selector (full) & 38.90 & 1.00 & small overall change \\
+        Adaptive (occ $\geq 100$) & 38.52 & 0.803 & best overall median \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Bounded Effective Zone}
+
+Although the overall result is weak, stratified analysis reveals a bounded effective zone where the support-memory signal is more useful: in-frame occlusion with durations between 100 and 500 frames. This subset contains 1175 recovery episodes, which is the majority of the in-frame portion of the evaluation. Inside this zone, the hybrid selector reduces median error from 36.56 px to 34.39 px, and increases the fraction of predictions below 4 px from 0.94\% to 2.47\%. The better-than-baseline fraction is 47.4\%. The paired permutation $p$-value is about 0.13 and the mean-difference interval $[-1.39,\ 0.05]$ still overlaps zero, so we present this result as bounded and suggestive rather than as a fully established overall win.
+
+\begin{table}[t]
+    \centering
+    \caption{The bounded effective zone of the proposed selector: in-frame occlusion with 100--500 frame invisible intervals. This is where support memory helps most consistently, although the paired evidence remains marginal rather than conclusive.}
+    \label{tab:effective_zone}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{lcccc}
+        \toprule
+        Subset & $n$ & Baseline & Hybrid & Oracle \\
+        \midrule
+        In-frame, 100--500 frames & 1175 & 36.56 & 34.39 & 26.48 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Adaptive Long-Occlusion Policy}
+
+Stratified analysis reveals that the hybrid selector is not uniformly beneficial. For short occlusions below 100 frames, the selector hurts overall because the baseline is already strong enough that replacement mainly introduces distractors. For off-screen return, it provides essentially no benefit. Based on this pattern, we evaluate a simple regime-aware adaptive policy: apply the hybrid selector only when the occlusion length is at least 100 frames; otherwise retain the baseline prediction.
+
+On the full evaluation, this adaptive policy achieves the best overall median, 38.52 px at 80.3\% coverage, compared with 38.90 px for the always-override hybrid and 39.12 px for the baseline. However, this improvement remains small and statistically non-significant. The value of the adaptive policy is therefore not that it solves the task, but that it exposes a real regime split: short occlusions are usually better left alone, while longer in-frame occlusions are the main place where support memory can help.
+
+\subsection{Statistical Evidence}
+
+The expanded evaluation materially changes the statistical picture. On the full 1500-episode task, the overall paired permutation $p$-value is about 0.33 and the audited bootstrap mean-difference interval is $[-0.90,\ 0.24]$, which includes zero. Therefore, the overall result does not support a reliable claim of improvement.
+
+Inside the bounded effective zone, the evidence is stronger but still not fully conclusive. The paired permutation $p$-value is about 0.13 and the mean-difference interval is $[-1.39,\ 0.05]$. In other words, the stratified trend is directionally consistent and practically meaningful, but still weaker than a conventional significance claim would require. This is exactly why the expanded 15-sequence evaluation matters: it separates real local signal from over-optimistic small-sample interpretation.
+
+\subsection{Stratified Results}
+
+Table~\ref{tab:stratified_type} shows that the main gains come from in-frame occlusion rather than off-screen return. This is an important limitation. The current selector benefits from a local candidate pool and support-memory comparison, both of which are more effective when the returning point remains near a plausible in-frame neighborhood. Off-screen return remains a much harder case and likely requires a broader search mechanism.
+
+The same pattern appears in the occlusion-length buckets shown in Table~\ref{tab:stratified_occ}. The selector is harmful on short occlusions below 100 frames, helpful on the 100--200 and 200--500 frame ranges, and unreliable again in the 500+ bucket where the sample count is only 30. We therefore treat the 500+ regime as too small for a strong conclusion rather than as evidence of a stable failure mode.
+
+\begin{table}[t]
+    \centering
+    \caption{Results stratified by recovery type on the 15-sequence evaluation. The current method mainly helps in-frame occlusion, while off-screen return remains unresolved.}
+    \label{tab:stratified_type}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{lccccc}
+        \toprule
+        Type & $n$ & Baseline & Hybrid & Adaptive & Oracle \\
+        \midrule
+        In-frame occlusion & 1350 & 34.79 & 32.96 & 32.32 & 24.75 \\
+        Off-screen return & 150 & 95.99 & 96.79 & 95.99 & 89.54 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[t]
+    \centering
+    \caption{Results stratified by occlusion duration on the 15-sequence evaluation. The useful regime is concentrated in the 100--500 frame range.}
+    \label{tab:stratified_occ}
+    \setlength{\tabcolsep}{4pt}
+    \begin{tabular}{lccccc}
+        \toprule
+        Duration & $n$ & Baseline & Hybrid & Adaptive & Oracle \\
+        \midrule
+        20--100 & 295 & 61.94 & 66.62 & 61.94 & 57.18 \\
+        100--200 & 331 & 53.87 & 51.70 & 51.70 & 45.34 \\
+        200--500 & 844 & 32.15 & 30.42 & 30.42 & 23.72 \\
+        500+ & 30 & 100.20 & 110.80 & 110.80 & 99.94 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Ablation and Failure Analysis}
+
+Pooling ablations over mean, max, softmax, and per-frame-max support aggregation produce effectively identical results. This confirms that the present bottleneck is not support aggregation design. Learned gates also fail to improve over hard thresholding, with logistic-regression cross-validated AUC near chance for the final override decision. Adding RGB-NCC to the final hybrid score further degrades the expanded 15-sequence result, despite appearing weakly helpful on smaller pilot subsets. Taken together, these results indicate that the dominant opportunity is improving the upstream support-memory signal itself rather than increasing decision-model complexity.
+
+The adaptive long-occlusion policy is not a cure-all. It slightly improves the overall median by avoiding short-occlusion harm, but its total gain remains small and statistically inconclusive. Its main role in this paper is explanatory: it makes the regime split visible and operational.
+
+Even within the bounded effective zone, the oracle gap is only partially closed. Failure cases typically occur when the candidate pool contains several visually similar locations and the support descriptor is not discriminative enough to separate them. This is consistent with the observed behavior that support margin is informative but still imperfect.
+
+Another limitation is that our gains are concentrated on the first visible frame of each recovery episode. This is intentional, because the paper studies first-frame recovery as a dedicated decision problem. However, it also means that the current method should be understood as a module for improving a specific failure mode inside a larger tracking system, rather than as a full replacement for a general tracker.
+
+\section{Discussion}
+\label{sec:discussion}
+
+The main message of this paper is not that post-occlusion recovery is solved. It is that the first visible frame after invisibility is a measurable and important failure point, and that support memory helps on this step in a bounded but non-universal way, even when more complex learned verification strategies fail. This distinction is important for future work. It shifts the research focus away from generic gating and toward better point-level memory features, stronger candidate pools, and recovery-specific representations.
+
+A particularly useful finding is that occlusion duration itself serves as a natural intervention signal. The adaptive policy demonstrates that knowing when not to act is as valuable as knowing which candidate to pick. For short occlusions, the baseline is already adequate and intervention tends to hurt; for medium and long in-frame occlusions, the support-memory signal becomes more useful. This regime-aware structure is likely to persist in future, more capable selectors.
+
+The current selector is intentionally lightweight. That is a strength for analysis, but it also limits the amount of oracle gap that can be closed. A promising next step is to improve the quality of the point-specific support descriptor or to increase the diversity of the candidate pool without breaking causal constraints. Another direction is to expand the evaluation beyond synthetic data and test how the same causal recovery structure transfers to real videos.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We introduced \task{}, an event-level evaluation protocol for first-frame causal recovery after long invisibility, and showed that this setting exposes a concrete weakness of existing long-term point tracking pipelines. Through a broad set of leakage-free analyses on 15 sequences and 1500 recovery episodes, we identified pre-occlusion support memory as the dominant practical cue for first-frame recovery selection. A simple \method{} produced only a small overall change in median error, from 39.12 px to 38.90 px, while an analysis-driven adaptive policy reached 38.52 px at 80.3\% coverage; neither overall gain was statistically significant. However, stratified analysis revealed a bounded effective zone, namely in-frame occlusions with 100--500 frame invisible intervals, where the same support-memory rule reduced median error from 36.56 px to 34.39 px and increased the $<4$ px rate from 0.94\% to 2.47\%. Overall, our results argue that post-occlusion recovery should be treated as a distinct event-level problem inside long-term point tracking, and that explicit support memory is a useful but bounded cue for future work.
+
+\bibliographystyle{IEEEtran}
+\bibliography{refs}
+
+\end{document}

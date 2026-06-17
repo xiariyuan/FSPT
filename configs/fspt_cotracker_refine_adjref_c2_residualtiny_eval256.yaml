@@ -1,0 +1,59 @@
+# =============================================================================
+# Route A (SOTA push): adjacent-frame local matching + small residual refiner
+# =============================================================================
+#
+# Background
+# - Corrproj-only (step-only) refiner can reach "almost base" but improvements are
+#   extremely tiny and sometimes drift negative after many epochs.
+# - The best gains tend to happen early (e.g., epoch ~11), but were previously
+#   not captured because `best.pth` was monitored by AJ_delta (input) instead of
+#   AJ_original_delta (official-comparable).
+#
+# This recipe:
+# - Keeps the residualtiny training setup (train temporal_transformer + residual_decoder).
+# - Switches the local-correlation *template* to `reference_mode=adjacent`:
+#     t>query_t -> template from t-1
+#     t<query_t -> template from t+1
+# - Uses higher-res `c2` features for correlation (better local geometry).
+# - Monitors `AJ_original_delta` so `best.pth` matches the paper/SOTA protocol.
+# - Disables visualization to speed up evaluation.
+#
+
+defaults:
+  - fspt_cotracker_refine_learnedgate_residualtiny_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_adjref_c2_residualtiny_eval256"
+  description: "Route A: adjacent templates @c2 + residualtiny; monitor AJ_original_delta"
+
+# Warm-start from the best checkpoint of the adjacent-template corrproj-only run.
+# This initializes the local-correlation projections with the same reference_mode.
+pretrained: "checkpoints/fspt_routeA_adjref_c2_corr7_20260216_122631/best.pth"
+
+model:
+  refiner:
+    local_correlation:
+      feature_level: "c2"
+      window_size: 7
+      reference_mode: "adjacent"
+      # Ensure residualtiny can actually use correlation structure.
+      scale: 0.5
+      use_step: true
+      # Avoid train-time dead-zone; keep eval-time gating safe.
+      gate_step_train: false
+      gate_residual_train: false
+
+training:
+  epochs: 30
+  early_stopping:
+    enabled: true
+    monitor: "AJ_original_delta"
+    mode: "max"
+    patience: 8
+    min_delta: 0.00002
+
+logging:
+  visualize:
+    enabled: false
+

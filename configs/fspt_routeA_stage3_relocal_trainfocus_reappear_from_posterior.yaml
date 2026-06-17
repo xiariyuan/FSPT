@@ -1,0 +1,147 @@
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_trainfocus_reappear_from_posterior
+  description: "Train-time reappearance-focused supervision from posterior visible-bank checkpoint"
+
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256/best_aj.pth
+
+data:
+  train:
+    sampling:
+      strategy: "reappearance_focused"
+      hard_fraction: 0.5
+      min_occlusion_len: 10
+      frames_after: 4
+      vis_threshold: 0.5
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+      - relocalization_residual
+      - relocal_acceptor
+
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    relocalization:
+      template_mode: "visible_bank"
+      template_bank_size: 6
+      template_bank_stride: 2
+      topk: 9
+      conf_threshold: 0.14
+      temporal_sigma: 0.05
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.06
+      max_total: 0.24
+
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 384
+      scale: 0.02
+      gate_init_bias: -1.8
+      conf_threshold: 0.12
+      conf_power: 1.5
+      max_step: 0.025
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+    focus_corrections:
+      enabled: true
+      apply_in_train: false
+      non_focus_scale: 0.25
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.12
+      include_occluded: false
+
+loss:
+  position:
+    weight: 10.0
+    delta_supervision:
+      enabled: true
+      weight: 1.5
+      type: "l1"
+      detach_base: true
+      clamp: 0.05
+      base_error_threshold: 0.0075
+      min_points: 128
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      base_error_threshold: 0.0075
+      min_points: 128
+      detach_base: true
+    focus_supervision:
+      enabled: true
+      weight: 4.0
+      mode: "reappearance"
+      visibility_source: "gt"
+      # Keep this within the 24-frame training window so the mask can actually fire.
+      # The hard sampling already selects reappearance cases; avoid filtering them away again.
+      base_error_threshold: 0.0
+      min_points: 32
+      min_occlusion_len: 10
+      frames_after: 4
+      vis_threshold: 0.5
+
+  relocal_acceptor:
+    enabled: true
+    weight: 0.5
+    margin: 0.0
+    base_error_threshold: 0.0075
+    min_points: 64
+    detach_pred: true
+    detach_base: true
+    type: "bce"
+    eval_threshold: 0.55
+
+training:
+  epochs: 8
+  num_workers: 0
+
+  optimizer:
+    lr: 4.0e-05
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 3
+    min_delta: 5.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 2
+    threshold: 0.0010
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 2
+    patience: 3
+    min_delta_aj: 5.0e-05
+    min_delta_4px: 5.0e-05
+    min_delta_error: 0.0
+
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+
+  checkpoint:
+    save_every: 1
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  num_workers: 0

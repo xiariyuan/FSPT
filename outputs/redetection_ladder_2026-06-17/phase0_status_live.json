@@ -1,0 +1,15 @@
+{
+  "phase": 0,
+  "status": "GO",
+  "protocol": "strided+original",
+  "decision": "ADVANCE_TO_PHASE_1",
+  "stop_criteria_hit": false,
+  "baselines": {
+    "cotracker3_online": {"status": "complete", "AJ": 36.95},
+    "cotracker3_offline": {"status": "complete", "AJ": 51.54},
+    "trackon2": {"status": "failed_unsupported"}
+  },
+  "phase1_decision": "ADVANCE_TO_PHASE_2",
+  "phase2_blocked": true,
+  "phase2_reason": "waiting for GPT review of repair artifacts"
+}

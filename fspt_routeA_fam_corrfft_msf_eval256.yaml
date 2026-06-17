@@ -1,0 +1,61 @@
+# =============================================================================
+# Route A (FAMNet-inspired): FFT frequency-aware local correlation (eval256)
+# =============================================================================
+#
+# What this is
+# - A minimal, tracking-friendly adaptation of FAMNet's core idea:
+#     "frequency-aware matching + mid-band guided fusion".
+#
+# How we adapt it
+# - Treat the ws×ws local correlation map in displacement space as a tiny 2D signal.
+# - Apply 2D FFT, split into low/mid/high bands, then:
+#     - use the mid band as the stable "structure" prior
+#     - fuse low/high residuals using an MSF-style gate
+# - Use the frequency-fused probability map to compute the soft-argmax step.
+#
+# Notes
+# - We intentionally disable RAFT-style map_update here so that the step comes
+#   directly from the frequency-aware soft-argmax. This makes the ablation
+#   clearer and reduces domain-gap risk from a learned update CNN.
+#
+# Safety
+# - visibility_prior alpha=1.0 is inherited from the aggressive baseline to
+#   prevent OA collapse.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_fam_corrfft_msf_eval256"
+  description: "Route A: FAMNet-style FFT band split on local correlation maps + MSF fusion (eval256)"
+
+model:
+  refiner:
+    # Coarse correlation (CoTracker fnet) — use frequency-aware soft-argmax step.
+    local_correlation:
+      map_update:
+        enabled: false
+      freq:
+        enabled: true
+        cutoff: 0.30
+        input: "prob"          # prob | logits
+        step_mode: "msf"       # raw | mid | msf
+        out_mode: "add"        # add | replace (embeddings; not used when scale=0)
+        scale: 0.0             # disable embedding path; step path stays on
+        msf:
+          hidden_dim: 64
+
+    # Fine correlation (geo c2) — same frequency-aware step.
+    local_correlation_fine:
+      freq:
+        enabled: true
+        cutoff: 0.30
+        input: "prob"
+        step_mode: "msf"
+        out_mode: "add"
+        scale: 0.0
+        msf:
+          hidden_dim: 64
+

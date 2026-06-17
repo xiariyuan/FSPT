@@ -1,0 +1,36 @@
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256
+  - _self_
+
+experiment:
+  name: fspt_routeA_dinov2_oracle_gap
+  description: "DINOv2 candidate source oracle gap experiment"
+
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256/best_aj.pth
+
+model:
+  backbone:
+    type: "vit_small_patch14_dinov2.lvd142m"
+    pretrained: true
+    pretrained_path: "/gemini/code/FSPT/weights/dinov2/dinov2_vits14_pretrain.pth"
+    freeze_stages: ["all"]
+    freeze_bn: true
+    use_multiscale: false
+
+  refiner:
+    feature_source: "geo"
+    local_correlation:
+      enabled: true
+      feature_source: "geo"  # use DINOv2 geo features for correlation
+    local_correlation_fine:
+      enabled: false  # disable fine corr (channel mismatch with DINOv2)
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  metric_resolution_mode: "original"
+  aux_metric_resolution_mode: "original"
+  num_workers: 0
+
+training:
+  num_workers: 0

@@ -1,0 +1,42 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): C2 correlation + relaxed match-step gate
+# =============================================================================
+#
+# Goal:
+# - Move beyond "do no harm" (AJ_delta≈0) and achieve a *measurable* positive gain
+#   over the CoTracker3 base tracker on TAP-Vid DAVIS (official eval256 protocol).
+#
+# Key changes vs matchstep_c2:
+# - Relax the confidence gate so the correlation soft-argmax step is applied on
+#   more points/frames (still protected by delta_max_total trust region).
+# - Delay plateau_guard to avoid stopping before small improvements accumulate.
+# - Optionally warm-start from a previously trained checkpoint via `pretrained:`
+#   (loads model weights only; optimizer/scheduler reset).
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_matchstep_c2_relax_eval256"
+  description: "Route A refiner: C2 local matching + relaxed correlation gate (aim AJ_delta>2e-4)"
+
+# Warm-start from the best AJ checkpoint of the previous run (weights-only).
+# Comment this out if you want a fully fresh run.
+pretrained: "checkpoints/fspt_routeA_kinetics_jitter_matchstep_c2_eval256_20260214_030210/best_aj.pth"
+
+model:
+  refiner:
+    local_correlation:
+      gate_threshold: 0.05
+      gate_power: 1.0
+
+training:
+  plateau_guard:
+    # The AJ improvements we chase can be small; don't stop too early.
+    start_epoch: 15
+    patience: 10
+    min_delta_aj: 0.00001
+    min_delta_4px: 0.00001
+

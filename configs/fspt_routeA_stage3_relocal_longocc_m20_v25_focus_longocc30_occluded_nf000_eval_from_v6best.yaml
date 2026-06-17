@@ -1,0 +1,54 @@
+# =============================================================================
+# Route A Stage-3 v25 (eval-only): long-occ>=30 focus on *occluded frames only*
+# =============================================================================
+#
+# Motivation:
+# - v16 (max-run, whole-query) keeps longocc gains but still slightly harms global AJ
+#   due to false-positive queries/frames being perturbed.
+# - v23 (after-reappearance) avoids harm but misses triggers when base visibility
+#   doesn't flip back to visible.
+#
+# Strategy:
+# - Keep query-level long-occ detection (max-run>=30) for specialization.
+# - Apply corrections ONLY on frames where the base tracker is occluded
+#   (base_visibility < threshold). This reduces damage on easy visible frames,
+#   while still allowing corrections on uncertain/occluded regions even if the
+#   base never explicitly "reappears".
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v25_focus_longocc30_occluded_nf000_eval_from_v6best
+  description: "Eval-only: longocc>=30 (max_run) + apply_mode=occluded; non_focus_scale=0"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_apply_mode: occluded
+
+      # Optional smoothing for flickery base visibility (small value).
+      long_occlusion_fill_gaps: 1
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

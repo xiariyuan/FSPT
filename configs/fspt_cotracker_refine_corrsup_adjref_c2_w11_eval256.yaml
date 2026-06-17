@@ -1,0 +1,70 @@
+# =============================================================================
+# Route A (SOTA push): explicit local-correlation supervision (adjacent ref, c2, 11x11)
+# =============================================================================
+#
+# Motivation
+# - Our prior corrproj-only recipes mostly learned "do nothing" (AJ_delta ~= 0),
+#   because base CoTracker3 is already strong and the position loss provides very
+#   weak gradients when base error is small.
+# - This config adds an *explicit classification loss* on the local-correlation
+#   logits, so the descriptor projections learn to peak at the ground-truth offset
+#   even when the base track is close.
+#
+# Key ideas
+# - Keep the refiner "safe": trust-region clamp (delta_max_total) + no-harm hinge.
+# - Train only the local_correlation module (descriptor learning), not the full refiner.
+# - Add a small *training-only* base jitter to create non-zero offsets for supervision.
+#
+# Expected outcome
+# - Correlation maps become sharper / better aligned => match-step can actually
+#   correct small base errors on real DAVIS videos.
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_learnedgate_adjacent_c2_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrsup_adjref_c2_w11_eval256"
+  description: "Route A: corrproj-only + correlation CE supervision + base jitter; adjacent template; c2; win=11"
+
+model:
+  refiner:
+    # Training-only perturbation: provides diverse offsets for corr supervision.
+    base_jitter:
+      enabled: true
+      mode: "constant"          # drift-like, closer to real tracking errors than per-frame noise
+      std_px: 2.0
+      max_px: 8.0
+      prob: 1.0
+      exclude_query_frame: true
+
+    local_correlation:
+      # Increase search area to cover more DAVIS base error cases.
+      window_size: 11
+
+loss:
+  # Explicit supervision for local-correlation logits.
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+  # Loosen the base-track regularizer schedule to avoid long "idle" epochs.
+  base_track_consistency:
+    weight: 1.0
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 5
+      start_weight: 1.0
+      end_weight: 0.2
+
+training:
+  epochs: 20
+  # Let the corr supervision drive learning; plateau_guard can prematurely stop
+  # when AJ_delta changes are initially tiny.
+  plateau_guard:
+    enabled: false
+

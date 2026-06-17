@@ -1,0 +1,26 @@
+# =============================================================================
+# FSPT Server Entry Config
+# =============================================================================
+#
+# Lightweight entry config matching common server launch command:
+#   python train.py --config configs/fspt_server.yaml
+#
+# Inherits low-memory TFDS defaults from fspt_kubric_tfds_server.
+#
+
+defaults:
+  - fspt_kubric_tfds_server
+  - _self_
+
+experiment:
+  name: "fspt_server"
+  description: "Server training entry (inherits low-memory TFDS settings)"
+
+# Server is usually offline; avoid on-the-fly backbone weight download.
+model:
+  backbone:
+    pretrained: false
+
+logging:
+  wandb:
+    enabled: false

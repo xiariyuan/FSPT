@@ -1,0 +1,41 @@
+{
+  "trackon2": {
+    "n_queries": 650,
+    "n_visible_frames": 28174,
+    "model_median": 1.123,
+    "model_mean": 2.866,
+    "model_p95": 8.76,
+    "model_p99": 38.2,
+    "model_max": 145.94,
+    "lt4_pct": 87.5,
+    "lt8_pct": 94.5,
+    "oracle_gap_mean": 2.866,
+    "oracle_gap_p95": 8.76
+  },
+  "cotracker3_online": {
+    "n_queries": 650,
+    "n_visible_frames": 28174,
+    "model_median": 1.255,
+    "model_mean": 3.052,
+    "model_p95": 9.5,
+    "model_p99": 37.69,
+    "model_max": 151.95,
+    "lt4_pct": 85.3,
+    "lt8_pct": 93.8,
+    "oracle_gap_mean": 3.052,
+    "oracle_gap_p95": 9.5
+  },
+  "cotracker3_offline": {
+    "n_queries": 650,
+    "n_visible_frames": 28174,
+    "model_median": 1.269,
+    "model_mean": 3.163,
+    "model_p95": 10.08,
+    "model_p99": 46.6,
+    "model_max": 128.09,
+    "lt4_pct": 84.7,
+    "lt8_pct": 93.4,
+    "oracle_gap_mean": 3.163,
+    "oracle_gap_p95": 10.08
+  }
+}

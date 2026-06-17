@@ -1,0 +1,15 @@
+{
+  "import_predictor": true,
+  "build_predictor": true,
+  "dinov3_local_dir_used": true,
+  "hf_network_access": false,
+  "error": "",
+  "traceback": "",
+  "build_time_s": 31.7,
+  "backbone_type": "dinov3_s_plus",
+  "forward_ok": true,
+  "forward_time_s": 2.97,
+  "traj_shape": [1, 4, 1, 2],
+  "vis_shape": [1, 4, 1],
+  "conclusion": "DINOv3 local backbone: PASS. No HF network access. No fallback needed."
+}

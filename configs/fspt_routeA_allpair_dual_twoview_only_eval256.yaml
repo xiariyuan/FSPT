@@ -1,0 +1,42 @@
+# =============================================================================
+# Route A: dual all-pair + two-view only (eval256)
+# =============================================================================
+#
+# Purpose
+# - Isolate the effect of the two-view consistency regularizer.
+# - Relocalization is disabled so the comparison is orthogonal.
+#
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_twoview_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_twoview_only_eval256"
+  description: "Dual all-pair + two-view consistency only (no relocalization) @eval256"
+
+model:
+  refiner:
+    relocalization:
+      enabled: false
+    relocalization_residual:
+      enabled: false
+
+loss:
+  two_view_consistency:
+    enabled: true
+    weight: 0.4
+    schedule:
+      enabled: true
+      type: "none"
+      unit: "epoch"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 0.4
+      end_weight: 0.4
+    apply_prob: 1.0
+    max_points: 64
+    max_resample: 1
+    min_in_bounds_fraction: 0.7
+    oom_safe: true
+    visibility_weight: 0.0

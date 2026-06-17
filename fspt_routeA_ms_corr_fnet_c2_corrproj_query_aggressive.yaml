@@ -1,0 +1,148 @@
+# =============================================================================
+# Route A (aggressive): multi-scale correlation + learned projections + query ref
+# =============================================================================
+#
+# Goal
+# - Stop "hovering around base" with noise-level AJ_delta.
+# - Push for a *measurable* improvement over CoTracker3 on DAVIS while still
+#   keeping a trust region to avoid catastrophic harm.
+#
+# Strategy (high-level)
+# - Use multi-scale local correlation (CoTracker fnet + geo c2) with *learned*
+#   projections (descriptor learning) instead of identity dot products.
+# - Use query-frame reference features (more stable than adjacent when the
+#   current track is off).
+# - Disable learned residual motion (delta_scale=0) so the model cannot drift
+#   via a generic regressor; all movement comes from matching steps.
+# - Train geo_backbone with a much smaller LR (backbone_lr_scale) so its c2
+#   features can become correspondence-friendly.
+# - Monitor `AJ_delta` and early-stop quickly if it does not improve.
+#
+# Notes
+# - We keep visibility_prior alpha=1.0 to prevent OA collapse (occlusion branch
+#   is disabled; visibility head is effectively unsupervised).
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_selective.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive"
+  description: "Route A: learned corr projections + query reference; corr-only updates; monitor AJ_delta"
+
+# Warm-start from the latest stable multi-scale run (weights-only).
+# (Safe: new projection layers will just initialize randomly.)
+pretrained: "checkpoints/fspt_routeA_ms_corr_fnet_c2_sel_visprior_20260221_140527/best.pth"
+
+model:
+  temporal:
+    # Allow iterative matching refinement (coarse-to-fine effect across iters).
+    num_refinement_iters: 3
+
+  refiner:
+    # Correlation-only updates (avoid domain-gap drift from generic regressors).
+    delta_scale: 0.0
+    delta_gate:
+      enabled: false
+
+    # Keep a generous (but bounded) trust region for matching steps.
+    delta_max_step: 0.05
+    delta_max_total: 0.08
+
+    # Freeze heavy temporal/residual heads; train matching + geo features only.
+    trainable_modules: []
+    freeze_modules:
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+      - freq_semantic
+
+    # Always reuse base visibility to avoid OA collapse.
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Coarse correlation on CoTracker fnet (stride~8).
+    local_correlation:
+      window_size: 11
+      reference_mode: "query"
+      projection: "learned"
+      corr_dim: 64
+      temperature: 0.7
+      scale: 0.0
+      confidence_mode: "maxprob"
+      step_mode: "softargmax"
+      use_step: true
+      apply_step_before_residual: true
+      step_gate: "confidence"
+      gate_threshold: 0.05
+      gate_power: 2.0
+      gate_step_train: true
+      map_update:
+        enabled: true
+        hidden_dim: 64
+        gate_init_bias: -1.0
+        step_scale: 1.0
+
+    # Fine correlation on geo backbone c2 (stride~4).
+    local_correlation_fine:
+      window_size: 7
+      reference_mode: "query"
+      projection: "learned"
+      corr_dim: 64
+      temperature: 0.7
+      scale: 0.0
+      confidence_mode: "maxprob"
+      step_mode: "softargmax"
+      use_step: true
+      apply_step_before_residual: true
+      step_gate: "confidence"
+      gate_threshold: 0.05
+      gate_power: 2.0
+      gate_step_train: true
+
+    local_correlation_fusion:
+      enabled: true
+      confidence_power: 2.0
+      eps: 1.0e-6
+
+loss:
+  position:
+    # Stronger "must beat base by margin" pressure.
+    no_harm_vs_base:
+      enabled: true
+      weight: 5.0
+      margin: 0.002
+      # Only apply this constraint where the base is actually wrong; otherwise
+      # a positive margin can force pointless jitter.
+      base_error_threshold: 0.01
+      min_points: 256
+
+  correlation_supervision:
+    # Make correlation maps peak at GT offsets.
+    weight: 5.0
+
+training:
+  epochs: 40
+
+  optimizer:
+    lr: 1.0e-4
+    # Geo backbone fine-tuning should be much slower than correlation heads.
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 6
+    min_delta: 0.0002
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 5
+    min_delta_aj: 0.0002
+    min_delta_4px: 0.0002
+    min_delta_error: 0.0

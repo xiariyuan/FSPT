@@ -1,0 +1,189 @@
+{
+  "total_checked": 13,
+  "match_count": 13,
+  "match_rate": 1.0,
+  "fmap_cosine_sim": {
+    "mean": 1.0,
+    "min": 1.0
+  },
+  "support_desc_cosine_sim": {
+    "mean": 1.0,
+    "min": 1.0
+  },
+  "crop_mad": {
+    "mean": 0.0,
+    "max": 0.0
+  },
+  "parity_pass": true,
+  "per_sample": [
+    {
+      "video": "bike-packing",
+      "reentry_frame": 58,
+      "point_idx": 37,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 9,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 10,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 28,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 29,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 46,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 47,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 63,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "breakdance",
+      "reentry_frame": 44,
+      "point_idx": 64,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "dance-twirl",
+      "reentry_frame": 87,
+      "point_idx": 76,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "dance-twirl",
+      "reentry_frame": 87,
+      "point_idx": 98,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "dance-twirl",
+      "reentry_frame": 87,
+      "point_idx": 115,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    },
+    {
+      "video": "dance-twirl",
+      "reentry_frame": 87,
+      "point_idx": 217,
+      "crop_mad": 0.0,
+      "fmap_cosine_sim": 1.0,
+      "support_desc_cosine_sim": 1.0,
+      "offline_tracker_vis": 1.0,
+      "crop_match": true,
+      "fmap_match": true,
+      "desc_match": true,
+      "all_match": true
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+# =============================================================================
+# Route A Pivot: lightweight test-time adaptation for TAP-Vid Kinetics
+# (temporal transformer only)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_tta_longocc_eval256_temporal_only
+  - _self_
+
+experiment:
+  name: fspt_routeA_tta_longocc_eval256_temporal_only_kinetics
+  description: "Lightweight TTA for TAP-Vid Kinetics @eval256 (temporal only)"
+
+data:
+  val:
+    dataset: "tapvid_kinetics"
+    root: "/gemini/code/datasets/tapvid_kinetics"
+    backend: "auto"
+    num_frames: -1
+    num_points: null
+    resolution: null
+    query_stride: 5
+    points_order: "xy"
+    augmentation:
+      enabled: false
+    base_tracks_dir: null
+    base_tracks_strict: false
+    base_tracks_query_tol: 1.0e-4
+
+evaluation:
+  query_mode: "strided"
+  metric_resolution_mode: "original"

@@ -1,0 +1,64 @@
+# =============================================================================
+# Route A Stage-3: occlusion-triggered global re-localization (paper run)
+# =============================================================================
+#
+# Motivation
+# - Our Stage-2 refiner can improve DAVIS long-occlusion metrics slightly, but
+#   gains often saturate around ~1e-3 AJ_delta.
+# - A key failure mode is "re-appearance after long occlusion": the base tracker
+#   can re-lock onto a wrong location far from its local window.
+#
+# This Stage-3 config adds a *global* matching step at re-appearance frames,
+# detected using the base tracker's visibility (so it works at test time).
+# The step is guarded by:
+# - confidence gate
+# - trust-region clamp (and a larger clamp only on re-appearance frames)
+#
+# We keep monitoring `AJ_longocc20_delta` for the paper story and apply an
+# explicit stop-loss by epoch 15.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate_stage2_residual_longocc_m20.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage3_relocal_longocc_m20"
+  description: "Stage-3: global re-localization on re-appearance after long occlusion; monitor AJ_longocc20_delta"
+
+# Warm-start from the best long-occ (monitor-key) checkpoint of the previous run.
+pretrained: "checkpoints/fspt_routeA_ms_corr_finemapupdate_stage2_residual_longocc_m20/best.pth"
+
+model:
+  refiner:
+    # Stage-3: enable global re-localization.
+    relocalization:
+      enabled: true
+      feature_source: "cotracker"     # use CoTracker fnet features (tracking-trained)
+      downsample: 2                   # global search on a coarser map (speed)
+      min_occlusion_len: 10           # trigger after >=10 consecutive occluded frames
+      frames_after: 3                 # apply for first 3 visible frames after re-appearance
+      vis_threshold: 0.5
+      temperature: 0.7
+      conf_threshold: 0.15
+      gate_power: 2.0
+      step_mode: "softargmax"
+      apply_only_first_iter: true
+      # Allow larger corrections on re-appearance frames only (normal frames
+      # are still bounded by refiner.delta_max_total).
+      max_total: 0.20
+
+    # Keep the trust region simple/stable for stage-3 experiments.
+    delta_max_total_adaptive:
+      enabled: false
+
+training:
+  # Stop-loss: if we cannot reach a meaningful improvement early, stop and
+  # move on to an even more aggressive architecture change.
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_longocc20_delta"
+    mode: "max"
+    deadline_epoch: 15
+    threshold: 0.0015
+

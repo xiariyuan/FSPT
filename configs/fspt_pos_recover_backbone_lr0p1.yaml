@@ -1,0 +1,25 @@
+# =============================================================================
+# FSPT Position-Recovery: smaller backbone LR
+# =============================================================================
+#
+# Motivation:
+# - In server run `fspt_pos_recover_fixfusion_20260211_011036`, metrics improved
+#   until epoch 7, but started regressing after `full_finetune` at epoch 8.
+# - That phase unfreezes ResNet `layer1/layer2`, and they were optimized with the
+#   same LR as the rest of the "other" parameters.
+#
+# This config keeps the same phase schedule but fine-tunes the pretrained ResNet
+# backbone with a smaller LR via `training.optimizer.backbone_lr_scale`.
+
+defaults:
+  - fspt_pos_recover_from_e16
+  - _self_
+
+experiment:
+  name: "fspt_pos_recover_backbone_lr0p1"
+  description: "Position recovery with backbone_lr_scale=0.1 (safer full_finetune)"
+
+training:
+  optimizer:
+    backbone_lr_scale: 0.1
+

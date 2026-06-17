@@ -1,0 +1,34 @@
+{
+  "baseline": "cotracker3_baseline",
+  "dataset": "DAVIS",
+  "query_protocol": "first",
+  "metric_resolution_mode": "input",
+  "repo_native": {
+    "AJ": 64.89,
+    "OA": 91.8,
+    "delta_avg": 77.36
+  },
+  "unified_bridge": {
+    "AJ": 64.89,
+    "OA": 91.8,
+    "delta_avg": 77.36
+  },
+  "abs_diff": {
+    "AJ": 0.0,
+    "OA": 0.0,
+    "delta_avg": 0.0
+  },
+  "signed_diff": {
+    "AJ": 0.0,
+    "OA": 0.0,
+    "delta_avg": 0.0
+  },
+  "max_abs_diff": 0.0,
+  "acceptable": true,
+  "verification_note": "first + input bridge \u2014 resolved after fixing normalized-coordinate scaling in datasets.metrics.compute_tapvid_metrics",
+  "long_occ_mean": {
+    "AJ": 45.73,
+    "OA": 78.13,
+    "delta_avg": 64.71
+  }
+}

@@ -1,0 +1,61 @@
+# =============================================================================
+# FSPT Kubric TFDS Server Configuration
+# =============================================================================
+#
+# Target environment:
+# - Ubuntu 22.04
+# - Python 3.11
+# - PyTorch 2.x + CUDA 12.x
+#
+# This config is tuned for running directly on server paths under /gemini/code.
+#
+
+defaults:
+  - fspt_kubric_tfds
+  - _self_
+
+experiment:
+  name: "fspt_kubric_tfds_server"
+  description: "Server training with Kubric TFDS under /gemini/code/datasets"
+
+data:
+  train:
+    # Your server TFDS files are under: /gemini/code/datasets/tapvid_kubric/256x256/1.0.0
+    root: "/gemini/code/datasets/tapvid_kubric"
+    tfds_name: "movi_e/256x256"
+    shuffle_buffer: 1
+    tfds_low_memory: true
+    tfds_read_buffer_size: 1048576
+    deterministic_sampling: false
+
+  val:
+    root: "/gemini/code/datasets/tapvid_kubric"
+    tfds_name: "movi_e/256x256"
+    shuffle_buffer: 1
+    tfds_low_memory: true
+    tfds_read_buffer_size: 1048576
+    deterministic_sampling: true
+
+  pseudo:
+    root: "/gemini/code/datasets/tapvid_kubric"
+    tfds_name: "movi_e/256x256"
+    shuffle_buffer: 1
+    tfds_low_memory: true
+    tfds_read_buffer_size: 1048576
+
+training:
+  batch_size: 1
+  num_workers: 0
+  data_loading:
+    use_prefetch: false
+
+hardware:
+  gpus: [0]
+
+paths:
+  output_dir: "/gemini/code/FSPT/outputs"
+  checkpoint_dir: "/gemini/code/FSPT/checkpoints"
+
+logging:
+  wandb:
+    enabled: false

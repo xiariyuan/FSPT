@@ -1,0 +1,94 @@
+# =============================================================================
+# Route A Stage-3 v8: top-k temporal relocalization + focused corrections
+# =============================================================================
+#
+# Why this variant
+# - v7 improves long-occ subsets but still hurts overall AJ (AJ_delta < 0).
+# - We need stronger long-occ recovery while reducing global collateral damage.
+#
+# Structural upgrades in v8
+# 1) Global relocalization uses top-k candidates with temporal consistency scoring.
+# 2) Corrections are focused on hard regions (relocal mask / high-confidence matches),
+#    while easy regions are attenuated to reduce no-harm violations.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v5_bank_confirm.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v8_topk_temporal_focus_l30
+  description: Stage-3 v8 topk-temporal relocalization + focused corrections, monitor AJ_longocc30_delta
+
+# Warm-start from v7 best-on-monitor checkpoint.
+pretrained: checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v7_milddrift_freezegeo_l30_20260301_123832/best.pth
+
+model:
+  refiner:
+    # Keep backbone frozen to protect overall AJ/OA while improving long-occ behavior.
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+
+    relocalization:
+      apply_only_first_iter: false
+      conf_threshold: 0.18
+
+      # New v8 structure: top-k candidate search with temporal consistency.
+      topk: 5
+      temporal_sigma: 0.03
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.10
+
+      # Allow larger jumps only on relocalization frames.
+      max_total: 0.22
+
+    # New v8 structure: attenuate corrections away from hard regions.
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.15
+      use_relocal_mask: true
+      use_corr_conf: true
+      corr_threshold: 0.25
+      use_relocal_conf: true
+      relocal_threshold: 0.20
+      include_occluded: false
+
+    # Keep moderate training-only failure injection.
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.20
+      min_len: 20
+      max_len: 24
+      after_frames: 6
+      drift_std_px: 14.0
+      drift_max_px: 56.0
+      drift_mode: constant
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+loss:
+  position:
+    delta_supervision:
+      base_error_threshold: 0.0075
+      min_points: 192
+
+training:
+  epochs: 35
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 10
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 15
+    threshold: 0.0055
+

@@ -1,0 +1,95 @@
+# =============================================================================
+# Route A Stage-3 v9: relocalization-specific residual branch (aggressive)
+# =============================================================================
+#
+# Goal
+# - Recover the stronger long-occ gains from v7 and push beyond them.
+# - Keep global AJ at least non-negative by constraining aggressive updates to
+#   re-appearance frames.
+#
+# Structural change
+# - Add a dedicated `relocalization_residual` head that predicts extra residual
+#   correction only on long-occlusion reappearance frames.
+# - Keep top-k + temporal relocalization from v8.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v8_topk_temporal_focus_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v9_residual_reloc_l30
+  description: Stage-3 v9 relocalization-specific residual head with topk-temporal relocalization
+
+# Warm-start from v7 longocc30-best epoch.
+pretrained: checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v7_milddrift_freezegeo_l30_20260301_123832/epoch_7.pth
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+      - relocalization_residual
+
+    relocalization:
+      conf_threshold: 0.16
+      topk: 7
+      temporal_sigma: 0.04
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.08
+      max_total: 0.24
+
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 512
+      scale: 0.03
+      gate_init_bias: -1.5
+      conf_threshold: 0.12
+      conf_power: 1.5
+      max_step: 0.04
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+    # Keep focus attenuation but less conservative than v8.
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.35
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.15
+      include_occluded: false
+
+    # Slightly stronger long-occ simulation.
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.25
+      min_len: 20
+      max_len: 26
+      after_frames: 7
+      drift_std_px: 16.0
+      drift_max_px: 64.0
+      drift_mode: constant
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+training:
+  epochs: 30
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 8
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 12
+    threshold: 0.0060
+

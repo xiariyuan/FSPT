@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "num_records": 1,
+    "num_queries": 2,
+    "require_gt": true
+  },
+  "per_record": [
+    {
+      "record_index": 0,
+      "video_id": "synthetic_video_000",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 2,
+      "num_frames": 30,
+      "original_size_hw": [
+        64,
+        96
+      ],
+      "anchor_mean_error_px": 0.0,
+      "anchor_max_error_px": 0.0
+    }
+  ]
+}

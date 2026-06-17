@@ -1,0 +1,41 @@
+# =============================================================================
+# Route A Stage-3 v6: longocc30-focused tuning from v5
+# =============================================================================
+# Base on v5 (bank+confirm), optimize for longocc30, longer training budget.
+# IMPORTANT: explicit warm-start from v5 epoch_9 (longocc30 best), do not
+# inherit v3 best checkpoint from defaults.
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v5_bank_confirm.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30
+  description: Stage-3 v6 from v5 epoch9, monitor AJ_longocc30_delta, epochs 40
+
+pretrained: checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v5_bank_confirm_20260228_111126/epoch_9.pth
+
+model:
+  refiner:
+    relocalization:
+      # Allow repeated relocalization across refinement iterations.
+      apply_only_first_iter: false
+      # Slightly stricter gating to protect overall AJ.
+      conf_threshold: 0.20
+
+training:
+  epochs: 40
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 12
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 15
+    threshold: 0.0040

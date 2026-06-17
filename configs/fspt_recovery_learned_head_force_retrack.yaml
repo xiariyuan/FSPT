@@ -1,0 +1,14 @@
+defaults:
+  - fspt_online_recovery_learned_head_smoke
+  - _self_
+experiment:
+  name: fspt_recovery_learned_head_force_retrack
+model:
+  refiner:
+    online_recovery:
+      retracking:
+        enabled: true
+        min_conf: 0.0
+    retracking:
+      enabled: true
+      min_conf: 0.0

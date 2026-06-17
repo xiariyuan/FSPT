@@ -1,0 +1,15 @@
+# 消融实验：无频率分解模块
+# 验证频率分解对性能的贡献
+# 注意：遮挡预测保持开启（使用非频率特征），以隔离频率分解的影响
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_no_frequency"
+
+model:
+  frequency:
+    enabled: false  # 禁用频率分解
+  occlusion:
+    enabled: true  # 保持遮挡预测开启，使用非频率特征回退

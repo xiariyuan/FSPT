@@ -1,0 +1,65 @@
+# =============================================================================
+# FSPT OA-Focus + Late Partial CLIP Unfreeze (Visual Last 4 Blocks)
+# =============================================================================
+
+defaults:
+  - fspt_oa_focus
+  - _self_
+
+experiment:
+  name: "fspt_oa_focus_late_clip4"
+  description: "OA-focus with controlled late-stage unfreeze of CLIP visual resblocks 8-11"
+
+training:
+  optimizer:
+    # Lower base LR for safer late-stage expansion.
+    lr: 3.0e-5
+    # CLIP stays much smaller than other groups even after unfreeze.
+    clip_lr_scale: 0.03
+
+  phase_schedule:
+    enabled: true
+    phases:
+      - name: "warmup_heads"
+        start_epoch: 0
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+
+      - name: "full_finetune"
+        start_epoch: 8
+        freeze_modules:
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0
+
+      - name: "late_clip_visual_last4"
+        start_epoch: 30
+        # Keep current trainable flags and only turn on selected modules.
+        freeze_modules: []
+        unfreeze_modules:
+          - "geo_backbone.backbone.conv1"
+          - "geo_backbone.backbone.bn1"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.8"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.9"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.10"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.11"
+          - "semantic_encoder.clip_model.visual.ln_post"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 1.0

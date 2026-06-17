@@ -1,0 +1,114 @@
+# =============================================================================
+# FSPT MegaDepth pair pretraining
+# =============================================================================
+#
+# Goal
+# - Use the prepared MegaDepth two-view correspondence pairs as a geometric
+#   pretraining stage before TAP-Vid Kubric / DAVIS / Kinetics fine-tuning.
+# - Keep the protocol strict and comparable: the same tracker, same official
+#   TAP-Vid metrics, same query-frame exclusion.
+# - Before training, validate the dataset root with:
+#     python scripts/validate_megadepth_pairs.py --root /gemini/code/datasets/megadepth
+#
+# Data split
+# - Train/val are both read from the same MegaDepth pair JSONL, but the dataset
+#   wrapper performs a deterministic scene-level hash split so that the scenes
+#   do not leak across splits.
+#
+
+defaults:
+  - fspt_base.yaml
+  - _self_
+
+experiment:
+  name: "fspt_megadepth_pairs_pretrain"
+  description: "MegaDepth two-view correspondence pretraining for re-localization"
+
+model:
+  backbone:
+    pretrained_path: "/gemini/code/FSPT/weights/backbone/resnet50_a1_0-14fe96d1.pth"
+  clip:
+    cache_dir: "/gemini/code/FSPT/weights/clip"
+  temporal:
+    # Disable FlashAttention/SDPA on this server. The pretrain crash has been
+    # consistent with the native attention path at startup.
+    use_flash_attention: false
+
+data:
+  train:
+    dataset: "megadepth_pairs"
+    root: "/gemini/code/FSPT/datasets/megadepth"
+    annotation_file: "data/two_view/megadepth_scene_info_pairs_sampled.jsonl"
+    split_strategy: "scene_hash"
+    val_fraction: 0.1
+    bidirectional: true
+    num_frames: 2
+    num_points: 256
+    resolution: [256, 256]
+
+  val:
+    dataset: "megadepth_pairs"
+    root: "/gemini/code/FSPT/datasets/megadepth"
+    annotation_file: "data/two_view/megadepth_scene_info_pairs_sampled.jsonl"
+    split_strategy: "scene_hash"
+    val_fraction: 0.1
+    bidirectional: true
+    num_frames: 2
+    num_points: 256
+    resolution: [256, 256]
+    augmentation:
+      enabled: false
+
+training:
+  epochs: 20
+  batch_size: 8
+  # MegaDepth pair loading touches h5py/OpenCV state; keep this single-process
+  # to avoid fork-related double-free crashes on resume.
+  num_workers: 0
+
+  data_loading:
+    use_prefetch: false
+    pin_memory: false
+    persistent_workers: false
+    prefetch_factor: null
+    multiprocessing_context: null
+    torch_num_threads: 12
+    torch_num_interop_threads: 2
+
+  optimizer:
+    lr: 1.0e-4
+    weight_decay: 1.0e-4
+
+  monitor_checkpoints:
+    save_best_aj: true
+    save_best_oa: true
+
+  checkpoint:
+    save_every: 1
+    keep_last: 10
+
+  # Use a multi-metric plateau guard instead of a single-metric early stop.
+  # AJ stays the main signal, while OA / <4px / error trend are auxiliary checks.
+  plateau_guard:
+    enabled: true
+    start_epoch: 1
+    patience: 2
+    min_delta_aj: 1.0e-4
+    min_delta_oa: 1.0e-4
+    min_delta_4px: 1.0e-4
+    min_delta_error: 5.0e-2
+
+  early_stopping:
+    enabled: false
+    monitor: "AJ"
+    mode: "max"
+    patience: 5
+    min_delta: 0.0005
+
+evaluation:
+  eval_every: 1
+  exclude_query_frame: true
+  # Keep validation single-process as well: the MegaDepth pair loader touches
+  # h5py/OpenCV state and multi-worker teardown has been the source of double-free
+  # crashes on this server.
+  num_workers: 0

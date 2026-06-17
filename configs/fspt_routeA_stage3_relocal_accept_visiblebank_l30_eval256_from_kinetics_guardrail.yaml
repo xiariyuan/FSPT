@@ -1,0 +1,37 @@
+# =============================================================================
+# Route A Stage-3R: verifier-guided visible-bank relocalization warm-started
+# from the existing Kinetics guardrail checkpoint.
+# =============================================================================
+#
+# Why this exists
+# - The canonical visible-bank acceptor config expects a missing stage-3
+#   checkpoint chain in this workspace.
+# - We still want to launch the verifier-guided long-occlusion experiment now,
+#   so we warm-start from the best available compatible checkpoint that already
+#   lives in this repo.
+#
+# This keeps the main paper story intact:
+#   visible-bank candidate generation + learned verifier / acceptor + do-no-harm.
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail
+  description: "Verifier-guided visible-bank relocalization warm-started from Kinetics guardrail checkpoint"
+
+# Warm-start from the strongest compatible checkpoint that actually exists in
+# this workspace.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_kinetics_guardrail_eval256_20260505_182156/best.pth
+
+training:
+  num_workers: 2
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+  checkpoint:
+    save_every: 1
+
+evaluation:
+  num_workers: 2

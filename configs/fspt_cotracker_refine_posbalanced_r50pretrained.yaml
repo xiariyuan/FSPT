@@ -1,0 +1,48 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): Position-balanced refiner w/ local ResNet50 init
+# =============================================================================
+#
+# Server note:
+# - Many servers have no outbound access, so timm cannot fetch ImageNet weights.
+# - This config uses the locally provisioned ResNet50 checkpoint under weights/.
+#
+# Usage:
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus [0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained"
+  description: "Route A refiner w/ ResNet50 ImageNet init (offline) + conservative backbone LR"
+
+model:
+  backbone:
+    type: "resnet50"
+    pretrained: true
+    pretrained_path: "weights/backbone/resnet50_a1_0-14fe96d1.pth"
+    # Batch size is usually 1 in Route A; freezing BN avoids unstable running stats.
+    freeze_bn: true
+  refiner:
+    # Make training stable by letting the backbone adapt slowly instead of a hard
+    # freeze->unfreeze jump (which can break learned head mappings).
+    trainable_modules:
+      - geo_backbone
+      - freq_semantic
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+    stages: []
+
+training:
+  optimizer:
+    # Keep the backbone updates small (effective LR = lr * backbone_lr_scale).
+    backbone_lr_scale: 0.05
+

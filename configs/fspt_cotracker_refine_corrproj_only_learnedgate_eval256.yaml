@@ -1,0 +1,53 @@
+# =============================================================================
+# Route A (SOTA push): corrproj-only + learned step gate (still do-no-harm)
+# =============================================================================
+#
+# Why:
+# - Pure corrproj-only training is ultra safe but improvements on DAVIS are tiny.
+# - We add a *very small* learnable component that decides "how much to move"
+#   given the correlation distribution shape, while still keeping:
+#     - shift-confidence gating
+#     - delta_max_total trust-region clamp
+#     - no_harm_vs_base hinge loss
+#
+# Design:
+# - Keep all heavy modules frozen (geo_backbone/temporal/residual/semantic/...).
+# - Keep residual_decoder delta_scale=0 (tracks move only via correlation step).
+# - Add LocalTrackCorrelation.learned_step_gate (tiny MLP) to modulate the step.
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_shiftconf_power2_nojitter_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrproj_only_learnedgate_eval256"
+  description: "Route A: corrproj-only + learned step gate (MLP) + stronger hard-mining; aim AJ_delta>0"
+
+# Warm-start from the best checkpoint of the corrproj-only run.
+# (Weights-only; optimizer/scheduler reset.)
+pretrained: "checkpoints/fspt_routeA_corrproj_only_shiftconf_nojitter_eval256_20260215_114500/best.pth"
+
+model:
+  refiner:
+    local_correlation:
+      learned_step_gate:
+        enabled: true
+        hidden_dim: 32
+        # Start conservative (~0.18) then learn where to move.
+        init_bias: -1.5
+      # Slightly relax the hand-crafted gate since we now have a learned gate too.
+      gate_threshold: 0.03
+
+loss:
+  position:
+    # Put more emphasis on fixing the hard cases where the base tracker is wrong.
+    hard_mining:
+      power: 2.0
+      max_weight: 10.0
+    no_harm_vs_base:
+      weight: 3.0
+
+training:
+  plateau_guard:
+    enabled: false

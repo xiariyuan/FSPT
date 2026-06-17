@@ -1,0 +1,32 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): match-step + hard mining + C2 correlation
+# =============================================================================
+#
+# This is the same as:
+#   fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep.yaml
+#
+# but uses higher-resolution C2 (ResNet layer1, stride=4) features for the local
+# correlation / soft-argmax matching step. This typically provides a sharper
+# matching signal for small sub-10px corrections on DAVIS.
+#
+# Safe defaults:
+# - Still uses clean CoTracker3 base for evaluation
+# - Still uses delta_max_total trust-region clamp
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_jitter_matchstep_c2_eval256"
+  description: "Route A refiner: base jitter + correlation soft-argmax step (C2 features) + base-error hard mining"
+
+model:
+  refiner:
+    # Keep a tight trust region by default: base CoTracker3 is already very strong.
+    # 0.02 ~= 5px @ 256x256.
+    delta_max_total: 0.02
+
+    local_correlation:
+      feature_level: "c2"  # fused | c2

@@ -1,0 +1,43 @@
+# =============================================================================
+# Route A Verifier short sanity resume run.
+# =============================================================================
+#
+# Goal
+# - Resume the relaxed verifier sanity run from the last checkpoint.
+# - Remove the aggressive first-epoch stop conditions so we can observe whether
+#   the relaxed supervision actually moves AJ_longocc30_delta beyond zero.
+# - Keep the original experiment directory untouched; this is a separate
+#   continuation run.
+
+defaults:
+  - fspt_routeA_stage3_verifier_short256_relaxed_from_kinetics_guardrail.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_verifier_short256_relaxed_from_kinetics_guardrail_resume
+  description: "Resume relaxed verifier sanity from latest checkpoint without early deadline cutoff"
+
+# Resume from the checkpoint produced by the previous run.
+# The actual resume is passed via the CLI `--resume` flag so optimizer and
+# scheduler state continue from the checkpoint instead of reinitializing.
+
+training:
+  # Let the resumed run actually continue and show whether the relaxed losses
+  # produce a measurable improvement.
+  epochs: 5
+  early_stopping:
+    enabled: false
+  deadline_guard:
+    enabled: false
+  plateau_guard:
+    enabled: false
+  checkpoint:
+    save_every: 1
+    keep_last: 5
+
+logging:
+  visualize:
+    enabled: false
+
+evaluation:
+  num_workers: 0

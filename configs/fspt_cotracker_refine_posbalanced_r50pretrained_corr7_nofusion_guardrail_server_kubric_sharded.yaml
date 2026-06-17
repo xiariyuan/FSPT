@@ -1,0 +1,64 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): guardrail config to "never hurt base" on DAVIS
+# =============================================================================
+#
+# Problem observed
+# - Training on synthetic Kubric can cause the refiner to learn a delta pattern
+#   that does not transfer to DAVIS, so refined < base and degrades over epochs.
+#
+# Guardrail idea
+# - Make the residual update *conservative by design*:
+#   1) smaller delta_scale
+#   2) learnable gate initialized near 0 (identity at start)
+#   3) hard per-step delta clip
+#   4) very strong base-track consistency (L1) across *all* points/frames
+#
+# If this still hurts base, increase base_track_consistency.weight to 5.0 and/or
+# reduce delta_scale to 0.03.
+#
+# Usage:
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus=[0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_server_kubric_sharded.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded"
+  description: "Route A refiner: corr7 + nofusion + delta gate/clip + strong base regularization"
+
+model:
+  refiner:
+    # Smaller step: reduces harmful drift under domain gap.
+    delta_scale: 0.05
+    # Hard clamp on the *applied* step (normalized y/x).
+    # 0.02 corresponds to ~5px at 256x256 or ~10px at 480p.
+    delta_max_step: 0.02
+    # Learnable gate (sigmoid) initialized near 0 so epoch 0 is almost identity.
+    delta_gate:
+      enabled: true
+      init_bias: -4.0
+
+training:
+  optimizer:
+    # Lower LR slows harmful drift while still letting the refiner learn.
+    lr: 2.0e-05
+
+loss:
+  base_track_consistency:
+    # Very strong "do no harm" constraint.
+    weight: 3.0
+    type: "l1"
+    mask: "all"
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 3.0
+      end_weight: 3.0
+

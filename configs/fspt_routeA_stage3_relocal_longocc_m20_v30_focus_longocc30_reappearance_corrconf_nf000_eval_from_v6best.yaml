@@ -1,0 +1,53 @@
+# =============================================================================
+# Route A Stage-3 v30 (eval-only): long-occ-30 only, reappearance-aware (corr_conf)
+# =============================================================================
+#
+# This is the "fix v28" experiment:
+# - v28 used long_occlusion_mode=reappearance, but relied on base visibility to
+#   detect re-appearance. On DAVIS, base visibility can stay low even after GT
+#   re-appearance, so the mask becomes empty and gains collapse (~+0.0007).
+#
+# Here we:
+# - keep the reappearance-aware definition (exclude tail occlusions with no reappearance)
+# - but allow re-appearance to be detected from correlation confidence
+#   (corr_conf) OR base visibility (fallback) inside cotracker_refiner.py.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v30_focus_longocc30_reappearance_corrconf_nf000_eval_from_v6best
+  description: "Eval-only: focus only long-occ>=30 queries; reappearance via corr_conf OR base vis; non_focus_scale=0"
+
+pretrained: checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_mode: reappearance
+      long_occlusion_fill_gaps: 1
+
+      # NEW: re-appearance signal for "reappearance" mode.
+      long_occlusion_reappear_source: corr_conf
+      long_occlusion_reappear_threshold: 0.25
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

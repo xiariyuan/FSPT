@@ -1,0 +1,13 @@
+# 消融实验：多迭代监督
+# 验证 multi_iteration 对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_multi_iteration"
+
+loss:
+  multi_iteration:
+    enabled: true
+    gamma: 0.8

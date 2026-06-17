@@ -1,0 +1,24 @@
+# =============================================================================
+# Route A Stage-3 v11 warm-started from the existing Kinetics guardrail run
+# =============================================================================
+#
+# Why this exists
+# - The original v11 recovery chain expects a missing stage-3 checkpoint in this
+#   workspace.
+# - We still want to continue the long-occlusion no-harm recovery line without
+#   rebuilding the whole chain from scratch.
+#
+# This config reuses the v11 no-harm recovery recipe, but warm-starts from the
+# available Kinetics guardrail checkpoint that already matches the same model
+# family (`CoTrackerFSPTRefiner`).
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v11_noharm_recover.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v11_from_kinetics_guardrail
+  description: "Stage-3 v11 no-harm recovery warm-started from Kinetics guardrail checkpoint"
+
+# Available in this workspace and compatible with the same model family.
+pretrained: checkpoints/fspt_routeA_kinetics_guardrail_eval256_20260505_182156/best.pth

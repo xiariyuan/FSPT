@@ -1,0 +1,45 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): correlation step + hard mining
+# =============================================================================
+#
+# This config is designed to actually *beat* CoTracker3 (AJ_delta > 0) while
+# keeping safety guardrails:
+# - train-time base jitter (forces learning)
+# - local correlation *soft-argmax* step (explicit matching signal)
+# - confidence-gated updates (only move when correlation is confident)
+# - hard trust-region clamp via delta_max_total
+# - position hard-mining w.r.t base error (focus on where base is wrong)
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_jitter_matchstep_eval256"
+  description: "Route A refiner: train-time base jitter + correlation soft-argmax step + base-error hard mining (aim AJ_delta>0)"
+
+model:
+  refiner:
+    # Allow larger corrections than the 5px guardrail, but still bounded.
+    # 0.05 ~= 12.8px @ 256x256.
+    delta_max_total: 0.05
+
+    local_correlation:
+      # New: use correlation soft-argmax to produce an explicit step.
+      use_step: true
+      step_scale: 1.0
+      step_gate: "confidence"
+      gate_threshold: 0.08
+      gate_power: 2.0
+
+loss:
+  position:
+    hard_mining:
+      enabled: true
+      tau: 0.015625   # ~4px @ 256x256
+      power: 1.0
+      min_weight: 1.0
+      max_weight: 4.0
+      detach_base: true
+

@@ -1,0 +1,14 @@
+# 消融实验：置信度加权损失
+# 验证 confidence_weighted 对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_confidence_weighted"
+
+loss:
+  confidence_weighted:
+    enabled: true
+    weight: 0.1
+    min_confidence: 0.1

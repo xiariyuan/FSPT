@@ -1,0 +1,119 @@
+{
+  "config": "configs/fspt_dino_nogate_ablation.yaml",
+  "checkpoint": "checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth",
+  "max_batches": 10,
+  "relocal_queries": 74,
+  "retracked_queries": 74,
+  "base_t0_error_px": {
+    "count": 74,
+    "mean": 47.03686466943976,
+    "median": 2.6705950498580933,
+    "std": 87.3571621094865,
+    "min": 0.07082193344831467,
+    "max": 258.195556640625,
+    "p5": 0.3702609315514565,
+    "p95": 243.86225204467775
+  },
+  "anchor_t0_error_px": {
+    "count": 74,
+    "mean": 47.09446205722319,
+    "median": 2.8355398178100586,
+    "std": 87.31316529161248,
+    "min": 0.2761874198913574,
+    "max": 257.9535217285156,
+    "p5": 0.5622844785451889,
+    "p95": 243.87395629882812
+  },
+  "pre_retracking_t0_error_px": {
+    "count": 74,
+    "mean": 47.15020044832616,
+    "median": 2.9529218673706055,
+    "std": 87.27885830001314,
+    "min": 0.3367888927459717,
+    "max": 257.8453674316406,
+    "p5": 0.7099180698394776,
+    "p95": 243.8793037414551
+  },
+  "post_retracking_t0_error_px": {
+    "count": 74,
+    "mean": 47.09446205722319,
+    "median": 2.8355398178100586,
+    "std": 87.31316529161248,
+    "min": 0.2761874198913574,
+    "max": 257.9535217285156,
+    "p5": 0.5622844785451889,
+    "p95": 243.87395629882812
+  },
+  "base_tail_error_px": {
+    "count": 1336,
+    "mean": 55.86714464004157,
+    "median": 3.446088671684265,
+    "std": 87.86762467525372,
+    "min": 0.03861835598945618,
+    "max": 258.195556640625,
+    "p5": 0.6062012612819672,
+    "p95": 233.99018478393555
+  },
+  "post_retracking_tail_error_px": {
+    "count": 1336,
+    "mean": 55.67275711041346,
+    "median": 3.153082489967346,
+    "std": 87.6148570215983,
+    "min": 0.10734773427248001,
+    "max": 257.9535217285156,
+    "p5": 0.7752251476049423,
+    "p95": 234.11462783813477
+  },
+  "relocal_conf_t0": {
+    "count": 74,
+    "mean": 0.018006512719030317,
+    "median": 0.017930383794009686,
+    "std": 0.0003913038378344956,
+    "min": 0.017298631370067596,
+    "max": 0.01882101222872734,
+    "p5": 0.017472588922828436,
+    "p95": 0.018733994197100402
+  },
+  "per_batch": [
+    {
+      "batch": 0,
+      "retracked_queries": 22
+    },
+    {
+      "batch": 1,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 2,
+      "retracked_queries": 17
+    },
+    {
+      "batch": 3,
+      "retracked_queries": 11
+    },
+    {
+      "batch": 4,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 5,
+      "retracked_queries": 1
+    },
+    {
+      "batch": 6,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 7,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 8,
+      "retracked_queries": 23
+    },
+    {
+      "batch": 9,
+      "retracked_queries": 0
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# 消融实验：无迭代精化
+# 验证迭代精化对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_no_refinement"
+
+model:
+  temporal:
+    num_refinement_iters: 1  # 单次预测，无精化

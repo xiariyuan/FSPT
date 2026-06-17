@@ -1,0 +1,139 @@
+# =============================================================================
+# Route A (SOTA push, practical): corr supervision + residual refiner + adaptive base anchor
+# =============================================================================
+#
+# Why this config exists
+# - Pure corrproj-only runs are ultra safe but gains are noise-level (AJ_delta ~= 0).
+# - Aggressive unfreezing + large trust-region can quickly drift on DAVIS (AJ_delta < 0).
+# - This recipe aims for a better trade-off:
+#     1) Keep the key structure fix: explicit correlation supervision (CE on corr logits).
+#     2) Add limited trainable capacity (temporal_transformer + residual_decoder) for real corrections.
+#     3) Re-introduce a *base-track consistency anchor* with *adaptive weighting*:
+#        - base near GT  -> strong "do no harm"
+#        - base far GT   -> relax anchor, allow corrections on hard cases
+#     4) Keep trust-region clamp moderate (delta_max_total) to prevent runaway drift.
+#
+# Training target
+# - Beat CoTracker3 on DAVIS under eval256 protocol: AJ_delta > 0 (stable, not just noise).
+#
+# Notes
+# - We keep geo_backbone frozen to reduce synthetic→real feature drift.
+# - We keep a small base_jitter to make corr-supervision see non-zero offsets; magnitude is
+#   intentionally mild to reduce train/test mismatch.
+#
+
+defaults:
+  - fspt_cotracker_refine_corrsup_adjref_c2_w11_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrsup_residual_adaptivebase_adjref_c2_w11_eval256"
+  description: "Route A: corr-supervision + (temporal+residual) + adaptive base anchor; c2 adjacent; win=11; moderate trust region"
+
+# Warm-start from the best checkpoint of the corr-supervision run that already
+# uses adjacent templates + c2 + 11x11 window (so local_correlation weights match).
+pretrained: "checkpoints/fspt_routeA_corrsup_adjref_c2_w11_20260218_134400/best.pth"
+
+model:
+  refiner:
+    # Unfreeze limited capacity (geo_backbone stays frozen to reduce domain drift).
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+
+    # Mildly aggressive residual updates; still clamped by delta_max_total.
+    delta_scale: 0.03
+    delta_max_step: 0.01
+    delta_max_total: 0.03  # ~7.7px @ 256
+
+    # Keep corr embedding enabled so temporal tokens can "see" match structure.
+    local_correlation:
+      feature_level: "c2"
+      reference_mode: "adjacent"
+      window_size: 11
+      scale: 0.5
+      use_step: true
+
+      # Training: keep gating off to avoid early dead-zones (learned_step_gate still applies).
+      gate_step_train: false
+      gate_residual_train: false
+
+      # Evaluation: shift-confidence gating remains the safety net.
+      gate_threshold: 0.01
+      residual_gate_threshold: 0.05
+
+    # Mild training-only perturbation: improves corr-supervision diversity.
+    base_jitter:
+      enabled: true
+      mode: "constant"
+      std_px: 1.0
+      max_px: 4.0
+      prob: 0.75
+      exclude_query_frame: true
+
+loss:
+  # Keep explicit supervision for local-correlation logits (from base config).
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+  # Adaptive base anchor: "do no harm" when base is correct, allow correction when base is wrong.
+  base_track_consistency:
+    weight: 0.5
+    type: "l1"
+    mask: "gt_visible"
+    adaptive:
+      enabled: true
+      tau: 0.02
+      power: 2.0
+      min_weight: 0.0
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 8
+      start_weight: 0.5
+      end_weight: 0.1
+
+  position:
+    # Keep safety pressure but don't force "do nothing".
+    no_harm_vs_base:
+      weight: 2.0
+      margin: 0.0005
+
+training:
+  epochs: 30
+  optimizer:
+    lr: 3.0e-05
+
+  # If it fails to beat base after a few evals, stop early and pivot.
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 0.00005
+    min_delta_4px: 0.00005
+
+evaluation:
+  eval_every: 1
+
+logging:
+  visualize:
+    enabled: false
+
+# Ensure we are training on TAP-Vid Kubric (official protocol) instead of inheriting
+# a Kinetics-train recipe from older configs.
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/kubric_preprocessed"
+    backend: "sharded_pkl"
+    annotation_file: "train.index.json"
+    use_tfds: false
+    allow_synthetic_tracks: false
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+    sampling:
+      strategy: "uniform"

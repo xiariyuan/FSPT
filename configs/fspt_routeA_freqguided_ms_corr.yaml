@@ -1,0 +1,60 @@
+# =============================================================================
+# Route A (paper direction 1): Frequency-guided multi-scale correlation fusion
+# =============================================================================
+#
+# This config enables the FSPT frequency module and uses it to guide how we fuse
+# coarse (CoTracker fnet) vs fine (geo c2) matching steps.
+#
+# Key idea:
+# - compute a per-point/time "high-frequency ratio" from LFD band energies
+# - use it to bias step fusion:
+#     low-freq -> trust coarse step
+#     high-freq -> trust fine step
+#
+# This is intended to produce a paper-friendly ablation knob:
+#   +frequency_guided_fusion vs (confidence-only fusion)
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_freqguided_ms_corr"
+  description: "Route A: enable LFD frequency module and use it to guide coarse/fine correlation step fusion"
+
+model:
+  frequency:
+    enabled: true
+    num_bands: 4
+    kernel_size: 7
+    use_fixed_laplacian: false
+    strict_lfd: false
+    # Keep orthogonality on but control via loss weights below.
+    ortho_weight: 0.1
+    feature_ortho_weight: 0.1
+
+  refiner:
+    # Allow the frequency module to learn (do not freeze it).
+    freeze_modules:
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+
+    frequency_guided_fusion:
+      enabled: true
+      power: 1.0
+      eps: 1.0e-6
+      low_band: 0
+      high_band: -1
+
+loss:
+  # Don't introduce new regularization while debugging the fusion behavior.
+  frequency_ortho:
+    weight: 0.0
+  frequency_reconstruction:
+    weight: 0.0
+  frequency_separation:
+    weight: 0.0
+

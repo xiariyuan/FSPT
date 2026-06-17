@@ -1,0 +1,34 @@
+# =============================================================================
+# Route A (LocoTrack-inspired): fine local all-pair correlation (eval256)
+# =============================================================================
+#
+# What this is
+# - A low-risk structural upgrade to the fine correlation head:
+#   instead of correlating *one* query vector with the search window, we correlate
+#   a small query patch (query_window_size×query_window_size) with the search
+#   window and max-pool over query locations (local all-pair / 4D -> 2D reduce).
+#
+# Why this matters
+# - Helps in repetitive / low-texture regions and in re-appearance after occlusion,
+#   where a single-point descriptor can be ambiguous.
+#
+# Notes
+# - This is intentionally minimal and meant to be ablation-friendly.
+# - Coarse correlation remains unchanged.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_locotrack_allpair_fine_eval256"
+  description: "Route A: fine correlation uses local all-pair matching (query patch vs search window) @eval256"
+
+model:
+  refiner:
+    local_correlation_fine:
+      corr_mode: "all_pair"
+      query_window_size: 5
+      all_pair_chunk: 8
+

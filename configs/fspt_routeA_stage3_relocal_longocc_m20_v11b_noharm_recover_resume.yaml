@@ -1,0 +1,38 @@
+# =============================================================================
+# Route A Stage-3 v11b: no-harm recover resume (relaxed stop criteria)
+# =============================================================================
+#
+# Why
+# - v11 stopped too early due to strict early_stopping min_delta.
+# - Continue from v11 best checkpoint, keep no-harm design, and allow more epochs.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v11_noharm_recover.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v11b_noharm_recover_resume
+  description: Stage-3 v11b resume from v11 best; relaxed stopping for stable AJ_delta recovery
+
+pretrained: checkpoints/fspt_routeA_stage3_v11_20260302_174320/best.pth
+
+training:
+  epochs: 10
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_delta
+    mode: max
+    patience: 6
+    min_delta: 1.0e-05
+
+  # Avoid premature stop from guard heuristics in this recovery run.
+  deadline_guard:
+    enabled: false
+
+  plateau_guard:
+    enabled: false
+
+evaluation:
+  compare_base: true

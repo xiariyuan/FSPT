@@ -1,0 +1,105 @@
+# =============================================================================
+# Route A (aggressive-but-safe rebuild): correlation-map update head on CoTracker features
+# =============================================================================
+#
+# Background
+# - Pure refiner regression tends to drift on DAVIS (domain gap) and can harm base.
+# - Ultra-safe configs collapse to "do nothing" (AJ_delta ~= 0).
+#
+# Recent tracking/flow literature trend
+# - Use the *full correlation volume/map* as input to an update network (RAFT-style),
+#   rather than relying purely on soft-argmax expected offsets.
+#
+# This config enables:
+# - CoTracker fnet features as the only feature source (no ImageNet backbone mismatch)
+# - A tiny `CorrelationMapUpdateHead` that predicts a step from corr logits
+# - Tight trust-region clamp so it cannot destroy base tracks
+#
+# Train on TAP-Vid Kinetics (real video) to reduce domain gap; validate on DAVIS.
+#
+
+defaults:
+  - fspt_routeA_rebuild_cotrackerfeat_kinetics_strided.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_cotrackerfeat_corrmapupdate_guardrail"
+  description: "Route A rebuild: CoTracker fnet features + corr-map update head + trust region; train on Kinetics, val DAVIS"
+
+model:
+  refiner:
+    # IMPORTANT:
+    # We are not training an occlusion/visibility model in this recipe, but TAP-Vid
+    # AJ is highly sensitive to predicted visibility (Jaccard counts false positives).
+    # To keep the comparison fair and avoid random visibility hurting AJ, force the
+    # refined visibility to exactly follow the CoTracker base visibility.
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Freeze heavy heads; train only local correlation + corr-map update head.
+    trainable_modules: []
+    freeze_modules:
+      - geo_backbone
+      - freq_semantic
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+
+    # Track movement comes only from the correlation step (safer than regression).
+    delta_scale: 0.0
+
+    # IMPORTANT: trust region is in normalized coordinates of the *input to metrics* (original size for DAVIS).
+    # DAVIS width ~854 => 5px ~= 0.0059. Keep it strict to avoid harming base.
+    delta_max_total: 0.006
+
+    local_correlation:
+      window_size: 7
+      use_step: true
+      # Inject corr embeddings is not needed when temporal/residual are frozen.
+      scale: 0.0
+
+      # Use shift-confidence at eval; train without extra gating.
+      confidence_mode: "shift"
+      gate_threshold: 0.05
+      gate_power: 2.0
+      gate_step_train: false
+
+      map_update:
+        enabled: true
+        hidden_dim: 64
+        step_scale: 1.0
+        gate_init_bias: -1.0
+
+loss:
+  # Make "do no harm" explicit.
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 5.0
+      margin: 0.0
+      detach_base: true
+
+  # Add a mild anchor early to prevent initial drift.
+  base_track_consistency:
+    weight: 0.2
+    mask: gt_visible
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 5
+      start_weight: 0.2
+      end_weight: 0.05
+
+training:
+  epochs: 25
+  optimizer:
+    lr: 1.0e-04
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 0.00005
+    min_delta_4px: 0.00005

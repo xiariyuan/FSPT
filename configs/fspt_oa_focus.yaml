@@ -1,0 +1,67 @@
+# =============================================================================
+# FSPT OA-Focus Configuration (resume-friendly)
+# =============================================================================
+
+defaults:
+  - fspt_repro_server_train_eval_kubric_sharded
+  - _self_
+
+experiment:
+  name: "fspt_oa_focus"
+  description: "OA-focused tuning from current resume checkpoint"
+
+training:
+  optimizer:
+    # Slightly lower LR for more stable late-stage optimization.
+    lr: 5.0e-5
+
+  monitor_checkpoints:
+    save_best_aj: true
+    save_best_oa: true
+
+  plateau_guard:
+    enabled: false
+    start_epoch: 8
+    patience: 3
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+
+  checkpoint:
+    # Keep denser checkpoints for best-epoch selection.
+    save_every: 1
+    keep_last: 10
+
+  ema:
+    enabled: true
+    decay: 0.9999
+    warmup_steps: 1000
+    update_after_step: 100
+    use_for_eval: true
+
+  early_stopping:
+    # Still disabled, but use OA as monitor key for best checkpoint selection.
+    enabled: false
+    monitor: "OA"
+    mode: "max"
+    patience: 15
+    min_delta: 0.0005
+
+loss:
+  # Prioritize occlusion supervision to improve OA.
+  occlusion:
+    weight: 1.0
+    type: "bce"
+
+  # Slightly relax auxiliary regularization to reduce interference.
+  semantic_consistency:
+    weight: 0.05
+  frequency_ortho:
+    weight: 0.05
+  temporal_smooth_weight: 0.005
+
+evaluation:
+  eval_every: 1
+  query_mode: "strided"
+  exclude_query_frame: true
+  compare_base: false

@@ -1,0 +1,77 @@
+# =============================================================================
+# Route A Stage-2 fine-tune (no jitter): try to turn "almost base" into "beat base"
+# =============================================================================
+#
+# Context
+# - The previous run `fspt_routeA_corrsup_residual_adaptivebase_c2w11_kubric_20260218_210057`
+#   reached "near do-no-harm" on DAVIS eval256:
+#     AJ_delta  ≈ -5.8e-05 (epoch 19 best so far)
+# - At this scale, even a mild train/test mismatch (e.g. base_jitter) can dominate.
+#
+# Strategy
+# - Start from the previous run's best checkpoint.
+# - Disable base_jitter completely (train/test aligned).
+# - Disable correlation-supervision CE (it tends to collapse to center when base is strong).
+# - Keep adaptive base-track anchor + trust-region clamp for safety.
+# - Use a small LR for a short fine-tune; stop early if we don't improve.
+#
+
+defaults:
+  - fspt_cotracker_refine_corrsup_residual_adaptivebase_adjref_c2_w11_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage2_nojitter_from_bestaj_eval256"
+  description: "Stage2: start from near-base checkpoint; no base_jitter; no corr CE; small LR fine-tune"
+
+# Warm-start from the best-aj checkpoint of the previous run (weights-only; optimizer reset).
+pretrained: "checkpoints/fspt_routeA_corrsup_residual_adaptivebase_c2w11_kubric_20260218_210057/best_aj.pth"
+
+model:
+  refiner:
+    # Train/test aligned: disable synthetic noise.
+    base_jitter:
+      enabled: false
+
+loss:
+  # Stage2: avoid collapsing corr logits to "center" targets (most offsets are tiny).
+  correlation_supervision:
+    enabled: false
+    weight: 0.0
+
+  # Slightly relax the base anchor schedule to allow small corrections.
+  base_track_consistency:
+    weight: 0.2
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 5
+      start_weight: 0.2
+      end_weight: 0.05
+
+  position:
+    # Keep the "strictly better than base" pressure.
+    no_harm_vs_base:
+      weight: 3.0
+      margin: 0.0005
+
+training:
+  epochs: 12
+  optimizer:
+    lr: 1.0e-05
+
+  # We only care if AJ_delta becomes >0 quickly.
+  plateau_guard:
+    enabled: true
+    start_epoch: 2
+    patience: 4
+    min_delta_aj: 0.00001
+    min_delta_4px: 0.00001
+
+evaluation:
+  eval_every: 1
+
+logging:
+  visualize:
+    enabled: false
+

@@ -1,0 +1,14 @@
+defaults:
+  - fspt_online_recovery_real_eval256
+  - _self_
+experiment:
+  name: fspt_online_recovery_cotracker_conf0005
+model:
+  refiner:
+    online_recovery:
+      retracking:
+        enabled: true
+        min_conf: 0.005
+    retracking:
+      enabled: true
+      min_conf: 0.005

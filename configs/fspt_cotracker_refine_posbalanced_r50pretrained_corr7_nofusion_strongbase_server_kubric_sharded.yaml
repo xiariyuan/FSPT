@@ -1,0 +1,42 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): nofusion + corr7 + strong base regularization (server)
+# =============================================================================
+#
+# Motivation
+# - Even after fixing occlusion track-fusion train/eval mismatch, Route A can
+#   still "drift" away from the base tracker when trained on synthetic Kubric,
+#   hurting DAVIS (domain gap).
+# - The safest default for overnight runs is: *do not hurt the base*.
+#
+# Key tweaks (vs the nofusion config)
+# - Stronger base-track consistency using L1 (pixel-ish) in normalized space.
+#   This constrains the refiner to make small, local corrections around CoTracker.
+#
+# Usage:
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_strongbase_server_kubric_sharded.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus=[0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_server_kubric_sharded.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_strongbase_server_kubric_sharded"
+  description: "Route A refiner: corr7 + nofusion + stronger base-track consistency (L1) to reduce domain-gap drift"
+
+loss:
+  base_track_consistency:
+    # Increase strength so refined stays close to base by default.
+    weight: 1.0
+    type: "l1"
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 0
+      start_weight: 1.0
+      end_weight: 1.0
+

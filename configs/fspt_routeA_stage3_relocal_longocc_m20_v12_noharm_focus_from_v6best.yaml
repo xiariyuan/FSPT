@@ -1,0 +1,124 @@
+# =============================================================================
+# Route A Stage-3 v12: no-harm recovery from v6 longocc30-best checkpoint
+# =============================================================================
+#
+# Problem (observed in v6)
+# - We achieved strong long-occlusion gains (AJ_longocc30_delta ~ +0.005),
+#   but the overall metric drifted slightly negative (AJ_delta ~ -0.001).
+#
+# Goal (v12)
+# - Keep long-occ improvements while recovering global "do-no-harm":
+#     * push AJ_delta -> >= 0
+# - Do this with *minimal* additional changes:
+#     1) Focus corrections on re-localization frames (attenuate everywhere else).
+#     2) Add an adaptive base-track anchor: strong when base is good, weak when base is wrong.
+#     3) Short, low-LR fine-tune with early-stop keyed on AJ_delta.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v12_noharm_focus_from_v6best
+  description: "Stage-3 v12: recover AJ_delta>=0 from v6 best; focus corrections + adaptive base anchor; monitor AJ_delta"
+
+# v6 best is selected by AJ_longocc30_delta (epoch 4).
+pretrained: checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best_aj.pth
+
+model:
+  refiner:
+    # Keep training narrow to avoid drifting the long-occ behavior.
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+
+    # Keep visibility fully anchored to the base tracker.
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    # Attenuate corrections away from hard regions (paper-friendly "do no harm").
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.10
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.20
+      include_occluded: false
+
+loss:
+  # Strongly discourage drift when the base tracker is already good,
+  # but relax the anchor when base is far from GT (adaptive weighting).
+  base_track_consistency:
+    weight: 2.0
+    type: smooth_l1
+    smooth_l1_beta: 1.0
+    mask: gt_visible
+    adaptive:
+      enabled: true
+      # ~5px on a 512-wide raster (normalized distance).
+      tau: 0.01
+      power: 2.0
+      min_weight: 0.0
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 2.0
+      end_weight: 1.0
+
+training:
+  # Short recovery run.
+  epochs: 10
+
+  num_workers: 2
+
+  optimizer:
+    lr: 2.0e-05
+
+  # Primary objective for this run: recover global no-harm.
+  early_stopping:
+    enabled: true
+    monitor: AJ_delta
+    mode: max
+    patience: 4
+    min_delta: 5.0e-05
+
+  # Hard stop if we cannot recover quickly (don't waste GPU).
+  deadline_guard:
+    enabled: true
+    monitor: AJ_delta
+    mode: max
+    deadline_epoch: 2
+    threshold: -0.0002
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 2
+    patience: 4
+    min_delta_aj: 5.0e-05
+    min_delta_4px: 5.0e-05
+    min_delta_error: 0.0
+
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+
+  checkpoint:
+    save_every: 1
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  num_workers: 2
+
+data:
+  val:
+    resolution: [256, 256]
+    query_stride: 5
+  train:
+    resolution: [256, 256]

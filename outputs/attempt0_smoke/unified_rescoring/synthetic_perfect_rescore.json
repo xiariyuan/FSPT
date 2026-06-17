@@ -1,0 +1,52 @@
+{
+  "model_name": "synthetic_perfect",
+  "dataset_name": "tapvid_davis",
+  "query_mode": "strided",
+  "metric_resolution_mode": "original",
+  "long_occ_min_run": 20,
+  "num_records": 1,
+  "overall_mean": {
+    "AJ": 1.0,
+    "OA": 1.0,
+    "<avg": 1.0,
+    "<4px": 1.0,
+    "avg_error_px": 0.0,
+    "median_error_px": 0.0
+  },
+  "long_occ_mean": {
+    "AJ": 1.0,
+    "OA": 1.0,
+    "<avg": 1.0,
+    "<4px": 1.0,
+    "avg_error_px": 0.0,
+    "median_error_px": 0.0
+  },
+  "per_record": [
+    {
+      "record_index": 0,
+      "video_id": "synthetic_video_000",
+      "num_queries": 2,
+      "num_long_occ_queries": 1,
+      "resolution_hw": [
+        64,
+        96
+      ],
+      "overall": {
+        "AJ": 1.0,
+        "OA": 1.0,
+        "<avg": 1.0,
+        "<4px": 1.0,
+        "avg_error_px": 0.0,
+        "median_error_px": 0.0
+      },
+      "long_occ": {
+        "AJ": 1.0,
+        "OA": 1.0,
+        "<avg": 1.0,
+        "<4px": 1.0,
+        "avg_error_px": 0.0,
+        "median_error_px": 0.0
+      }
+    }
+  ]
+}

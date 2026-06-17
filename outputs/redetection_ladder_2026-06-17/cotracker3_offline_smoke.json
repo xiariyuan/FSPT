@@ -1,0 +1,9 @@
+{
+  "model_name": "cotracker3_window",
+  "query_mode": "strided",
+  "metric_resolution_mode": "original",
+  "AJ": 51.53847271247148,
+  "OA": 92.15434321089539,
+  "delta_avg": 63.5891490410396,
+  "delta_4px": 68.00601671900523
+}

@@ -1,0 +1,12 @@
+{
+  "python_version": "3.11.8 (main, Feb 26 2024, 21:39:34) [GCC 11.2.0]",
+  "torch_version": "2.4.1+cu121",
+  "transformers_version": "4.57.6",
+  "local_path": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m",
+  "path_exists": true,
+  "config_ok": true,
+  "model_ok": true,
+  "config_class": "DINOv3ViTConfig",
+  "model_class": "DINOv3ViTModel",
+  "error": ""
+}

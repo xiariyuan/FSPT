@@ -1,0 +1,15 @@
+{
+  "issue": "Protocol artifact inconsistency — multiple conflicting truths",
+  "issue_type": "documentation_mismatch",
+  "action": "archive_old_and_replace_with_strided_original",
+  "archived_to": "legacy_first_input/",
+  "num_archived": 9,
+  "current_truth": "strided+original",
+  "baselines_strided_original": {
+    "cotracker3_online": "complete",
+    "cotracker3_offline": "complete",
+    "trackon2": "needs_rerun"
+  },
+  "phase2_blocked": true,
+  "status": "IN_PROGRESS"
+}

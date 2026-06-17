@@ -1,0 +1,86 @@
+# =============================================================================
+# Route A (aggressive, SOTA-focused): delta supervision + argmax local matching
+# =============================================================================
+#
+# Goal
+# - Beat CoTracker3 base on TAP-Vid DAVIS (AJ_delta > 0) under official metrics.
+#
+# Key design choices
+# - Keep refined visibility identical to base (AJ is extremely sensitive to occlusion).
+# - Train in *delta space*: supervise (pred - base) to match (gt - base).
+# - Use hard argmax local correlation steps (matching-first, less "domain-gap drift").
+# - Use an adaptive trust-region clamp driven by correlation confidence:
+#     - low confidence => stay close to base
+#     - high confidence => allow larger corrections
+#
+
+defaults:
+  - fspt_routeA_rebuild_cotrackerfeat_kinetics_strided.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_deltasup_corr7_argmax_adaptclamp"
+  description: "Route A: delta supervision + argmax local matching + adaptive trust region; train Kinetics, val DAVIS"
+
+model:
+  refiner:
+    # Prevent visibility head randomness from destroying AJ.
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Slightly larger correction budget, but guarded by confidence-adaptive clamp.
+    delta_scale: 0.03
+    delta_max_total: 0.02
+    delta_max_total_adaptive:
+      enabled: true
+      min_scale: 0.10
+      max_scale: 1.00
+      threshold: 0.05
+      power: 2.0
+
+    local_correlation:
+      # Matching-first update: pick the best offset in the window.
+      step_mode: "argmax"   # softargmax | argmax
+
+      # Do not use the learned map-update head in this recipe (reduce drift).
+      map_update:
+        enabled: false
+
+loss:
+  position:
+    # Absolute supervision is still useful, but delta supervision stabilizes training.
+    weight: 10.0
+    delta_supervision:
+      enabled: true
+      weight: 2.0
+      type: "l1"
+      detach_base: true
+      clamp: 0.05
+
+    # Keep the Route A guardrail: penalize only when worse than base.
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      detach_base: true
+
+  # Keep explicit correlation supervision on, so the correlation peak matches GT offsets.
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+training:
+  epochs: 30
+  optimizer:
+    lr: 5.0e-05
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0

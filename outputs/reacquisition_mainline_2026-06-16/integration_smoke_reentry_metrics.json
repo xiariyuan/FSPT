@@ -1,0 +1,41 @@
+{
+  "baseline": {
+    "n_queries_with_reentry": 531,
+    "overall_reentry_median": 170.882373933833,
+    "overall_reentry_mean": 176.0588230681517,
+    "overall_reentry_lt4px": 0.0,
+    "n_retracked": 0,
+    "n_non_retracked": 531,
+    "non_retracked_median": 170.882373933833,
+    "non_retracked_mean": 176.0588230681517,
+    "non_retracked_lt4px": 0.0
+  },
+  "dino_recovery": {
+    "n_queries_with_reentry": 531,
+    "overall_reentry_median": 170.882373933833,
+    "overall_reentry_mean": 176.06345553815947,
+    "overall_reentry_lt4px": 0.0,
+    "n_retracked": 66,
+    "n_non_retracked": 465,
+    "retracked_median": 172.54151529902765,
+    "retracked_mean": 183.42214952802942,
+    "retracked_lt4px": 0.0,
+    "non_retracked_median": 170.57418590411606,
+    "non_retracked_mean": 175.01899574604886,
+    "non_retracked_lt4px": 0.0
+  },
+  "learned_head": {
+    "n_queries_with_reentry": 531,
+    "overall_reentry_median": 170.882373933833,
+    "overall_reentry_mean": 176.0106722611847,
+    "overall_reentry_lt4px": 0.0,
+    "n_retracked": 66,
+    "n_non_retracked": 465,
+    "retracked_median": 172.54151529902765,
+    "retracked_mean": 182.99748388385643,
+    "retracked_lt4px": 0.0,
+    "non_retracked_median": 170.57418590411606,
+    "non_retracked_mean": 175.0189957728055,
+    "non_retracked_lt4px": 0.0
+  }
+}

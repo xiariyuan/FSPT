@@ -1,0 +1,25 @@
+{
+  "audit_scope": "attempt0_export_strided_original_cache.py",
+  "schema_assumption": "model_input_size == original_size (no resize step)",
+  "verification": {
+    "cotracker3_online": {
+      "status": "verified_correct",
+      "original_size": [480, 854],
+      "model_input_size": [480, 854],
+      "match": true
+    },
+    "cotracker3_offline": {
+      "status": "verified_correct",
+      "original_size": [480, 854],
+      "model_input_size": [480, 854],
+      "match": true
+    },
+    "trackon2": {
+      "status": "probe_partially_executed",
+      "reason": "dtype mismatch bug blocked initial run; user fixed locally; probe showed 14+ npz written",
+      "risk": "schema not yet validated for this baseline (full run pending)"
+    }
+  },
+  "conclusion": "CoTracker3 schema verified. Track-On2 schema pending full run validation.",
+  "action_required": "Run full Track-On2 strided+original eval after dtype fix, then validate exporter schema."
+}

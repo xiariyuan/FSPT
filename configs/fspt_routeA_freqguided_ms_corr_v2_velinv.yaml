@@ -1,0 +1,35 @@
+# =============================================================================
+# Route A (paper direction 1, v2): Frequency-guided fusion using base motion proxy
+# =============================================================================
+#
+# Motivation
+# - LFD band-energy can be a noisy proxy for "needs fine correction".
+# - In refinement, a more task-aligned proxy is base track velocity:
+#     fast motion  -> prefer coarse (stride~8) correlation (more robust search)
+#     slow motion  -> allow fine (stride~4) correlation to correct small errors
+#
+# This config keeps the Route-A corr-only refiner intact, but changes only the
+# frequency-guided fusion signal and makes the bias gentle (strength<1) so we
+# don't regress when the proxy is imperfect.
+#
+
+defaults:
+  - fspt_routeA_freqguided_ms_corr.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_freqguided_ms_corr_v2_velinv"
+  description: "Route A: freq-guided fusion v2 (source=track_velocity, invert=true, strength=0.3)"
+
+model:
+  refiner:
+    frequency_guided_fusion:
+      enabled: true
+      source: "track_velocity"
+      velocity_threshold: 0.01
+      invert: true
+      strength: 0.3
+      detach: true
+      power: 1.0
+      eps: 1.0e-6
+

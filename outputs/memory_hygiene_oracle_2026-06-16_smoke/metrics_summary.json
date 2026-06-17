@@ -1,0 +1,178 @@
+{
+  "dataset_name": "davis",
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+  "config": "/gemini/code/FSPT/baselines/track_on/config/test.yaml",
+  "checkpoint": "/gemini/code/FSPT/baselines/track_on/checkpoints_trackon2_dinov3.pt",
+  "dinov3_local_dir": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m",
+  "query_mode": "first",
+  "num_videos": 2,
+  "long_occ_min_run": 20,
+  "support_grid_size": 20,
+  "memory_size_eval": 24,
+  "variants": {
+    "baseline": {
+      "overall_mean": {
+        "AJ": 77.89451662774835,
+        "OA": 94.45182724252491,
+        "delta_avg": 86.97164009557758,
+        "<4px": 93.13819577735124
+      },
+      "long_occ_mean": {
+        "AJ": 40.644974831623074,
+        "OA": 79.52522255192879,
+        "delta_avg": 70.07518796992481,
+        "<4px": 76.69172932330827
+      },
+      "reentry_mean": {
+        "count": 2.5,
+        "mean_error_px": 5.753987789154053,
+        "median_error_px": 3.8183069229125977,
+        "<4px": 60.0,
+        "<8px": 80.0
+      },
+      "bucket_mean": {
+        "20-39": {
+          "AJ": 42.880032814375795,
+          "OA": 82.8996282527881,
+          "delta_avg": 70.46728971962615,
+          "<4px": 72.89719626168224
+        },
+        "40-71": {
+          "AJ": 34.693131927174484,
+          "OA": 66.17647058823529,
+          "delta_avg": 68.46153846153847,
+          "<4px": 92.3076923076923
+        },
+        "72+": {
+          "AJ": null,
+          "OA": null,
+          "delta_avg": null,
+          "<4px": null
+        }
+      }
+    },
+    "oracle_mask": {
+      "overall_mean": {
+        "AJ": 79.32552729572777,
+        "OA": 96.77740863787375,
+        "delta_avg": 86.65494143914765,
+        "<4px": 92.7063339731286
+      },
+      "long_occ_mean": {
+        "AJ": 51.33974904747552,
+        "OA": 91.98813056379822,
+        "delta_avg": 69.02255639097746,
+        "<4px": 75.93984962406014
+      },
+      "reentry_mean": {
+        "count": 2.5,
+        "mean_error_px": 9.391199111938477,
+        "median_error_px": 4.3167524337768555,
+        "<4px": 40.0,
+        "<8px": 60.0
+      },
+      "bucket_mean": {
+        "20-39": {
+          "AJ": 50.36496767766116,
+          "OA": 91.07806691449815,
+          "delta_avg": 68.97196261682244,
+          "<4px": 71.96261682242991
+        },
+        "40-71": {
+          "AJ": 57.25898341152005,
+          "OA": 95.58823529411765,
+          "delta_avg": 69.23076923076923,
+          "<4px": 92.3076923076923
+        },
+        "72+": {
+          "AJ": null,
+          "OA": null,
+          "delta_avg": null,
+          "<4px": null
+        }
+      }
+    },
+    "anchor_only": {
+      "overall_mean": {
+        "AJ": 78.27966946319864,
+        "OA": 94.71760797342193,
+        "delta_avg": 87.13478788828391,
+        "<4px": 93.13819577735124
+      },
+      "long_occ_mean": {
+        "AJ": 47.828348740464385,
+        "OA": 82.7893175074184,
+        "delta_avg": 74.58646616541354,
+        "<4px": 81.203007518797
+      },
+      "reentry_mean": {
+        "count": 2.5,
+        "mean_error_px": 7.4914703369140625,
+        "median_error_px": 3.799365997314453,
+        "<4px": 60.0,
+        "<8px": 80.0
+      },
+      "bucket_mean": {
+        "20-39": {
+          "AJ": 51.68296289765857,
+          "OA": 85.87360594795538,
+          "delta_avg": 76.07476635514018,
+          "<4px": 78.50467289719626
+        },
+        "40-71": {
+          "AJ": 36.294372294372295,
+          "OA": 70.58823529411765,
+          "delta_avg": 68.46153846153847,
+          "<4px": 92.3076923076923
+        },
+        "72+": {
+          "AJ": null,
+          "OA": null,
+          "delta_avg": null,
+          "<4px": null
+        }
+      }
+    },
+    "oracle_mask_anchor": {
+      "overall_mean": {
+        "AJ": 79.65354525011332,
+        "OA": 96.77740863787375,
+        "delta_avg": 87.0580124564221,
+        "<4px": 93.23416506717851
+      },
+      "long_occ_mean": {
+        "AJ": 54.44938549669156,
+        "OA": 91.98813056379822,
+        "delta_avg": 72.18045112781955,
+        "<4px": 80.45112781954887
+      },
+      "reentry_mean": {
+        "count": 2.5,
+        "mean_error_px": 7.5042853355407715,
+        "median_error_px": 3.5532960891723633,
+        "<4px": 60.0,
+        "<8px": 80.0
+      },
+      "bucket_mean": {
+        "20-39": {
+          "AJ": 54.84740096794558,
+          "OA": 91.44981412639405,
+          "delta_avg": 73.27102803738319,
+          "<4px": 78.50467289719626
+        },
+        "40-71": {
+          "AJ": 54.84054549420484,
+          "OA": 94.11764705882352,
+          "delta_avg": 67.6923076923077,
+          "<4px": 88.46153846153845
+        },
+        "72+": {
+          "AJ": null,
+          "OA": null,
+          "delta_avg": null,
+          "<4px": null
+        }
+      }
+    }
+  }
+}

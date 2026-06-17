@@ -1,0 +1,45 @@
+# =============================================================================
+# Route A Stage-3 v15 (eval-only): v14 + stronger attenuation on non-longocc
+# =============================================================================
+#
+# Change vs v14:
+# - non_focus_scale: 0.10 (was 0.20)
+#
+# Hypothesis:
+# - Keep longocc queries unchanged (still full-strength corrections),
+#   but reduce drift on easy queries enough to make AJ_delta >= 0.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v15_focus_longocc_query_nf010_eval_from_v6best
+  description: "Eval-only: long-occ query focus + non_focus_scale=0.10 (aim AJ_delta>=0, keep longocc gains)"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.10
+
+      use_relocal_mask: true
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

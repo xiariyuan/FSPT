@@ -1,0 +1,94 @@
+# =============================================================================
+# Verifier-Guided Pseudo-Labeling
+# =============================================================================
+#
+# Main idea
+# - Keep the strong CoTracker3-based refiner as the base tracker.
+# - Use verifier_scores as the main reliability signal.
+# - Use pseudo-label filtering in training, and selective tracking in evaluation.
+#
+
+defaults:
+  - fspt_routeA_stage3_verifier_v1.yaml
+  - _self_
+
+experiment:
+  name: fspt_verifier_guided_pseudo_labeling
+  description: Verifier-guided pseudo-label filtering and calibrated selective tracking
+
+model:
+  refiner:
+    verifier:
+      enabled: true
+      hidden_dim: 256
+      extra_features:
+        - delta_norm
+        - corr_conf
+        - relocal_conf
+        - base_vis
+        - relocal_mask
+      init_bias: -1.5
+      apply_mode: hard
+      threshold: 0.55
+    policy_gate:
+      enabled: false
+
+data:
+  train:
+    max_samples: 32
+  pseudo:
+    dataset: tapvid_kubric
+    root: /gemini/code/datasets/kubric_preprocessed
+    backend: sharded_pkl
+    split: train
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+    annotation_file: train.index.json
+    use_tfds: false
+    allow_synthetic_tracks: false
+    deterministic_sampling: false
+    deterministic_seed: null
+    augmentation:
+      enabled: true
+    max_samples: 8
+
+training:
+  pseudo_labeling:
+    enabled: true
+    teacher_momentum: 0.999
+    confidence_threshold: 0.65
+    warmup_epochs: 0
+    use_soft_labels: true
+    confidence_source: verifier_scores
+  gradient:
+    accumulation_steps: 1
+  batch_size: 1
+  num_workers: 0
+  epochs: 1
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 2
+    min_delta: 5.0e-05
+  checkpoint:
+    save_every: 1
+
+loss:
+  verifier:
+    enabled: true
+    weight: 1.0
+    type: bce
+    margin: 0.001
+    base_error_threshold: 0.006
+    min_points: 128
+    detach_pred: true
+    detach_base: true
+    eval_threshold: 0.55
+
+evaluation:
+  compare_base: true
+  num_workers: 2
+  query_mode: strided
+  metric_resolution_mode: original

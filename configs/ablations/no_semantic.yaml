@@ -1,0 +1,12 @@
+# 消融实验：无语义编码模块
+# 验证CLIP语义特征对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_no_semantic"
+
+model:
+  semantic:
+    enabled: false  # 禁用语义编码

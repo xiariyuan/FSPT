@@ -1,0 +1,512 @@
+# =============================================================================
+# FSPT Base Configuration
+# =============================================================================
+
+# 实验名称
+experiment:
+  name: "fspt_base"
+  description: "FSPT基础配置"
+  seed: 42
+  deterministic: false
+
+# 模型配置
+model:
+  # 模型类型: fspt / cotracker_refiner
+  type: "fspt"
+  # 严格模块检查：true 时缺少 required_modules 会直接报错（避免静默退化）
+  strict_modules: false
+  required_modules: []
+  # 骨干网络
+  backbone:
+    type: "resnet50"
+    pretrained: true
+    freeze_bn: true
+    use_multiscale: true  # 启用FPN风格多尺度特征融合
+  
+  # CLIP配置
+  clip:
+    model: "ViT-B/16"
+    freeze: true
+    dim: 512
+  
+  # 频率分解
+  frequency:
+    enabled: true
+    num_bands: 4
+    kernel_size: 7
+    use_fixed_laplacian: false
+    strict_lfd: false  # true: 若FM-Track LFD不可用则直接报错，不回退到简化分解
+    ortho_weight: 0.1  # >0 启用正交项（总体权重由 loss.frequency_ortho.weight 控制）
+    feature_ortho_weight: 0.1  # 优先于 ortho_weight
+  
+  # 语义融合
+  semantic:
+    enabled: true
+    modulation_type: "multiplicative"
+    fusion_type: "cross_attention"
+    cache:
+      # Optional CLIP feature cache (useful for repeated evaluation on server)
+      enabled: false
+      # spatial caches (T,H',W',D) are larger; global caches (T,D) are smaller and safer.
+      mode: "global"   # global | spatial
+      root_dir: "outputs/semantic_cache"
+      only_eval: true  # avoid caching under random training augmentations
+      write: true      # only rank-0 writes under DDP
+      keep_in_memory: null  # null=auto (global->true, spatial->false); set true/false to override
+  
+  # 时序建模
+  temporal:
+    num_layers: 6
+    num_heads: 8
+    dim: 256
+    dropout: 0.1
+    max_window_size: 30
+    num_refinement_iters: 3  # 迭代精化次数（1表示不精化）
+    use_flash_attention: true  # FlashAttention加速（PyTorch 2.0+）
+    use_gradient_checkpointing: false  # 梯度检查点（节省显存，适用于长视频）
+  
+  # 遮挡预测
+  occlusion:
+    enabled: true
+    use_low_freq_prediction: true
+    use_semantic_propagation: true
+    # Whether occlusion branch can overwrite decoder tracks via soft fusion.
+    # Recommended default: disable in training (cleaner position gradients), enable in evaluation.
+    track_fusion_train: false
+    track_fusion_eval: true
+
+# 数据配置
+data:
+  # 训练数据
+  train:
+    dataset: "tapvid_kubric"
+    root: "datasets/tapvid_kubric"
+    backend: "auto"  # auto | tfds | pickle | sharded_pkl
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+    annotation_file: null
+    use_tfds: false  # 顶会训练建议使用官方Kubric标注pkl
+    allow_synthetic_tracks: false  # 禁用TFDS合成轨迹（仅调试）
+    deterministic_sampling: false  # 开启后每个idx的采样可复现（更适合debug/预计算base tracks）
+    deterministic_seed: null  # 可选：固定采样seed（null则由experiment.seed决定）
+    # Optional point sampling strategy (Kubric training).
+    # - uniform: current default behavior
+    # - occlusion_balanced: prefer points that disappear (occluded) after being visible at query frame
+    sampling:
+      strategy: "uniform"
+      hard_fraction: 0.5
+
+    # Optional: inject precomputed base tracker outputs.
+    # NOTE:
+    # - when enabled together with data.augmentation, the dataloader will disable dataset-level
+    #   augmentation and re-apply it *after* cache injection so cached base_tracks/base_visibility
+    #   stay consistent (safe for training too).
+    # - for Kubric training, cached query_points must match; set data.train.deterministic_sampling=true
+    #   (or generate caches with the exact same sampling scheme).
+    base_tracks_dir: null
+    base_tracks_strict: false
+    base_tracks_query_tol: 1.0e-4
+  
+  # 验证数据
+  val:
+    dataset: "tapvid_davis"
+    root: "datasets/tapvid_davis"
+    backend: "auto"
+    num_frames: -1  # 使用完整视频
+    num_points: null  # 评估使用全部点（更符合官方协议）
+    resolution: null
+    query_stride: 5  # 显式固定官方strided采样步长
+    points_order: "xy"  # DAVIS原始标注点坐标顺序
+    augmentation:
+      enabled: false
+    base_tracks_dir: null
+    base_tracks_strict: false
+    base_tracks_query_tol: 1.0e-4
+
+  # 伪标签数据（可选：无标注/弱标注）
+  pseudo:
+    dataset: "tapvid_kubric"
+    root: "datasets/tapvid_kubric"
+    backend: "auto"
+    split: "train"
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+    annotation_file: null
+    use_tfds: false
+    allow_synthetic_tracks: false
+    deterministic_sampling: false
+    deterministic_seed: null
+    augmentation:
+      enabled: true
+  
+  # 数据增强
+  augmentation:
+    random_crop: true
+    random_flip: true
+    color_jitter: 0.4
+    random_scale: [0.8, 1.2]
+    random_rotation: 0.0
+    temporal:
+      enabled: false
+      random_reverse: true
+      random_speed: [0.5, 2.0]
+      random_start: true
+
+# 训练配置
+training:
+  # 基础设置
+  epochs: 100
+  batch_size: 8
+  num_workers: 8
+  
+  # 优化器
+  optimizer:
+    type: "AdamW"
+    lr: 1.0e-4
+    weight_decay: 1.0e-4
+    betas: [0.9, 0.999]
+    semantic_lr_scale: 1.0  # semantic_encoder.projection 的学习率缩放（默认不缩放）
+    clip_lr_scale: 0.1  # CLIP微调学习率缩放（冻结时无效）
+    backbone_lr_scale: 1.0  # geo_backbone.backbone 的学习率缩放（默认不缩放）
+  
+  # 学习率调度
+  scheduler:
+    type: "CosineAnnealingLR"
+    T_max: ${training.epochs}  # 自动与 epochs 同步
+    eta_min: 1.0e-6
+    warmup_epochs: 5
+  
+  # 梯度
+  gradient:
+    clip_norm: 1.0
+    accumulation_steps: 1
+  
+  # 混合精度
+  amp:
+    enabled: true
+    dtype: "float16"
+  
+  # 数据加载优化
+  data_loading:
+    use_prefetch: true  # 异步数据预取到GPU
+    pin_memory: true  # 使用pinned memory
+  
+  # 检查点
+  checkpoint:
+    save_every: 10
+    keep_last: 5
+  
+  # 模型EMA（指数移动平均）
+  ema:
+    enabled: false  # 是否启用EMA
+    decay: 0.9999  # 衰减率（0.9999表示强平滑）
+    warmup_steps: 2000  # 预热步数
+    update_after_step: 100  # 开始更新的步数
+    use_for_eval: true  # 评估时使用EMA权重
+  
+  # 早停机制
+  early_stopping:
+    enabled: false  # 是否启用早停
+    monitor: "AJ"  # 监控指标
+    patience: 15  # 等待改善的epoch数
+    min_delta: 0.001  # 最小改善阈值
+    mode: "max"  # 'max'表示指标越大越好
+
+  # 学习率查找器（可选）
+  lr_finder:
+    enabled: false
+    start_lr: 1.0e-7
+    end_lr: 1.0
+    num_iter: 100
+    apply: true  # 自动更新optimizer.lr
+    plot_path: "outputs/lr_finder.png"
+  
+  # 渐进式训练（基于CoTracker3策略）
+  progressive:
+    enabled: false  # 是否启用渐进式训练
+    smooth_transition: true  # 平滑过渡
+    transition_epochs: 2  # 过渡epoch数
+    # 自定义阶段（若为空则使用默认策略）
+    stages: null
+
+  # 通用阶段调度（适用于 FSPT / CoTrackerRefiner）：
+  # - 通过参数名前缀做冻结/解冻
+  # - 可选按组别覆盖学习率倍率（other/backbone/semantic/clip）
+  phase_schedule:
+    enabled: false
+    phases:
+      - name: "warmup_heads"
+        start_epoch: 0
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+      - name: "full_finetune"
+        start_epoch: 5
+        freeze_modules:
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0
+
+  # 伪标签自训练（基于BootsTAP策略）
+  pseudo_labeling:
+    enabled: false
+    teacher_momentum: 0.999  # 教师模型EMA动量
+    confidence_threshold: 0.5  # 伪标签置信度阈值
+    warmup_epochs: 10  # 预热后再启用
+    use_soft_labels: true  # 使用软可见性标签
+
+# 损失配置
+loss:
+  # Exclude query frame from training losses to align with TAP-Vid official evaluation protocol.
+  exclude_query_frame: true
+  # 位置损失
+  position:
+    weight: 1.0
+    type: "l1"
+  
+  # 遮挡损失
+  occlusion:
+    weight: 0.5
+    type: "bce"
+
+  # Base tracker可见性一致性（Route A / 预计算base_visibility时可用）
+  # - 默认关闭（weight=0），避免对原始训练产生影响
+  # - 可用于稳定refiner的可见性输出或做ablation
+  base_visibility_consistency:
+    weight: 0.0
+    type: "bce"  # bce | mse
+    mask: "all"  # all | gt_visible
+    # Optional: weight schedule (epoch-based).
+    schedule:
+      type: "none"  # none | linear | cosine | step
+      start_epoch: 0
+      end_epoch: 10
+      start_weight: 0.0
+      end_weight: 0.05
+
+  # Base tracker track consistency (Route A / cached base_tracks). Optional distillation.
+  base_track_consistency:
+    weight: 0.0
+    type: "l2"  # l1 | l2 | smooth_l1
+    mask: "gt_visible"  # all | gt_visible | base_visible | both_visible
+    smooth_l1_beta: 1.0
+    # Optional: ramp-up schedule for the distillation weight (epoch-based).
+    # Note: schedule.type="none" keeps behavior unchanged.
+    schedule:
+      type: "none"  # none | linear | cosine | step
+      start_epoch: 0
+      end_epoch: 10
+      start_weight: 0.0
+      end_weight: 0.05
+  
+  # Additional training regularizers (optional)
+  # Two-view consistency regularization (self-supervised; extra forward passes).
+  # - Creates 2 spatially-augmented views, inverse-maps predictions back to the original coords,
+  #   and penalizes disagreement.
+  # - Default-off for ablations and to avoid extra compute.
+  two_view_consistency:
+    enabled: false
+    weight: 0.0
+    # Optional: schedule for `weight` (epoch-based).
+    schedule:
+      type: "none"  # none | linear | cosine | step
+      unit: "epoch"  # epoch | step | optimizer_step
+      start_epoch: 0
+      end_epoch: 10
+      # When unit is step/optimizer_step, use start_step/end_step instead.
+      start_step: 0
+      end_step: 1000
+      start_weight: 0.0
+      end_weight: 0.02
+
+    # Optional: also match visibility/occlusion predictions across views.
+    visibility_weight: 0.0
+    visibility_type: "mse"  # mse | bce
+    visibility_eps: 1.0e-4
+    visibility_schedule:
+      type: "none"  # none | linear | cosine | step
+      unit: "epoch"  # epoch | step | optimizer_step
+      start_epoch: 0
+      end_epoch: 10
+      start_step: 0
+      end_step: 1000
+      start_weight: 0.0
+      end_weight: 0.01
+
+    apply_prob: 0.5
+    warmup_epochs: 0
+    teacher: "ema"  # ema | student
+    # Optional: run EMA teacher forward in fp32 even under AMP (more stable targets; slightly slower).
+    teacher_disable_autocast: false
+    stop_grad: true
+    require_base_tracks: true  # skip if cached base_tracks/base_visibility not available
+    mask: "gt_visible"  # gt_visible | pred_visible | both | all
+    # How to apply the mask: hard boolean masking or soft confidence weights.
+    mask_weighting: "binary"  # binary | soft
+    pred_vis_threshold: 0.5
+    use_in_bounds: true
+    # If two-view OOMs (extra compute), skip it for that batch instead of crashing.
+    oom_safe: true
+    # Optional: subsample query points for the two-view loss to reduce compute.
+    # null/0 disables subsampling.
+    max_points: null
+    # Avoid double-temporal transforms: when two-view temporal is enabled, the training script can
+    # disable dataset-level temporal augmentation (data.augmentation.temporal.*) automatically.
+    auto_disable_dataset_temporal: true
+    # Optional: resample affine transforms until enough query points stay in bounds.
+    max_resample: 8
+    min_in_bounds_fraction: 0.5
+    exclude_query_frame: false
+    type: "l2"  # l2 | l1 | smooth_l1
+    smooth_l1_beta: 1.0
+    augmentation:
+      # Keep transforms mild by default to reduce out-of-bounds query points.
+      flip: true
+      flip_prob: 0.5
+      rotation_deg: 0.0
+      scale: [0.85, 1.0]
+      translate: [0.0, 0.0]  # (ty, tx) max shift as fraction of image size (0..1)
+      align_corners: false
+      padding_mode: "zeros"
+      mode: "bilinear"
+
+    # Optional: invertible temporal transforms (equivariance regularization).
+    # Notes:
+    # - Only uses reverse/roll (permutation) so outputs can be mapped back exactly.
+    # - Requires cached base_tracks/base_visibility to keep query_points consistent after time transforms.
+    temporal:
+      enabled: false
+      reverse_prob: 0.5
+      roll_prob: 0.5
+      roll_max: null  # null -> sample full range [0, T-1]
+
+  frequency_ortho:
+    weight: 0.1
+  frequency_reconstruction:
+    weight: 0.0
+  frequency_separation:
+    weight: 0.0
+  
+  # 语义一致性损失
+  semantic_consistency:
+    weight: 0.1
+    num_pairs: 256
+  
+  # 时序平滑损失（鼓励轨迹平滑，减少抖动）
+  temporal_smooth_weight: 0.01
+  
+  # 时序一致性正则化（基于TAPIR策略）
+  temporal_consistency:
+    enabled: false
+    order: 2  # 1=一阶差分, 2=二阶差分（加速度）
+    weight: 0.01
+  
+  # 置信度加权损失（基于CoTracker3策略）
+  confidence_weighted:
+    enabled: false
+    weight: 0.1  # 置信度正则化权重
+    min_confidence: 0.1  # 最小置信度
+  
+  # 多迭代监督（基于CoTracker策略）
+  multi_iteration:
+    enabled: false
+    gamma: 0.8  # 权重衰减因子
+
+# 评估配置
+evaluation:
+  # 评估数据集
+  datasets:
+    - "tapvid_davis"
+    - "tapvid_kinetics"
+  
+  # 评估频率
+  eval_every: 5
+  # TAP-Vid query protocol:
+  # - strided: 评估除query帧外全部帧
+  # - first: 仅评估query帧之后的帧
+  # 留空/null时兼容旧逻辑（由exclude_query_frame控制）
+  query_mode: "strided"
+  # Metric pixel-space resolution mode:
+  # - original: use original_size from dataset batch (official/SOTA-comparable)
+  # - input: use model input resolution (for training-progress monitoring)
+  metric_resolution_mode: "original"
+  # Optional auxiliary metric mode. When set and different from metric_resolution_mode,
+  # training evaluation logs extra keys like AJ_input / OA_input / <4px_input.
+  # Set to null to disable auxiliary logging.
+  aux_metric_resolution_mode: null
+  # Optional fixed pixel resolution for auxiliary metrics, e.g. [256, 256].
+  # Useful when val.resolution=null and input==original, so *_input equals primary metrics.
+  aux_metric_fixed_resolution: null
+  exclude_query_frame: true
+  compare_base: false  # 若模型提供base_tracks/base_visibility，可额外评估base性能（Route A）
+  num_workers: 4
+  
+  # 指标
+  metrics:
+    - "AJ"
+    - "<4px"
+    - "OA"
+
+# 日志配置
+logging:
+  # 日志目录
+  log_dir: "logs"
+  
+  # WandB集成
+  wandb:
+    enabled: true
+    project: "FSPT"
+    entity: null
+    watch_model: false  # 是否监控模型梯度
+    log_freq: 100  # 日志记录频率
+  
+  # TensorBoard (未实现，保留配置占位)
+  use_tensorboard: false
+  tensorboard:
+    enabled: false
+  
+  # 打印频率
+  print_every: 100
+  
+  # 可视化
+  visualize:
+    enabled: true
+    save_every: 1000
+    num_samples: 4
+
+# 硬件配置
+hardware:
+  # GPU
+  gpus: [0, 1]
+  
+  # 分布式
+  distributed:
+    enabled: false
+    backend: "nccl"
+    init_method: "env://"
+    find_unused_parameters: false
+
+# 路径配置
+paths:
+  output_dir: "outputs"
+  checkpoint_dir: "checkpoints"
+  
+  # 预训练权重
+  pretrained:
+    fspt: null  # FSPT预训练权重（用于微调）
+    clip: null  # 使用默认

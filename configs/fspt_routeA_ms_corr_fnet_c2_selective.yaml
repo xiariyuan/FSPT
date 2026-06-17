@@ -1,0 +1,174 @@
+# =============================================================================
+# Route A (SOTA-focused, structural): Multi-scale local correlation (fnet + geo c2)
+# =============================================================================
+#
+# What this tries to fix (our own design choice)
+# - Single-source correlation (only CoTracker fnet) is stride~8 and can be too coarse.
+# - Learned residual-only updates tend to drift (domain gap) and harm the base tracker.
+#
+# This config enables a *second* fine correlation head on geo-backbone pyramid c2
+# (stride~4, higher spatial detail) and fuses coarse+fine steps by confidence.
+#
+# Training recipe
+# - Train on TAP-Vid Kinetics (real videos) to reduce synthetic->real gap.
+# - Use *selective* position supervision: only backprop where base is wrong.
+# - Add delta supervision (GT-base) for stable residual learning.
+#
+# Expected behavior
+# - Should be able to move beyond the "do nothing" optimum without harming base.
+# - If it still cannot beat base, that strongly suggests "no learnable refiner can
+#   consistently improve CoTracker3 on DAVIS without extra data / TTA".
+#
+
+defaults:
+  - fspt_routeA_rebuild_cotrackerfeat_kinetics_strided.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_fnet_c2_selective"
+  description: "Route A: multi-scale correlation (CoTracker fnet + geo c2) + selective + delta supervision"
+
+model:
+  # We keep semantic/occlusion disabled for now; focus on position refinement.
+  frequency:
+    enabled: false
+  semantic:
+    enabled: false
+  occlusion:
+    enabled: false
+
+  # Geo-backbone is only used to provide a high-res c2 feature map for the fine
+  # correlation head (it stays frozen via refiner.trainable_modules below).
+  backbone:
+    type: "resnet50"
+    pretrained: true
+    pretrained_path: "weights/backbone/resnet50_a1_0-14fe96d1.pth"
+    freeze_bn: true
+
+  refiner:
+    feature_source: "cotracker"
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+    stages: []
+
+    # IMPORTANT: In Route A we care primarily about position refinement.
+    # The refiner's visibility head is not supervised (occlusion disabled), so it can
+    # collapse and catastrophically reduce AJ/OA. Use the base tracker's visibility.
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Residual updates: let the model move, but keep a trust region.
+    delta_gate:
+      enabled: true
+      init_bias: -1.0   # sigmoid≈0.27 (avoid "frozen gate" early)
+
+    delta_scale: 0.03
+    delta_max_step: 0.03
+    delta_max_total: 0.04
+    delta_max_total_adaptive:
+      enabled: true
+      min_scale: 0.5
+      max_scale: 2.0
+      threshold: 0.10
+      power: 2.0
+
+    # Coarse (stride~8) correlation on CoTracker fnet features.
+    local_correlation:
+      enabled: true
+      feature_source: "cotracker"
+      reference_mode: "adjacent"
+      projection: "identity"
+      corr_dim: 128
+      window_size: 11
+      normalize: true
+      temperature: 1.0
+      use_step: true
+      step_mode: "softargmax"
+      confidence_mode: "maxprob"
+      apply_step_before_residual: true
+      step_scale: 1.0
+      step_gate: "confidence"
+      gate_threshold: 0.10
+      gate_power: 2.0
+      gate_step_train: true
+
+    # Fine (stride~4) correlation on geo backbone c2 features.
+    local_correlation_fine:
+      enabled: true
+      feature_source: "geo"
+      feature_level: "c2"
+      # in_dim is inferred from the timm backbone pyramid (ResNet50 c2=256).
+      corr_dim: 64
+      window_size: 7
+      normalize: true
+      temperature: 1.0
+      projection: "learned"
+      reference_mode: "adjacent"
+      use_step: true
+      step_mode: "softargmax"
+      confidence_mode: "maxprob"
+      apply_step_before_residual: true
+      step_scale: 1.0
+      step_gate: "confidence"
+      gate_threshold: 0.10
+      gate_power: 2.0
+      gate_step_train: true
+
+    local_correlation_fusion:
+      enabled: true
+      confidence_power: 2.0
+      eps: 1.0e-6
+
+loss:
+  position:
+    weight: 10.0
+
+    # Only supervise points where the base tracker is actually wrong.
+    selective:
+      enabled: true
+      base_error_threshold: 0.01
+      min_points: 256
+      detach_base: true
+
+    # Stable training target when base is strong: supervise delta = (GT - base).
+    delta_supervision:
+      enabled: true
+      weight: 1.0
+      type: "smooth_l1"
+      clamp: 0.04
+      detach_base: true
+
+    # Safety: penalize being worse than base.
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      detach_base: true
+
+  # Keep explicit supervision for correlation logits (main head).
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+  # Disable direct "stay close to base" anchor; no_harm + clamp is safer.
+  base_track_consistency:
+    weight: 0.0
+    schedule: null
+
+training:
+  optimizer:
+    lr: 3.0e-05
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 0.00005
+    min_delta_4px: 0.00005
+
+evaluation:
+  compare_base: true

@@ -1,0 +1,119 @@
+{
+  "config": "configs/fspt_dino_lowconf_ablation.yaml",
+  "checkpoint": "checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth",
+  "max_batches": 10,
+  "relocal_queries": 74,
+  "retracked_queries": 74,
+  "base_t0_error_px": {
+    "count": 74,
+    "mean": 47.03686466943976,
+    "median": 2.6705950498580933,
+    "std": 87.3571621094865,
+    "min": 0.07082193344831467,
+    "max": 258.195556640625,
+    "p5": 0.3702609315514565,
+    "p95": 243.86225204467775
+  },
+  "anchor_t0_error_px": {
+    "count": 74,
+    "mean": 69.87182458026989,
+    "median": 32.867008209228516,
+    "std": 77.45240369402728,
+    "min": 4.019874095916748,
+    "max": 244.68836975097656,
+    "p5": 9.48172116279602,
+    "p95": 244.68836975097656
+  },
+  "pre_retracking_t0_error_px": {
+    "count": 74,
+    "mean": 57.47935731346543,
+    "median": 17.34008026123047,
+    "std": 82.15516863727454,
+    "min": 4.109109401702881,
+    "max": 251.40382385253906,
+    "p5": 4.705501770973206,
+    "p95": 244.22228622436523
+  },
+  "post_retracking_t0_error_px": {
+    "count": 74,
+    "mean": 69.87182458026989,
+    "median": 32.867008209228516,
+    "std": 77.45240369402728,
+    "min": 4.019874095916748,
+    "max": 244.68836975097656,
+    "p5": 9.48172116279602,
+    "p95": 244.68836975097656
+  },
+  "base_tail_error_px": {
+    "count": 1336,
+    "mean": 55.86714464004157,
+    "median": 3.446088671684265,
+    "std": 87.86762467525372,
+    "min": 0.03861835598945618,
+    "max": 258.195556640625,
+    "p5": 0.6062012612819672,
+    "p95": 233.99018478393555
+  },
+  "post_retracking_tail_error_px": {
+    "count": 1336,
+    "mean": 78.29268399898163,
+    "median": 48.56184196472168,
+    "std": 72.81542936756027,
+    "min": 4.019874095916748,
+    "max": 247.60488891601562,
+    "p5": 11.53490924835205,
+    "p95": 234.00487518310547
+  },
+  "relocal_conf_t0": {
+    "count": 74,
+    "mean": 0.018006512719030317,
+    "median": 0.017930383794009686,
+    "std": 0.0003913038378344956,
+    "min": 0.017298631370067596,
+    "max": 0.01882101222872734,
+    "p5": 0.017472588922828436,
+    "p95": 0.018733994197100402
+  },
+  "per_batch": [
+    {
+      "batch": 0,
+      "retracked_queries": 22
+    },
+    {
+      "batch": 1,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 2,
+      "retracked_queries": 17
+    },
+    {
+      "batch": 3,
+      "retracked_queries": 11
+    },
+    {
+      "batch": 4,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 5,
+      "retracked_queries": 1
+    },
+    {
+      "batch": 6,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 7,
+      "retracked_queries": 0
+    },
+    {
+      "batch": 8,
+      "retracked_queries": 23
+    },
+    {
+      "batch": 9,
+      "retracked_queries": 0
+    }
+  ]
+}

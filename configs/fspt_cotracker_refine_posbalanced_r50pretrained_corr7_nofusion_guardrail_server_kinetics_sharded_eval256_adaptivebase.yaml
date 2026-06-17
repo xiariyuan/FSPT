@@ -1,0 +1,37 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): Kinetics shards + adaptive base consistency
+# =============================================================================
+#
+# Motivation:
+# - Guardrail training can become too conservative (AJ_delta≈0) when the base-track
+#   consistency penalty is strong everywhere.
+# - We only want to keep refined tracks close to base when base is already good.
+# - When base is far from GT, we should relax the base constraint so the refiner
+#   can learn useful corrections.
+#
+# This config enables an *error-aware* weighting for `loss.base_track_consistency`:
+#   weight_map = 1 / (1 + (||base-gt|| / tau)^power)
+# so the penalty is smaller where base error is larger.
+#
+# Notes:
+# - `tau` is in normalized coordinate units. For 256x256 raster, ~4px ≈ 4/256 ≈ 0.0156.
+# - For safety, occluded points keep full weight (no relaxation), because they have
+#   no position supervision.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_guardrail_eval256_adaptivebase"
+  description: "Route A refiner: Kinetics shards + guardrail + adaptive base-track consistency (error-aware trust region)"
+
+loss:
+  base_track_consistency:
+    adaptive:
+      enabled: true
+      tau: 0.015625  # ≈4px @ 256x256
+      power: 2.0
+      min_weight: 0.1
+

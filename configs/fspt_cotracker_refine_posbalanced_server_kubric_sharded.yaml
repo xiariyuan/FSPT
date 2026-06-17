@@ -1,0 +1,32 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): Server-ready (sharded Kubric pickle)
+# =============================================================================
+#
+# This is a thin server override on top of:
+#   configs/fspt_cotracker_refine_posbalanced.yaml
+#
+# It fixes two common server issues:
+# 1) Kubric training data is stored outside the repo (sharded pkl streaming).
+# 2) The server environment is often offline (no HF downloads).
+#
+# Usage:
+#   python train.py --config configs/fspt_cotracker_refine_posbalanced_server_kubric_sharded.yaml
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_server_kubric_sharded"
+  description: "Route A refiner (pos-balanced) + sharded Kubric train (server/offline)"
+
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/kubric_preprocessed"
+    backend: "sharded_pkl"
+    use_tfds: false
+    allow_synthetic_tracks: false
+    annotation_file: "train.index.json"
+

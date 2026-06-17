@@ -1,0 +1,52 @@
+# =============================================================================
+# Route A Stage-3 v10b: visible-bank relocalization with progressive unfreeze
+# =============================================================================
+#
+# Goal
+# - Keep the visible-memory-bank relocalization from v10.
+# - Increase correction capacity after the first two epochs by unfreezing
+#   geo_backbone with a smaller backbone LR.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v10_visiblebank_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v10b_visiblebank_unfreeze_l30
+  description: Stage-3 v10b visible-bank relocalization with epoch-2 geo_backbone unfreeze
+
+model:
+  refiner:
+    trainable_modules: []
+    stages:
+      - start_epoch: 0
+        trainable_modules:
+          - temporal_transformer
+          - residual_decoder
+          - relocalization_residual
+      - start_epoch: 2
+        trainable_modules:
+          - temporal_transformer
+          - residual_decoder
+          - relocalization_residual
+          - geo_backbone
+
+training:
+  optimizer:
+    lr: 3.0e-05
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 8
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 10
+    threshold: 0.0040

@@ -1,0 +1,42 @@
+{
+  "phase": 0,
+  "protocol": "strided+original",
+  "davis_pkl_verified": true,
+  "metric_wrapper": {
+    "normalization": "yx-normalized, denominator = (H-1, W-1) per video",
+    "reentry_detection": "first visible frame after any occlusion",
+    "coordinate_space": "original resolution",
+    "status": "correct"
+  },
+  "smoke_results": {
+    "cotracker3_online": {"AJ": 36.95, "OA": 68.15, "delta_avg": 45.01, "delta_4px": 47.71, "cache_complete": true},
+    "cotracker3_offline": {"AJ": 51.54, "OA": 92.15, "delta_avg": 63.59, "delta_4px": 68.01, "cache_complete": true},
+    "trackon2": {"status": "failed_unsupported", "cache_complete": false}
+  },
+  "reentry_oracle": {
+    "cotracker3_online": {
+      "n_reentry": 1385,
+      "median_px": 3.859,
+      "mean_px": 14.729,
+      "p95_px": 74.95,
+      "oracle_gap_mean": 14.729,
+      "oracle_better_4px_frac": 0.487,
+      "oracle_better_16px_frac": 0.143,
+      "longocc20_n": 146,
+      "longocc20_median": 6.393,
+      "longocc20_better_4px_frac": 0.685
+    },
+    "cotracker3_offline": {
+      "n_reentry": 1385,
+      "median_px": 3.71,
+      "mean_px": 12.209,
+      "p95_px": 44.97,
+      "oracle_gap_mean": 12.209,
+      "oracle_better_4px_frac": 0.462,
+      "oracle_better_16px_frac": 0.115,
+      "longocc20_n": 146,
+      "longocc20_median": 5.575,
+      "longocc20_better_4px_frac": 0.685
+    }
+  }
+}

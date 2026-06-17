@@ -1,0 +1,44 @@
+# =============================================================================
+# Route A smoke: dual all-pair + relocal bank only (eval256, fast)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_only_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_reloc_only_smoke256"
+  description: "Route A smoke ablation: dual all-pair + relocal bank only @eval256"
+
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_kinetics_guardrail_eval256_20260505_182156/best_aj.pth
+
+data:
+  train:
+    max_samples: 256
+
+training:
+  epochs: 1
+  num_workers: 0
+  data_loading:
+    use_prefetch: false
+    pin_memory: false
+    persistent_workers: false
+    prefetch_factor: 2
+
+evaluation:
+  num_workers: 0
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+logging:
+  wandb:
+    enabled: false
+  visualize:
+    enabled: false
+

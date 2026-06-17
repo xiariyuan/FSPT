@@ -1,0 +1,27 @@
+defaults:
+- fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+- _self_
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v32_train_from_v5_l30_with_eval_focus_occ_lowcorr
+  description: Train stage-3 (v6 recipe) + eval-only focus longocc30 via (base_vis
+    & low corr_conf) occlusion runs
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+    focus_corrections:
+      enabled: true
+      apply_in_train: false
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_mode: max_run
+      long_occlusion_fill_gaps: 1
+      long_occlusion_use_corr_conf_for_occ: true
+      long_occlusion_occ_corr_threshold: 0.12
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false

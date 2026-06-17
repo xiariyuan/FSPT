@@ -1,0 +1,67 @@
+# =============================================================================
+# Route A (SOTA-focused): Identity correlation + train/eval consistent gating (v2)
+# =============================================================================
+#
+# Fixes vs v1
+# - Apply correlation step before residual update (apply_step_before_residual)
+# - Use confidence gating during training too (gate_step_train) to avoid train/test mismatch
+# - Disable corr_conf gating on residual updates; use residual delta_gate instead
+#
+
+defaults:
+  - fspt_routeA_rebuild_cotrackerfeat_kinetics_strided.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corr7_identityproj_shiftgate_v2_20260221_010617"
+  description: "Route A v2: identity-projected correlation + consistent confidence gating; train Kinetics, val DAVIS"
+
+model:
+  refiner:
+    # Prevent visibility head randomness from destroying AJ.
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Learned residual update should be conservative and self-gated.
+    delta_gate:
+      enabled: true
+      init_bias: -2.0   # sigmoid≈0.12 (more learnable than -4.0)
+
+    delta_scale: 0.02
+    delta_max_step: 0.01
+    delta_max_total: 0.02
+
+    local_correlation:
+      corr_dim: 128
+      projection: "identity"      # learned | identity
+
+      reference_mode: "query"
+      step_mode: "softargmax"
+      confidence_mode: "shift"
+
+      use_step: true
+      apply_step_before_residual: true
+
+      step_gate: "confidence"
+      gate_threshold: 0.05
+      gate_power: 2.0
+      gate_step_train: true
+
+      # Don't reuse corr_conf to gate residual updates; the residual decoder has its own delta_gate.
+      gate_residual: false
+
+loss:
+  position:
+    hard_mining:
+      enabled: true
+      tau: 0.0075
+      power: 2.0
+      min_weight: 1.0
+      max_weight: 5.0
+      detach_base: true
+
+training:
+  optimizer:
+    lr: 2.0e-05
+

@@ -1,0 +1,47 @@
+# =============================================================================
+# Route A Verifier short sanity with relaxed supervision thresholds.
+# =============================================================================
+#
+# Goal
+# - Keep the same stable 256-resolution warm-start chain.
+# - Lower supervision gates so the verifier/acceptor head sees more positives.
+# - Use this as a quick diagnostic: if the metrics are still zero, the route is
+#   probably not salvageable by threshold tuning alone.
+
+defaults:
+  - fspt_routeA_stage3_verifier_short256_from_kinetics_guardrail.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_verifier_short256_relaxed_from_kinetics_guardrail
+  description: "Short verifier sanity with relaxed supervision thresholds on stable eval256 chain"
+
+model:
+  backbone:
+    # Offline server: never let timm try to fetch ImageNet weights from HF.
+    # The warm-start checkpoint from the parent config will provide backbone weights.
+    pretrained: false
+
+loss:
+  relocal_acceptor:
+    min_points: 16
+    base_error_threshold: 0.01
+  position:
+    no_harm_vs_base:
+      min_points: 32
+      base_error_threshold: 0.01
+
+training:
+  epochs: 2
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 1
+    min_delta: 1.0e-05
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 1
+    threshold: 0.0

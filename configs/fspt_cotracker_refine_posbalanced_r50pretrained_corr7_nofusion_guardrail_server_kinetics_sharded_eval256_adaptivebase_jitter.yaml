@@ -1,0 +1,63 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): base jitter to learn non-trivial gains
+# =============================================================================
+#
+# Problem:
+# - When the CoTracker3 base tracker is already strong on the training domain,
+#   the easiest way to minimize both (refined->GT) and (refined->base) losses is
+#   to output almost exactly the base tracks (AJ_delta ~= 0).
+#
+# Idea:
+# - During *training only*, add small synthetic noise to base tracks (excluding
+#   the query frame) and ask the refiner to correct it back using local matching.
+# - Keep a hard trust-region clamp (delta_max_total) so we never drift too far.
+#
+# This is a practical way to force the refiner to learn "how to correct a slightly
+# wrong base", while still keeping evaluation strictly on clean CoTracker outputs.
+#
+# Usage (server):
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus=[0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_adaptivebase_jitter_eval256"
+  description: "Route A refiner: adaptive base consistency + train-time base jitter (forces learning) + hard delta clamp"
+
+model:
+  refiner:
+    # Hard clamp on |refined - clean_base| (normalized y/x).
+    # 0.02 ~= 5px @ 256x256. This is a safety net even if other guardrails are relaxed.
+    delta_max_total: 0.02
+
+    # Claude's suggestion: rely on the hard clamp instead of a very conservative gate.
+    delta_gate:
+      enabled: false
+
+    # Training-only perturbation of base tracks.
+    base_jitter:
+      enabled: true
+      prob: 0.5
+      std_px: 2.0
+      max_px: 5.0
+      exclude_query_frame: true
+      mode: "constant"  # constant | per_frame
+
+loss:
+  base_track_consistency:
+    # Lower than the original guardrail (3.0) so the refiner has room to move.
+    weight: 1.0
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 5
+      start_weight: 1.0
+      end_weight: 0.5
+

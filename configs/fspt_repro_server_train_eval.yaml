@@ -1,0 +1,51 @@
+# =============================================================================
+# FSPT Server: Train + Full Evaluation Config
+# =============================================================================
+#
+# Purpose:
+# - Keep training behavior from fspt_repro_server (Kubric TFDS train + DAVIS val).
+# - Add explicit Kinetics dataset root for post-training evaluation.
+# - Keep memory-safe defaults for cgroup-limited environments.
+#
+# Note:
+# - train.py uses data.val for in-training validation (still DAVIS).
+# - evaluate.py --dataset all will use evaluation.datasets below.
+#
+
+defaults:
+  - fspt_repro_server
+  - _self_
+
+experiment:
+  name: "fspt_repro_server_train_eval"
+  description: "Server run: Kubric train + DAVIS val + post-train DAVIS/Kinetics eval"
+
+model:
+  backbone:
+    pretrained: true
+    pretrained_path: "/gemini/code/FSPT/weights/backbone/resnet50_a1_0-14fe96d1.pth"
+    # Top-tier oriented stable fine-tuning: freeze low-level stages, train high-level stages.
+    freeze_stages: ["stem", "layer1", "layer2"]
+  clip:
+    cache_dir: "/gemini/code/FSPT/weights/clip"
+
+data:
+  kinetics:
+    dataset: "tapvid_kinetics"
+    root: "/gemini/code/datasets/tapvid_kinetics"
+    augmentation:
+      enabled: false
+    num_frames: -1
+    num_points: null
+    resolution: null
+    max_frames: 250
+
+evaluation:
+  datasets:
+    - "tapvid_davis"
+    - "tapvid_kinetics"
+  eval_every: 1
+  query_mode: "strided"
+  exclude_query_frame: true
+  compare_base: false
+  num_workers: 0

@@ -1,0 +1,32 @@
+{
+  "all": {
+    "n": 246,
+    "gt_inside": 235,
+    "coverage": 0.955
+  },
+  "base_gt_16": {
+    "n": 56,
+    "gt_inside": 45,
+    "coverage": 0.804
+  },
+  "base_gt_32": {
+    "n": 28,
+    "gt_inside": 17,
+    "coverage": 0.607
+  },
+  "val_all": {
+    "n": 51,
+    "gt_inside": 46,
+    "coverage": 0.902
+  },
+  "val_base_gt_16": {
+    "n": 11,
+    "gt_inside": 6,
+    "coverage": 0.545
+  },
+  "val_base_gt_32": {
+    "n": 7,
+    "gt_inside": 2,
+    "coverage": 0.286
+  }
+}

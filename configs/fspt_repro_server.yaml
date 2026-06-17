@@ -1,0 +1,72 @@
+# =============================================================================
+# FSPT Paper-Repro Server Config
+# =============================================================================
+#
+# Purpose:
+# - Keep low-memory Kubric TFDS training settings from fspt_server.
+# - Enforce reproducibility-oriented evaluation defaults.
+# - Avoid touching existing fspt_server behavior.
+#
+
+defaults:
+  - fspt_server
+  - _self_
+
+experiment:
+  name: "fspt_repro_server"
+  description: "Paper-repro oriented server run (train on Kubric, eval with strict TAP-Vid protocol)"
+  seed: 42
+  deterministic: false
+
+model:
+  backbone:
+    # Paper-oriented setting: start from ImageNet-pretrained backbone.
+    # If server is offline, make sure timm weights are already cached.
+    pretrained: true
+
+data:
+  # Keep Kubric TFDS training from fspt_server/fspt_kubric_tfds_server.
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/tapvid_kubric"
+    use_tfds: true
+    allow_synthetic_tracks: true
+    deterministic_sampling: false
+
+  # Use a real benchmark split for in-training validation.
+  # (Do not use test split for model selection.)
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    augmentation:
+      enabled: false
+    num_frames: -1
+    num_points: null
+    resolution: null
+
+evaluation:
+  datasets:
+    - "tapvid_davis"
+  eval_every: 1
+  # Official TAP-Vid protocol.
+  query_mode: "strided"
+  exclude_query_frame: true
+  compare_base: false
+  num_workers: 0
+
+training:
+  # Keep conservative defaults for cgroup-limited environment.
+  batch_size: 1
+  num_workers: 0
+  gradient:
+    accumulation_steps: 4
+  data_loading:
+    use_prefetch: true
+    pin_memory: true
+
+hardware:
+  gpus: [0]
+
+logging:
+  wandb:
+    enabled: false

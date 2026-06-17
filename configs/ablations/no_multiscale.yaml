@@ -1,0 +1,12 @@
+# 消融实验：无多尺度特征融合
+# 验证FPN多尺度融合对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_no_multiscale"
+
+model:
+  backbone:
+    use_multiscale: false  # 禁用多尺度融合

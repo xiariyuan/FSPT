@@ -1,0 +1,46 @@
+# =============================================================================
+# FSPT OA-Focus + Mid Unfreeze (Stem)
+# =============================================================================
+
+defaults:
+  - fspt_oa_focus
+  - _self_
+
+experiment:
+  name: "fspt_oa_focus_unfreeze_stem"
+  description: "OA-focus with controlled backbone unfreeze (stem + layer1/2)"
+
+training:
+  optimizer:
+    # Lower LR after expanding trainable backbone scope.
+    lr: 3.0e-5
+
+  phase_schedule:
+    enabled: true
+    phases:
+      - name: "warmup_heads"
+        start_epoch: 0
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+
+      - name: "full_finetune_plus_stem"
+        start_epoch: 8
+        freeze_modules:
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.stem"
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0

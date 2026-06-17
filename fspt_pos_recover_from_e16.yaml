@@ -1,0 +1,43 @@
+# =============================================================================
+# FSPT Position-Recovery Config (from formal best)
+# =============================================================================
+
+defaults:
+  - fspt_oa_from_formal_best_lateclip
+  - _self_
+
+experiment:
+  name: "fspt_pos_recover_from_e16"
+  description: "Position-focused recovery run from formal best weights"
+
+training:
+  optimizer:
+    lr: 2.0e-5
+
+  early_stopping:
+    enabled: false
+    monitor: "AJ"
+    mode: "max"
+
+  plateau_guard:
+    enabled: true
+    # Delay guard until after larger unfreeze (late_clip starts at epoch 17)
+    start_epoch: 18
+    patience: 4
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+
+loss:
+  position:
+    weight: 10.0
+  occlusion:
+    weight: 0.5
+
+evaluation:
+  # Keep official/SOTA-comparable reporting as default
+  metric_resolution_mode: "original"
+  # Also log input-resolution metrics for training-progress diagnosis.
+  aux_metric_resolution_mode: "input"
+  # Force auxiliary metrics to a fixed input-scale pixel space for stable progress monitoring.
+  aux_metric_fixed_resolution: [256, 256]

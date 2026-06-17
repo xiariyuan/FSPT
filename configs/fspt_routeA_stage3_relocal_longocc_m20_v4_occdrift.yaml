@@ -1,0 +1,59 @@
+# =============================================================================
+# Route A Stage-3 v4: occlusion+drift training augmentation (more aggressive)
+# =============================================================================
+#
+# Goal
+# - Current long-occ gains are stable but small (~+0.002 AJ on longocc20/30).
+# - A major limiter is training signal: on synthetic Kinetics/Kubric, CoTracker3
+#   is often already strong, so the refiner sees too few "re-lock after occlusion"
+#   failures and learns mostly tiny residual updates.
+#
+# This v4 run makes the training distribution *match the paper failure mode*:
+# - force a long occlusion run (base_visibility low)
+# - inject a large drift into base_tracks right after re-appearance
+#
+# Expected: larger AJ_longocc{K}_delta on DAVIS (and hopefully fewer negative videos).
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v3_lastvis.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage3_relocal_longocc_m20_v4_occdrift"
+  description: "Stage-3 v4: simulate long occlusion + re-lock drift during training; monitor AJ_longocc20_delta"
+
+model:
+  refiner:
+    # Training-only augmentation: create reappearance failures on purpose.
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.50
+      # Match the evaluation story: long occlusion (>=20 frames).
+      min_len: 20
+      max_len: 20
+      # Drift the base immediately after re-appearance for a few frames.
+      after_frames: 8
+      drift_std_px: 30.0
+      drift_max_px: 120.0
+      drift_mode: "constant"
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+loss:
+  position:
+    # Let the model learn big corrections on the hard points, instead of being
+    # dominated by tiny residuals.
+    delta_supervision:
+      clamp: 0.20
+      base_error_threshold: 0.01
+      min_points: 256
+
+training:
+  # Don't waste GPU time: if we cannot beat +0.003 quickly, stop.
+  deadline_guard:
+    deadline_epoch: 12
+    threshold: 0.0030
+

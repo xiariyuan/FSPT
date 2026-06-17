@@ -1,0 +1,117 @@
+{
+  "phase": 1,
+  "protocol": "first+input (256-space)",
+  "oracle_definition": "oracle_exact = GT position at re-entry frame (0 error by definition)",
+  "all_frames": {
+    "trackon2": {
+      "n_queries": 650,
+      "n_frames": 28174,
+      "median_px": 1.123,
+      "mean_px": 2.866,
+      "p95": 8.76,
+      "p99": 38.2,
+      "max": 145.94,
+      "lt4_pct": 87.5,
+      "oracle_gap_mean": 2.866
+    },
+    "cotracker3_online": {
+      "n_queries": 650,
+      "n_frames": 28174,
+      "median_px": 1.255,
+      "mean_px": 3.052,
+      "p95": 9.5,
+      "p99": 37.69,
+      "max": 152.0,
+      "lt4_pct": 85.3,
+      "oracle_gap_mean": 3.052
+    },
+    "cotracker3_offline": {
+      "n_queries": 650,
+      "n_frames": 28174,
+      "median_px": 1.269,
+      "mean_px": 3.163,
+      "p95": 10.08,
+      "p99": 46.6,
+      "max": 128.09,
+      "lt4_pct": 84.7,
+      "oracle_gap_mean": 3.163
+    }
+  },
+  "reentry_frames": {
+    "trackon2": {
+      "n": 343,
+      "model_median": 0.76,
+      "model_mean": 4.64,
+      "model_p95": 16.34,
+      "oracle_gap_mean": 4.64,
+      "oracle_gap_median": 0.76,
+      "oracle_better_4px_frac": 0.149,
+      "oracle_better_16px_frac": 0.052
+    },
+    "cotracker3_online": {
+      "n": 343,
+      "model_median": 0.87,
+      "model_mean": 5.55,
+      "model_p95": 36.87,
+      "oracle_gap_mean": 5.55,
+      "oracle_gap_median": 0.87,
+      "oracle_better_4px_frac": 0.149,
+      "oracle_better_16px_frac": 0.082
+    },
+    "cotracker3_offline": {
+      "n": 343,
+      "model_median": 0.95,
+      "model_mean": 4.75,
+      "model_p95": 33.29,
+      "oracle_gap_mean": 4.75,
+      "oracle_gap_median": 0.95,
+      "oracle_better_4px_frac": 0.137,
+      "oracle_better_16px_frac": 0.067
+    }
+  },
+  "longocc20": {
+    "trackon2": {
+      "n": 100,
+      "model_median": 0.13,
+      "model_mean": 5.21,
+      "model_p95": 23.94,
+      "oracle_gap_mean": 5.21,
+      "oracle_gap_median": 0.13,
+      "oracle_better_4px_frac": 0.15,
+      "oracle_better_16px_frac": 0.05
+    },
+    "cotracker3_online": {
+      "n": 100,
+      "model_median": 0.0,
+      "model_mean": 5.1,
+      "model_p95": 11.82,
+      "oracle_gap_mean": 5.1,
+      "oracle_gap_median": 0.0,
+      "oracle_better_4px_frac": 0.13,
+      "oracle_better_16px_frac": 0.05
+    },
+    "cotracker3_offline": {
+      "n": 100,
+      "model_median": 0.0,
+      "model_mean": 4.49,
+      "model_p95": 14.72,
+      "oracle_gap_mean": 4.49,
+      "oracle_gap_median": 0.0,
+      "oracle_better_4px_frac": 0.11,
+      "oracle_better_16px_frac": 0.04
+    }
+  },
+  "stop_criteria": {
+    "longocc_AJ_barely_improves": {
+      "threshold": "<1px oracle gap mean",
+      "actual": "~5px",
+      "hit": false
+    },
+    "reentry_error_barely_decreases": {
+      "threshold": "<1px oracle gap mean",
+      "actual": "~5px",
+      "hit": false
+    },
+    "recommendation": "ADVANCE_TO_PHASE_2"
+  }
+}

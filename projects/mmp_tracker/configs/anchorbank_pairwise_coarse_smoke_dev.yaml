@@ -1,0 +1,94 @@
+experiment:
+  name: mmp_anchorbank_pairwise_coarse_smoke_dev
+  description: Stage-A smoke for AnchorBank rebuild using DINOv2 pairwise coarse matcher with initial anchor only
+
+model:
+  variant: localglobal
+  encoder:
+    type: timm
+    in_channels: 3
+    out_dim: 256
+    backbone_name: vit_small_patch14_dinov2.lvd142m
+    pretrained: false
+    pretrained_path: /gemini/code/FSPT/weights/dinov2/dinov2_vits14_pretrain.pth
+    train_backbone: false
+    out_indices: [5, 8, 11]
+    fuse_mode: sum
+  local_matcher:
+    radius: 4
+    temperature: 0.07
+  global_relocator:
+    type: pairwise
+    topk: 5
+    temperature: 0.07
+    memory_size: 1
+    hidden_dim: 256
+    position_bias_strength: 0.1
+    position_bias_sigma: 0.25
+  posterior_fusion:
+    hidden_dim: 64
+    type_embed_dim: 8
+    min_visibility: 0.0
+  tracking:
+    feature_stride: 14
+    forward_only: true
+    visibility_update_threshold: 0.5
+    template_momentum: 0.8
+    anchor_mix: 0.35
+    global_use_margin: 0.03
+    global_refine_radius: 2
+    global_refine_center: top1
+    global_output_mode: coarse_expected
+    memory_write_mode: frozen_initial
+    safe_write_agreement_px: 6.0
+    commit_mode: none
+    global_commit_consistency_px: 10.0
+    global_commit_min_quality: 0.10
+    selector_threshold: 0.35
+    selector_target_margin: 0.01
+    long_occ_min_frames: 3
+    long_occ_recovery_window: 1
+
+loss:
+  coordinate:
+    weight: 1.0
+  local_heatmap:
+    weight: 0.1
+  global_heatmap:
+    weight: 0.5
+  global_coordinate:
+    weight: 0.25
+  selector:
+    weight: 0.1
+  commit:
+    weight: 0.0
+  visibility:
+    weight: 0.2
+  temporal_smoothness:
+    weight: 0.0
+  no_harm_prior:
+    weight: 0.0
+  long_occ_focus:
+    weight: 0.3
+
+data:
+  train:
+    dataset: tapvid_kubric
+    root: /gemini/code/datasets/kubric_preprocessed
+    backend: sharded_pkl
+    annotation_file: train.index.json
+    split: train
+    subset: smoke
+  val:
+    dataset: tapvid_davis
+    root: /gemini/code/datasets/tapvid_davis
+    resolution: [256, 256]
+    query_mode: first
+    first_frame_query: false
+    subset: smoke
+
+training:
+  epochs: 2
+  batch_size: 1
+  accumulation_steps: 1
+  lr: 1.0e-4

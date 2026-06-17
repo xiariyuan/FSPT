@@ -1,0 +1,52 @@
+# =============================================================================
+# Route A Stage-3 v16 (eval-only): long-occ-30 only, no changes elsewhere
+# =============================================================================
+#
+# Objective
+# - Preserve v6 long-occ-30 gain (~ +0.005 AJ_longocc30_delta)
+# - Achieve global do-no-harm by forcing all non-longocc queries to stay on base.
+#
+# How it works
+# - Query-level mask: if base visibility has an occlusion run >= 30 frames,
+#   allow full-strength corrections on ALL frames for that query.
+# - Everyone else: non_focus_scale=0.0 => refined tracks == base tracks.
+#
+# This is intentionally extreme: it gives a clean paper story ("specialized
+# long-occlusion re-localizer") and should guarantee AJ_delta >= 0 as long as
+# longocc30_delta is positive.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v16_focus_longocc30_only_nf000_eval_from_v6best
+  description: "Eval-only: apply corrections ONLY to long-occ>=30 queries; keep everyone else identical to base"
+
+pretrained: checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+
+      # Do not allow frame-level focus for short occlusions.
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

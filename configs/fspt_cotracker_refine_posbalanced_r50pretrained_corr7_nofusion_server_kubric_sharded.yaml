@@ -1,0 +1,59 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): corr7 + server Kubric (sharded) + no occlusion fusion
+# =============================================================================
+#
+# Why this config exists
+# - Route A refiner should NEVER make CoTracker3 base worse.
+# - We observed refined < base on DAVIS even at early epochs.
+# - Root cause: occlusion branch "track fusion" is enabled in eval by default
+#   (track_fusion_eval: true), but disabled in training (track_fusion_train: false),
+#   so `pred_positions` from the occlusion predictor is not supervised by position loss.
+#   Enabling fusion only in eval can overwrite good tracks with unsupervised predictions.
+#
+# Fix:
+# - Disable occlusion-guided track fusion in BOTH training and evaluation.
+#   We still keep occlusion prediction for visibility (and can blend base visibility).
+#
+# Server note
+# - Kubric training data is stored outside the repo as a sharded pickle stream.
+#
+# Usage:
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_server_kubric_sharded.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus=[0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_server_kubric_sharded"
+  description: "Route A refiner: corr7 + ResNet50 init + server sharded Kubric + disable occlusion track fusion"
+
+model:
+  occlusion:
+    track_fusion_train: false
+    track_fusion_eval: false
+  refiner:
+    # Conservative residual step to reduce "hurting base" risk early on.
+    delta_scale: 0.1
+
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/kubric_preprocessed"
+    backend: "sharded_pkl"
+    annotation_file: "train.index.json"
+    use_tfds: false
+    allow_synthetic_tracks: false
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+
+evaluation:
+  # For safety/debug, validate every epoch early on.
+  # You can later switch back to 5 for speed.
+  eval_every: 1

@@ -1,0 +1,29 @@
+{
+  "phase": 0,
+  "protocol": "first+input (256-space)",
+  "cache_source": "outputs/attempt0_2026-06-15_recovery/prediction_caches/",
+  "cache_validation": {
+    "trackon2_unified_vs_reponative_AJ_diff": 0.00,
+    "cotracker3_online_unified_vs_reponative_AJ_diff": 0.00,
+    "cotracker3_offline_unified_vs_reponative_AJ_diff": 0.00,
+    "coordinate_format": "yx-normalized",
+    "model_input_size": [256, 256],
+    "original_size": "stored per-video (varies by DAVIS video)"
+  },
+  "reentry_metrics": {
+    "trackon2": {
+      "n_reentry": 343,
+      "median_px": 0.76,
+      "mean_px": 4.64,
+      "p95_px": 16.34,
+      "lt4_frac": 0.851,
+      "lt8_frac": 0.913,
+      "longocc20_n": 100,
+      "longocc20_median_px": 0.13,
+      "longocc20_mean_px": 5.21,
+      "longocc20_lt4_frac": 0.890
+    }
+  },
+  "metric_wrapper_verification": "pass",
+  "protocol_gap": "first+input ≠ strided+original (paper standard)"
+}

@@ -1,0 +1,104 @@
+# =============================================================================
+# Route A baseline-aligned v1: CoTracker + frequency-guided refinement
+# =============================================================================
+#
+# Goal
+# - Keep strict baseline comparability:
+#   - train on TAP-Vid Kinetics (real videos)
+#   - validate on TAP-Vid DAVIS with official strided protocol
+#   - report refined/base/delta in the same run
+# - Enable frequency-guided fusion as the main method component.
+#
+
+defaults:
+  - fspt_routeA_freqguided_ms_corr_v2_velinv.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_baseline_aligned_freq_kinetics_v1"
+  description: "Baseline-aligned Route A: Kinetics train + DAVIS strided eval with frequency-guided fusion"
+
+# Start from clean refiner initialization for fair baseline-aligned comparison.
+pretrained: null
+
+model:
+  semantic:
+    enabled: false
+  occlusion:
+    enabled: false
+
+  refiner:
+    # Keep train/test behavior aligned.
+    base_jitter:
+      enabled: false
+
+loss:
+  position:
+    # Keep "no-harm" pressure, but avoid forcing unrealistic positive margin.
+    no_harm_vs_base:
+      enabled: true
+      weight: 2.0
+      margin: 0.0
+      base_error_threshold: 0.01
+      min_points: 256
+      detach_base: true
+
+training:
+  epochs: 24
+
+  optimizer:
+    lr: 5.0e-05
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 8
+    min_delta: 1.0e-04
+
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_longocc30_delta"
+    mode: "max"
+    deadline_epoch: 12
+    threshold: 0.0030
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 6
+    patience: 6
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "original"
+  aux_metric_resolution_mode: "input"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+data:
+  train:
+    dataset: "tapvid_kinetics"
+    root: "/gemini/code/datasets/tapvid_kinetics"
+    backend: "sharded_pkl"
+    annotation_file: "train.index.json"
+    query_mode: "strided"
+    points_order: "xy"
+    resolution: [384, 512]
+
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    backend: "auto"
+    query_stride: 5
+    points_order: "xy"
+    resolution: null
+    augmentation:
+      enabled: false
+

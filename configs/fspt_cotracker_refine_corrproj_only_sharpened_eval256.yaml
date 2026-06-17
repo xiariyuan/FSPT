@@ -1,0 +1,44 @@
+# =============================================================================
+# Route A (SOTA push): sharpen local-correlation updates (sub-pixel refinement)
+# =============================================================================
+#
+# Motivation:
+# - The corrproj-only recipe is extremely safe (AJ_delta ~= 0) but improvements
+#   over CoTracker3 are tiny.
+# - CoTracker3 base error is already low (~2px @256), so refinement requires
+#   *very* sharp local matching.
+#
+# This config makes the local matching step more decisive while keeping the
+# "do no harm" safety loss.
+#
+# Key changes:
+# - Lower temperature (sharper softmax).
+# - Apply an additional probability power (prob ** p) to further sharpen.
+# - Slightly lower gate threshold so corrections are not overly suppressed.
+# - Disable plateau_guard (it monitors absolute AJ/<4px/err, not delta).
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_shiftconf_power2_nojitter_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrproj_only_sharpened_eval256"
+  description: "Route A: corrproj-only; sharpened soft-argmax (temp+prob_power) for subpixel refinement"
+
+model:
+  refiner:
+    local_correlation:
+      temperature: 0.2
+      prob_power: 2.0
+      gate_threshold: 0.03
+
+training:
+  plateau_guard:
+    enabled: false
+
+loss:
+  position:
+    no_harm_vs_base:
+      weight: 3.0
+

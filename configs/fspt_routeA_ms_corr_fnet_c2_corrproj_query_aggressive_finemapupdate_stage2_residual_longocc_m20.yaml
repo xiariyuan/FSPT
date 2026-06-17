@@ -1,0 +1,49 @@
+# =============================================================================
+# Long-occlusion paper run: monitor longocc20 delta, not overall AJ_delta
+# =============================================================================
+#
+# The long-occlusion subset metrics are *much* more informative for the
+# "re-localization after long occlusion" story than the overall AJ_delta, which
+# often plateaus at noise level on DAVIS when CoTracker3 is already strong.
+#
+# This config:
+# - Warm-starts from the best long-occlusion checkpoint in the previous run.
+# - Enables long-occlusion subset eval inside train.py (no extra script needed).
+# - Early-stops based on AJ_longocc20_delta with a realistic min_delta.
+# - Disables plateau_guard (it is keyed on overall metrics, not long-occlusion).
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate_stage2_residual_longocc.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_finemapupdate_stage2_residual_longocc_m20"
+  description: "Stage-2 residual refiner, focus on re-localization: early-stop on AJ_longocc20_delta"
+
+# Warm-start from the checkpoint that performed best on long-occ >=20 frames.
+pretrained: "checkpoints/fspt_routeA_ms_corr_finemapupdate_stage2_residual_longocc/epoch_6.pth"
+
+training:
+  early_stopping:
+    enabled: true
+    monitor: "AJ_longocc20_delta"
+    mode: "max"
+    patience: 12
+    # Our deltas are in the 1e-4 ~ 1e-3 range; 1e-5 is a sensible "real" gain.
+    min_delta: 1.0e-05
+
+  # Stop-loss: if we cannot reach a meaningful improvement early, stop
+  # and move on to a more aggressive architecture change.
+  #
+  # Example: if best AJ_longocc20_delta is still < 0.0015 by epoch 15,
+  # this run is unlikely to be paper-worthy; don't waste GPU time.
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_longocc20_delta"
+    mode: "max"
+    deadline_epoch: 15
+    threshold: 0.0015
+
+  plateau_guard:
+    enabled: false

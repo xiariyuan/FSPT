@@ -1,0 +1,102 @@
+# =============================================================================
+# FSPT Position-Focus (Scratch): Progressive backbone unfreezing
+# =============================================================================
+#
+# Motivation (based on observed behavior):
+# - Epoch 0-7 (warmup_heads): AJ increases, avg_error decreases.
+# - Immediately after unfreezing backbone layer1/layer2 (full_finetune @ epoch 8),
+#   validation metrics regress while train loss keeps dropping -> feature drift /
+#   overfitting triggered by early-layer finetuning.
+#
+# Strategy:
+# - Keep the initial warmup longer.
+# - Unfreeze backbone gradually (layer2 then layer1) with a much smaller LR.
+# - Unfreeze CLIP very late and with a tiny LR (via clip_lr_scale).
+#
+# Usage:
+#   python train.py --config configs/fspt_pos_scratch_progressive_unfreeze.yaml
+#
+
+defaults:
+  - fspt_pos_recover_from_e16
+  - _self_
+
+experiment:
+  name: "fspt_pos_scratch_progressive_unfreeze"
+  description: "Scratch training with progressive backbone unfreezing (avoid epoch-8 regression)"
+
+training:
+  # Keep the same base LR as the position-recovery run; adjust per-phase via multipliers.
+  optimizer:
+    lr: 2.0e-5
+
+  # Guard rails: do not stop too early (progress is slow at full resolution).
+  plateau_guard:
+    enabled: true
+    start_epoch: 30
+    patience: 6
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+
+  # Replace the default (epoch-8) full_finetune schedule with a progressive one.
+  phase_schedule:
+    enabled: true
+    phases:
+      - name: "warmup_heads"
+        start_epoch: 0
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+          backbone: 1.0
+
+      - name: "unfreeze_layer2"
+        start_epoch: 20
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.layer2"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0
+          backbone: 0.05
+
+      - name: "unfreeze_layer1"
+        start_epoch: 40
+        freeze_modules:
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.layer1"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0
+          backbone: 0.02
+
+      - name: "late_clip_visual_last4"
+        start_epoch: 60
+        freeze_modules: []
+        unfreeze_modules:
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.8"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.9"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.10"
+          - "semantic_encoder.clip_model.visual.transformer.resblocks.11"
+          - "semantic_encoder.clip_model.visual.ln_post"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 1.0
+          backbone: 0.01
+

@@ -1,0 +1,33 @@
+{
+  "protocol_note": "first+input (256-space) \u2014 NOT strided+original (paper standard)",
+  "protocol_blocker": "DAVIS pkl GCS 404; Track-On2 fixed 384x512 resize; strided+original requires predictor re-runs",
+  "baselines": {
+    "trackon2_dinov3": {
+      "protocol": "first+input",
+      "AJ": 67.04,
+      "delta_avg": 79.84,
+      "OA": 92.09,
+      "delta_4px": 87.82,
+      "source": "unified cache vs repo-native diff = 0.00",
+      "checkpoint": "baselines/track_on/checkpoints_trackon2_dinov3.pt"
+    },
+    "cotracker3_online": {
+      "protocol": "first+input",
+      "AJ": 64.89,
+      "delta_avg": 77.36,
+      "OA": 91.8,
+      "delta_4px": 84.93,
+      "source": "repo-native eval via cotracker local",
+      "checkpoint": "baselines/cotracker/checkpoints/scaled_online.pth"
+    },
+    "cotracker3_offline": {
+      "protocol": "first+input",
+      "AJ": 62.66,
+      "delta_avg": 77.22,
+      "OA": 88.15,
+      "delta_4px": 84.58,
+      "source": "repo-native eval via cotracker local",
+      "checkpoint": "baselines/cotracker/checkpoints/scaled_offline.pth"
+    }
+  }
+}

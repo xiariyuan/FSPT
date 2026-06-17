@@ -1,0 +1,94 @@
+# =============================================================================
+# Route A (Aggressive SOTA push): corr supervision + residualmedium + train geo_backbone
+# =============================================================================
+#
+# Why this is more aggressive than previous runs
+# - Previous corr-supervision run stayed corrproj-only + strong guardrails, and the
+#   AJ_delta gains were essentially noise-level.
+# - We now:
+#   1) Keep local matching as the main correction signal (c2 + adjacent template + 11x11).
+#   2) Add explicit correlation supervision (CE on corr logits) so matching is learnable.
+#   3) Unfreeze a *limited* amount of extra capacity (temporal + residual + geo_backbone)
+#      so the refiner can actually exploit the improved matching signal.
+#   4) Increase the trust-region clamp to allow meaningful corrections on hard cases.
+#
+# Still safe-ish (but definitely more risky):
+# - CoTracker base remains frozen.
+# - Trust-region clamp `delta_max_total` limits worst-case drift.
+# - `no_harm_vs_base` hinge still discourages learning harmful updates (on supervised data).
+#
+
+defaults:
+  - fspt_cotracker_refine_learnedgate_residualmedium_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrsup_residualgeo_adjref_c2_w11_eval256"
+  description: "Aggressive Route A: corr-supervision + residualmedium + train geo_backbone; adjacent templates @c2; win=11; larger trust region"
+
+# Warm start from the best checkpoint of the last corr-supervision run (weights-only).
+pretrained: "checkpoints/fspt_routeA_corrsup_adjref_c2_w11_20260218_134400/best.pth"
+
+model:
+  refiner:
+    # Unfreeze more capacity than residualmedium: allow geo backbone to adapt for matching.
+    trainable_modules:
+      - geo_backbone
+      - temporal_transformer
+      - residual_decoder
+
+    # Match-step uses c2 + adjacent templates.
+    local_correlation:
+      feature_level: "c2"
+      reference_mode: "adjacent"
+      window_size: 11
+      # Let transformer "see" correlation structure.
+      scale: 0.5
+      use_step: true
+
+      # Avoid train-time dead-zone; keep eval-time gating safe.
+      gate_step_train: false
+      gate_residual_train: false
+
+      # Slightly relax gating so corrections can happen.
+      gate_threshold: 0.01
+      residual_gate_threshold: 0.05
+
+    # Allow bigger corrections (11x11@c2 covers ~20px radius @256).
+    delta_max_total: 0.08
+    delta_scale: 0.08
+
+loss:
+  # Explicit supervision for local-correlation logits.
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+  position:
+    hard_mining:
+      enabled: true
+      # Focus on the rare hard cases where base is wrong.
+      tau: 0.02
+      power: 2.0
+      max_weight: 30.0
+    no_harm_vs_base:
+      # Keep safety pressure but not too strong.
+      weight: 1.0
+      margin: 0.0005
+
+training:
+  epochs: 30
+  optimizer:
+    lr: 2.0e-05
+    # Train resnet backbone very slowly.
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: false
+
+logging:
+  visualize:
+    enabled: false
+

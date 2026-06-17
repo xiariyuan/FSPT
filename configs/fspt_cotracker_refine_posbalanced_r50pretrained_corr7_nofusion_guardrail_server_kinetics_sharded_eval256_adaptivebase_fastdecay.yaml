@@ -1,0 +1,34 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): adaptive base + faster schedule
+# =============================================================================
+#
+# Claude's point is valid: when base_track_consistency is very strong early on,
+# the safest optimum is often "do nothing", which can look like the first ~10 epochs
+# are idle (AJ_delta≈0).
+#
+# This config keeps all guardrails (gate + per-step clamp + adaptive weighting),
+# but speeds up the decay of base-track consistency so the refiner can start to
+# learn useful corrections earlier.
+#
+# Intended usage:
+# - Resume from a stable do-no-harm checkpoint.
+# - Start relaxing at epoch 5, reach a moderate weight by epoch 10.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_adaptivebase_fastdecay_eval256"
+  description: "Route A refiner (Kinetics shards): adaptive base consistency + faster decay schedule"
+
+loss:
+  base_track_consistency:
+    schedule:
+      type: "linear"
+      start_epoch: 5
+      end_epoch: 10
+      start_weight: 1.0
+      end_weight: 0.5
+

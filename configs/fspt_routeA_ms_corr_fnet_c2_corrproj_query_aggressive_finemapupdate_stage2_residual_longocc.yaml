@@ -1,0 +1,25 @@
+# =============================================================================
+# Route A Stage-2 (long-occlusion logging): same training, extra paper metrics
+# =============================================================================
+#
+# This config does NOT change training behavior. It only enables an additional
+# validation-time metric bucket:
+#   - long occlusion (>=K frames) followed by re-appearance
+# which is useful for the "re-localization after long occlusion" paper story.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_finemapupdate_stage2_residual.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_finemapupdate_stage2_residual_longocc"
+  description: "Stage-2 residual refiner + long-occlusion subset metrics for re-localization analysis"
+
+# Warm-start from the best Stage-2 checkpoint to avoid re-running Stage-1/2.
+pretrained: "checkpoints/fspt_routeA_ms_corr_finemapupdate_stage2_residual/best_aj.pth"
+
+evaluation:
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]

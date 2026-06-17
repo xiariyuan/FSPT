@@ -1,0 +1,88 @@
+# =============================================================================
+# Route A Stage-3 v10: visible-memory-bank relocalization for long occlusion
+# =============================================================================
+#
+# Why this variant
+# - Previous long-occ branches only used the query frame or recent last-visible
+#   frames as templates. That is weak when appearance drifts before occlusion.
+# - v10 expands relocalization to a visible-memory bank sampled across the full
+#   visible history before re-appearance, so the matcher can re-identify points
+#   using both early identity cues and recent appearance cues.
+#
+# Key change
+# - relocalization.template_mode: "visible_bank"
+# - template bank covers the full visible history, not just a short recency tail.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v9_residual_reloc_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v10_visiblebank_l30
+  description: Stage-3 v10 visible-memory-bank relocalization focused on long-occ30
+
+model:
+  refiner:
+    relocalization:
+      template_mode: "visible_bank"
+      template_bank_size: 6
+      template_bank_stride: 2
+      conf_threshold: 0.15
+      topk: 9
+      temporal_sigma: 0.05
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.06
+      max_total: 0.26
+
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 512
+      scale: 0.03
+      gate_init_bias: -1.5
+      conf_threshold: 0.10
+      conf_power: 1.25
+      max_step: 0.04
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.35
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.12
+      include_occluded: false
+
+    base_occlusion_drift:
+      enabled: true
+      prob: 0.30
+      min_len: 18
+      max_len: 28
+      after_frames: 8
+      drift_std_px: 18.0
+      drift_max_px: 72.0
+      drift_mode: constant
+      exclude_query_frame: true
+      force_visible_after: true
+      occluded_value: 0.0
+      visible_value: 1.0
+
+training:
+  epochs: 30
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 8
+    min_delta: 1.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 10
+    threshold: 0.0040

@@ -1,0 +1,18 @@
+# =============================================================================
+# FSPT Finetune Configuration (基于fspt_base)
+# =============================================================================
+
+defaults:
+  - fspt_base
+
+experiment:
+  name: "fspt_finetune"
+  description: "FSPT微调配置"
+
+training:
+  epochs: 20
+  optimizer:
+    lr: 5.0e-5
+  scheduler:
+    T_max: 20
+    warmup_epochs: 2

@@ -1,0 +1,45 @@
+# =============================================================================
+# Online Recovery Smoke Config
+# =============================================================================
+# Inherits the full working relocal config and adds online_recovery entry alias.
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256
+  - _self_
+
+experiment:
+  name: fspt_online_recovery_smoke_eval256
+  description: Smoke test for online_recovery adapter entry point
+
+model:
+  refiner:
+    # New online_recovery entry alias (maps to relocalization internals)
+    online_recovery:
+      enabled: true
+      trigger:
+        min_occlusion_len: 20
+        frames_after: 0
+        vis_threshold: 0.5
+      memory_bank:
+        template_mode: "visible_bank"
+        template_bank_size: 6
+        template_bank_stride: 2
+      search:
+        feature_source: "cotracker"
+        downsample: 4
+      verifier:
+        enabled: true
+      retracking:
+        enabled: true
+        overwrite_window: 5
+        min_conf: 0.1
+
+    retracking:
+      enabled: true
+      apply_in_train: false
+      selection: "max_conf"
+      overwrite_window: 5
+      min_conf: 0.1
+
+training:
+  epochs: 1

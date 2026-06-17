@@ -1,0 +1,47 @@
+# =============================================================================
+# Route A Stage-3 v22 (eval-only): reappearance-based long-occ focus (len=10) + gap fill
+# =============================================================================
+#
+# Motivation:
+# - v20 (reappearance, len=10) is do-no-harm but misses many true long-occ cases
+#   due to flickery/uncertain base visibility.
+# - Add small-gap filling to increase recall while keeping the reappearance
+#   criterion (to avoid false positives).
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v22_focus_longocc_reapp_len10_gap2_nf000_eval_from_v6best
+  description: "Eval-only: reappearance run>=10; gap_fill=2; non_focus_scale=0"
+
+# This is only used for training warm-start; evaluation uses --checkpoint.
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    # Protect OA / do-no-harm by anchoring visibility to the base tracker.
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_mode: reappearance
+      long_occlusion_len: 10
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_fill_gaps: 2
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

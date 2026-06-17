@@ -1,0 +1,12 @@
+# 消融实验：2个频带
+# 验证频带数量对性能的影响
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_freq_2bands"
+
+model:
+  frequency:
+    num_bands: 2  # 减少频带数量

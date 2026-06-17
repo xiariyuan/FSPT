@@ -1,0 +1,16 @@
+{
+  "data_root": "/gemini/code/FSPT/datasets/pointodyssey",
+  "train_splits": "train",
+  "val_splits": "val",
+  "min_occ_length": 10,
+  "train_max_sequences": 1,
+  "val_max_sequences": 1,
+  "train_max_samples": 8192,
+  "val_max_samples": 2048,
+  "depth_noise_sigma": 0.10,
+  "epochs": 1,
+  "batch_size": 256,
+  "lr": 0.001,
+  "num_workers": 2,
+  "output_dir": "/gemini/code/FSPT/outputs/world_state_stage2_smoke"
+}

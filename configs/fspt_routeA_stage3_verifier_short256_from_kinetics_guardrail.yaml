@@ -1,0 +1,47 @@
+# =============================================================================
+# Route A Verifier short sanity on the stable eval256 chain.
+# =============================================================================
+#
+# This is the next-step sanity after fixing the relocal_acceptor/verifier alias
+# handling. It reuses the already-stable 256-resolution warm-start chain rather
+# than the heavier v11/no-harm chain, so we can isolate whether the verifier head
+# actually trains and emits non-zero verifier metrics.
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_verifier_short256_from_kinetics_guardrail
+  description: "Short verifier sanity on stable eval256 chain after alias/freeze fix"
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+      - relocalization_residual
+      - relocal_acceptor
+      - verifier
+
+training:
+  num_workers: 0
+  epochs: 3
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 1
+    min_delta: 1.0e-05
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 1
+    threshold: 0.0
+
+logging:
+  visualize:
+    enabled: false
+
+evaluation:
+  num_workers: 0

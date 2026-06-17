@@ -1,0 +1,144 @@
+# =============================================================================
+# Route A Stage-3 v11: no-harm recover from v10 epoch0
+# =============================================================================
+#
+# Goal
+# - Recover global AJ_delta (toward >= 0) while retaining useful long-occ gains.
+# - Start from v10 epoch_0 (strong longocc30_delta) and avoid later drift.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v10_dual_stage_longocc_guard.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v11_noharm_recover
+  description: Stage-3 v11 no-harm recover from v10 epoch0; prioritize AJ_delta stability
+
+pretrained: checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best_aj.pth
+
+model:
+  refiner:
+    # Only tune the new residual branch; freeze all other heads to avoid global drift.
+    trainable_modules:
+      - relocalization_residual
+
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    # Conservative re-localization trigger for no-harm recovery.
+    relocalization:
+      conf_threshold: 0.20
+      topk: 5
+      temporal_sigma: 0.03
+      temporal_power: 2.0
+      temporal_min_prev_conf: 0.10
+      max_total: 0.16
+      apply_only_first_iter: true
+
+    # Tight residual trust region.
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 512
+      scale: 0.012
+      gate_init_bias: -2.2
+      conf_threshold: 0.18
+      conf_power: 2.0
+      max_step: 0.015
+      apply_only_first_iter: true
+      require_mask: true
+      tanh: true
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.10
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: true
+      relocal_threshold: 0.20
+      include_occluded: false
+
+    # Disable synthetic drift here; v11 is a no-harm recovery run.
+    base_occlusion_drift:
+      enabled: false
+
+loss:
+  # Strong base anchor, but still allows limited corrections.
+  base_track_consistency:
+    weight: 2.5
+    type: smooth_l1
+    smooth_l1_beta: 1.0
+    mask: gt_visible
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 2.5
+      end_weight: 1.5
+
+  base_visibility_consistency:
+    weight: 0.02
+    type: bce
+    mask: all
+    schedule: null
+
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 4.0
+      margin: 0.001
+      base_error_threshold: 0.006
+      min_points: 256
+      detach_base: true
+
+training:
+  epochs: 8
+
+  num_workers: 2
+
+  optimizer:
+    lr: 2.0e-05
+
+  early_stopping:
+    enabled: true
+    monitor: AJ_delta
+    mode: max
+    patience: 3
+    min_delta: 5.0e-05
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_delta
+    mode: max
+    deadline_epoch: 2
+    threshold: -0.0005
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 2
+    patience: 3
+    min_delta_aj: 5.0e-05
+    min_delta_4px: 5.0e-05
+    min_delta_error: 0.0
+
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+
+  checkpoint:
+    save_every: 1
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  num_workers: 2
+
+data:
+  val:
+    resolution: [256, 256]
+    query_stride: 5
+  train:
+    resolution: [256, 256]

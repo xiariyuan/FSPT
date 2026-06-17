@@ -1,0 +1,42 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): relaxed guardrails for learning gains
+# =============================================================================
+#
+# Starting point:
+#   configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded_eval256.yaml
+#
+# Motivation:
+# - The "guardrail" config is intentionally very conservative to achieve
+#   AJ_delta ~= 0 ("do no harm").
+# - Once that is achieved, we can gradually relax the base-track constraint so the
+#   refiner has room to learn small, transferable corrections.
+#
+# Key changes:
+# - base_track_consistency schedule: 3.0 -> 1.0 over the first 12 epochs
+# - delta_scale: 0.1 (was 0.05)
+# - delta_max_total: 0.02 hard clamp on |refined - base| (≈5px @ 256x256)
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_relax_server_kubric_sharded_eval256"
+  description: "Route A refiner: relax base regularization gradually (keep eval256 main metric)"
+
+model:
+  refiner:
+    delta_scale: 0.1
+    delta_max_total: 0.02
+
+loss:
+  base_track_consistency:
+    weight: 3.0
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 12
+      start_weight: 3.0
+      end_weight: 1.0
+

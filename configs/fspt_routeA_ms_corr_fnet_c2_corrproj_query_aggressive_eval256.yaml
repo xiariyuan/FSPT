@@ -1,0 +1,42 @@
+# =============================================================================
+# Route A baseline (eval256): multi-scale correlation (fnet + geo c2), no frequency
+# =============================================================================
+#
+# Purpose
+# - Provide an eval256 baseline that matches CoTracker's official TAP-Vid DAVIS
+#   strided protocol (they resize videos to 256x256 by default).
+# - Keep Route A training comparable across runs (same data + same metrics).
+#
+# Notes
+# - Main metric uses evaluation.metric_resolution_mode=input with val resolution
+#   forced to 256x256, matching official TAP-Vid threshold scaling.
+# - Also logs original-resolution metrics as auxiliary for debugging.
+#
+
+defaults:
+  - fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_ms_corr_fnet_c2_corrproj_query_aggressive_eval256"
+  description: "Route A baseline (no frequency): ms correlation + corrproj query ref; train Kinetics, eval DAVIS @256"
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+data:
+  train:
+    # CoTracker official TAP-Vid pipeline operates in a 256x256 raster during eval.
+    # Align training resolution to reduce scale mismatch for the refiner.
+    resolution: [256, 256]
+  val:
+    # Force 256x256 raster so metric_resolution_mode=input matches official scaling.
+    resolution: [256, 256]
+

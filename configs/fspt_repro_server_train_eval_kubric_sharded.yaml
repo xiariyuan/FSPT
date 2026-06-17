@@ -1,0 +1,66 @@
+# =============================================================================
+# FSPT Server: Train + Eval on Sharded Kubric Pickle
+# =============================================================================
+#
+# Use this after running:
+#   scripts/preprocess_kubric_to_sharded_pkl.py
+#
+# It replaces TFDS online label generation with sharded pickle streaming.
+#
+
+defaults:
+  - fspt_repro_server_train_eval
+  - _self_
+
+experiment:
+  name: "fspt_repro_server_train_eval_kubric_sharded"
+  description: "Server run: sharded Kubric pickle train + DAVIS val + DAVIS/Kinetics eval"
+
+model:
+  strict_modules: true
+  required_modules: ["semantic", "fusion", "occlusion", "tracker", "lfd", "ftt"]
+  frequency:
+    strict_lfd: true
+
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/kubric_preprocessed"
+    backend: "sharded_pkl"
+    use_tfds: false
+    allow_synthetic_tracks: false
+    annotation_file: "train.index.json"
+
+training:
+  batch_size: 1
+  num_workers: 1
+  data_loading:
+    use_prefetch: true
+    pin_memory: true
+  phase_schedule:
+    enabled: true
+    phases:
+      - name: "warmup_heads"
+        start_epoch: 0
+        freeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+          - "semantic_encoder.clip_model"
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+      - name: "full_finetune"
+        start_epoch: 8
+        freeze_modules:
+          - "semantic_encoder.clip_model"
+        unfreeze_modules:
+          - "geo_backbone.backbone.layer1"
+          - "geo_backbone.backbone.layer2"
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 0.0

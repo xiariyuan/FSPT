@@ -1,0 +1,21 @@
+# =============================================================================
+# Route A Pivot: lightweight test-time adaptation for long-occlusion tracking
+# (temporal transformer only)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_tta_longocc_eval256_light
+  - _self_
+
+experiment:
+  name: fspt_routeA_tta_longocc_eval256_temporal_only
+  description: "Lightweight TTA for long-occlusion tracking @eval256 (temporal only)"
+
+model:
+  refiner:
+    trainable_modules:
+      - temporal_transformer
+
+tta:
+  modules:
+    - temporal_transformer

@@ -1,0 +1,21 @@
+# =============================================================================
+# Route A Pivot: lightweight test-time adaptation for long-occlusion tracking
+# (occlusion predictor only)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_tta_longocc_eval256_light
+  - _self_
+
+experiment:
+  name: fspt_routeA_tta_longocc_eval256_occ_only
+  description: "Lightweight TTA for long-occlusion tracking @eval256 (occlusion only)"
+
+model:
+  refiner:
+    trainable_modules:
+      - occlusion_predictor
+
+tta:
+  modules:
+    - occlusion_predictor

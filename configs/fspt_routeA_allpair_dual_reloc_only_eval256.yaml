@@ -1,0 +1,22 @@
+# =============================================================================
+# Route A: dual all-pair + relocal bank only (eval256)
+# =============================================================================
+#
+# Purpose
+# - Isolate the effect of explicit long-occlusion relocalization.
+# - Two-view consistency stays off so we can attribute gains cleanly.
+#
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_twoview_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_reloc_only_eval256"
+  description: "Dual all-pair + relocal bank only (no two-view consistency) @eval256"
+
+loss:
+  two_view_consistency:
+    enabled: false
+    weight: 0.0
+

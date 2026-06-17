@@ -1,0 +1,82 @@
+# =============================================================================
+# Route A v2: gain-priority relax config (after no-op plateau)
+# =============================================================================
+#
+# Changes vs v1:
+# - unfreeze temporal/residual heads to restore correction capacity
+# - relax no-harm/selective constraints for denser supervision
+# - make long-occlusion relocalization easier to trigger
+# - keep visibility prior fully from base to avoid OA collapse
+#
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_twoview_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_reloc_twoview_v2_relaxed_eval256"
+  description: "Relaxed gain-priority variant: unfreeze temporal/residual + stronger relocal trigger @eval256"
+
+model:
+  refiner:
+    # Override inherited freeze list from aggressive parents.
+    trainable_modules: []
+    freeze_modules:
+      - occlusion_predictor
+      - semantic_encoder
+      - freq_semantic
+
+    relocalization:
+      min_occlusion_len: 12
+      frames_after: 12
+      conf_threshold: 0.12
+      topk: 8
+      max_total: 0.25
+
+    relocalization_residual:
+      scale: 0.020
+      gate_init_bias: -1.0
+      conf_threshold: 0.10
+      max_step: 0.015
+
+loss:
+  position:
+    selective:
+      enabled: true
+      base_error_threshold: 0.004
+      min_points: 64
+      detach_base: true
+
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      base_error_threshold: 0.004
+      min_points: 64
+
+training:
+  optimizer:
+    lr: 1.0e-4
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 6
+    min_delta: 0.0002
+
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    deadline_epoch: 8
+    threshold: 0.0005
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 4
+    patience: 4
+    min_delta_aj: 0.0002
+    min_delta_4px: 0.0002
+    min_delta_error: 0.0

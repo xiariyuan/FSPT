@@ -1,0 +1,50 @@
+{
+  "phase": 0,
+  "protocol": "strided+original",
+  "davis_pkl": {
+    "path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+    "videos": 30,
+    "has_embedded_frames": true
+  },
+  "query_mode": "strided",
+  "query_stride": 5,
+  "metric_resolution_mode": "original",
+  "normalization": {
+    "space": "yx-normalized",
+    "denominator": "per-video (H-1, W-1)"
+  },
+  "baselines": {
+    "cotracker3_online": {
+      "status": "complete",
+      "npz_cache": "caches/davis/cotracker3_video/ (30 files)",
+      "unified_pt": "caches/cotracker3_online_strided_original.pt",
+      "smoke_result": {
+        "AJ": 36.95,
+        "OA": 68.15,
+        "delta_avg": 45.01,
+        "delta_4px": 47.71
+      }
+    },
+    "cotracker3_offline": {
+      "status": "complete",
+      "npz_cache": "caches/davis/cotracker3_window/ (30 files)",
+      "unified_pt": "caches/cotracker3_offline_strided_original.pt",
+      "smoke_result": {
+        "AJ": 51.54,
+        "OA": 92.15,
+        "delta_avg": 63.59,
+        "delta_4px": 68.01
+      }
+    },
+    "trackon2": {
+      "status": "needs_rerun",
+      "reason": "dtype mismatch bug in trackon.py (user fixed locally), probe showed 14+ npz written, full 30-video run not completed",
+      "is_protocol_unsupported": false
+    }
+  },
+  "stop_criteria": {
+    "criterion": "full DAVIS strided+original 跑不通",
+    "hit": false
+  },
+  "decision": "ADVANCE_TO_PHASE_1"
+}

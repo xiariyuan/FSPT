@@ -1,0 +1,15 @@
+# 消融实验：时序一致性正则化
+# 验证 temporal_consistency 对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_temporal_consistency"
+
+loss:
+  temporal_smooth_weight: 0.0
+  temporal_consistency:
+    enabled: true
+    order: 2
+    weight: 0.01

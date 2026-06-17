@@ -1,0 +1,111 @@
+# =============================================================================
+# Route A (CoTracker3 base + FSPT refiner): train on real TAP-Vid Kinetics shards
+# =============================================================================
+#
+# Why:
+# - Kubric -> DAVIS domain gap can make the refiner learn a non-transferable delta,
+#   so relaxing guardrails starts to *hurt* the base tracker (AJ_delta < 0).
+# - TAP-Vid Kinetics is real video and much closer to DAVIS, so training the refiner
+#   on Kinetics is the most direct way to learn transferable corrections.
+# - Kinetics shards are large (GB-level); we use the streaming sharded dataset
+#   (datasets/tapvid_kinetics_sharded.py) to avoid OOM.
+#
+# Notes:
+# - `datasets.get_dataset(..., backend=auto)` will auto-select the sharded iterable
+#   dataset when `*_of_*.pkl` shards are detected.
+# - Ensure the dataset root contains a `train.index.json` manifest describing shards.
+#
+# Usage (server):
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus=[0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256"
+  description: "Route A refiner: train on real TAP-Vid Kinetics shards (streamed) + validate on DAVIS (eval256 main metric)"
+
+model:
+  type: "cotracker_refiner"
+  cotracker:
+    require: true
+    offline: true
+    v2: false
+    window_len: 60
+    checkpoint: "baselines/cotracker/checkpoints/scaled_offline.pth"
+  refiner:
+    feature_source: "cotracker"
+    local_correlation:
+      feature_source: "cotracker"
+    base_jitter:
+      enabled: false
+  temporal:
+    dim: 128
+
+logging:
+  wandb:
+    enabled: false
+  tensorboard:
+    enabled: false
+
+data:
+  train:
+    dataset: "tapvid_kinetics"
+    root: "/gemini/code/datasets/tapvid_kinetics"
+    # keep training compute bounded (CoTracker-in-the-loop is heavy)
+    num_frames: 24
+    num_points: 256
+    resolution: [256, 256]
+
+training:
+  # Sharded Kinetics decoding/unpickling is CPU/memory heavy; keep workers moderate.
+  num_workers: 2
+  batch_size: 1
+  gradient:
+    accumulation_steps: 4
+  checkpoint:
+    save_every: 1
+    keep_last: 5
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 8
+    min_delta: 1.0e-04
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 1.0e-04
+    min_delta_4px: 1.0e-04
+    min_delta_error: 0.0
+  monitor_checkpoints:
+    save_best_aj: true
+    save_best_oa: true
+  ema:
+    enabled: true
+    decay: 0.9999
+    warmup_steps: 1000
+    update_after_step: 100
+    use_for_eval: true
+  optimizer:
+    lr: 2.0e-05
+  epochs: 30
+
+loss:
+  # Keep strong guardrail early; Kinetics supervision should provide the signal to
+  # move only when it improves GT loss (more transferable than Kubric).
+  base_track_consistency:
+    weight: 3.0
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 20
+      start_weight: 3.0
+      end_weight: 1.0

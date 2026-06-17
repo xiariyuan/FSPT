@@ -1,0 +1,47 @@
+# =============================================================================
+# Route A Stage-3 v23 (eval-only): long-occ>=30 focus AFTER re-appearance (to end)
+# =============================================================================
+#
+# Goal:
+# - Preserve strong long-occ gains from v6 (≈ +0.005 AJ_longocc30_delta)
+# - Reduce global harm by NOT perturbing easy frames before occlusion.
+#
+# Mechanism:
+# - non_focus_scale=0.0 => non-focus queries stay identical to base.
+# - long-occ queries: allow corrections only AFTER re-appearance following a
+#   long occlusion run (>=30 frames). Apply from re-appearance to end-of-video.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v23_focus_longocc30_afterreapp_toend_nf000_eval_from_v6best
+  description: "Eval-only: focus long-occ>=30 AFTER re-appearance (to end); non_focus_scale=0"
+
+# Only used if you train from config; evaluation uses --checkpoint.
+pretrained: checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_apply_window_after_reappear: -1  # to end-of-video
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true

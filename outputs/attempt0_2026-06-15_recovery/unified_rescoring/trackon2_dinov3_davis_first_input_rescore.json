@@ -1,0 +1,687 @@
+{
+  "model_name": "trackon2_dinov3",
+  "dataset_name": "tapvid_davis",
+  "query_mode": "first",
+  "metric_resolution_mode": "input",
+  "long_occ_min_run": 20,
+  "num_records": 30,
+  "overall_mean": {
+    "AJ": 0.6704063894206062,
+    "OA": 0.9209161319977781,
+    "<avg": 0.7984183247379112,
+    "<4px": 0.8782325897935875,
+    "avg_error_px": 2.690529529253642,
+    "median_error_px": 1.2472327818473181
+  },
+  "long_occ_mean": {
+    "AJ": 0.452731299326645,
+    "OA": 0.7743867320536761,
+    "<avg": 0.6810895333905184,
+    "<4px": 0.7335824632869273,
+    "avg_error_px": 11.08281891162579,
+    "median_error_px": 10.263252689288212
+  },
+  "per_record": [
+    {
+      "record_index": 0,
+      "video_id": "bike-packing",
+      "num_queries": 25,
+      "num_long_occ_queries": 5,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.5841167629418763,
+        "OA": 0.8877076411960133,
+        "<avg": 0.7543186180422264,
+        "<4px": 0.8627639155470249,
+        "avg_error_px": 2.136017084121704,
+        "median_error_px": 1.5390422344207764
+      },
+      "long_occ": {
+        "AJ": 0.4007669861105666,
+        "OA": 0.7863501483679525,
+        "<avg": 0.7022556390977444,
+        "<4px": 0.7819548872180451,
+        "avg_error_px": 3.0314316749572754,
+        "median_error_px": 2.1290457248687744
+      }
+    },
+    {
+      "record_index": 1,
+      "video_id": "blackswan",
+      "num_queries": 5,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.9726235741444867,
+        "OA": 1.0,
+        "<avg": 0.9853061224489796,
+        "<4px": 1.0,
+        "avg_error_px": 0.5478681921958923,
+        "median_error_px": 0.48836052417755127
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 2,
+      "video_id": "bmx-trees",
+      "num_queries": 25,
+      "num_long_occ_queries": 9,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.5216643981241803,
+        "OA": 0.7651077246452969,
+        "<avg": 0.7755443886097153,
+        "<4px": 0.8969849246231156,
+        "avg_error_px": 2.829220771789551,
+        "median_error_px": 1.3383270502090454
+      },
+      "long_occ": {
+        "AJ": 0.5246108875547278,
+        "OA": 0.7637130801687764,
+        "<avg": 0.8228571428571427,
+        "<4px": 0.9662337662337662,
+        "avg_error_px": 1.5532279014587402,
+        "median_error_px": 1.2358793020248413
+      }
+    },
+    {
+      "record_index": 3,
+      "video_id": "breakdance",
+      "num_queries": 25,
+      "num_long_occ_queries": 6,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.719161979575524,
+        "OA": 0.9009193054136875,
+        "<avg": 0.8384730538922156,
+        "<4px": 0.9446107784431138,
+        "avg_error_px": 3.243169069290161,
+        "median_error_px": 0.951382040977478
+      },
+      "long_occ": {
+        "AJ": 0.5002403279923937,
+        "OA": 0.8373493975903614,
+        "<avg": 0.7162790697674418,
+        "<4px": 0.9069767441860465,
+        "avg_error_px": 6.850541591644287,
+        "median_error_px": 1.9044513702392578
+      }
+    },
+    {
+      "record_index": 4,
+      "video_id": "camel",
+      "num_queries": 10,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.8392239179173415,
+        "OA": 0.9947643979057592,
+        "<avg": 0.8954666666666669,
+        "<4px": 0.9906666666666667,
+        "avg_error_px": 1.0099819898605347,
+        "median_error_px": 0.7836585640907288
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 5,
+      "video_id": "car-roundabout",
+      "num_queries": 20,
+      "num_long_occ_queries": 2,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.56313613944604,
+        "OA": 0.9012435991221653,
+        "<avg": 0.7506896551724138,
+        "<4px": 0.8103448275862069,
+        "avg_error_px": 3.120206594467163,
+        "median_error_px": 1.2050039768218994
+      },
+      "long_occ": {
+        "AJ": 0.5475840336134454,
+        "OA": 0.9793103448275862,
+        "<avg": 0.7571428571428571,
+        "<4px": 0.8571428571428571,
+        "avg_error_px": 3.3847744464874268,
+        "median_error_px": 1.1019415855407715
+      }
+    },
+    {
+      "record_index": 6,
+      "video_id": "car-shadow",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.8874004287449322,
+        "OA": 0.9548717948717949,
+        "<avg": 0.9652870493991991,
+        "<4px": 1.0,
+        "avg_error_px": 0.601116418838501,
+        "median_error_px": 0.5276325345039368
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 7,
+      "video_id": "cows",
+      "num_queries": 10,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.8777099380216218,
+        "OA": 0.9912621359223301,
+        "<avg": 0.9290196078431372,
+        "<4px": 1.0,
+        "avg_error_px": 0.8469374775886536,
+        "median_error_px": 0.6780929565429688
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 8,
+      "video_id": "dance-twirl",
+      "num_queries": 25,
+      "num_long_occ_queries": 5,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6674530085828665,
+        "OA": 0.8863322595490106,
+        "<avg": 0.8010682492581603,
+        "<4px": 0.8445103857566766,
+        "avg_error_px": 2.98848295211792,
+        "median_error_px": 1.036286473274231
+      },
+      "long_occ": {
+        "AJ": 0.32000124549053727,
+        "OA": 0.7370786516853932,
+        "<avg": 0.45777777777777773,
+        "<4px": 0.3851851851851852,
+        "avg_error_px": 8.992019653320312,
+        "median_error_px": 5.185559272766113
+      }
+    },
+    {
+      "record_index": 9,
+      "video_id": "dog",
+      "num_queries": 10,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.5831164121432403,
+        "OA": 0.9574861367837338,
+        "<avg": 0.7142857142857142,
+        "<4px": 0.8325123152709359,
+        "avg_error_px": 2.663090229034424,
+        "median_error_px": 1.839767336845398
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 10,
+      "video_id": "dogs-jump",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7230210266828754,
+        "OA": 0.9707880434782609,
+        "<avg": 0.8177007299270074,
+        "<4px": 0.9388686131386861,
+        "avg_error_px": 1.6527000665664673,
+        "median_error_px": 1.2404388189315796
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 11,
+      "video_id": "drift-chicane",
+      "num_queries": 25,
+      "num_long_occ_queries": 1,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7249322328501167,
+        "OA": 0.9087947882736156,
+        "<avg": 0.8908507223113965,
+        "<4px": 0.9117174959871589,
+        "avg_error_px": 1.6473513841629028,
+        "median_error_px": 0.27068203687667847
+      },
+      "long_occ": {
+        "AJ": 0.17041790035290733,
+        "OA": 0.4489795918367347,
+        "<avg": 0.4842105263157895,
+        "<4px": 0.42105263157894735,
+        "avg_error_px": 7.353237152099609,
+        "median_error_px": 6.3199310302734375
+      }
+    },
+    {
+      "record_index": 12,
+      "video_id": "drift-straight",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.8744480529165252,
+        "OA": 0.9865884325230512,
+        "<avg": 0.9478947368421053,
+        "<4px": 0.9921052631578947,
+        "avg_error_px": 0.5963655710220337,
+        "median_error_px": 0.25231990218162537
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 13,
+      "video_id": "goat",
+      "num_queries": 5,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6866218213056156,
+        "OA": 0.9955056179775281,
+        "<avg": 0.7640449438202247,
+        "<4px": 0.9101123595505618,
+        "avg_error_px": 1.9321651458740234,
+        "median_error_px": 1.5958752632141113
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 14,
+      "video_id": "gold-fish",
+      "num_queries": 25,
+      "num_long_occ_queries": 1,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6305663249315602,
+        "OA": 0.9465776293823038,
+        "<avg": 0.7448750000000001,
+        "<4px": 0.8625,
+        "avg_error_px": 2.150657892227173,
+        "median_error_px": 1.656595230102539
+      },
+      "long_occ": {
+        "AJ": 0.6019870448179272,
+        "OA": 0.7532467532467533,
+        "<avg": 0.8933333333333333,
+        "<4px": 1.0,
+        "avg_error_px": 0.9748804569244385,
+        "median_error_px": 0.8041110634803772
+      }
+    },
+    {
+      "record_index": 15,
+      "video_id": "horsejump-high",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7106005635217391,
+        "OA": 0.9342881213142376,
+        "<avg": 0.8135273972602739,
+        "<4px": 0.884417808219178,
+        "avg_error_px": 3.1145360469818115,
+        "median_error_px": 0.9695798754692078
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 16,
+      "video_id": "india",
+      "num_queries": 25,
+      "num_long_occ_queries": 7,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7577121982156186,
+        "OA": 0.979,
+        "<avg": 0.8443768996960486,
+        "<4px": 0.9430091185410334,
+        "avg_error_px": 1.7723972797393799,
+        "median_error_px": 0.9905912280082703
+      },
+      "long_occ": {
+        "AJ": 0.7609677418977084,
+        "OA": 0.9642857142857143,
+        "<avg": 0.8653950953678475,
+        "<4px": 0.9673024523160763,
+        "avg_error_px": 1.189599633216858,
+        "median_error_px": 0.9116582870483398
+      }
+    },
+    {
+      "record_index": 17,
+      "video_id": "judo",
+      "num_queries": 25,
+      "num_long_occ_queries": 2,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6568341946800592,
+        "OA": 0.8601485148514851,
+        "<avg": 0.8388278388278388,
+        "<4px": 0.924908424908425,
+        "avg_error_px": 4.3544840812683105,
+        "median_error_px": 0.9689065217971802
+      },
+      "long_occ": {
+        "AJ": 0.16666666666666666,
+        "OA": 0.8484848484848485,
+        "<avg": 0.375,
+        "<4px": 0.375,
+        "avg_error_px": 71.61782836914062,
+        "median_error_px": 103.53646850585938
+      }
+    },
+    {
+      "record_index": 18,
+      "video_id": "kite-surf",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7987716192858147,
+        "OA": 0.9433497536945813,
+        "<avg": 0.8894909688013136,
+        "<4px": 0.9466338259441708,
+        "avg_error_px": 1.4340482950210571,
+        "median_error_px": 0.7032611966133118
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 19,
+      "video_id": "lab-coat",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6441742772499973,
+        "OA": 0.9826086956521739,
+        "<avg": 0.766120218579235,
+        "<4px": 0.8371584699453551,
+        "avg_error_px": 2.909001350402832,
+        "median_error_px": 1.1049842834472656
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 20,
+      "video_id": "libby",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.4681762733671516,
+        "OA": 0.8009367681498829,
+        "<avg": 0.6593103448275863,
+        "<4px": 0.7655172413793103,
+        "avg_error_px": 4.319177150726318,
+        "median_error_px": 2.0962941646575928
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 21,
+      "video_id": "loading",
+      "num_queries": 25,
+      "num_long_occ_queries": 1,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6919475984805248,
+        "OA": 0.9716981132075472,
+        "<avg": 0.8036326942482341,
+        "<4px": 0.8536831483350151,
+        "avg_error_px": 2.180352210998535,
+        "median_error_px": 1.0051345825195312
+      },
+      "long_occ": {
+        "AJ": 0.6195286195286195,
+        "OA": 0.8571428571428571,
+        "<avg": 0.8235294117647058,
+        "<4px": 0.8823529411764706,
+        "avg_error_px": 15.094030380249023,
+        "median_error_px": 0.9039204716682434
+      }
+    },
+    {
+      "record_index": 22,
+      "video_id": "mbike-trick",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6711885792970602,
+        "OA": 0.9256410256410257,
+        "<avg": 0.8068286277084702,
+        "<4px": 0.8975705843729481,
+        "avg_error_px": 1.9357353448867798,
+        "median_error_px": 1.1269574165344238
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 23,
+      "video_id": "motocross-jump",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.7154581010911814,
+        "OA": 0.9503012048192772,
+        "<avg": 0.8388297872340426,
+        "<4px": 0.8936170212765957,
+        "avg_error_px": 2.3168303966522217,
+        "median_error_px": 0.8146148324012756
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 24,
+      "video_id": "paragliding-launch",
+      "num_queries": 25,
+      "num_long_occ_queries": 3,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.5028865328621672,
+        "OA": 0.8176739461655663,
+        "<avg": 0.658880516684607,
+        "<4px": 0.7911733046286329,
+        "avg_error_px": 6.2036638259887695,
+        "median_error_px": 2.0039267539978027
+      },
+      "long_occ": {
+        "AJ": 0.4169617819990955,
+        "OA": 0.5316455696202531,
+        "<avg": 0.7034013605442178,
+        "<4px": 0.7755102040816326,
+        "avg_error_px": 4.507925510406494,
+        "median_error_px": 1.3522778749465942
+      }
+    },
+    {
+      "record_index": 25,
+      "video_id": "parkour",
+      "num_queries": 25,
+      "num_long_occ_queries": 2,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.30471801540677274,
+        "OA": 0.7303077725612936,
+        "<avg": 0.5242681775259679,
+        "<4px": 0.5184135977337111,
+        "avg_error_px": 8.19614028930664,
+        "median_error_px": 3.864152669906616
+      },
+      "long_occ": {
+        "AJ": 0.08819640488591833,
+        "OA": 0.6363636363636364,
+        "<avg": 0.3295774647887324,
+        "<4px": 0.28169014084507044,
+        "avg_error_px": 17.952564239501953,
+        "median_error_px": 7.552428245544434
+      }
+    },
+    {
+      "record_index": 26,
+      "video_id": "pigs",
+      "num_queries": 15,
+      "num_long_occ_queries": 1,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6165311555729016,
+        "OA": 0.9181232750689973,
+        "<avg": 0.7665379665379666,
+        "<4px": 0.87001287001287,
+        "avg_error_px": 2.153825283050537,
+        "median_error_px": 1.397850513458252
+      },
+      "long_occ": {
+        "AJ": 0.7675772503358711,
+        "OA": 0.9230769230769231,
+        "<avg": 0.9234042553191489,
+        "<4px": 0.9361702127659575,
+        "avg_error_px": 1.5745848417282104,
+        "median_error_px": 0.48461222648620605
+      }
+    },
+    {
+      "record_index": 27,
+      "video_id": "scooter-black",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.6581372101135464,
+        "OA": 0.9791449426485923,
+        "<avg": 0.7518358531317494,
+        "<4px": 0.8930885529157667,
+        "avg_error_px": 2.0781593322753906,
+        "median_error_px": 1.6745637655258179
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 28,
+      "video_id": "shooting",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.38504569394408145,
+        "OA": 0.8165345413363534,
+        "<avg": 0.617607223476298,
+        "<4px": 0.6636568848758465,
+        "avg_error_px": 5.364364147186279,
+        "median_error_px": 2.333913803100586
+      },
+      "long_occ": null
+    },
+    {
+      "record_index": 29,
+      "video_id": "soapbox",
+      "num_queries": 25,
+      "num_long_occ_queries": 0,
+      "resolution_hw": [
+        256,
+        256
+      ],
+      "overall": {
+        "AJ": 0.674813651200764,
+        "OA": 0.9697777777777777,
+        "<avg": 0.7976499690785406,
+        "<4px": 0.8664192949907236,
+        "avg_error_px": 4.417840003967285,
+        "median_error_px": 0.9587869048118591
+      },
+      "long_occ": null
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "model": "cotracker3_online",
+  "backbone": "original CoTracker3",
+  "checkpoint": "/gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth",
+  "load_method": "local CoTrackerPredictor directly — no torch.hub",
+  "dataset": "tapvid_davis",
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+  "num_samples": 30,
+  "run_type": "fresh本轮运行",
+  "metrics": {
+    "AJ": 64.89,
+    "delta_avg": 77.36,
+    "OA": 91.80,
+    "delta_1": 44.09,
+    "delta_2": 68.00,
+    "delta_4": 84.93,
+    "delta_8": 93.07,
+    "delta_16": 96.69
+  },
+  "note": "No historical snapshot for online variant. Online 77.36 is close to offline 77.22."
+}

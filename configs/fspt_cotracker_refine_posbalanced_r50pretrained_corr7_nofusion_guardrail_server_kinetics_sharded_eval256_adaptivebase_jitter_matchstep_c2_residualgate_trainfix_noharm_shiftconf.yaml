@@ -1,0 +1,36 @@
+# =============================================================================
+# Route A: shift-based correlation confidence (more selective updates)
+# =============================================================================
+#
+# Motivation:
+# - CoTracker3 base is extremely strong on DAVIS (AJ_base ~0.699 @ eval256).
+# - Our refiner's updates are small but still slightly harmful (AJ_delta < 0).
+# - Using `prob.max` as a confidence signal can still allow small drifts even
+#   when the correlation peak is at the *current* location.
+#
+# This config switches local-correlation confidence to:
+#   conf = max_prob - prob_center
+# which becomes ~0 when the best match is already at the base location.
+#
+# Expected effect:
+# - Reduce unnecessary corrections on already-correct points.
+# - Keep corrections mainly when the correlation peak shifts away from center.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_residualgate_trainfix_noharm.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_noharm_shiftconf_eval256"
+  description: "Route A refiner: local correlation confidence=max_prob-prob_center (more selective)"
+
+model:
+  refiner:
+    local_correlation:
+      confidence_mode: "shift"
+      # Keep thresholds modest initially; shift-confidence already suppresses
+      # updates when the peak is centered.
+      gate_threshold: 0.05
+      residual_gate_threshold: 0.10
+

@@ -1,0 +1,56 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): add lightweight local correlation (7x7)
+# =============================================================================
+#
+# This config builds on:
+#   - configs/fspt_cotracker_refine_posbalanced_r50pretrained.yaml
+#
+# Changes:
+#   1) Enable local correlation around current tracks (7x7 window).
+#   2) Keep refined visibility close to base via a simple blend prior.
+#   3) Start base-consistency losses from epoch 0 (no warm ramp) to avoid
+#      the refiner harming the base tracker early in training.
+#
+# Usage:
+#   cd /gemini/code/FSPT
+#   /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_posbalanced_r50pretrained_corr7.yaml \
+#     --experiment.name <YOUR_EXP_NAME> \
+#     --hardware.gpus [0]
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7"
+  description: "Route A refiner: ResNet50 init + residual identity init + local correlation (7x7)"
+
+model:
+  refiner:
+    local_correlation:
+      enabled: true
+      window_size: 7
+      corr_dim: 64
+      hidden_dim: 128
+      scale: 1.0
+      normalize: true
+      temperature: 1.0
+
+    # Stabilize OA early by leaning on CoTracker visibility as a prior.
+    visibility_prior:
+      mode: "blend"
+      alpha: 0.8
+
+loss:
+  base_track_consistency:
+    schedule:
+      start_weight: 0.05
+      end_weight: 0.05
+
+  base_visibility_consistency:
+    schedule:
+      start_weight: 0.02
+      end_weight: 0.02
+

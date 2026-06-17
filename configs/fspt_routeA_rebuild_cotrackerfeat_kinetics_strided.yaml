@@ -1,0 +1,195 @@
+# =============================================================================
+# Route A "Rebuild" v1: CoTracker3 features + local correlation + real Kinetics train
+# =============================================================================
+#
+# Why this config
+# - Prior refiner variants trained on Kubric tended to either:
+#     (1) harm base on DAVIS (domain gap), or
+#     (2) become ultra conservative (AJ_delta ~= 0).
+# - The biggest structural mismatch is: our refiner learns matching features from
+#   an ImageNet backbone, while the base tracker (CoTracker3) uses its own
+#   tracking-trained feature network (fnet).
+#
+# This rebuild switches the *refiner feature source* to CoTracker's fnet features
+# captured during the base forward pass (no extra CoTracker run), and trains the
+# lightweight temporal+residual head on TAP-Vid Kinetics (real videos) to reduce
+# synthetic->real domain gap.
+#
+# Goal
+# - Achieve stable AJ_delta > 0 on TAP-Vid DAVIS under official strided protocol
+#   (metric_resolution_mode=original).
+#
+# Notes
+# - We disable frequency/semantic/occlusion branches for now to keep the system
+#   focused on position refinement and to avoid additional domain-gap regressors.
+# - We keep a tight trust region (delta_max_total) as a safety net.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_rebuild_cotrackerfeat_kinetics_strided"
+  description: "Rebuild v1: refiner uses CoTracker fnet features + local correlation; train on TAP-Vid Kinetics (real)"
+
+model:
+  # Keep the refiner lightweight and focused on position.
+  frequency:
+    enabled: false
+  semantic:
+    enabled: false
+  occlusion:
+    enabled: false
+
+  temporal:
+    # IMPORTANT: CoTracker3 fnet latent_dim is 128 (scaled_offline.pth).
+    # Keep temporal.dim aligned so local_correlation can consume the features.
+    dim: 128
+    # Smaller temporal model to reduce overfit/drift.
+    num_layers: 2
+    num_refinement_iters: 1
+
+  # We still instantiate geo_backbone but it is unused when feature_source=cotracker.
+  backbone:
+    pretrained: false
+    freeze_bn: true
+
+  refiner:
+    # Critical rebuild switch: use CoTracker fnet features as the refiner backbone.
+    feature_source: "cotracker"   # geo | cotracker
+
+    # Train only the lightweight heads (local_correlation stays trainable).
+    trainable_modules:
+      - temporal_transformer
+      - residual_decoder
+    stages: []
+
+    # Conservative residual update; allow small corrections only.
+    delta_scale: 0.03
+    delta_max_step: 0.01
+    delta_max_total: 0.02   # trust-region clamp (~10px on 512-wide features)
+
+    local_correlation:
+      enabled: true
+      feature_source: "cotracker"
+      reference_mode: "adjacent"
+      feature_level: "fused"     # ignored when feature_source=cotracker
+      window_size: 7             # start small; expand later if needed
+      use_step: true
+      scale: 0.5                 # inject corr embedding into tokens
+      confidence_mode: "shift"
+      gate_threshold: 0.05
+      residual_gate_threshold: 0.10
+      gate_power: 2.0
+      residual_gate_power: 2.0
+      # Train-time: allow learning (no confidence dead-zone).
+      gate_step_train: false
+      gate_residual_train: false
+
+    # Train/test aligned: do NOT jitter base tracks (real-data already provides errors).
+    base_jitter:
+      enabled: false
+
+training:
+  # CoTracker-in-the-loop is expensive; keep batch=1 with grad accumulation.
+  batch_size: 1
+  num_workers: 4
+  epochs: 30
+
+  gradient:
+    accumulation_steps: 4
+
+  optimizer:
+    lr: 2.0e-05
+
+  checkpoint:
+    save_every: 1
+    keep_last: 10
+
+  ema:
+    enabled: true
+    decay: 0.9999
+    warmup_steps: 1000
+    update_after_step: 100
+    use_for_eval: true
+
+  # Save both AJ/OA best checkpoints (helps later analysis).
+  monitor_checkpoints:
+    save_best_aj: true
+    save_best_oa: true
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 6
+    min_delta_aj: 0.0001
+    min_delta_4px: 0.0001
+    min_delta_error: 0.0
+
+loss:
+  # Keep the proven balancing (position dominates).
+  position:
+    weight: 10.0
+    # Optional: keep a small "no-harm" pressure even in supervised training.
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      detach_base: true
+
+  occlusion:
+    weight: 0.0
+
+  # Let the model actually move; no L1 anchor to base.
+  base_track_consistency:
+    weight: 0.0
+    schedule: null
+
+  # Explicitly teach correlation maps where to peak (classification over offsets).
+  correlation_supervision:
+    enabled: true
+    weight: 1.0
+    mask: "gt_visible"
+    ignore_out_of_window: true
+
+evaluation:
+  compare_base: true
+  eval_every: 1
+  metric_resolution_mode: "original"
+  aux_metric_resolution_mode: "input"
+
+data:
+  train:
+    dataset: "tapvid_kinetics"
+    root: "/gemini/code/datasets/tapvid_kinetics"
+    backend: "sharded_pkl"
+    annotation_file: "train.index.json"
+    num_frames: 24
+    num_points: 256
+    resolution: [384, 512]
+    query_mode: "strided"
+    query_stride: 5
+    points_order: "xy"
+    augmentation:
+      enabled: true
+      random_crop: true
+      random_flip: true
+      color_jitter: 0.4
+      random_scale: [0.8, 1.2]
+      random_rotation: 0.0
+
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    backend: "auto"
+    num_frames: -1
+    num_points: null
+    resolution: null
+    query_stride: 5
+    points_order: "xy"
+    augmentation:
+      enabled: false
+    # IMPORTANT: disable cached base tracks; we need the base forward to also
+    # produce CoTracker fnet features used by the refiner.
+    base_tracks_dir: null

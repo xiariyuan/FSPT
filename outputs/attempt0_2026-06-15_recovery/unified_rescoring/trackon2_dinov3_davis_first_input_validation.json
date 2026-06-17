@@ -1,0 +1,463 @@
+{
+  "schema_version": 1,
+  "valid": true,
+  "errors": [],
+  "warnings": [],
+  "summary": {
+    "num_records": 30,
+    "num_queries": 650,
+    "require_gt": true
+  },
+  "per_record": [
+    {
+      "record_index": 0,
+      "video_id": "bike-packing",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 69,
+      "original_size_hw": [
+        480,
+        910
+      ],
+      "anchor_mean_error_px": 0.3524269759654999,
+      "anchor_max_error_px": 0.5917888879776001
+    },
+    {
+      "record_index": 1,
+      "video_id": "blackswan",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 5,
+      "num_frames": 50,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2874743342399597,
+      "anchor_max_error_px": 0.40040406584739685
+    },
+    {
+      "record_index": 2,
+      "video_id": "bmx-trees",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 80,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2986937165260315,
+      "anchor_max_error_px": 1.11284339427948
+    },
+    {
+      "record_index": 3,
+      "video_id": "breakdance",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 84,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2866996228694916,
+      "anchor_max_error_px": 0.6278225183486938
+    },
+    {
+      "record_index": 4,
+      "video_id": "camel",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 10,
+      "num_frames": 90,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2848582863807678,
+      "anchor_max_error_px": 0.6476388573646545
+    },
+    {
+      "record_index": 5,
+      "video_id": "car-roundabout",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 20,
+      "num_frames": 75,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.28766125440597534,
+      "anchor_max_error_px": 0.6758136749267578
+    },
+    {
+      "record_index": 6,
+      "video_id": "car-shadow",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 40,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2467566728591919,
+      "anchor_max_error_px": 0.7201883792877197
+    },
+    {
+      "record_index": 7,
+      "video_id": "cows",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 10,
+      "num_frames": 104,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2480010986328125,
+      "anchor_max_error_px": 0.5029374361038208
+    },
+    {
+      "record_index": 8,
+      "video_id": "dance-twirl",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 90,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.30985721945762634,
+      "anchor_max_error_px": 0.6013352274894714
+    },
+    {
+      "record_index": 9,
+      "video_id": "dog",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 10,
+      "num_frames": 60,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2515851855278015,
+      "anchor_max_error_px": 0.47703588008880615
+    },
+    {
+      "record_index": 10,
+      "video_id": "dogs-jump",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 66,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.3225354850292206,
+      "anchor_max_error_px": 0.8041192293167114
+    },
+    {
+      "record_index": 11,
+      "video_id": "drift-chicane",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 52,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.25906625390052795,
+      "anchor_max_error_px": 0.4405975639820099
+    },
+    {
+      "record_index": 12,
+      "video_id": "drift-straight",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 50,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.24275214970111847,
+      "anchor_max_error_px": 0.6580768823623657
+    },
+    {
+      "record_index": 13,
+      "video_id": "goat",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 5,
+      "num_frames": 90,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2509703040122986,
+      "anchor_max_error_px": 0.42834579944610596
+    },
+    {
+      "record_index": 14,
+      "video_id": "gold-fish",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 78,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.3279157280921936,
+      "anchor_max_error_px": 0.5970499515533447
+    },
+    {
+      "record_index": 15,
+      "video_id": "horsejump-high",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 50,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2353755533695221,
+      "anchor_max_error_px": 0.5288044214248657
+    },
+    {
+      "record_index": 16,
+      "video_id": "india",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 81,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.26263418793678284,
+      "anchor_max_error_px": 0.6149576306343079
+    },
+    {
+      "record_index": 17,
+      "video_id": "judo",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 34,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.27423396706581116,
+      "anchor_max_error_px": 0.6206921339035034
+    },
+    {
+      "record_index": 18,
+      "video_id": "kite-surf",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 50,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2734989821910858,
+      "anchor_max_error_px": 0.6120702028274536
+    },
+    {
+      "record_index": 19,
+      "video_id": "lab-coat",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 47,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.26189085841178894,
+      "anchor_max_error_px": 0.7480371594429016
+    },
+    {
+      "record_index": 20,
+      "video_id": "libby",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 49,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.26400133967399597,
+      "anchor_max_error_px": 0.6347318887710571
+    },
+    {
+      "record_index": 21,
+      "video_id": "loading",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 50,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.25303134322166443,
+      "anchor_max_error_px": 0.555537223815918
+    },
+    {
+      "record_index": 22,
+      "video_id": "mbike-trick",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 79,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2659859359264374,
+      "anchor_max_error_px": 0.5819770693778992
+    },
+    {
+      "record_index": 23,
+      "video_id": "motocross-jump",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 40,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2962741553783417,
+      "anchor_max_error_px": 0.6664211750030518
+    },
+    {
+      "record_index": 24,
+      "video_id": "paragliding-launch",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 80,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.2621983289718628,
+      "anchor_max_error_px": 0.7389962673187256
+    },
+    {
+      "record_index": 25,
+      "video_id": "parkour",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 100,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.26028692722320557,
+      "anchor_max_error_px": 0.7762962579727173
+    },
+    {
+      "record_index": 26,
+      "video_id": "pigs",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 15,
+      "num_frames": 79,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.22477521002292633,
+      "anchor_max_error_px": 0.4287278950214386
+    },
+    {
+      "record_index": 27,
+      "video_id": "scooter-black",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 43,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.31385916471481323,
+      "anchor_max_error_px": 0.7620897889137268
+    },
+    {
+      "record_index": 28,
+      "video_id": "shooting",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 40,
+      "original_size_hw": [
+        480,
+        1152
+      ],
+      "anchor_mean_error_px": 0.37714335322380066,
+      "anchor_max_error_px": 1.0469130277633667
+    },
+    {
+      "record_index": 29,
+      "video_id": "soapbox",
+      "valid": true,
+      "errors": [],
+      "warnings": [],
+      "num_queries": 25,
+      "num_frames": 99,
+      "original_size_hw": [
+        480,
+        854
+      ],
+      "anchor_mean_error_px": 0.21864193677902222,
+      "anchor_max_error_px": 1.1300163269042969
+    }
+  ]
+}

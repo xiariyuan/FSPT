@@ -1,0 +1,160 @@
+# =============================================================================
+# Route A (new structure): dual all-pair correlation + relocal bank + two-view
+# =============================================================================
+#
+# Goal
+# - Move beyond "near-base but negative delta" by combining:
+#   1) robust local matching (all-pair on coarse + fine heads),
+#   2) explicit long-occlusion re-localization (template bank),
+#   3) domain-gap regularization (two-view consistency).
+#
+# Design notes
+# - Keep visibility sourced from base tracker to avoid OA collapse.
+# - Keep trust-region clamps and explicit stop-loss to avoid wasting GPU.
+#
+
+defaults:
+  - fspt_routeA_locotrack_allpair_fine_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_reloc_twoview_eval256"
+  description: "Dual all-pair + relocal bank + two-view consistency @eval256"
+
+model:
+  refiner:
+    visibility_prior:
+      mode: "blend"
+      alpha: 1.0
+
+    # Coarse + fine all-pair matching.
+    local_correlation:
+      corr_mode: "all_pair"
+      query_window_size: 3
+      all_pair_chunk: 8
+
+    local_correlation_fine:
+      corr_mode: "all_pair"
+      query_window_size: 7
+      all_pair_chunk: 4
+      map_update:
+        enabled: true
+        hidden_dim: 64
+        gate_init_bias: -0.5
+        step_scale: 1.0
+
+    # Stage-3 style global relocalization for long occlusion recovery.
+    relocalization:
+      enabled: true
+      feature_source: "cotracker"
+      downsample: 1
+      min_occlusion_len: 20
+      frames_after: 8
+      vis_threshold: 0.5
+      template_mode: "last_visible"
+      template_bank_size: 4
+      template_bank_stride: 2
+      confirm:
+        enabled: true
+        dist_threshold: 0.02
+        allow_single_frame: true
+      temperature: 0.5
+      conf_threshold: 0.18
+      gate_power: 2.0
+      margin_threshold: 0.02
+      margin_power: 1.0
+      shift_threshold: 0.05
+      shift_power: 1.0
+      step_mode: "argmax"
+      apply_only_first_iter: false
+      max_total: 0.20
+      topk: 4
+      temporal_sigma: 1.0
+      temporal_power: 1.0
+      temporal_min_prev_conf: 0.05
+
+    # Small learnable correction only near relocalized frames.
+    relocalization_residual:
+      enabled: true
+      hidden_dim: 128
+      scale: 0.015
+      gate_init_bias: -1.5
+      conf_threshold: 0.15
+      conf_power: 1.0
+      max_step: 0.01
+      apply_only_first_iter: false
+      require_mask: true
+      tanh: true
+
+loss:
+  # Keep strong no-harm constraint but relax slightly from aggressive=5.0
+  # so relocalization can move when base is wrong.
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 3.0
+      margin: 0.001
+      base_error_threshold: 0.01
+      min_points: 256
+
+  correlation_supervision:
+    weight: 6.0
+
+  two_view_consistency:
+    enabled: true
+    weight: 0.4
+    schedule:
+      enabled: true
+      type: "cosine"
+      start_weight: 0.0
+      end_weight: 0.4
+      start_epoch: 1
+      end_epoch: 10
+    visibility_weight: 0.0
+    teacher: "ema"
+    stop_grad: true
+    require_base_tracks: true
+    apply_prob: 0.6
+    max_points: 128
+    max_resample: 1
+    min_in_bounds_fraction: 0.7
+    oom_safe: true
+    augmentation:
+      flip: true
+      flip_prob: 0.5
+      rotation_deg: 5.0
+      scale: [0.9, 1.1]
+      translate: [0.05, 0.05]
+      padding_mode: "zeros"
+      mode: "bilinear"
+      align_corners: false
+
+training:
+  epochs: 45
+
+  optimizer:
+    lr: 8.0e-05
+    backbone_lr_scale: 0.05
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    patience: 8
+    min_delta: 0.0001
+
+  # Fast fail to avoid long no-gain runs.
+  deadline_guard:
+    enabled: true
+    monitor: "AJ_delta"
+    mode: "max"
+    deadline_epoch: 8
+    threshold: -0.0010
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 5
+    min_delta_aj: 0.0002
+    min_delta_4px: 0.0002
+    min_delta_error: 0.0

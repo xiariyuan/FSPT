@@ -1,0 +1,14 @@
+{
+  "cotracker3_online": {
+    "n": 173164,
+    "median": 2.457,
+    "mean": 5.642,
+    "p95": 16.73
+  },
+  "cotracker3_offline": {
+    "n": 173164,
+    "median": 2.432,
+    "mean": 5.297,
+    "p95": 14.59
+  }
+}

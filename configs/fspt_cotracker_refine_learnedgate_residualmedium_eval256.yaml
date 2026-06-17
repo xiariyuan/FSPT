@@ -1,0 +1,58 @@
+# =============================================================================
+# Route A (SOTA push): learned-gate + stronger correction capacity (no jitter)
+# =============================================================================
+#
+# This is the next step after `*_residualtiny_eval256.yaml`.
+#
+# Goals:
+# - Keep train/test distributions aligned (NO base_jitter).
+# - Allow correcting the rare hard cases where CoTracker3 is wrong by >5px:
+#     delta_max_total: 0.05  (~12.8px @ 256x256)
+# - Still stay safe via:
+#     - shift-confidence gating
+#     - no_harm_vs_base hinge regularizer
+# - Increase local search window to catch larger mismatches: 11x11.
+#
+
+defaults:
+  - fspt_cotracker_refine_learnedgate_residualtiny_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_learnedgate_residualmedium_eval256"
+  description: "No jitter; larger trust region + 11x11 local matching; aim measurable AJ_delta>0"
+
+# Start from the best checkpoint of residualtiny (weights-only via load_pretrained()).
+pretrained: "checkpoints/fspt_routeA_learnedgate_residualtiny_eval256_20260215_184116/best.pth"
+
+model:
+  refiner:
+    # Allow larger corrections for hard cases.
+    delta_max_total: 0.05
+
+    # Slightly more aggressive residual updates (still clamped by delta_max_total).
+    delta_scale: 0.05
+
+    local_correlation:
+      window_size: 11
+      # Let the model act on more frames/points (shift-confidence already protects).
+      gate_threshold: 0.01
+      residual_gate_threshold: 0.05
+
+loss:
+  position:
+    # Keep "do no harm" pressure, but don't overconstrain.
+    no_harm_vs_base:
+      weight: 1.0
+      margin: 0.0005
+
+training:
+  epochs: 40
+  optimizer:
+    lr: 3.0e-05
+
+  # Disable early stopping for this run: we want to see if larger trust region
+  # produces gains after a few epochs.
+  early_stopping:
+    enabled: false
+

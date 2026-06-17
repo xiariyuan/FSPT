@@ -1,0 +1,307 @@
+{
+  "config": "configs/fspt_online_recovery_real_eval256.yaml",
+  "checkpoint": "baselines/track_on/checkpoints_trackon2_dinov3.pt",
+  "online_recovery_summary": {
+    "requested": true,
+    "mode": "tracker_conditioned",
+    "feature_source": "cotracker",
+    "template_mode": "visible_bank",
+    "template_bank_size": 6,
+    "min_occlusion_len": 20,
+    "frames_after": 0,
+    "vis_threshold": 0.5,
+    "retracking_enabled": true,
+    "use_learned_head": false
+  },
+  "total_batches": 30,
+  "total_queries": 5882,
+  "total_query_frames": 421161,
+  "relocal_mask": {
+    "nonzero_elements": 146,
+    "nonzero_queries": 145,
+    "element_trigger_rate": 0.0003466607781822153,
+    "query_trigger_rate": 0.024651479088745324
+  },
+  "verifier_scores_nonzero_elements": 421161,
+  "verifier_decisions_nonzero_elements": 83,
+  "retracking_triggered_batches": 0,
+  "retracking_mask_nonzero_total": 0,
+  "verifier_scores_stats": {
+    "count": 3000,
+    "mean": 0.5018799129128456,
+    "std": 0.0054614070507630445,
+    "min": 0.4840482771396637,
+    "max": 0.517821192741394,
+    "median": 0.5021073818206787,
+    "p5": 0.4926458463072777,
+    "p95": 0.5104295611381531
+  },
+  "relocal_conf_masked_stats": {
+    "count": 146,
+    "mean": 0.0020804553801410716,
+    "std": 0.00013497710491485989,
+    "min": 0.0018123302143067122,
+    "max": 0.002544586081057787,
+    "median": 0.0020710245007649064,
+    "p5": 0.0018763543630484492,
+    "p95": 0.0023211915395222604
+  },
+  "relocal_conf_all_stats": {
+    "count": 2600,
+    "mean": 2.4416302151691454e-06,
+    "std": 7.190204171052492e-05,
+    "min": 0.0,
+    "max": 0.0022410403471440077,
+    "median": 0.0,
+    "p5": 0.0,
+    "p95": 0.0
+  },
+  "per_batch": [
+    {
+      "batch": 0,
+      "B": 1,
+      "N": 219,
+      "T": 69,
+      "relocal_mask_nonzero_elements": 22,
+      "relocal_mask_nonzero_queries": 22,
+      "verifier_scores_nonzero_elements": 15111,
+      "verifier_decisions_nonzero_elements": 11,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 1,
+      "B": 1,
+      "N": 50,
+      "T": 50,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 2500,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 2,
+      "B": 1,
+      "N": 246,
+      "T": 80,
+      "relocal_mask_nonzero_elements": 17,
+      "relocal_mask_nonzero_queries": 17,
+      "verifier_scores_nonzero_elements": 19680,
+      "verifier_decisions_nonzero_elements": 11,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 3,
+      "B": 1,
+      "N": 280,
+      "T": 84,
+      "relocal_mask_nonzero_elements": 12,
+      "relocal_mask_nonzero_queries": 11,
+      "verifier_scores_nonzero_elements": 23520,
+      "verifier_decisions_nonzero_elements": 3,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 4,
+      "B": 1,
+      "N": 151,
+      "T": 90,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 13590,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 5,
+      "B": 1,
+      "N": 120,
+      "T": 75,
+      "relocal_mask_nonzero_elements": 1,
+      "relocal_mask_nonzero_queries": 1,
+      "verifier_scores_nonzero_elements": 9000,
+      "verifier_decisions_nonzero_elements": 0,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 6,
+      "B": 1,
+      "N": 153,
+      "T": 40,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 6120,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 7,
+      "B": 1,
+      "N": 208,
+      "T": 104,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 21632,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 8,
+      "B": 1,
+      "N": 345,
+      "T": 90,
+      "relocal_mask_nonzero_elements": 23,
+      "relocal_mask_nonzero_queries": 23,
+      "verifier_scores_nonzero_elements": 31050,
+      "verifier_decisions_nonzero_elements": 19,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 9,
+      "B": 1,
+      "N": 84,
+      "T": 60,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 5040,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 10,
+      "B": 1,
+      "N": 236,
+      "T": 66,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 15576,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 11,
+      "B": 1,
+      "N": 137,
+      "T": 52,
+      "relocal_mask_nonzero_elements": 2,
+      "relocal_mask_nonzero_queries": 2,
+      "verifier_scores_nonzero_elements": 7124,
+      "verifier_decisions_nonzero_elements": 2,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 12,
+      "B": 1,
+      "N": 93,
+      "T": 50,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 4650,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 13,
+      "B": 1,
+      "N": 90,
+      "T": 90,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 8100,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 14,
+      "B": 1,
+      "N": 333,
+      "T": 78,
+      "relocal_mask_nonzero_elements": 5,
+      "relocal_mask_nonzero_queries": 5,
+      "verifier_scores_nonzero_elements": 25974,
+      "verifier_decisions_nonzero_elements": 5,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 15,
+      "B": 1,
+      "N": 237,
+      "T": 50,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 11850,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 16,
+      "B": 1,
+      "N": 286,
+      "T": 81,
+      "relocal_mask_nonzero_elements": 41,
+      "relocal_mask_nonzero_queries": 41,
+      "verifier_scores_nonzero_elements": 23166,
+      "verifier_decisions_nonzero_elements": 23,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 17,
+      "B": 1,
+      "N": 117,
+      "T": 34,
+      "relocal_mask_nonzero_elements": 1,
+      "relocal_mask_nonzero_queries": 1,
+      "verifier_scores_nonzero_elements": 3978,
+      "verifier_decisions_nonzero_elements": 0,
+      "retracking_mask_nonzero": 0,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 18,
+      "B": 1,
+      "N": 248,
+      "T": 50,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 12400,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 19,
+      "B": 1,
+      "N": 202,
+      "T": 47,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 9494,
+      "verifier_decisions_nonzero_elements": 0
+    }
+  ],
+  "status": "RELOCAL_TRIGGERED_NO_RETRACKING"
+}

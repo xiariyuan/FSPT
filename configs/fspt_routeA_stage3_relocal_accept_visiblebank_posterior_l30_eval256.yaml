@@ -1,0 +1,50 @@
+# =============================================================================
+# Route A Stage-3R+: posterior-style candidate fusion for long-occlusion re-localization
+# =============================================================================
+#
+# Why this variant
+# - The single-candidate acceptor proved that risk-aware acceptance can avoid
+#   hurting the strong CoTracker3 base, but gains stayed tiny because each
+#   relocalization decision still collapsed to one hypothesis too early.
+# - This variant keeps the acceptor, but replaces hard top-1 re-localization
+#   with a soft posterior-like fusion over top candidates / template-bank
+#   hypotheses before the accept step.
+#
+# Intended effect
+# - Better long-occlusion recovery when several plausible reappearance matches
+#   exist and the top-1 match is noisy.
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256
+  description: Stage-3R+ visible-bank relocalization with posterior-style candidate fusion and risk-aware acceptor
+
+# Warm-start from the already-stable visible-bank acceptor stage so this step
+# only needs to learn whether soft fusion helps on top of the same base.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best_aj.pth
+
+model:
+  refiner:
+    relocalization:
+      candidate_fusion:
+        enabled: true
+        temperature: 0.03
+        min_weight: 0.03
+
+training:
+  num_workers: 2
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+  checkpoint:
+    save_every: 1
+
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 10
+    threshold: 0.0010

@@ -1,0 +1,20 @@
+# Real eval with low min_conf to test retracking triggering
+
+defaults:
+  - fspt_online_recovery_real_eval256
+  - _self_
+
+experiment:
+  name: fspt_online_recovery_real_eval_lowconf256
+  description: Real eval with min_conf=0.001 to force retracking trigger
+
+model:
+  refiner:
+    online_recovery:
+      retracking:
+        enabled: true
+        min_conf: 0.001
+
+    retracking:
+      enabled: true
+      min_conf: 0.001

@@ -1,0 +1,56 @@
+# =============================================================================
+# Route A Stage-3 v13b (eval-only): focus_corrections tuned to preserve long-occ
+# =============================================================================
+#
+# Motivation
+# - v6 achieves strong long-occ gains (AJ_longocc30_delta ~ +0.005) but slightly
+#   hurts overall AJ (AJ_delta ~ -0.001).
+# - v13 (focus + corr_conf gating) recovers no-harm but suppresses long-occ gains.
+#
+# Hypothesis
+# - corr_conf>=thr is a *bad* proxy for "hard regions": it tends to be HIGH on easy,
+#   well-tracked points, causing the focus mask to include easy regions and
+#   attenuate harder ones.
+# - For Stage-3, we should focus corrections on:
+#     * explicit relocalization frames (relocal_mask)
+#     * occluded frames (base_visibility < thr)
+#   and attenuate all other frames.
+#
+# Usage (server):
+#   /root/miniconda3/bin/python evaluate.py \
+#     --checkpoint checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth \
+#     --config configs/fspt_routeA_stage3_relocal_longocc_m20_v13b_focus_eval_from_v6best.yaml \
+#     --dataset davis --compare-base
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v13b_focus_eval_from_v6best
+  description: "Eval-only: focus relocal+occluded frames; aim keep v6 longocc gains while recovering AJ_delta>=0"
+
+# NOTE: evaluate.py loads weights from --checkpoint; this field is just bookkeeping.
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    # Safety: never let refiner destroy visibility (OA) on DAVIS.
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      # Keep the same attenuation strength as v13; only change the mask logic.
+      non_focus_scale: 0.20
+      use_relocal_mask: true
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: true
+      occluded_threshold: 0.5
+
+evaluation:
+  compare_base: true
+

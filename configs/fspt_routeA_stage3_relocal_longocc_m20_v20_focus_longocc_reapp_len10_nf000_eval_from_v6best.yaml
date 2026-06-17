@@ -1,0 +1,42 @@
+# =============================================================================
+# Route A Stage-3 v20 (eval-only): reappearance-based long-occ focus (len=10)
+# =============================================================================
+#
+# More permissive than v19:
+# - long_occlusion_len: 10
+# Still uses reappearance-only runs to avoid many false positives.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v20_focus_longocc_reapp_len10_nf000_eval_from_v6best
+  description: "Eval-only: reappearance run>=10; non_focus_scale=0; try recover longocc gains while staying no-harm"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_mode: reappearance
+      long_occlusion_len: 10
+      long_occlusion_vis_threshold: 0.5
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

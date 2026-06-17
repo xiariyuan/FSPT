@@ -1,0 +1,72 @@
+{
+  "summary": {
+    "42": {
+      "local": {
+        "run": "mmp_local_dev_seed42_20260308_225548",
+        "best_epoch": 0,
+        "best_score": 0.02200668469067041,
+        "AJ": 0.11249427417122723,
+        "AJ_longocc20": 0.08593240437613961,
+        "AJ_longocc30": 0.04872039172112958,
+        "reapp20": 58.608558368682864,
+        "reapp30": 54.03755303791591
+      },
+      "nocommit": {
+        "run": "mmp_localglobal_nocommit_dev_seed42_20260308_225548",
+        "best_epoch": 0,
+        "best_score": 0.014805631765261423,
+        "AJ": 0.1075612214057236,
+        "AJ_longocc20": 0.08541530221894972,
+        "AJ_longocc30": 0.06563769400376004,
+        "reapp20": 68.4077948888143,
+        "reapp30": 67.83956956863403
+      },
+      "deferred": {
+        "run": "mmp_localglobal_top1_deferredcommit_dev_seed42_20260308_225548",
+        "best_epoch": 2,
+        "best_score": 0.00317566807368444,
+        "AJ": 0.09142689187882887,
+        "AJ_longocc20": 0.062422479630898,
+        "AJ_longocc30": 0.05958967436909666,
+        "reapp20": 61.55249506632487,
+        "reapp30": 57.28399085998535
+      }
+    },
+    "43": {
+      "local": {
+        "run": "mmp_local_dev_seed43_20260309_005244",
+        "best_epoch": 5,
+        "best_score": 0.000694538280696877,
+        "AJ": 0.09807576993260356,
+        "AJ_longocc20": 0.06615530897228492,
+        "AJ_longocc30": 0.0633466853249525,
+        "reapp20": 63.42525768280029,
+        "reapp30": 65.38219833374023
+      },
+      "nocommit": {
+        "run": "mmp_localglobal_nocommit_dev_seed43_20260309_005244",
+        "best_epoch": 3,
+        "best_score": 0.009409245449947493,
+        "AJ": 0.10177758449595203,
+        "AJ_longocc20": 0.06621450584293241,
+        "AJ_longocc30": 0.06338520542931061,
+        "reapp20": 65.63885771963331,
+        "reapp30": 54.55160810266222
+      },
+      "deferred": {
+        "run": "mmp_localglobal_top1_deferredcommit_dev_seed43_20260309_005244",
+        "best_epoch": 4,
+        "best_score": -0.00787392746978699,
+        "AJ": 0.09202209532338931,
+        "AJ_longocc20": 0.06623608701919494,
+        "AJ_longocc30": 0.05403089036220491,
+        "reapp20": 68.2115075747172,
+        "reapp30": 59.929397276469636
+      }
+    }
+  },
+  "local_mean_score": 0.011350611485683643,
+  "nocommit_mean_score": 0.012107438607604458,
+  "deferred_mean_score": -0.002349129698051275,
+  "run_deferred_full": false
+}

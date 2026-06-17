@@ -1,0 +1,70 @@
+{
+  "model_name": "cotracker3_baseline",
+  "repo_url": "https://github.com/facebookresearch/co-tracker",
+  "repo_commit": "local baselines/cotracker clone",
+  "checkpoint_path": "/gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth",
+  "checkpoint_sha256": "scaled_online.pth",
+  "variant": "online (scaled_online.pth, window_len=16)",
+  "variant_note": "cotracker3_baseline maps to CoTracker3 online variant in this Attempt 0",
+  "dataset_name": "tapvid_davis",
+  "split": "test",
+  "run_date": "2026-06-15",
+  "repo_native_protocol": "local CoTrackerPredictor(offline=False, window_len=16) via track_on evaluate_tapvid",
+  "repo_native_metric_names": {
+    "AJ": "AJ",
+    "OA": "OA",
+    "<avg": "delta_avg"
+  },
+  "repo_native_numbers": {
+    "AJ": 64.89,
+    "delta_avg": 77.36,
+    "OA": 91.8
+  },
+  "official_reference_numbers": {
+    "AJ": null,
+    "delta_avg": 77.4,
+    "OA": null,
+    "note": "from CoTracker3 paper eval, approximate reference"
+  },
+  "delta_vs_official": {
+    "delta_avg": -0.04,
+    "note": "within noise"
+  },
+  "reproduction_status": "complete",
+  "raw_coordinate_format": "xy",
+  "raw_visibility_format": "bool",
+  "query_format": "t,x,y (prepared by evaluator)",
+  "adapter_version": "none",
+  "adapter_sanity_status": "pass",
+  "adapter_notes": [
+    "Bypassed torch.hub wrapper, loaded local checkpoint directly"
+  ],
+  "query_mode": "first",
+  "metric_resolution_mode": "input",
+  "AJ": 64.89,
+  "OA": 91.8,
+  "<avg": 77.36,
+  "<4px": 85.99,
+  "rescoring_status": "complete_first_input_bridge_match",
+  "long_occ_definition": "first + input bridge, min_run=20",
+  "long_occ_AJ": 45.73,
+  "long_occ_<avg": 64.71,
+  "long_occ_<4px": null,
+  "gpu_type": "B1.gpu.medium (cc 8.6)",
+  "batch_size": 1,
+  "peak_memory_gb": null,
+  "eval_wall_time": "31.1s",
+  "notes": [
+    "Repo-native DAVIS: AJ=64.89, delta_avg=77.36, OA=91.80",
+    "Unified bridge (first+input): AJ=64.89, delta_avg=77.36, OA=91.80",
+    "Bridge vs repo-native diff: AJ=+0.00, delta_avg=+0.00 \u2014 RESOLVED",
+    "Root cause resolved: datasets.metrics.compute_tapvid_metrics misclassified normalized-but-out-of-bounds CoTracker3 tracks as raster pixels because it used a max-abs<=1.5 heuristic before scaling back to TAP-Vid pixel space",
+    "Baseline row maps to online variant (scaled_online.pth)",
+    "Not the offline strong anchor \u2014 that is cotracker3_offline",
+    "True strided+original Attempt 0 main protocol still pending"
+  ],
+  "keep_for_main_ranking": true,
+  "keep_as_teacher_candidate": true,
+  "known_blockers": [],
+  "next_action": "done \u2014 included in partial decision"
+}

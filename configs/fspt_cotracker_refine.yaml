@@ -1,0 +1,143 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): Hybrid Refiner Configuration
+# =============================================================================
+#
+# This config uses CoTracker3 as a strong base tracker and trains a refinement
+# module (frequency + semantic + occlusion) on top of the base tracks.
+#
+# Usage (single GPU):
+#   python train.py --config configs/fspt_cotracker_refine.yaml
+#
+# Usage (DDP):
+#   torchrun --nproc_per_node=8 scripts/train_distributed.py --config configs/fspt_cotracker_refine.yaml
+#
+# Prerequisites on server:
+#   bash scripts/download_baselines.sh   # installs cotracker + downloads checkpoints
+#   bash scripts/download_datasets.sh    # downloads TAP-Vid datasets
+
+defaults:
+  - fspt_base.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine"
+  description: "CoTracker3 base + FSPT refinement (frequency/semantic/occlusion)"
+
+model:
+  # Switch model creation in train.py
+  type: "cotracker_refiner"
+
+  # Use a lightweight backbone for refinement (CoTracker already provides strong tracks)
+  backbone:
+    type: "resnet18"
+    pretrained: true
+    freeze_bn: false
+    use_multiscale: true
+
+  # CoTracker settings (paths are resolved relative to project root)
+  cotracker:
+    require: true
+    offline: true
+    v2: false
+    window_len: 60
+    checkpoint: "baselines/cotracker/checkpoints/scaled_offline.pth"
+
+  # Refinement head tuning
+  refiner:
+    # Residual update step size (larger -> more aggressive corrections)
+    delta_scale: 0.2
+    hidden_dim: 128
+
+    # Optional freezing control: only modules listed here remain trainable.
+    # Valid entries: geo_backbone, semantic_encoder, freq_semantic, temporal_transformer,
+    #               residual_decoder, occlusion_predictor
+    #
+    # Recommended starting point for Route A:
+    # - keep the base CoTracker frozen (always)
+    # - train refinement heads (+ semantic projection)
+    trainable_modules:
+      - freq_semantic
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+
+    # Optional: staged training recipe (freeze/unfreeze across epochs).
+    # Note: enabling stages makes the optimizer include frozen params so they
+    # can be unfrozen later without rebuilding optimizers.
+    stages:
+      - start_epoch: 0
+        end_epoch: 5
+        trainable_modules: [residual_decoder, occlusion_predictor, semantic_encoder]
+      - start_epoch: 5
+        end_epoch: 20
+        trainable_modules: [freq_semantic, temporal_transformer, residual_decoder, occlusion_predictor, semantic_encoder]
+      - start_epoch: 20
+        # end_epoch: 100
+        trainable_modules: [geo_backbone, freq_semantic, temporal_transformer, residual_decoder, occlusion_predictor, semantic_encoder]
+
+    # Optional: fuse base tracker visibility as a prior (ablation knob).
+    # - none: no fusion (default, keeps baselines unchanged)
+    # - blend: visibility = (1-alpha)*pred + alpha*base
+    # - multiply: visibility = pred * base  (gating)
+    # - logit_add: visibility = sigmoid(logit(pred) + strength*logit(base))
+    visibility_prior:
+      mode: "none"
+      alpha: 0.5
+      strength: 1.0
+      eps: 1.0e-4
+
+    # Optional: inject base-tracker priors into transformer tokens (ablation knob).
+    # This can help the refiner converge faster by exposing "how far from base" and
+    # base-visibility as extra signals.
+    prior_features:
+      enabled: false
+      use_base_visibility: true
+      use_delta: true
+      use_delta_norm: false
+      detach_delta: true
+      scale: 1.0
+      hidden_dim: 128
+
+  # Speed up repeated evaluation by caching CLIP features on disk (server-friendly).
+  semantic:
+    cache:
+      enabled: true
+      mode: "global"
+      root_dir: "outputs/semantic_cache"
+      only_eval: true
+      write: true
+
+training:
+  # The refiner adds overhead; start smaller and scale up on server.
+  batch_size: 4
+  num_workers: 8
+  optimizer:
+    # Route A: keep semantic projection conservative (CLIP backbone is frozen by default).
+    semantic_lr_scale: 0.1
+
+evaluation:
+  compare_base: true
+
+data:
+  # Optional: inject precomputed CoTracker base tracks to speed up validation/evaluation.
+  # Generate with: python scripts/precompute_base_tracks.py --dataset davis ...
+  val:
+    base_tracks_dir: "outputs/base_tracks"
+
+# Optional training knobs (paper ablations / stability):
+# - Occlusion-balanced point sampling (Kubric training):
+#     data.train.sampling.strategy: "occlusion_balanced"
+#     data.train.sampling.hard_fraction: 0.5
+# - Base-track distillation (keeps refined tracks close early on):
+#     loss.base_track_consistency.weight: 0.05
+#     loss.base_track_consistency.mask: "gt_visible"
+# - Weight schedule for distillation (ramp up slowly):
+#     loss.base_track_consistency.schedule.type: "linear"
+#     loss.base_track_consistency.schedule.start_epoch: 0
+#     loss.base_track_consistency.schedule.end_epoch: 10
+#     loss.base_track_consistency.schedule.start_weight: 0.0
+#     loss.base_track_consistency.schedule.end_weight: 0.05
+# - Two-view consistency regularization (extra compute):
+#     loss.two_view_consistency.enabled: true
+#     loss.two_view_consistency.weight: 0.02

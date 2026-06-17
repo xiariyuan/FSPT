@@ -1,0 +1,51 @@
+# =============================================================================
+# Route A Stage-3 v31 (eval-only): long-occ-30 only, occlusion run = base_vis AND low corr_conf
+# =============================================================================
+#
+# Motivation
+# - v16 preserves strong AJ_longocc30_delta (~+0.004~0.005) but can slightly harm
+#   overall AJ_delta because base visibility sometimes has false-positive occlusions.
+# - We keep v16's permissive max_run definition (so we don't miss cases where base
+#   visibility never flips back to visible), BUT we tighten the occlusion run mask:
+#     occluded := (base_visibility < vis_thr) AND (corr_conf < occ_corr_thr)
+# - This filters out many "fake occlusions" where the tracker is actually confident.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v31_focus_longocc30_only_occ_lowcorr_nf000_eval_from_v6best
+  description: "Eval-only: focus long-occ>=30 queries; occ-run requires low corr_conf; non_focus_scale=0"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_mode: max_run
+      long_occlusion_fill_gaps: 1
+
+      # NEW: tighten occlusion mask using corr_conf.
+      long_occlusion_use_corr_conf_for_occ: true
+      long_occlusion_occ_corr_threshold: 0.10
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

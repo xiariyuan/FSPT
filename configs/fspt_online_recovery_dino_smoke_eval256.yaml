@@ -1,0 +1,25 @@
+# DINO recovery-only smoke config
+# Same as cotracker smoke but feature_source: dino
+
+defaults:
+  - fspt_online_recovery_smoke_eval256
+  - _self_
+
+experiment:
+  name: fspt_online_recovery_dino_smoke_eval256
+  description: Smoke test for DINO recovery-only feature source
+
+model:
+  refiner:
+    online_recovery:
+      enabled: true
+      search:
+        feature_source: "dino"
+        dino_weights: ""
+        dino_stride: 14
+      retracking:
+        enabled: true
+        min_conf: 0.001
+    retracking:
+      enabled: true
+      min_conf: 0.001

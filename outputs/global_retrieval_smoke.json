@@ -1,0 +1,200 @@
+{
+  "config": {
+    "data_root": "/gemini/code/FSPT/datasets/pointodyssey",
+    "splits": "val",
+    "min_occ_length": 20,
+    "min_camera_motion": 0.3,
+    "max_sequences": 1,
+    "max_samples": 8,
+    "num_support": 4,
+    "patch_size": 64,
+    "query_crop_size": 112,
+    "search_crop_size": 224,
+    "topk": 5,
+    "weights": "/gemini/code/FSPT/weights/dinov2/dinov2_vits14_pretrain.pth",
+    "output_json": "/gemini/code/FSPT/outputs/global_retrieval_smoke.json"
+  },
+  "summary": {
+    "n": 8,
+    "top8_recall": {
+      "dino": 0.0,
+      "support": 0.0,
+      "joint": 0.0
+    },
+    "median_topk_gt_dist": {
+      "dino": 129.89652252197266,
+      "support": 304.7063903808594,
+      "joint": 295.13063049316406
+    }
+  },
+  "results": [
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 0,
+      "query_frame": 375,
+      "reentry_frame": 670,
+      "occ_length": 294,
+      "camera_motion": 0.8749145076436367,
+      "support_frames": [
+        372,
+        373,
+        374,
+        375
+      ],
+      "gt_xy": [
+        446.75,
+        172.125
+      ],
+      "topk_gt_dist_dino": 102.17527770996094,
+      "topk_gt_dist_support": 138.32855224609375,
+      "topk_gt_dist_joint": 138.32855224609375
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 1,
+      "query_frame": 440,
+      "reentry_frame": 481,
+      "occ_length": 40,
+      "camera_motion": 1.488373733020689,
+      "support_frames": [
+        437,
+        438,
+        439,
+        440
+      ],
+      "gt_xy": [
+        128.125,
+        162.5
+      ],
+      "topk_gt_dist_dino": 318.6629943847656,
+      "topk_gt_dist_support": 326.6168212890625,
+      "topk_gt_dist_joint": 499.2974853515625
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 1,
+      "query_frame": 657,
+      "reentry_frame": 1070,
+      "occ_length": 412,
+      "camera_motion": 0.9143622531611075,
+      "support_frames": [
+        649,
+        650,
+        656,
+        657
+      ],
+      "gt_xy": [
+        473.75,
+        161.375
+      ],
+      "topk_gt_dist_dino": 146.8240203857422,
+      "topk_gt_dist_support": 318.4134521484375,
+      "topk_gt_dist_joint": 125.55370330810547
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 2,
+      "query_frame": 1311,
+      "reentry_frame": 1460,
+      "occ_length": 148,
+      "camera_motion": 0.44851847987028554,
+      "support_frames": [
+        1305,
+        1307,
+        1310,
+        1311
+      ],
+      "gt_xy": [
+        369.0,
+        249.0
+      ],
+      "topk_gt_dist_dino": 112.96902465820312,
+      "topk_gt_dist_support": 264.36663818359375,
+      "topk_gt_dist_joint": 264.36663818359375
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 3,
+      "query_frame": 431,
+      "reentry_frame": 479,
+      "occ_length": 47,
+      "camera_motion": 1.4004990692770702,
+      "support_frames": [
+        425,
+        426,
+        428,
+        431
+      ],
+      "gt_xy": [
+        12.8125,
+        363.25
+      ],
+      "topk_gt_dist_dino": 397.2151184082031,
+      "topk_gt_dist_support": 344.10137939453125,
+      "topk_gt_dist_joint": 344.10137939453125
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 3,
+      "query_frame": 638,
+      "reentry_frame": 754,
+      "occ_length": 115,
+      "camera_motion": 0.433552065901919,
+      "support_frames": [
+        486,
+        636,
+        637,
+        638
+      ],
+      "gt_xy": [
+        481.0,
+        258.25
+      ],
+      "topk_gt_dist_dino": 11.792476654052734,
+      "topk_gt_dist_support": 290.99932861328125,
+      "topk_gt_dist_joint": 290.99932861328125
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 4,
+      "query_frame": 376,
+      "reentry_frame": 589,
+      "occ_length": 212,
+      "camera_motion": 0.754092423759109,
+      "support_frames": [
+        371,
+        373,
+        374,
+        376
+      ],
+      "gt_xy": [
+        465.5,
+        167.0
+      ],
+      "topk_gt_dist_dino": 89.58663940429688,
+      "topk_gt_dist_support": 376.9555358886719,
+      "topk_gt_dist_joint": 376.9555358886719
+    },
+    {
+      "seq": "ani10_new_f",
+      "point_idx": 5,
+      "query_frame": 440,
+      "reentry_frame": 480,
+      "occ_length": 39,
+      "camera_motion": 1.6078001770364854,
+      "support_frames": [
+        437,
+        438,
+        439,
+        440
+      ],
+      "gt_xy": [
+        52.125,
+        182.125
+      ],
+      "topk_gt_dist_dino": 404.3401794433594,
+      "topk_gt_dist_support": 285.0292053222656,
+      "topk_gt_dist_joint": 299.2619323730469
+    }
+  ]
+}

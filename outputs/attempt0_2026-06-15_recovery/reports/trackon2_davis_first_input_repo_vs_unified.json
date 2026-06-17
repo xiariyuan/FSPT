@@ -1,0 +1,29 @@
+{
+  "baseline": "trackon2_dinov3",
+  "dataset": "DAVIS",
+  "query_protocol": "first",
+  "metric_resolution_mode": "input",
+  "repo_native": {
+    "AJ": 67.04,
+    "OA": 92.09,
+    "delta_avg": 79.84
+  },
+  "unified_bridge": {
+    "AJ": 67.04,
+    "OA": 92.09,
+    "delta_avg": 79.84
+  },
+  "abs_diff": {
+    "AJ": 0.0,
+    "OA": 0.0,
+    "delta_avg": 0.0
+  },
+  "max_abs_diff": 0.0,
+  "acceptable": true,
+  "verification_note": "first + input bridge \u2014 not strided + original Attempt 0 main protocol",
+  "long_occ_mean": {
+    "AJ": 45.27,
+    "OA": 77.44,
+    "delta_avg": 68.11
+  }
+}

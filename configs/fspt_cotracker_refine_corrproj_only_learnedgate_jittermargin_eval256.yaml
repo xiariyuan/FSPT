@@ -1,0 +1,90 @@
+# =============================================================================
+# Route A (SOTA push): corrproj-only + learned step gate + base jitter + margin
+# =============================================================================
+#
+# Why:
+# - The corrproj-only + learned step gate recipe is extremely safe (AJ_delta ~ 0),
+#   but improvements are often too tiny to matter.
+# - Add *train-time* base jitter to create a stronger correction signal.
+# - Add a small positive margin in the "no_harm_vs_base" hinge so the model is
+#   nudged to become slightly better than base (not just "not worse").
+#
+# Still safe because we keep:
+# - delta_max_total trust region clamp (default 0.02 ~ 5px @ 256)
+# - shift-confidence gating
+#
+# Usage (server):
+#   cd /gemini/code/FSPT
+#   nohup /root/miniconda3/bin/python train.py \
+#     --config configs/fspt_cotracker_refine_corrproj_only_learnedgate_jittermargin_eval256.yaml \
+#     --experiment.name <EXP_NAME> --hardware.gpus=[0] \
+#     > outputs/nohup_<EXP_NAME>.out 2>&1 &
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_learnedgate_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrproj_only_learnedgate_jittermargin_eval256"
+  description: "corrproj-only learned gate + base jitter + positive margin hinge; aim measurable AJ_delta>0"
+
+# Warm-start from the previous learned-gate corrproj-only run (weights-only).
+# Override in CLI if you want a different init.
+pretrained: "checkpoints/fspt_routeA_corrproj_only_learnedgate_eval256_20260215_135113/best.pth"
+
+model:
+  refiner:
+    # Training-only perturbation of base tracks (forces learning non-trivial corrections).
+    base_jitter:
+      enabled: true
+      prob: 0.5
+      std_px: 2.0
+      max_px: 5.0
+      exclude_query_frame: true
+      mode: "constant"  # constant | per_frame
+
+    local_correlation:
+      # Slightly larger window improves robustness on harder corrections.
+      window_size: 11
+
+      # Mild sharpening without the instability of extreme temperature drops.
+      prob_power: 1.2
+
+      learned_step_gate:
+        # Less conservative than -1.5 (~0.18); still safe with delta_max_total clamp.
+        init_bias: -1.0
+
+      # Allow more updates (still gated by shift-confidence + learned gate).
+      gate_threshold: 0.02
+
+loss:
+  position:
+    # Stronger focus on the cases where base is wrong (learning signal is sparse).
+    hard_mining:
+      max_weight: 30.0
+
+    # Push to be (slightly) better than base, not just "not worse".
+    no_harm_vs_base:
+      weight: 2.0
+      # Margin is in normalized L2 units:
+      # 0.001 ~= 0.256px @ 256x256. Keep small to avoid drift.
+      margin: 0.001
+
+training:
+  epochs: 25
+
+  optimizer:
+    # Only a tiny module is trainable in corrproj-only; higher LR is OK.
+    lr: 1.0e-4
+
+  early_stopping:
+    enabled: true
+    monitor: "AJ_delta"  # Route A objective
+    mode: "max"
+    patience: 8
+    min_delta: 0.00005
+
+  plateau_guard:
+    enabled: false
+

@@ -1,0 +1,34 @@
+# =============================================================================
+# Route A (eval256, paper direction): frequency-guided multi-scale correlation fusion
+# =============================================================================
+#
+# This is the "main" config for baseline-aligned experiments:
+# - Train on TAP-Vid Kinetics (real videos)
+# - Validate on TAP-Vid DAVIS with official strided protocol
+# - Evaluate in 256x256 raster space (matches CoTracker TAP-Vid eval defaults)
+#
+
+defaults:
+  - fspt_routeA_freqguided_ms_corr_v2_velinv.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_freqguided_ms_corr_v2_velinv_eval256"
+  description: "Route A: freq-guided ms-corr fusion (velocity proxy) + Kinetics train + DAVIS strided eval256"
+
+evaluation:
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+data:
+  train:
+    resolution: [256, 256]
+  val:
+    resolution: [256, 256]
+

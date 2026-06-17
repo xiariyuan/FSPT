@@ -1,0 +1,48 @@
+# =============================================================================
+# Route A Stage-3 v26 (eval-only): long-occ>=30 focus on occluded + after-reappear
+# =============================================================================
+#
+# Motivation:
+# - "occluded" only is safe but may not allow corrections on visible frames right
+#   after re-appearance when base_visibility becomes visible.
+# - Combine occluded focusing with after-reappearance focusing to cover both:
+#   - occluded frames (uncertain)
+#   - frames after a long occlusion ends (relocalization window)
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v26_focus_longocc30_occ_or_afterreapp_toend_nf000_eval_from_v6best
+  description: "Eval-only: longocc>=30 + apply_mode=occluded_or_after_reappear (to end); non_focus_scale=0"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+
+      long_occlusion_apply_mode: occluded_or_after_reappear
+      long_occlusion_apply_window_after_reappear: -1  # to end-of-video
+      long_occlusion_fill_gaps: 1
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

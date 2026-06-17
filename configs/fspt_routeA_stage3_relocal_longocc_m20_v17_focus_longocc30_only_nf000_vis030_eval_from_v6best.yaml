@@ -1,0 +1,45 @@
+# =============================================================================
+# Route A Stage-3 v17 (eval-only): v16 + stricter base-vis occlusion threshold
+# =============================================================================
+#
+# Change vs v16:
+# - long_occlusion_vis_threshold: 0.30 (was 0.50)
+#
+# Rationale:
+# - Reduce false positives in the query-level long-occ mask (base visibility can
+#   be noisy). We only treat frames as "occluded" when base is more confident.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v17_focus_longocc30_only_nf000_vis030_eval_from_v6best
+  description: "Eval-only: v16 but long_occlusion_vis_threshold=0.30 to reduce false-positive long-occ queries"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.30
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

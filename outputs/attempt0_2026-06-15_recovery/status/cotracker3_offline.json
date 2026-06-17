@@ -1,0 +1,69 @@
+{
+  "model_name": "cotracker3_offline",
+  "repo_url": "https://github.com/facebookresearch/co-tracker",
+  "repo_commit": "local baselines/cotracker clone",
+  "checkpoint_path": "/gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_offline.pth",
+  "checkpoint_sha256": "scaled_offline.pth",
+  "variant": "offline (scaled_offline.pth, window_len=60)",
+  "variant_note": "cotracker3_offline maps to CoTracker3 offline variant \u2014 the strong 2D anchor",
+  "dataset_name": "tapvid_davis",
+  "split": "test",
+  "run_date": "2026-06-15",
+  "repo_native_protocol": "local CoTrackerPredictor(offline=True, window_len=60) via track_on evaluate_tapvid",
+  "repo_native_metric_names": {
+    "AJ": "AJ",
+    "OA": "OA",
+    "<avg": "delta_avg"
+  },
+  "repo_native_numbers": {
+    "AJ": 62.66,
+    "delta_avg": 77.22,
+    "OA": 88.15
+  },
+  "official_reference_numbers": {
+    "AJ": null,
+    "delta_avg": 77.2,
+    "OA": null,
+    "note": "from CoTracker3 paper eval, approximate reference"
+  },
+  "delta_vs_official": {
+    "delta_avg": 0.02,
+    "note": "within noise"
+  },
+  "reproduction_status": "complete",
+  "raw_coordinate_format": "xy",
+  "raw_visibility_format": "bool",
+  "query_format": "t,x,y (prepared by evaluator)",
+  "adapter_version": "none",
+  "adapter_sanity_status": "pass",
+  "adapter_notes": [
+    "Bypassed torch.hub wrapper, loaded local checkpoint directly"
+  ],
+  "query_mode": "first",
+  "metric_resolution_mode": "input",
+  "AJ": 62.66,
+  "OA": 88.15,
+  "<avg": 77.22,
+  "<4px": 85.91,
+  "rescoring_status": "complete_first_input_bridge_match",
+  "long_occ_definition": "first + input bridge, min_run=20",
+  "long_occ_AJ": 39.3,
+  "long_occ_<avg": 63.98,
+  "long_occ_<4px": null,
+  "gpu_type": "B1.gpu.medium (cc 8.6)",
+  "batch_size": 1,
+  "peak_memory_gb": null,
+  "eval_wall_time": "18.7s",
+  "notes": [
+    "Repo-native DAVIS: AJ=62.66, delta_avg=77.22, OA=88.15",
+    "Unified bridge (first+input): AJ=62.66, delta_avg=77.22, OA=88.15",
+    "Bridge vs repo-native diff: AJ=+0.00, delta_avg=+0.00 \u2014 RESOLVED",
+    "Root cause resolved: datasets.metrics.compute_tapvid_metrics misclassified normalized-but-out-of-bounds CoTracker3 tracks as raster pixels because it used a max-abs<=1.5 heuristic before scaling back to TAP-Vid pixel space",
+    "Offline variant is the strong 2D anchor per attempt_0_cotracker3_offline_anchor_2026-06-13.md",
+    "True strided+original Attempt 0 main protocol still pending"
+  ],
+  "keep_for_main_ranking": true,
+  "keep_as_teacher_candidate": true,
+  "known_blockers": [],
+  "next_action": "done \u2014 included in partial decision"
+}

@@ -1,0 +1,37 @@
+# =============================================================================
+# Route A Guardrail + Official TAP-Vid metric scaling (256x256)
+# =============================================================================
+#
+# Why:
+# - Official TAP-Vid metrics assume coordinates are evaluated in a 256x256 raster
+#   space (see Meta CoTracker evaluation code / TAP-Vid protocol).
+# - If we evaluate in original DAVIS resolution (480x854), AJ and <1/<2px look
+#   artificially low and are not SOTA-comparable.
+#
+# This config:
+# - Keeps all "do no harm" guardrails from the guardrail config.
+# - Resizes validation videos to 256x256 so evaluation.metric_resolution_mode=input
+#   corresponds to the official TAP-Vid scaling.
+# - Logs original-resolution metrics as auxiliary (_original suffix) for debugging.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kubric_sharded_eval256"
+  description: "Route A refiner guardrail + official TAP-Vid 256x256 metric scaling (main) + original-res aux metrics"
+
+data:
+  val:
+    # Force 256x256 raster for official TAP-Vid metric thresholds (1/2/4/8/16px).
+    resolution: [256, 256]
+    # Use base tracks cached under the same evaluation resolution.
+    base_tracks_dir: "outputs/base_tracks_eval256"
+
+evaluation:
+  # Main paper metric: use input resolution (now forced to 256x256).
+  metric_resolution_mode: "input"
+  # Debug metric: also compute in original DAVIS resolution.
+  aux_metric_resolution_mode: "original"

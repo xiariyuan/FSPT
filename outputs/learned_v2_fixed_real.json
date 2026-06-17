@@ -1,0 +1,102 @@
+{
+  "config": "configs/fspt_recovery_learned_head_force_retrack.yaml",
+  "checkpoint": "checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_l30_eval256_from_kinetics_guardrail/best.pth",
+  "online_recovery_summary": {
+    "requested": true,
+    "mode": "tracker_conditioned",
+    "feature_source": "dino",
+    "template_mode": "visible_bank",
+    "template_bank_size": 6,
+    "min_occlusion_len": 20,
+    "frames_after": 0,
+    "vis_threshold": 0.5,
+    "retracking_enabled": true,
+    "use_learned_head": true
+  },
+  "total_batches": 3,
+  "total_queries": 515,
+  "total_query_frames": 37291,
+  "relocal_mask": {
+    "nonzero_elements": 39,
+    "nonzero_queries": 39,
+    "element_trigger_rate": 0.0010458287522458502,
+    "query_trigger_rate": 0.07572815533980583
+  },
+  "verifier_scores_nonzero_elements": 37291,
+  "verifier_decisions_nonzero_elements": 25,
+  "retracking_triggered_batches": 2,
+  "retracking_mask_nonzero_total": 39,
+  "verifier_scores_stats": {
+    "count": 300,
+    "mean": 0.5024189040064811,
+    "std": 0.0056802379739003565,
+    "min": 0.48750320076942444,
+    "max": 0.5169651508331299,
+    "median": 0.5030061602592468,
+    "p5": 0.4925311267375946,
+    "p95": 0.5104198634624482
+  },
+  "relocal_conf_masked_stats": {
+    "count": 39,
+    "mean": 0.5049737141682551,
+    "std": 0.0009975249340254968,
+    "min": 0.5020639300346375,
+    "max": 0.5065284371376038,
+    "median": 0.5052530765533447,
+    "p5": 0.5033050954341889,
+    "p95": 0.5060898184776306
+  },
+  "relocal_conf_all_stats": {
+    "count": 400,
+    "mean": 0.002519678175449371,
+    "std": 0.03554444396030922,
+    "min": 0.0,
+    "max": 0.5042970180511475,
+    "median": 0.0,
+    "p5": 0.0,
+    "p95": 0.0
+  },
+  "per_batch": [
+    {
+      "batch": 0,
+      "B": 1,
+      "N": 219,
+      "T": 69,
+      "relocal_mask_nonzero_elements": 22,
+      "relocal_mask_nonzero_queries": 22,
+      "verifier_scores_nonzero_elements": 15111,
+      "verifier_decisions_nonzero_elements": 15,
+      "retracking_mask_nonzero": 22,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    },
+    {
+      "batch": 1,
+      "B": 1,
+      "N": 50,
+      "T": 50,
+      "relocal_mask_nonzero_elements": 0,
+      "relocal_mask_nonzero_queries": 0,
+      "verifier_scores_nonzero_elements": 2500,
+      "verifier_decisions_nonzero_elements": 0
+    },
+    {
+      "batch": 2,
+      "B": 1,
+      "N": 246,
+      "T": 80,
+      "relocal_mask_nonzero_elements": 17,
+      "relocal_mask_nonzero_queries": 17,
+      "verifier_scores_nonzero_elements": 19680,
+      "verifier_decisions_nonzero_elements": 10,
+      "retracking_mask_nonzero": 17,
+      "retracking_keys": [
+        "retrack_mask_bn",
+        "retrack_t0"
+      ]
+    }
+  ],
+  "status": "FULLY_TRIGGERED"
+}

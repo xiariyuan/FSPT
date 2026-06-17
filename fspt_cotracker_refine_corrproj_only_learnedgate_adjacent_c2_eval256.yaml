@@ -1,0 +1,45 @@
+# =============================================================================
+# Route A (SOTA push): corrproj-only + learned step gate + *adjacent-frame* template
+# =============================================================================
+#
+# Motivation
+# - Previous "query-template" correlation can be too static: it matches every frame
+#   against the query-frame appearance, which is suboptimal for long sequences and
+#   backward tracking (frames before query_t).
+# - This variant uses an *adjacent* reference feature per frame:
+#     t > query_t  -> use frame (t-1) feature as template (forward direction)
+#     t < query_t  -> use frame (t+1) feature as template (backward direction)
+#     t == query_t -> use query frame itself
+#
+# We keep the corrproj-only recipe (tracks updated only by the correlation step)
+# to minimize domain-gap regressors and stay "do no harm", but we give correlation
+# a better temporal template signal.
+#
+# Key changes vs `fspt_cotracker_refine_corrproj_only_learnedgate_eval256.yaml`:
+# - local_correlation.reference_mode: adjacent   (new)
+# - local_correlation.feature_level: c2          (higher-res features, stride ~4)
+# - disable visualization to speed up eval
+#
+
+defaults:
+  - fspt_cotracker_refine_corrproj_only_learnedgate_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrproj_only_learnedgate_adjacent_c2_eval256"
+  description: "Route A: corrproj-only + learned-gate + adjacent templates @c2 (bidirectional) + corr7"
+
+model:
+  refiner:
+    local_correlation:
+      feature_level: "c2"
+      window_size: 7
+      reference_mode: "adjacent"
+      # Be explicit: this recipe only updates tracks via match-step.
+      use_step: true
+      scale: 0.0
+
+logging:
+  visualize:
+    enabled: false
+

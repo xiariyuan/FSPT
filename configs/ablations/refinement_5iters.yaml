@@ -1,0 +1,12 @@
+# 消融实验：5次迭代精化
+# 验证更多迭代次数对性能的影响
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_refinement_5iters"
+
+model:
+  temporal:
+    num_refinement_iters: 5  # 5次迭代精化

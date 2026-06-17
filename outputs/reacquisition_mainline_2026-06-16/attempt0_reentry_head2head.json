@@ -1,0 +1,244 @@
+{
+  "protocol": {
+    "source": "attempt0_unified_bridge_cache",
+    "dataset_name": "tapvid_davis",
+    "split": "test",
+    "protocol": "first+input",
+    "metric_resolution": "input256",
+    "reentry_definition": "first visible frame after first post-query occlusion run"
+  },
+  "cache_alignment": [
+    {
+      "reference_label": "trackon2",
+      "candidate_label": "cotracker3_online",
+      "compared_videos": 30,
+      "compared_queries": 650,
+      "status": "aligned"
+    },
+    {
+      "reference_label": "trackon2",
+      "candidate_label": "cotracker3_offline",
+      "compared_videos": 30,
+      "compared_queries": 650,
+      "status": "aligned"
+    }
+  ],
+  "query_summary": {
+    "n_videos": 30,
+    "n_queries_with_reentry": 259,
+    "occ_bucket_counts": {
+      "<20": 235,
+      "20-49": 24,
+      "50-99": 0,
+      "100+": 0
+    }
+  },
+  "overall": {
+    "trackon2": {
+      "n": 259,
+      "mean_px": 6.9095354080200195,
+      "median_px": 1.604185938835144,
+      "lt4px": 0.7567567567567568,
+      "lt8px": 0.8571428571428571,
+      "p95_px": 31.47214088439941
+    },
+    "cotracker3_online": {
+      "n": 259,
+      "mean_px": 8.75340461730957,
+      "median_px": 1.7305701971054077,
+      "lt4px": 0.7297297297297297,
+      "lt8px": 0.8146718146718147,
+      "p95_px": 48.004557800292964
+    },
+    "cotracker3_offline": {
+      "n": 259,
+      "mean_px": 7.621440410614014,
+      "median_px": 1.626405954360962,
+      "lt4px": 0.7606177606177607,
+      "lt8px": 0.833976833976834,
+      "p95_px": 40.492965698242166
+    }
+  },
+  "long_occ_overall": {
+    "trackon2": {
+      "n": 24,
+      "mean_px": 21.850440979003906,
+      "median_px": 3.967271566390991,
+      "lt4px": 0.5,
+      "lt8px": 0.625,
+      "p95_px": 118.16697311401364
+    },
+    "cotracker3_online": {
+      "n": 24,
+      "mean_px": 24.469335556030273,
+      "median_px": 2.989509105682373,
+      "lt4px": 0.625,
+      "lt8px": 0.7083333333333334,
+      "p95_px": 121.88247985839843
+    },
+    "cotracker3_offline": {
+      "n": 24,
+      "mean_px": 21.542959213256836,
+      "median_px": 3.185821056365967,
+      "lt4px": 0.5416666666666666,
+      "lt8px": 0.6666666666666666,
+      "p95_px": 90.47707061767576
+    }
+  },
+  "pairwise": {
+    "trackon2__vs__cotracker3_online": {
+      "n_common_queries": 259,
+      "median_px_model_a": 1.604185938835144,
+      "median_px_model_b": 1.7305701971054077,
+      "mean_px_model_a": 6.9095354080200195,
+      "mean_px_model_b": 8.75340461730957,
+      "median_signed_diff_a_minus_b_px": -0.09088921546936035,
+      "mean_signed_diff_a_minus_b_px": -1.8438701629638672,
+      "better_frac_model_a": 0.5598455598455598,
+      "better_frac_model_b": 0.44015444015444016,
+      "tie_frac": 0.0,
+      "per_video_better_model_a": 17,
+      "per_video_better_model_b": 8,
+      "per_video_tie": 0,
+      "n_videos": 25
+    },
+    "trackon2__vs__cotracker3_offline": {
+      "n_common_queries": 259,
+      "median_px_model_a": 1.604185938835144,
+      "median_px_model_b": 1.626405954360962,
+      "mean_px_model_a": 6.9095354080200195,
+      "mean_px_model_b": 7.621440410614014,
+      "median_signed_diff_a_minus_b_px": -0.08205032348632812,
+      "mean_signed_diff_a_minus_b_px": -0.7119047045707703,
+      "better_frac_model_a": 0.5521235521235521,
+      "better_frac_model_b": 0.44787644787644787,
+      "tie_frac": 0.0,
+      "per_video_better_model_a": 11,
+      "per_video_better_model_b": 14,
+      "per_video_tie": 0,
+      "n_videos": 25
+    },
+    "cotracker3_online__vs__cotracker3_offline": {
+      "n_common_queries": 259,
+      "median_px_model_a": 1.7305701971054077,
+      "median_px_model_b": 1.626405954360962,
+      "mean_px_model_a": 8.75340461730957,
+      "mean_px_model_b": 7.621440410614014,
+      "median_signed_diff_a_minus_b_px": 0.05346399545669556,
+      "mean_signed_diff_a_minus_b_px": 1.1319653987884521,
+      "better_frac_model_a": 0.4517374517374517,
+      "better_frac_model_b": 0.5482625482625483,
+      "tie_frac": 0.0,
+      "per_video_better_model_a": 12,
+      "per_video_better_model_b": 13,
+      "per_video_tie": 0,
+      "n_videos": 25
+    }
+  },
+  "buckets": {
+    "<20": {
+      "trackon2": {
+        "n": 235,
+        "mean_px": 5.383656024932861,
+        "median_px": 1.4567031860351562,
+        "lt4px": 0.7829787234042553,
+        "lt8px": 0.8808510638297873,
+        "p95_px": 24.893200111389135
+      },
+      "cotracker3_online": {
+        "n": 235,
+        "mean_px": 7.148374080657959,
+        "median_px": 1.628147840499878,
+        "lt4px": 0.7404255319148936,
+        "lt8px": 0.825531914893617,
+        "p95_px": 40.21961975097654
+      },
+      "cotracker3_offline": {
+        "n": 235,
+        "mean_px": 6.199667453765869,
+        "median_px": 1.5461435317993164,
+        "lt4px": 0.7829787234042553,
+        "lt8px": 0.851063829787234,
+        "p95_px": 35.18314018249507
+      }
+    },
+    "20-49": {
+      "trackon2": {
+        "n": 24,
+        "mean_px": 21.850440979003906,
+        "median_px": 3.967271566390991,
+        "lt4px": 0.5,
+        "lt8px": 0.625,
+        "p95_px": 118.16697311401364
+      },
+      "cotracker3_online": {
+        "n": 24,
+        "mean_px": 24.469335556030273,
+        "median_px": 2.989509105682373,
+        "lt4px": 0.625,
+        "lt8px": 0.7083333333333334,
+        "p95_px": 121.88247985839843
+      },
+      "cotracker3_offline": {
+        "n": 24,
+        "mean_px": 21.542959213256836,
+        "median_px": 3.185821056365967,
+        "lt4px": 0.5416666666666666,
+        "lt8px": 0.6666666666666666,
+        "p95_px": 90.47707061767576
+      }
+    },
+    "50-99": {
+      "trackon2": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      },
+      "cotracker3_online": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      },
+      "cotracker3_offline": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      }
+    },
+    "100+": {
+      "trackon2": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      },
+      "cotracker3_online": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      },
+      "cotracker3_offline": {
+        "n": 0,
+        "mean_px": null,
+        "median_px": null,
+        "lt4px": null,
+        "lt8px": null,
+        "p95_px": null
+      }
+    }
+  }
+}

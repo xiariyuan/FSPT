@@ -1,0 +1,89 @@
+# =============================================================================
+# MegaDepth -> Kubric fine-tuning for TAP-Vid transfer
+# =============================================================================
+#
+# Purpose:
+# - Use the current MegaDepth geometric-pretraining checkpoint as initialization.
+# - Fine-tune on Kubric/TAP-Vid with the official evaluation protocol.
+# - Keep this run short enough to quickly test whether MegaDepth pretraining
+#   actually transfers to TAP-Vid.
+#
+
+defaults:
+  - fspt_repro_server
+  - _self_
+
+experiment:
+  name: "fspt_megadepth_to_kubric_ft"
+  description: "Fine-tune TAP-Vid Kubric from MegaDepth pretraining"
+
+# Initialize from the best available MegaDepth pretraining checkpoint.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_megadepth_pairs_pretrain/best.pth
+
+model:
+  backbone:
+    pretrained: false
+  clip:
+    cache_dir: /gemini/code/FSPT/weights/clip
+
+data:
+  train:
+    dataset: "tapvid_kubric"
+    root: "/gemini/code/datasets/kubric_preprocessed"
+    backend: "sharded_pkl"
+    use_tfds: false
+    allow_synthetic_tracks: false
+    annotation_file: "train.index.json"
+    deterministic_sampling: false
+    resolution: [256, 256]
+    num_frames: 24
+    num_points: 256
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    augmentation:
+      enabled: false
+    num_frames: -1
+    num_points: null
+    resolution: null
+
+training:
+  epochs: 8
+  batch_size: 1
+  num_workers: 0
+  gradient:
+    accumulation_steps: 4
+  data_loading:
+    use_prefetch: false
+    pin_memory: false
+    persistent_workers: false
+    prefetch_factor: null
+    multiprocessing_context: null
+    torch_num_threads: 12
+    torch_num_interop_threads: 2
+  optimizer:
+    lr: 1.0e-4
+    weight_decay: 1.0e-4
+  early_stopping:
+    enabled: false
+
+evaluation:
+  datasets:
+    - "tapvid_davis"
+  eval_every: 1
+  query_mode: "strided"
+  exclude_query_frame: true
+  compare_base: false
+  num_workers: 0
+  metric_resolution_mode: "original"
+
+paths:
+  output_dir: "/gemini/code/FSPT/outputs"
+  checkpoint_dir: "/gemini/code/FSPT/checkpoints"
+
+hardware:
+  gpus: [0]
+
+logging:
+  wandb:
+    enabled: false

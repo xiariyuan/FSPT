@@ -1,0 +1,30 @@
+{
+  "query_mode": "strided",
+  "num_records": 1,
+  "max_abs_diff": 0.0,
+  "pass_threshold_1e-3": true,
+  "per_record": [
+    {
+      "record_index": 0,
+      "video_id": "synthetic_video_000",
+      "wrapped": {
+        "AJ": 1.0,
+        "OA": 1.0,
+        "<avg": 1.0,
+        "<4px": 1.0
+      },
+      "official": {
+        "AJ": 1.0,
+        "OA": 1.0,
+        "<avg": 1.0,
+        "<4px": 1.0
+      },
+      "abs_diff": {
+        "AJ": 0.0,
+        "OA": 0.0,
+        "<avg": 0.0,
+        "<4px": 0.0
+      }
+    }
+  ]
+}

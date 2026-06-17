@@ -1,0 +1,12 @@
+# 消融实验：无遮挡预测模块
+# 验证频率感知遮挡预测对性能的贡献
+
+defaults:
+  - ../fspt_base
+
+experiment:
+  name: "ablation_no_occlusion"
+
+model:
+  occlusion:
+    enabled: false  # 禁用遮挡预测

@@ -1,0 +1,53 @@
+# =============================================================================
+# Route A (SOTA push): add "no-harm vs base" hinge loss, remove base L1 anchor
+# =============================================================================
+#
+# Motivation:
+# - Current trainfix run is converging to slightly-worse-than-base (AJ_delta < 0),
+#   improving very slowly.
+# - The L1 base_track_consistency loss can keep the model overly conservative:
+#   it penalizes deviation from base even when the deviation reduces GT error.
+#
+# This config:
+# - Disables base_track_consistency loss entirely (and its schedule).
+# - Adds a hinge regularizer that only penalizes being worse than base:
+#     relu(err_pred - err_base + margin)
+#   This preserves "do no harm" pressure while still allowing genuine
+#   improvements over base.
+#
+# Expected outcome:
+# - Faster convergence of AJ_delta toward >= 0 (refined >= base).
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_residualgate_trainfix.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_matchstep_c2_residualgate_trainfix_noharm_eval256"
+  description: "Route A refiner: remove base L1 anchor; add hinge(no-harm vs base) to target AJ_delta>0"
+
+# Warm-start from the best checkpoint of the previous trainfix run.
+# (Weights-only: optimizer/scheduler are reset.)
+pretrained: "checkpoints/fspt_routeA_kinetics_matchstep_c2_residualgate_trainfix_eval256_20260214_210900/best_aj.pth"
+
+loss:
+  # Remove L1 anchor to the base tracker. NOTE: schedule must be nulled too.
+  base_track_consistency:
+    weight: 0.0
+    schedule: null
+
+  # Safety + SOTA objective: don't be worse than base on supervised data.
+  position:
+    no_harm_vs_base:
+      enabled: true
+      weight: 1.0
+      margin: 0.0
+      detach_base: true
+
+training:
+  # Monitor the actual SOTA objective (official eval256 / input resolution).
+  early_stopping:
+    enabled: false
+    monitor: "AJ_delta"
+    mode: "max"

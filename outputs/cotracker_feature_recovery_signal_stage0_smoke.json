@@ -1,0 +1,126 @@
+{
+  "config": {
+    "data_root": "/gemini/code/FSPT/datasets/pointodyssey",
+    "splits": "val",
+    "min_occ_length": 20,
+    "min_camera_motion": 0.3,
+    "reentry_type": "in_frame_occlusion",
+    "max_sequences": 1,
+    "max_events": 4,
+    "events_per_seq": 4,
+    "support_bank_size": 2,
+    "n_bg": 4,
+    "bg_min_dist_px": 64.0,
+    "checkpoint": "/gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_offline.pth",
+    "seed": 42,
+    "verbose": true,
+    "output_json": "outputs/cotracker_feature_recovery_signal_stage0_smoke.json"
+  },
+  "dataset_stats": {
+    "n_sequences": 1,
+    "n_events_total_before_sample": 12963,
+    "n_events_selected": 4,
+    "per_sequence_event_counts": {
+      "ani10_new_f": 12963
+    },
+    "n_events_selected_after_per_seq_cap": 4
+  },
+  "summary": {
+    "n_events": 4,
+    "gt_similarity_mean": -0.003838159143924713,
+    "bg_similarity_mean": 0.06580059230327606,
+    "bg_similarity_max_mean": 0.10154815763235092,
+    "gt_minus_bg_max_mean": -0.10538631677627563,
+    "gt_minus_bg_max_median": -0.08111262321472168,
+    "gt_beats_bg_max_frac": 0.0,
+    "per_sequence_margin_mean": {
+      "ani10_new_f": -0.10538631677627563
+    }
+  },
+  "per_event": [
+    {
+      "seq_name": "ani10_new_f",
+      "split": "val",
+      "point_idx": 985,
+      "query_frame": 276,
+      "reentry_frame": 577,
+      "occ_length": 300,
+      "camera_motion": 1.0768373276019148,
+      "reentry_type": "in_frame_occlusion",
+      "image_height": 540,
+      "image_width": 960,
+      "support_frames": [
+        275,
+        276
+      ],
+      "gt_similarity": 0.0,
+      "bg_similarity_mean": 0.0,
+      "bg_similarity_max": 0.0,
+      "gt_minus_bg_max": 0.0,
+      "gt_beats_bg_max": false
+    },
+    {
+      "seq_name": "ani10_new_f",
+      "split": "val",
+      "point_idx": 4808,
+      "query_frame": 379,
+      "reentry_frame": 758,
+      "occ_length": 378,
+      "camera_motion": 0.9852685128985831,
+      "reentry_type": "in_frame_occlusion",
+      "image_height": 540,
+      "image_width": 960,
+      "support_frames": [
+        378,
+        379
+      ],
+      "gt_similarity": 0.0,
+      "bg_similarity_mean": 0.0,
+      "bg_similarity_max": 0.0,
+      "gt_minus_bg_max": 0.0,
+      "gt_beats_bg_max": false
+    },
+    {
+      "seq_name": "ani10_new_f",
+      "split": "val",
+      "point_idx": 7593,
+      "query_frame": 1242,
+      "reentry_frame": 1447,
+      "occ_length": 204,
+      "camera_motion": 0.40068729466861586,
+      "reentry_type": "in_frame_occlusion",
+      "image_height": 540,
+      "image_width": 960,
+      "support_frames": [
+        1241,
+        1242
+      ],
+      "gt_similarity": 0.0,
+      "bg_similarity_mean": 0.19937554001808167,
+      "bg_similarity_max": 0.2593200206756592,
+      "gt_minus_bg_max": -0.2593200206756592,
+      "gt_beats_bg_max": false
+    },
+    {
+      "seq_name": "ani10_new_f",
+      "split": "val",
+      "point_idx": 8347,
+      "query_frame": 285,
+      "reentry_frame": 369,
+      "occ_length": 83,
+      "camera_motion": 0.3152953239058073,
+      "reentry_type": "in_frame_occlusion",
+      "image_height": 540,
+      "image_width": 960,
+      "support_frames": [
+        284,
+        285
+      ],
+      "gt_similarity": -0.015352636575698853,
+      "bg_similarity_mean": 0.06382682919502258,
+      "bg_similarity_max": 0.1468726098537445,
+      "gt_minus_bg_max": -0.16222524642944336,
+      "gt_beats_bg_max": false
+    }
+  ]
+}

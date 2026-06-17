@@ -1,0 +1,29 @@
+defaults:
+  - fspt_routeA_stage3_relocal_trainfocus_reappear_from_posterior
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_trainfocus_reappear_from_posterior_quick32_gtvis_b0
+  description: "Fast validation run for GT-visible reappearance supervision with no base-error gate"
+
+data:
+  train:
+    max_samples: 32
+
+training:
+  epochs: 1
+  num_workers: 0
+
+  data_loading:
+    use_prefetch: false
+    pin_memory: false
+    persistent_workers: false
+
+evaluation:
+  num_workers: 0
+
+logging:
+  wandb:
+    enabled: false
+  visualize:
+    enabled: false

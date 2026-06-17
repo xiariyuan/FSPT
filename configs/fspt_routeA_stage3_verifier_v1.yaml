@@ -1,0 +1,83 @@
+# =============================================================================
+# Route A Verifier v1: learned candidate-vs-base acceptance for long occlusion
+# =============================================================================
+#
+# Main idea
+# - Keep the existing long-occlusion relocalization path.
+# - Train a dedicated verifier head that decides whether the relocalized
+#   candidate should replace the base tracker on reappearance frames.
+# - Use hard abstention at inference for a clearer "do-no-harm" story.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_verifier_v1_from_posterior
+  description: Stage-3 verifier-guided relocalization with hard abstention on posterior-fused visible-bank outputs
+
+# Warm-start from the posterior-fusion stage so the verifier learns on top of
+# the best long-occlusion recovery candidate generator.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_stage3_relocal_accept_visiblebank_posterior_l30_eval256/best_aj.pth
+
+model:
+  refiner:
+    trainable_modules:
+      - relocalization_residual
+      - verifier
+      - relocal_acceptor
+
+    verifier:
+      enabled: true
+      hidden_dim: 256
+      extra_features:
+        - delta_norm
+        - corr_conf
+        - relocal_conf
+        - base_vis
+        - relocal_mask
+      init_bias: -1.5
+      apply_mode: hard
+      threshold: 0.55
+
+loss:
+  verifier:
+    enabled: true
+    weight: 1.0
+    type: bce
+    margin: 0.001
+    base_error_threshold: 0.006
+    min_points: 128
+    detach_pred: true
+    detach_base: true
+    eval_threshold: 0.55
+
+evaluation:
+  compare_base: true
+  num_workers: 2
+
+training:
+  epochs: 3
+  num_workers: 2
+  data_loading:
+    use_prefetch: false
+    pin_memory: true
+  checkpoint:
+    save_every: 1
+  early_stopping:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    patience: 1
+    min_delta: 1.0e-05
+  deadline_guard:
+    enabled: true
+    monitor: AJ_longocc30_delta
+    mode: max
+    deadline_epoch: 1
+    threshold: 0.0
+
+logging:
+  visualize:
+    enabled: false

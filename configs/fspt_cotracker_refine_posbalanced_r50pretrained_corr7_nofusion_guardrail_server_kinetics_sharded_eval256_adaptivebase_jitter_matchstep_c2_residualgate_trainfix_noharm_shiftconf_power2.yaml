@@ -1,0 +1,23 @@
+# =============================================================================
+# Route A: shift-confidence + sharper gates (power=2)
+# =============================================================================
+#
+# This is a small follow-up to `*_shiftconf.yaml`.
+# We keep the shift-based confidence (max_prob - center_prob) but sharpen the
+# confidence gating so low-confidence drifts are suppressed more aggressively.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_residualgate_trainfix_noharm_shiftconf.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_noharm_shiftconf_power2_eval256"
+  description: "Route A refiner: shift-confidence + gate_power=2 (reduce low-conf drift)"
+
+model:
+  refiner:
+    local_correlation:
+      gate_power: 2.0
+      residual_gate_power: 2.0
+

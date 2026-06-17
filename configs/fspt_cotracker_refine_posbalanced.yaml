@@ -1,0 +1,117 @@
+# =============================================================================
+# FSPT + CoTracker3 (Route A): Position-balanced refiner training
+# =============================================================================
+#
+# Motivation:
+# - Standalone FSPT (no base tracker) can plateau at very low AJ (~0.0x).
+# - Route A leverages a strong base tracker (CoTracker3) and learns a refinement
+#   module, making training much more sample-efficient and paper-comparable.
+# - Balance position/occlusion losses to avoid "OA up, position down".
+#
+# Usage:
+#   python train.py --config configs/fspt_cotracker_refine_posbalanced.yaml
+#
+
+defaults:
+  - fspt_cotracker_refine.yaml
+  - _self_
+
+experiment:
+  name: "fspt_cotracker_refine_posbalanced"
+  description: "Route A refiner with position-balanced losses + plateau guard"
+
+model:
+  # IMPORTANT (server/offline): timm will try to download pretrained ImageNet
+  # weights from HuggingFace when `pretrained: true`, which fails on servers
+  # without outbound network. For Route A, the base CoTracker already provides
+  # strong tracks; the refiner backbone can be trained from scratch.
+  backbone:
+    pretrained: false
+  refiner:
+    # NOTE:
+    # The default Route A recipe (`fspt_cotracker_refine.yaml`) includes a staged
+    # freeze/unfreeze schedule that assumes the refiner stack is already
+    # reasonably initialized (e.g., pretrained backbone).
+    #
+    # On offline servers we set `model.backbone.pretrained: false` to avoid HF
+    # downloads, which makes the geometric backbone randomly initialized.
+    # In that case we must train the refiner stack end-to-end from epoch 0;
+    # otherwise we'd be freezing random features.
+    trainable_modules:
+      - geo_backbone
+      - freq_semantic
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+    # Disable staged freezing for scratch/offline training.
+    stages: []
+
+training:
+  # CoTracker-in-the-loop training is heavy; keep conservative.
+  batch_size: 1
+  num_workers: 4
+
+  gradient:
+    accumulation_steps: 4  # effective batch = 4
+
+  optimizer:
+    # Lower than fspt_base to reduce drift/overfit on TAP-Vid eval.
+    lr: 5.0e-05
+
+  checkpoint:
+    save_every: 1
+    keep_last: 10
+
+  ema:
+    enabled: true
+    decay: 0.9999
+    warmup_steps: 1000
+    update_after_step: 100
+    use_for_eval: true
+
+  monitor_checkpoints:
+    save_best_aj: true
+    save_best_oa: true
+
+  plateau_guard:
+    enabled: true
+    start_epoch: 5
+    patience: 5
+    min_delta_aj: 0.0002
+    min_delta_4px: 0.0002
+    min_delta_error: 0.0
+
+loss:
+  # Core fix: position loss magnitude is ~1/10 of occlusion BCE, so reweight.
+  position:
+    weight: 10.0
+  occlusion:
+    weight: 0.5
+
+  # Keep refined output close to base early (stability).
+  base_track_consistency:
+    weight: 0.05
+    mask: gt_visible
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 10
+      start_weight: 0.0
+      end_weight: 0.05
+
+  base_visibility_consistency:
+    weight: 0.02
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 10
+      start_weight: 0.0
+      end_weight: 0.02
+
+evaluation:
+  # Keep SOTA-comparable reporting as default.
+  metric_resolution_mode: "original"
+  # Optional: also log input-resolution metrics if val loader resizes (debug only).
+  aux_metric_resolution_mode: "input"

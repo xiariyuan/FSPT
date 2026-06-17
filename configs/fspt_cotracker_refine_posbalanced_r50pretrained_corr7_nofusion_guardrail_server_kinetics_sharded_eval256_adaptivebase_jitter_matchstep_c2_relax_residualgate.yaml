@@ -1,0 +1,34 @@
+# =============================================================================
+# Route A: relaxed match-step + correlation-gated residual updates (C2 features)
+# =============================================================================
+#
+# Observation from the relax run:
+# - AJ_delta becomes positive but <4px / avg_error can regress slightly.
+# - This suggests the learned residual regressor sometimes "nudges" already-good
+#   base tracks in the wrong direction.
+#
+# Fix:
+# - Keep the correlation soft-argmax step (matching-based).
+# - Confidence-gate the *residual* update using the same correlation confidence,
+#   so we only apply learned residuals when local matching is reliable.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_relax.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_kinetics_matchstep_c2_residualgate_eval256"
+  description: "Route A refiner: C2 local matching + relaxed gate + correlation-gated residual updates (aim improve <4px/avg_error while keeping AJ_delta>0)"
+
+# Warm-start from the best AJ checkpoint of the previous relax run.
+pretrained: "checkpoints/fspt_routeA_kinetics_matchstep_c2_relax_eval256_20260214_110836/best_aj.pth"
+
+model:
+  refiner:
+    local_correlation:
+      # New: only apply the learned residual update when correlation confidence is high.
+      gate_residual: true
+      residual_gate_threshold: 0.10
+      residual_gate_power: 2.0
+

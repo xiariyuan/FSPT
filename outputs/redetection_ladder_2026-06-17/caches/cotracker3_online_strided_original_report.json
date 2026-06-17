@@ -1,0 +1,130 @@
+{
+  "baseline_name": "cotracker3_online_strided",
+  "query_protocol": "strided",
+  "metric_resolution_mode": "original",
+  "num_records": 30,
+  "npz_files_found": 30,
+  "adapter_version": "strided_original_bridge_v1",
+  "original_sizes": {
+    "goat": [
+      480,
+      854
+    ],
+    "car-roundabout": [
+      480,
+      854
+    ],
+    "motocross-jump": [
+      480,
+      854
+    ],
+    "breakdance": [
+      480,
+      854
+    ],
+    "drift-chicane": [
+      480,
+      854
+    ],
+    "drift-straight": [
+      480,
+      854
+    ],
+    "judo": [
+      480,
+      854
+    ],
+    "soapbox": [
+      480,
+      854
+    ],
+    "dogs-jump": [
+      480,
+      854
+    ],
+    "parkour": [
+      480,
+      854
+    ],
+    "india": [
+      480,
+      854
+    ],
+    "pigs": [
+      480,
+      854
+    ],
+    "cows": [
+      480,
+      854
+    ],
+    "gold-fish": [
+      480,
+      854
+    ],
+    "paragliding-launch": [
+      480,
+      854
+    ],
+    "camel": [
+      480,
+      854
+    ],
+    "blackswan": [
+      480,
+      854
+    ],
+    "dog": [
+      480,
+      854
+    ],
+    "bike-packing": [
+      480,
+      910
+    ],
+    "shooting": [
+      480,
+      1152
+    ],
+    "lab-coat": [
+      480,
+      854
+    ],
+    "kite-surf": [
+      480,
+      854
+    ],
+    "bmx-trees": [
+      480,
+      854
+    ],
+    "dance-twirl": [
+      480,
+      854
+    ],
+    "car-shadow": [
+      480,
+      854
+    ],
+    "libby": [
+      480,
+      854
+    ],
+    "scooter-black": [
+      480,
+      854
+    ],
+    "mbike-trick": [
+      480,
+      854
+    ],
+    "loading": [
+      480,
+      854
+    ],
+    "horsejump-high": [
+      480,
+      854
+    ]
+  }
+}

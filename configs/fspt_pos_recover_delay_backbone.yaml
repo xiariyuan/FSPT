@@ -1,0 +1,61 @@
+# =============================================================================
+# FSPT Position-Recovery: delay backbone unfreeze
+# =============================================================================
+#
+# Motivation (based on server run fspt_pos_recover_fixfusion_20260211_011036):
+# - Metrics improve during warmup_heads (epoch 0-7)
+# - Metrics start regressing right after full_finetune starts at epoch 8
+#   (layer1/layer2 unfreeze)
+#
+# This config removes the epoch-8 full_finetune phase and postpones backbone
+# unfreezing to the late CLIP phase.
+
+defaults:
+  - fspt_pos_recover_from_e16
+  - _self_
+
+experiment:
+  name: "fspt_pos_recover_delay_backbone"
+  description: "Delay backbone unfreeze; keep warmup_heads until late CLIP phase"
+
+training:
+  optimizer:
+    # Fine-tune pretrained ResNet backbone with smaller LR to avoid regression.
+    backbone_lr_scale: 0.1
+
+  phase_schedule:
+    enabled: true
+    phases:
+      - name: warmup_heads
+        start_epoch: 0
+        freeze_modules:
+          - geo_backbone.backbone.layer1
+          - geo_backbone.backbone.layer2
+          - semantic_encoder.clip_model
+        unfreeze_modules: []
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 1.0
+          clip: 0.0
+
+      - name: late_clip_visual_last4
+        start_epoch: 17
+        freeze_modules: []
+        unfreeze_modules:
+          # Backbone (postponed)
+          - geo_backbone.backbone.conv1
+          - geo_backbone.backbone.bn1
+          - geo_backbone.backbone.layer1
+          - geo_backbone.backbone.layer2
+          # CLIP visual last-4 blocks
+          - semantic_encoder.clip_model.visual.transformer.resblocks.8
+          - semantic_encoder.clip_model.visual.transformer.resblocks.9
+          - semantic_encoder.clip_model.visual.transformer.resblocks.10
+          - semantic_encoder.clip_model.visual.transformer.resblocks.11
+          - semantic_encoder.clip_model.visual.ln_post
+        trainable_modules: []
+        lr_scale_overrides:
+          other: 1.0
+          semantic: 0.7
+          clip: 1.0

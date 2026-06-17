@@ -1,0 +1,52 @@
+# =============================================================================
+# Route A Stage-3 v5: template bank + two-frame confirmation
+# =============================================================================
+#
+# Goal
+# - Push long-occlusion re-localization gains beyond the ~0.002 plateau seen in v2/v3.
+# - Keep "do no harm" overall by being conservative *only when needed*.
+#
+# Key ideas
+# 1) Template bank (multi-shot re-id):
+#    Use the last K visible frames before occlusion as a template bank, instead of a
+#    single last-visible frame. For each re-appearance frame we pick the best template
+#    based on correlation confidence (+ margin/shift gates).
+# 2) Two-frame confirmation:
+#    Only allow a global jump when the *correction step* is consistent across two
+#    consecutive re-appearance frames (filters spurious one-off peaks).
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v3_lastvis.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_stage3_relocal_longocc_m20_v5_bank_confirm"
+  description: "Stage-3 v5: relocal template bank + 2-frame confirmation; monitor AJ_longocc20_delta"
+
+# Warm-start from the best v3 checkpoint (strongest long-occ gains so far).
+pretrained: "checkpoints/fspt_routeA_stage3_relocal_longocc_m20_v3_lastvis_20260226_212520/best.pth"
+
+model:
+  refiner:
+    relocalization:
+      template_mode: "last_visible"
+
+      # Multi-shot template bank: use multiple visible templates before occlusion.
+      template_bank_size: 4
+      template_bank_stride: 2
+
+      # Two-frame confirmation on the *step* (not absolute pos).
+      confirm:
+        enabled: true
+        dist_threshold: 0.02
+        allow_single_frame: true
+
+      # With confirmation + bank, we can be slightly less strict here.
+      conf_threshold: 0.18
+
+training:
+  deadline_guard:
+    deadline_epoch: 12
+    threshold: 0.0030
+

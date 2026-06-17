@@ -1,0 +1,59 @@
+{
+  "phase": 0,
+  "protocol": "strided+original",
+  "note": "Track-On2 has runtime dtype bug (fixable), needs rerun — not unsupported",
+  "baselines": {
+    "cotracker3_online": {
+      "status": "complete",
+      "source": "attempt0_eval_strided_original.py --model_name cotracker3_video",
+      "cache": "caches/cotracker3_online_strided_original.pt",
+      "metrics": {
+        "AJ": 36.95,
+        "OA": 68.15,
+        "delta_avg": 45.01,
+        "delta_4px": 47.71
+      },
+      "reentry": {
+        "n": 1385,
+        "median_px": 3.86,
+        "mean_px": 14.73,
+        "p95_px": 74.95,
+        "oracle_gap_mean_px": 14.73,
+        "oracle_better_4px_frac": 0.487
+      },
+      "longocc20": {
+        "n": 146,
+        "median_px": 6.39,
+        "oracle_better_4px_frac": 0.685
+      }
+    },
+    "cotracker3_offline": {
+      "status": "complete",
+      "source": "attempt0_eval_strided_original.py --model_name cotracker3_window",
+      "cache": "caches/cotracker3_offline_strided_original.pt",
+      "metrics": {
+        "AJ": 51.54,
+        "OA": 92.15,
+        "delta_avg": 63.59,
+        "delta_4px": 68.01
+      },
+      "reentry": {
+        "n": 1385,
+        "median_px": 3.71,
+        "mean_px": 12.21,
+        "p95_px": 44.97,
+        "oracle_gap_mean_px": 12.21,
+        "oracle_better_4px_frac": 0.462
+      },
+      "longocc20": {
+        "n": 146,
+        "median_px": 5.58,
+        "oracle_better_4px_frac": 0.685
+      }
+    },
+    "trackon2": {
+      "status": "needs_rerun",
+      "reason": "dtype mismatch bug in trackon.py (user fixed locally), probe showed 14+ npz written, full run not completed"
+    }
+  }
+}

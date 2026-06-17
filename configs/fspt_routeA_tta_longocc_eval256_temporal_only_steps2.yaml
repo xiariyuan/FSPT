@@ -1,0 +1,15 @@
+# =============================================================================
+# Route A Pivot: lightweight test-time adaptation for long-occlusion tracking
+# (temporal transformer only, 2-step inner loop)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_tta_longocc_eval256_temporal_only
+  - _self_
+
+experiment:
+  name: fspt_routeA_tta_longocc_eval256_temporal_only_steps2
+  description: "Lightweight TTA for long-occlusion tracking @eval256 (temporal only, 2-step)"
+
+tta:
+  steps: 2

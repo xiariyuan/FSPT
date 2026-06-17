@@ -1,0 +1,20 @@
+# =============================================================================
+# Verifier-Guided Pseudo-Labeling (pred_visibility control)
+# =============================================================================
+#
+# Same smoke setup as fspt_verifier_guided_pseudo_labeling, but the teacher
+# confidence source is the baseline pred_visibility signal. This is the direct
+# control run for comparing against verifier_scores under identical conditions.
+#
+
+defaults:
+  - fspt_verifier_guided_pseudo_labeling.yaml
+  - _self_
+
+experiment:
+  name: fspt_verifier_guided_pseudo_labeling_pred_visibility
+  description: Verifier-guided pseudo-label smoke control using pred_visibility as confidence source
+
+training:
+  pseudo_labeling:
+    confidence_source: pred_visibility

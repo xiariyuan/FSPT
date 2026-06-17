@@ -1,0 +1,84 @@
+# =============================================================================
+# Route A (SOTA push): train only local-correlation projections (descriptor learning)
+# =============================================================================
+#
+# Goal:
+# - Beat CoTracker3 on TAP-Vid DAVIS (AJ_delta > 0).
+#
+# Observation:
+# - Full refiner training on Kinetics tended to *slightly* hurt DAVIS.
+# - With shift-confidence gating, we can reach "almost base" safely.
+#
+# Strategy:
+# - Freeze the heavy modules (geo_backbone/frequency/temporal/residual/occlusion/semantic).
+# - Disable train-time base jitter (avoid learning a "denoiser" that doesn't transfer).
+# - Keep only the local correlation step active for track updates.
+# - Train the local-correlation projections (map/query) to produce better matching.
+#
+# This is effectively learning a tiny descriptor head that turns ResNet features
+# into a matching-friendly embedding, within a tight trust region.
+#
+
+defaults:
+  - fspt_cotracker_refine_posbalanced_r50pretrained_corr7_nofusion_guardrail_server_kinetics_sharded_eval256_adaptivebase_jitter_matchstep_c2_residualgate_trainfix_noharm_shiftconf_power2.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_corrproj_only_shiftconf_nojitter_eval256"
+  description: "Route A: freeze heavy modules; train only local correlation projections; shift-confidence gates; no base jitter"
+
+# Warm-start from the "best_aj" checkpoint of the previous no-harm run.
+# (Weights-only; optimizer/scheduler will reset.)
+pretrained: "checkpoints/fspt_routeA_kinetics_matchstep_c2_residualgate_noharm_eval256_20260215_002200/best_aj.pth"
+
+model:
+  # Disable expensive modules for this training recipe.
+  frequency:
+    enabled: false
+  semantic:
+    enabled: false
+  occlusion:
+    enabled: false
+
+  refiner:
+    # Override inherited trainable_modules (otherwise freeze_modules is ignored).
+    trainable_modules: []
+    # Freeze everything except the local_correlation module.
+    freeze_modules:
+      - geo_backbone
+      - freq_semantic
+      - temporal_transformer
+      - residual_decoder
+      - occlusion_predictor
+      - semantic_encoder
+
+    # Ensure the residual decoder does not move tracks (correlation step only).
+    delta_scale: 0.0
+
+    # Training should match evaluation behavior as much as possible.
+    base_jitter:
+      enabled: false
+
+    local_correlation:
+      # Use only the matching step; do not inject corr embeddings.
+      scale: 0.0
+      gate_step_train: true
+      gate_residual_train: true
+
+training:
+  epochs: 30
+  optimizer:
+    # Only a tiny module is trainable; we can use a higher LR.
+    lr: 1.0e-4
+  plateau_guard:
+    # Stop early if we don't see improvement quickly.
+    start_epoch: 5
+    patience: 5
+    min_delta_aj: 0.00001
+    min_delta_4px: 0.00001
+
+loss:
+  position:
+    # Stronger "do no harm" constraint while we learn correlation projections.
+    no_harm_vs_base:
+      weight: 5.0

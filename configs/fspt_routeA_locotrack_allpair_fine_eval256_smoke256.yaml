@@ -1,0 +1,49 @@
+# =============================================================================
+# Route A smoke baseline: local all-pair correlation only (eval256, fast)
+# =============================================================================
+#
+# Purpose
+# - Provide a fast, reproducible baseline for the novel Route A direction.
+# - Keep the exact same evaluation protocol as the dual-relocal/two-view
+#   variant, but strip the extra modules so we can see whether they add signal.
+#
+
+defaults:
+  - fspt_routeA_locotrack_allpair_fine_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_locotrack_allpair_fine_eval256_smoke256_wsfix"
+  description: "Route A smoke baseline (warm-start fixed): local all-pair correlation only @eval256"
+
+# Override the inherited dead path with an existing compatible checkpoint.
+pretrained: /gemini/code/FSPT/checkpoints/fspt_routeA_kinetics_guardrail_eval256_20260505_182156/best_aj.pth
+
+data:
+  train:
+    max_samples: 256
+
+training:
+  epochs: 1
+  num_workers: 0
+  data_loading:
+    use_prefetch: false
+    pin_memory: false
+    persistent_workers: false
+    prefetch_factor: 2
+evaluation:
+  num_workers: 0
+  compare_base: true
+  query_mode: "strided"
+  exclude_query_frame: true
+  metric_resolution_mode: "input"
+  aux_metric_resolution_mode: "original"
+  long_occlusion_subset:
+    enabled: true
+    thresholds: [10, 20, 30]
+
+logging:
+  wandb:
+    enabled: false
+  visualize:
+    enabled: false

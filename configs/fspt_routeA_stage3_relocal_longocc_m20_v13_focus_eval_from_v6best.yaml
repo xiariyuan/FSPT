@@ -1,0 +1,52 @@
+# =============================================================================
+# Route A Stage-3 v13 (eval-only): focus_corrections guardrail on v6 best weights
+# =============================================================================
+#
+# Motivation
+# - v6 achieved strong long-occlusion gains (AJ_longocc30_delta ~ +0.005),
+#   but global AJ_delta was slightly negative (~ -0.001).
+# - v12 recovered AJ_delta >= 0, but over-regularized and lost long-occ gains.
+#
+# Hypothesis
+# - We can recover the global no-harm property mostly via *inference-time*
+#   correction focusing (attenuate deltas outside hard regions),
+#   without re-training the model and without destroying long-occ improvements.
+#
+# Usage (server)
+#   /root/miniconda3/bin/python evaluate.py \
+#     --checkpoint checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth \
+#     --config configs/fspt_routeA_stage3_relocal_longocc_m20_v13_focus_eval_from_v6best.yaml \
+#     --dataset davis --compare-base
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v13_focus_eval_from_v6best
+  description: "Eval-only guardrail: focus_corrections on v6 best (aim: AJ_delta>=0, keep longocc gains)"
+
+# NOTE: evaluate.py loads weights from --checkpoint; this field is just for bookkeeping.
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    # Safety: always reuse base visibility (avoid OA collapse).
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    # Key change: attenuate corrections outside hard regions.
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.20
+      use_relocal_mask: true
+      use_corr_conf: true
+      corr_threshold: 0.25
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

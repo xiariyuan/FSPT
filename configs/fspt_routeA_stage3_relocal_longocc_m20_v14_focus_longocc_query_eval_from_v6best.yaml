@@ -1,0 +1,54 @@
+# =============================================================================
+# Route A Stage-3 v14 (eval-only): focus long-occlusion queries (query-level mask)
+# =============================================================================
+#
+# Goal
+# - Keep v6 strong long-occ improvements (AJ_longocc30_delta ≈ +0.005)
+# - Recover global do-no-harm (AJ_delta ≥ 0) by attenuating non-longocc queries
+#
+# Key idea
+# - Use a *query-level* focus mask: if base visibility indicates a long occlusion
+#   run (>= long_occlusion_len), allow full-strength corrections on ALL frames
+#   for that query. Otherwise, attenuate corrections outside relocal frames.
+#
+# Requires code support:
+# - models/cotracker_refiner.py: focus_corrections.use_long_occlusion_query
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v14_focus_longocc_query_eval_from_v6best
+  description: "Eval-only: query-level long-occ focus mask to preserve longocc gains + reduce global harm"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.20
+
+      # Frame-level focus: always allow full corrections on relocalization frames.
+      use_relocal_mask: true
+
+      # Query-level focus: allow full corrections for queries with long occlusions.
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+
+      # Disable these until proven useful (they often un-focus easy regions).
+      use_corr_conf: false
+      use_relocal_conf: false
+
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

@@ -1,0 +1,66 @@
+{
+  "model_name": "trackon2",
+  "repo_url": "https://github.com/gorkaydemir/track_on",
+  "repo_commit": "local clone",
+  "checkpoint_path": "/gemini/code/FSPT/baselines/track_on/checkpoints_trackon2_dinov3.pt",
+  "checkpoint_sha256": "c17faf2068026f7b",
+  "dataset_name": "tapvid_davis",
+  "split": "test",
+  "run_date": "2026-06-15",
+  "repo_native_protocol": "torchrun evaluation.eval with M_i=24 for DAVIS",
+  "repo_native_metric_names": {"AJ": "AJ", "OA": "OA", "delta_avg": "delta_avg"},
+  "repo_native_numbers": {
+    "tapvid_davis": {"AJ": 67.04, "delta_avg": 79.84, "OA": 92.09},
+    "tapvid_kinetics_10clip": {"AJ": 55.58, "delta_avg": 68.83, "OA": 92.03}
+  },
+  "official_reference_numbers": {
+    "tapvid_davis": {"delta_avg": 79.9},
+    "tapvid_kinetics": {"delta_avg": 69.3}
+  },
+  "delta_vs_official": {
+    "tapvid_davis": -0.06,
+    "tapvid_kinetics_10clip": -0.47
+  },
+  "reproduction_status": "match",
+  "raw_coordinate_format": "yx",
+  "raw_visibility_format": "bool",
+  "query_format": "t,y,x (prepared by evaluator)",
+  "adapter_version": "dinov3_vit_adapter with DINOV3_LOCAL_DIR env var patch",
+  "adapter_sanity_status": "pass",
+  "adapter_notes": [
+    "DINOv3 backbone loaded from local ModelScope download via DINOV3_LOCAL_DIR",
+    "Checkpoint missing 235 dinov3 backbone keys (expected per README)",
+    "No HF network access required"
+  ],
+  "query_mode": "first",
+  "metric_resolution_mode": "input",
+  "AJ": 67.04,
+  "OA": 92.09,
+  "<avg": 79.84,
+  "<4px": 87.82,
+  "delta_vs_cotracker3_baseline": {"AJ": 4.38, "delta_avg": 2.62, "OA": 3.94},
+  "rescoring_status": "partial_first_input_bridge_complete",
+  "rescoring_note": "Round 4: first+input bridge completed. Unified bridge AJ=67.04, delta_avg=79.84, OA=92.09 — PERFECT MATCH vs repo-native (0.00 diff). Long-occ AJ=45.27, delta_avg=68.11. True strided+original Attempt 0 main protocol still pending.",
+  "long_occ_definition": "first + input bridge, min_run=20",
+  "long_occ_AJ": 45.27,
+  "long_occ_<avg": 68.11,
+  "long_occ_<4px": null,
+  "reentry_first_frame_error": null,
+  "AJ_RD": null,
+  "gpu_type": "B1.gpu.medium (cc 8.6)",
+  "batch_size": 1,
+  "peak_memory_gb": null,
+  "eval_wall_time": "30s DAVIS / 177s kinetics_smoke",
+  "notes": [
+    "Repo-native DAVIS: AJ=67.04, delta_avg=79.84, OA=92.09",
+    "Unified bridge (first+input): AJ=67.04, delta_avg=79.84, OA=92.09 — 0.00 diff",
+    "Long-occ (first+input): AJ=45.27, delta_avg=68.11",
+    "Kinetics is 10-clip smoke only, not full eval",
+    "Track-On-R not available (no checkpoint locally)",
+    "True strided+original Attempt 0 main protocol still pending"
+  ],
+  "keep_for_main_ranking": true,
+  "keep_as_teacher_candidate": true,
+  "known_blockers": [],
+  "next_action": "done for first+input bridge; awaiting strided+original protocol decision"
+}

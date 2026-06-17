@@ -1,0 +1,51 @@
+# =============================================================================
+# Route A Stage-3 v28 (eval-only): long-occ-30 only, but "reappearance"-aware
+# =============================================================================
+#
+# Why this exists
+# - v16 focuses *query-level* based on a long occlusion run in base visibility.
+# - v16 uses long_occlusion_mode=max_run (default), which counts "occluded until end"
+#   tail runs as long occlusions even if there is **no re-appearance**.
+# - TAP-Vid long-occ subset metrics (evaluate.py) ONLY count occlusion runs that are
+#   followed by at least one visible frame (a true re-appearance).
+#
+# Hypothesis
+# - Switching long_occlusion_mode to "reappearance" reduces false-positive queries
+#   that get refined (and potentially harmed) but are not part of long-occ{30}
+#   evaluation, improving global AJ_delta while keeping longocc30 gains.
+#
+
+defaults:
+  - fspt_routeA_stage3_relocal_longocc_m20_v6_from_v5_l30.yaml
+  - _self_
+
+experiment:
+  name: fspt_routeA_stage3_relocal_longocc_m20_v28_focus_longocc30_reappearance_run_nf000_eval_from_v6best
+  description: "Eval-only: focus only long-occ>=30 queries (base vis), but require re-appearance; non_focus_scale=0"
+
+pretrained: checkpoints/routeA_stage3_v6_l30_nohup_20260303_022601/best.pth
+
+model:
+  refiner:
+    visibility_prior:
+      mode: blend
+      alpha: 1.0
+
+    focus_corrections:
+      enabled: true
+      non_focus_scale: 0.0
+      use_relocal_mask: false
+
+      use_long_occlusion_query: true
+      long_occlusion_len: 30
+      long_occlusion_vis_threshold: 0.5
+      long_occlusion_mode: reappearance   # IMPORTANT vs v16
+      long_occlusion_fill_gaps: 1         # mild smoothing for flickery base visibility
+
+      use_corr_conf: false
+      use_relocal_conf: false
+      include_occluded: false
+
+evaluation:
+  compare_base: true
+

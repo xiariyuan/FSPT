@@ -1,0 +1,16 @@
+# =============================================================================
+# Route A quickcheck: dual all-pair + relocal bank + two-view (small val subset)
+# =============================================================================
+
+defaults:
+  - fspt_routeA_allpair_dual_reloc_twoview_eval256.yaml
+  - _self_
+
+experiment:
+  name: "fspt_routeA_allpair_dual_reloc_twoview_quickcheck"
+  description: "Quickcheck config with a tiny validation subset to verify relocalization stats"
+
+data:
+  val:
+    max_samples: 2
+
