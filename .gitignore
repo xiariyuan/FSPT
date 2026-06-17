@@ -81,6 +81,29 @@ assets/
 # Ignore generated experiment outputs by default.
 /outputs/
 
+# Ignore writing / paper materials that are not part of the code+experiment record bundle.
+/papers/
+/references/
+/docs/ADVANCED_TRAINING.md
+/docs/CODE_REUSE_PLAN.md
+/docs/CODE_REVIEW.md
+/docs/DATASET_DOWNLOAD.md
+/docs/DATASET_GUIDE.md
+/docs/DETAILED_EXPERIMENTS.md
+/docs/EXPERIMENTS.md
+/docs/LITERATURE_REVIEW.md
+/docs/PAPER_WRITING_GUIDE.md
+/docs/PROJECT_OVERVIEW.md
+/docs/PROJECT_REVIEW.md
+/docs/QUICK_START.md
+/docs/RESEARCH_PLAN.md
+/docs/SOTA_COMPARISON.md
+/docs/paper_draft_structure.md
+/docs/prt_benchmark_definition.md
+/docs/prt_experiment_inventory_2026-06-09.md
+/docs/routeA_paper_plan_2026-04.md
+/docs/world_state_paper_strategy.md
+
 # Exclude caches and downloaded data inside otherwise tracked packages
 /baselines/**/__pycache__/
 /datasets/**/__pycache__/
