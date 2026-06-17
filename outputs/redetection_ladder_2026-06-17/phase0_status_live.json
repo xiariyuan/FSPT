@@ -7,9 +7,9 @@
   "baselines": {
     "cotracker3_online": {"status": "complete", "AJ": 36.95},
     "cotracker3_offline": {"status": "complete", "AJ": 51.54},
-    "trackon2": {"status": "failed_unsupported"}
+    "trackon2": {"status": "needs_rerun"}
   },
   "phase1_decision": "ADVANCE_TO_PHASE_2",
   "phase2_blocked": true,
-  "phase2_reason": "waiting for GPT review of repair artifacts"
+  "phase2_reason": "Track-On2 strided probe needs rerun and re-accounting"
 }

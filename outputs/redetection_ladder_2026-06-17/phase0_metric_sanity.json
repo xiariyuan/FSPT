@@ -11,7 +11,7 @@
   "smoke_results": {
     "cotracker3_online": {"AJ": 36.95, "OA": 68.15, "delta_avg": 45.01, "delta_4px": 47.71, "cache_complete": true},
     "cotracker3_offline": {"AJ": 51.54, "OA": 92.15, "delta_avg": 63.59, "delta_4px": 68.01, "cache_complete": true},
-    "trackon2": {"status": "failed_unsupported", "cache_complete": false}
+    "trackon2": {"status": "needs_rerun", "cache_complete": false}
   },
   "reentry_oracle": {
     "cotracker3_online": {
