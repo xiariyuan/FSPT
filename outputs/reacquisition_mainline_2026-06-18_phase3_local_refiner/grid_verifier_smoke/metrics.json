@@ -1,0 +1,39 @@
+{
+  "config": {
+    "dataset_json": "outputs/reacquisition_mainline_2026-06-18_phase3_local_refiner/grid_verifier_dataset_smoke/dataset.json",
+    "output_dir": "outputs/reacquisition_mainline_2026-06-18_phase3_local_refiner/grid_verifier_smoke",
+    "epochs": 200,
+    "lr": 0.001,
+    "hidden": 32,
+    "seed": 42,
+    "val_video": "bmx-trees"
+  },
+  "train_metrics": {
+    "n": 62,
+    "verifier_median_px": 5.99,
+    "verifier_lt4px": 0.2581,
+    "verifier_lt8px": 0.7258,
+    "raw_median_px": 5.99,
+    "raw_lt4px": 0.2581,
+    "raw_lt8px": 0.7258,
+    "oracle_median_px": 0.86,
+    "oracle_lt4px": 0.7903,
+    "better_frac": 0.5,
+    "lt4px_improvement_vs_raw_pp": 0.0,
+    "lt8px_no_degradation": 1.0
+  },
+  "val_metrics": {
+    "n": 66,
+    "verifier_median_px": 2.95,
+    "verifier_lt4px": 0.7121,
+    "verifier_lt8px": 0.9545,
+    "raw_median_px": 2.95,
+    "raw_lt4px": 0.7121,
+    "raw_lt8px": 0.9545,
+    "oracle_median_px": 0.75,
+    "oracle_lt4px": 0.9848,
+    "better_frac": 0.591,
+    "lt4px_improvement_vs_raw_pp": 0.0,
+    "lt8px_no_degradation": 1.0
+  }
+}

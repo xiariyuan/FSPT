@@ -1,0 +1,63 @@
+{
+  "task": "C",
+  "title": "Local-global hybrid candidate generation",
+  "config": {
+    "max_videos": 5,
+    "max_queries": 128,
+    "topk": 5,
+    "search_radius_px": 64,
+    "crop_size": 112,
+    "anchor": "last_visible_frame",
+    "num_support_frames": 5
+  },
+  "summary": {
+    "global_whole_frame": {
+      "n": 128,
+      "top1_median_px": 131.56222534179688,
+      "top5_best_median_px": 88.97298431396484,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.0,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.0,
+      "top1_hit_32px": 0.0,
+      "top5_hit_32px": 0.0703125,
+      "top1_miss_top5_hit_16px": 0.0
+    },
+    "global_topk_then_local_refine": {
+      "n": 128,
+      "top1_median_px": 131.56222534179688,
+      "top5_best_median_px": 88.97298431396484,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.0234375,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.0703125,
+      "top1_hit_32px": 0.0,
+      "top5_hit_32px": 0.15625,
+      "top1_miss_top5_hit_16px": 0.0703125
+    },
+    "center_ct_offline": {
+      "n": 128,
+      "top1_median_px": 66.96277618408203,
+      "top5_best_median_px": 45.48175048828125,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.0234375,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.0703125,
+      "top1_hit_32px": 0.0,
+      "top5_hit_32px": 0.28125,
+      "top1_miss_top5_hit_16px": 0.0703125
+    },
+    "center_dual": {
+      "n": 128,
+      "top1_median_px": 131.56222534179688,
+      "top5_best_median_px": 69.8281478881836,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.0234375,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.0703125,
+      "top1_hit_32px": 0.0,
+      "top5_hit_32px": 0.1796875,
+      "top1_miss_top5_hit_16px": 0.0703125
+    }
+  }
+}

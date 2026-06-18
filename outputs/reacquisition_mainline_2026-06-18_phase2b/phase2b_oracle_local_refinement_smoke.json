@@ -1,0 +1,99 @@
+{
+  "task": "CT-offline-centered oracle local refinement audit",
+  "protocol": "strided+original",
+  "config": {
+    "max_videos": 5,
+    "max_queries": 128,
+    "radii_px": [
+      8,
+      16,
+      32
+    ],
+    "grid_stride_px": 2,
+    "ct_offline_cache": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt"
+  },
+  "baseline": {
+    "description": "CT-offline raw prediction at re-entry frame",
+    "median_px": 4.045935395665338,
+    "lt4px": 0.4921875,
+    "lt8px": 0.84375
+  },
+  "summary": {
+    "radius_8px": {
+      "n": 128,
+      "raw_median_px": 4.045935395665338,
+      "oracle_median_px": 0.8113101652904919,
+      "raw_lt4px": 0.4921875,
+      "oracle_lt4px": 0.890625,
+      "lt4px_improvement_pp": 0.3984375,
+      "raw_lt8px": 0.84375,
+      "oracle_lt8px": 0.8984375,
+      "lt8px_improvement_pp": 0.0546875,
+      "oracle_best_improvement_mean_px": 3.9519546114413053,
+      "oracle_best_improvement_median_px": 3.4770993415492093
+    },
+    "radius_16px": {
+      "n": 128,
+      "raw_median_px": 4.045935395665338,
+      "oracle_median_px": 0.7846158548740789,
+      "raw_lt4px": 0.4921875,
+      "oracle_lt4px": 0.9140625,
+      "lt4px_improvement_pp": 0.421875,
+      "raw_lt8px": 0.84375,
+      "oracle_lt8px": 0.9140625,
+      "lt8px_improvement_pp": 0.0703125,
+      "oracle_best_improvement_mean_px": 4.870986042414877,
+      "oracle_best_improvement_median_px": 3.4770993415492093
+    },
+    "radius_32px": {
+      "n": 128,
+      "raw_median_px": 4.045935395665338,
+      "oracle_median_px": 0.7514552094934404,
+      "raw_lt4px": 0.4921875,
+      "oracle_lt4px": 0.9765625,
+      "lt4px_improvement_pp": 0.484375,
+      "raw_lt8px": 0.84375,
+      "oracle_lt8px": 0.984375,
+      "lt8px_improvement_pp": 0.140625,
+      "oracle_best_improvement_mean_px": 5.979623053028818,
+      "oracle_best_improvement_median_px": 3.4770993415492093
+    },
+    "long_occ_ge20": {
+      "n": 20,
+      "raw_median_px": 6.1470942415512475,
+      "raw_lt4px": 0.1,
+      "oracle_8px_median_px": 0.6899840065820433,
+      "oracle_8px_lt4px": 0.95,
+      "oracle_8px_lt4px_improvement_pp": 0.85,
+      "oracle_16px_median_px": 0.6899840065820433,
+      "oracle_16px_lt4px": 0.95,
+      "oracle_16px_lt4px_improvement_pp": 0.85,
+      "oracle_32px_median_px": 0.6899840065820433,
+      "oracle_32px_lt4px": 1.0,
+      "oracle_32px_lt4px_improvement_pp": 0.9
+    }
+  },
+  "decision": {
+    "radius_8px": {
+      "overall_lt4px_improvement_pp": 0.3984375,
+      "long_occ_lt4px_improvement_pp": 0.85,
+      "overall_pass": true,
+      "long_occ_pass": true,
+      "both_pass": true
+    },
+    "radius_16px": {
+      "overall_lt4px_improvement_pp": 0.421875,
+      "long_occ_lt4px_improvement_pp": 0.85,
+      "overall_pass": true,
+      "long_occ_pass": true,
+      "both_pass": true
+    },
+    "radius_32px": {
+      "overall_lt4px_improvement_pp": 0.484375,
+      "long_occ_lt4px_improvement_pp": 0.9,
+      "overall_pass": true,
+      "long_occ_pass": true,
+      "both_pass": true
+    }
+  }
+}

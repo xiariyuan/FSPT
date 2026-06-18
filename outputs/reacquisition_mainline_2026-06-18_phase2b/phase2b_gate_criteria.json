@@ -1,0 +1,83 @@
+{
+  "phase": "2b",
+  "title": "Unified stop/go gate criteria for candidate generation → verifier → training pipeline",
+  "date": "2026-06-18",
+  "protocol": "strided+original",
+  "gates": {
+    "stage_1_candidate_generation": {
+      "description": "Candidate generation method evaluation. Only after passing this gate, proceed to verifier.",
+      "metrics": {
+        "primary": "top5_hit_16px",
+        "secondary": "top1_miss_top5_hit_16px"
+      },
+      "thresholds": {
+        "stop": {
+          "condition": "top5@16px < 10%",
+          "action": "STOP — candidate generation method is not viable. Do NOT expand samples, do NOT train verifier."
+        },
+        "smoke_only": {
+          "condition": "10% <= top5@16px < 25%",
+          "action": "SMOKE ONLY — limited samples ok for analysis, but not worth systematic eval or verifier training."
+        },
+        "systematic_eval": {
+          "condition": "25% <= top5@16px < 70%",
+          "action": "EXPAND — run on full DAVIS, analyze per-video breakdown, enter verifier design."
+        },
+        "pass": {
+          "condition": "top5@16px >= 70%",
+          "action": "PASS — meets original Phase 2 pre-registered threshold. Proceed to Phase 3 verifier."
+        }
+      }
+    },
+    "stage_2_verifier": {
+      "description": "Verifier / selector / acceptor. Only enter if stage 1 passes and top1miss-top5hit is non-zero.",
+      "prerequisites": [
+        "top5@16px >= 25% (systematic eval)",
+        "top1 miss but top5 hit @16px > 0% (verifier has input to work with)"
+      ],
+      "stop_conditions": [
+        "top1 miss but top5 hit @16px == 0%: no verifier value — GT is never in candidate set",
+        "verifier cannot beat raw similarity baseline on recall"
+      ]
+    },
+    "stage_3_training": {
+      "description": "Re-detection-first training. Only enter after both candidate generation and verifier pass.",
+      "prerequisites": [
+        "stage_1: pass (top5@16px >= 70%)",
+        "stage_2: verifier confirmed viable"
+      ]
+    }
+  },
+  "current_status": {
+    "stage_1_candidate_generation": {
+      "state": "FAILED — all tested variants below stop threshold",
+      "tested_variants": [
+        {
+          "name": "query_frame_anchor_whole_frame_retrieval",
+          "top5@16px": 0.016,
+          "threshold": 0.10,
+          "decision": "STOP"
+        },
+        {
+          "name": "last_visible_multi_support_mean",
+          "top5@16px": 0.023,
+          "threshold": 0.10,
+          "decision": "STOP"
+        },
+        {
+          "name": "last_visible_multi_support_max",
+          "top5@16px": 0.016,
+          "threshold": 0.10,
+          "decision": "STOP"
+        }
+      ],
+      "next": "Test local-global hybrid with CoTracker3 offline prior"
+    },
+    "stage_2_verifier": {
+      "state": "NOT ENTERED — stage 1 not passed"
+    },
+    "stage_3_training": {
+      "state": "NOT ENTERED — stage 1+2 not passed"
+    }
+  }
+}

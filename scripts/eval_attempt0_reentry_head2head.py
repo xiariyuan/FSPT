@@ -45,7 +45,13 @@ def _find_first_reentry(gt_visibility: np.ndarray, query_t: int) -> Optional[Tup
 
 
 def _compute_error_px(pred_yx: np.ndarray, gt_yx: np.ndarray, input_hw: Tuple[int, int]) -> float:
-    scale = np.array([float(input_hw[0]), float(input_hw[1])], dtype=np.float32)
+    # Attempt0 unified caches store y/x-normalized coordinates using
+    # per-video (size-1) denominators. Convert back with the same convention so
+    # the re-entry error matches the strided+original Phase 1 oracle metrics.
+    scale = np.array(
+        [max(float(input_hw[0]) - 1.0, 1.0), max(float(input_hw[1]) - 1.0, 1.0)],
+        dtype=np.float32,
+    )
     return float(np.linalg.norm((pred_yx - gt_yx) * scale, axis=-1))
 
 
@@ -349,7 +355,7 @@ def main() -> None:
         query_points = np.asarray(ref_record["query_points"], dtype=np.float32)
         gt_tracks = np.asarray(ref_record["gt_tracks"], dtype=np.float32)
         gt_visibility = np.asarray(ref_record["gt_visibility"], dtype=bool)
-        input_h, input_w = [int(x) for x in np.asarray(ref_record["model_input_size"]).tolist()]
+        input_h, input_w = [int(x) for x in np.asarray(ref_record["original_size"]).tolist()]
 
         pred_tracks_by_label = {
             label: np.asarray(label_to_payload[label]["records"][record_idx]["pred_tracks"], dtype=np.float32)
@@ -406,11 +412,12 @@ def main() -> None:
 
     output = {
         "protocol": {
-            "source": "attempt0_unified_bridge_cache",
+            "source": "attempt0_unified_bridge_cache_strided_original",
             "dataset_name": ref_payload.get("dataset_name", ""),
             "split": ref_payload.get("split", ""),
             "protocol": ref_payload.get("protocol", ""),
-            "metric_resolution": "input256",
+            "metric_resolution": "original",
+            "normalization_denominator": "size_minus_1",
             "reentry_definition": "first visible frame after first post-query occlusion run",
         },
         "cache_alignment": alignment_reports,

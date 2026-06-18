@@ -1,0 +1,84 @@
+{
+  "date": "2026-06-18",
+  "protocol": "strided+original",
+  "status": "STOP_AT_PHASE_2_CURRENT_VARIANT",
+  "phase2_variant": "dino_query_frame_anchor_whole_frame_dense_retrieval",
+  "head2head_strided_original": {
+    "trackon2": {
+      "n": 1385,
+      "median_px": 3.912261486053467,
+      "mean_px": 18.471723556518555,
+      "lt4px": 0.5097472924187726,
+      "lt8px": 0.7364620938628159,
+      "p95_px": 109.7746673583984
+    },
+    "cotracker3_online": {
+      "n": 1385,
+      "median_px": 3.8588974475860596,
+      "mean_px": 14.728965759277344,
+      "lt4px": 0.5133574007220216,
+      "lt8px": 0.7696750902527075,
+      "p95_px": 74.95435638427723
+    },
+    "cotracker3_offline": {
+      "n": 1385,
+      "median_px": 3.7100560665130615,
+      "mean_px": 12.208946228027344,
+      "lt4px": 0.5379061371841155,
+      "lt8px": 0.8021660649819494,
+      "p95_px": 44.97116088867184
+    }
+  },
+  "phase2_smoke": {
+    "sample_cap": {
+      "max_videos": 5,
+      "max_queries": 128
+    },
+    "overall": {
+      "n": 128,
+      "top1_median_px": 136.0216064453125,
+      "top5_best_median_px": 85.04769134521484,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.015625,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.015625,
+      "top1_miss_top5_hit_16px": 0.015625
+    },
+    "long_occ": {
+      "n": 20,
+      "top1_median_px": 108.10054779052734,
+      "top5_best_median_px": 85.02299499511719,
+      "top1_hit_8px": 0.0,
+      "top5_hit_8px": 0.0,
+      "top1_hit_16px": 0.0,
+      "top5_hit_16px": 0.0,
+      "top1_miss_top5_hit_16px": 0.0
+    }
+  },
+  "stop_criteria": {
+    "phase2_top5_required": 0.7,
+    "observed_top5_hit_16px": 0.015625,
+    "observed_longocc_top5_hit_16px": 0.0,
+    "decision": "STOP"
+  },
+  "failure_mode": {
+    "candidate_generation_failed": true,
+    "candidate_ranking_failed": false,
+    "evidence": "top1_miss_top5_hit_16px is near zero, so GT is usually absent from top-k"
+  },
+  "next_direction": {
+    "recommended": "candidate_generation_redesign",
+    "subdirections": [
+      "cotracker3_offline_first_candidate_source",
+      "last_visible_or_visible_bank_multi_support",
+      "local_global_hybrid_candidate_generation",
+      "only_run_verifier_after_topk_recall_is_nontrivial"
+    ]
+  },
+  "artifact_refs": {
+    "head2head_md": "outputs/reacquisition_mainline_2026-06-18/attempt1_reentry_head2head_strided_original.md",
+    "head2head_json": "outputs/reacquisition_mainline_2026-06-18/attempt1_reentry_head2head_strided_original.json",
+    "phase2_smoke_md": "outputs/reacquisition_mainline_2026-06-18/phase2_anchor_topk_smoke.md",
+    "phase2_smoke_json": "outputs/reacquisition_mainline_2026-06-18/phase2_anchor_topk_smoke.json"
+  }
+}
