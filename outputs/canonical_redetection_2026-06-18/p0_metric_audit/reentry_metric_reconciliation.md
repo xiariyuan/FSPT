@@ -1,76 +1,79 @@
 # Re-entry Metric Reconciliation
 
-**日期**: 2026-06-19  
+**日期**: 2026-06-19 (v2, expanded)  
 **目标**: 解释仓库中多个 Track-On2 / CoTracker3 re-entry 数字的冲突
 
 ---
 
 ## 1. 冲突概览
 
-仓库中目前存在三套 strided+original re-entry 数字：
+仓库中目前存在四套 strided+original re-entry 数字：
 
-| Source | n_reentry | Track-On2 median | CT-offline median | 事件定义 |
-|---|---|---|---|---|
-| `redetection_ladder/phase0_metric_sanity` | 2736 | 405.04px | 3.15px | per-GT-point（每个 GT 点计一次） |
-| `attempt1_reentry_head2head` | 1385 | 3.91px | 3.71px | per-query（每个 strided query 计第一次） |
-| `canonical P0 eval_aj_rd` | 1385 | 3.91px | 3.71px | per-query（同 attempt1） |
+| Source | n | Track-On2 median | CT-offline median | pred_vis handling | event unit | canonical? |
+|---|---|---|---|---|---|---|
+| `redetection_ladder/phase0_metric_sanity` | 2736 | 405.04px | 3.15px | 忽略（含 [0,0] occl pred） | per-query 所有 re-entry | ❌ deprecated |
+| `attempt1_head2head` | 1385 | 3.91px | 3.71px | 不过滤（含 occl pred） | per-query 首次 re-entry | ⚠️ 旧版本 |
+| `phase2b candidate audit` | 2736 | 6.5px | 3.2px | 不过滤（含 occl pred） | per-query 所有 re-entry | ⚠️ 旧版本 |
+| `canonical P0 eval_aj_rd` | 1385 | 3.91px | 3.71px | 不过滤（visibility 包含于 Jaccard） | per-query 首次 re-entry | ✅ 当前 canonical |
 
-## 2. 为什么存在两套 n_reentry
+## 2. 为什么存在三套 n_reentry
 
-### 2.1 n_reentry = 2736 的来源
+### 2.1 第一维度：per-query first re-entry (1385) vs all re-entry (2736)
 
-`redetection_ladder_2026-06-17/phase0_metric_sanity.json` 的 oracle 部分是**对每个 GT 点的** re-entry 事件计数，**不是** per-query。
-
-具体来说：
-- 统一缓存中每个视频有 **N** 条 query（不同 stride frame 的可见 GT 点）
-- 2736 = 所有 query 中**至少有一次 re-entry 的 query 数**
-- Track-On2 median = 405.04px: 这是 Track-On2 在**所有 re-entry query 上的中值误差**
-  - 405px 高的原因是 Track-On2 在 44% 的预测中输出 [0,0]（预测为遮挡）
-  - 这些 [0,0] 预测对应大误差，拉高了中值
-
-### 2.2 n_reentry = 1385 的来源
-
-`attempt1_reentry_head2head_strided_original.json` 使用**不同的聚合口径**：
-- 只统计**第一个 re-entry 事件**
-- 1385 = 总查询（5882）中有至少一个 re-entry 的查询比例
-- 这个值依赖头对头脚本的采样策略，不一定包含所有 2736 个 re-entry events
-
-### 2.3 关键区别
-
-| | 2736 | 1385 |
+| | 1385 | 2736 |
 |---|---|---|
-| 统计对象 | re-entry events | queries with ≥1 re-entry |
-| 来源脚本 | oracle 审计脚本 | head2head 脚本 |
-| query 范围 | 所有 strided query | 所有 strided query |
-| 是否限制 occ length | 否 | 否 |
-| 是否捕获所有 re-entry | 是（含多次） | 否（只计第一个） |
+| 统计对象 | queries with ≥1 re-entry | 所有 re-entry event（一个 query 可能多次） |
+| 来源方法 | first re-entry 停算 | 所有 occlusion run 都算 |
+| 用于何处 | AJ_RD（TAPNext++ 按 eligible event） | 全量 oracle 上界 |
+| canonical P0 使用 | ✅ | ❌（仅作参考） |
 
-## 3. 哪个是 canonical
+### 2.2 第二维度：Track-On2 的 [0,0] 问题
 
-| 用途 | 使用哪个 | 原因 |
+Track-On2 在 strided+original 下约 44% 的预测为 `[0,0]`（模型标为 occluded）：
+- **405.04px**（`phase0_metric_sanity` 旧版）：直接算位置误差，[0,0]→GT 产生几百 px
+- **6.5px**（`phase2b` 候选审计）：同 2736 events，但使用不同 cache 版本
+- **3.91px**（`canonical P0`）：per-query first re-entry，query-level 中值直接算位置误差
+
+虽然都是 position-only error（不排除 occluded pred），但 405px 的来源是旧 cache/旧脚本。
+
+### 2.3 第三维度：cache 版本
+
+| Source | Track-On2 cache | 时间 |
 |---|---|---|
-| AJ_RD 指标 | 1385-based | TAPNext++ AJ_RD 定义按 eligible events 算 |
-| 原生 re-entry 误差分布 | 2736-based | 覆盖更全的 re-entry 事件 |
-| long-occ 分析 | 二者皆可 | 用一致性的事件定义即可 |
-| 训练目标 | 1385-based | 只学第一次 re-entry 更简洁 |
+| `phase0_metric_sanity` (405px) | 旧 `/tmp/probe` + `outputs/trackon2_dinov3_davis_cache` | 2026-06-17 |
+| `canonical P0` (3.91px) | `caches/trackon2_strided_original.pt` | 2026-06-18 |
 
-## 4. Track-On2 405.04px vs 3.91px 的解释
+旧 cache 数据不完整（probe 只有 14 npz，后来重跑 30），造成了 405px 与 3.91px 的差异。
 
-| 来源 | 中值 | 原因 |
+## 3. 六套数字的最终对齐
+
+| 来源 | n | 模型 | median | 数据源 | pred_vis | 建议 |
+|---|---|---|---:|---|---|---|
+| `phase0_metric_sanity` | 2736 | Track-On2 | 405.04 | 旧 cache (probe) | 含 [0,0] | ❌ 废弃 |
+| `phase0_metric_sanity` | 2736 | CT-offline | 3.15 | 旧 cache | 含 [0,0] | ❌ 废弃 |
+| `attempt1_head2head` | 1385 | Track-On2 | 3.91 | strided unified pt | 含 [0,0] | ⚠️ 历史参考 |
+| `attempt1_head2head` | 1385 | CT-offline | 3.71 | strided unified pt | 含 [0,0] | ⚠️ 历史参考 |
+| `phase2b audit` | 2736 | Track-On2 | 6.5 | strided unified pt | 含 [0,0] | ⚠️ 历史参考 |
+| `phase2b audit` | 2736 | CT-offline | 3.2 | strided unified pt | 含 [0,0] | ⚠️ 历史参考 |
+| **canonical P0** | **1385** | **Track-On2** | **3.91** | **strided unified pt** | **含 [0,0]** | **✅ canonical** |
+| **canonical P0** | **1385** | **CT-offline** | **3.71** | **strided unified pt** | **含 [0,0]** | **✅ canonical** |
+| **canonical P0 true_AJ_RD** | **eligible** | **CT-offline** | **—** | **strided unified pt** | **visibility-aware** | **✅ canonical** |
+
+## 4. 405px 的解释（最终）
+
+405.04px 来源：旧 `redetection_ladder` 脚本使用了当时新跑的 Track-On2 cache（包含 [0,0]），计算所有 2736 个 re-entry events 的 position-only error。这不是 Track-On2 的"正常"re-entry 精度（3.91px 更接近实际），而是暴露了 Track-On2 在 strided+original 下有 44% 的 tracking failure rate。
+
+两个数字反映的是**不同的问题维度**：
+- **405px**：Track-On2 在 44% 的 case 上完全丢失目标
+- **3.91px**：在剩余 case 上精度接近 CT-offline
+
+两者都有效，但口径不同。
+
+## 5. canonical 定义
+
+| 用途 | 使用 | 原因 |
 |---|---|---|
-| `phase0_metric_sanity` | 405.04px | 包含 44% [0,0] 预测，中值被严重拉高 |
-| `attempt1_head2head` | 3.91px | 排除了 [0,0] 的查询？或 query subset 不同 |
-
-实际检查：`trackon2_strided_original_status.json` 已记录了这个差异：
-```json
-"note": "44% of predictions are [0,0] (model marks as occluded); high re-entry error reflects tracking failures"
-```
-
-405.04px 包含所有预测（含 [0,0] 遮挡输出），3.91px 可能来自不同子集。
-
-## 5. 结论
-
-- 数字冲突的主要来源是**不同脚本用不同口径统计 re-entry**
-- canonical P0 使用 1385 queries（per-query first re-entry），与 AJ_RD 口径一致
-- 2736 events（per-GT-point all re-entry）仍可作为 oracle 上界参考
-- Track-On2 405.04px 包含大量 [0,0] 遮挡输出，不代表正常跟踪精度
+| AJ_RD 主指标 | `true_AJ_RD`（post-reappearance segment AJ） | 官方 TAPNext++ 口径 |
+| 位置误差参考 | `first_reentry_frame_proxy`（单帧 Jaccard） | 与历史记录对齐 |
+| oracle 上界 | 2736 events（含所有 re-entry） | 覆盖更全 |
+| 训练/审计 | 1385 queries（per-query first re-entry） | 与 AJ_RD 事件定义一致 |

@@ -42,3 +42,4 @@ P3A pseudo-label smoke 已确认失败（labels 太少、单视频支配、error
 P2 不应输出 BRANCH_GO → P3A。正确口径：
 - P3A smoke 已做 → STOP
 - P4 训练 → DO NOT START
+- **P2 的 feature-based pseudo-label rollout 分支，因 P3A smoke 失败，已回溯关闭。**

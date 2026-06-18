@@ -20,19 +20,22 @@
       "first_reentry_frame_proxy": 0.4732,
       "true_AJ_RD": 0.4101,
       "median_reentry_px": 3.86,
-      "lt4px": 0.513
+      "lt4px": 0.513,
+      "n_eligible_events_by_dmin": {"1": 1863, "4": 1214, "16": 421, "64": 0, "256": 0}
     },
     "cotracker3_offline": {
       "first_reentry_frame_proxy": 0.4101,
-      "true_AJ_RD": 0.387,
+      "true_AJ_RD": 0.3870,
       "median_reentry_px": 3.71,
-      "lt4px": 0.538
+      "lt4px": 0.538,
+      "n_eligible_events_by_dmin": {"1": 1863, "4": 1214, "16": 421, "64": 0, "256": 0}
     },
     "trackon2": {
       "first_reentry_frame_proxy": 0.3681,
-      "true_AJ_RD": 0.37,
+      "true_AJ_RD": 0.3700,
       "median_reentry_px": 3.91,
-      "lt4px": 0.510
+      "lt4px": 0.510,
+      "n_eligible_events_by_dmin": {"1": 1863, "4": 1214, "16": 421, "64": 0, "256": 0}
     }
   },
   "n_reappearance_events_consistency": "1385 (matches across all caches — same GT data)",
