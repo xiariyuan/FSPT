@@ -1,0 +1,49 @@
+{
+  "phase": "P2",
+  "date": "2026-06-18",
+  "protocol": "strided+original",
+  "git_commit": "1802a90a6f43f7cb4612a450b1897fed34a0a1e4",
+  "resource_smoke": {
+    "feature_source": "dinov2",
+    "n_frames_processed": 2,
+    "time_per_frame_s": 2.47,
+    "feature_grid_shape": [1, 384, 37, 37],
+    "gpu_peak_gb": 0.06,
+    "cacheable_to_disk": true,
+    "oom": false,
+    "decision": "PROCEED_TO_P2B"
+  },
+  "feature_recall": {
+    "n_videos": 5,
+    "n_queries": 128,
+    "n_long_occ": 20,
+    "variant_summary": {
+      "v0_dinov2_query_anchor": {
+        "top5_median_px": 85.05,
+        "top5_lt4px": 0.0,
+        "top5_lt16px": 0.0469,
+        "long_occ_top5_lt16px": 0.0
+      },
+      "v1_last_visible_anchor": {
+        "top5_median_px": 89.72,
+        "top5_lt4px": 0.0,
+        "top5_lt16px": 0.0,
+        "long_occ_top5_lt16px": 0.0
+      },
+      "v2_ct_offline_local": {
+        "top5_median_px": 18.29,
+        "top5_lt4px": 0.0234,
+        "top5_lt16px": 0.2969,
+        "long_occ_top5_lt16px": 0.4
+      }
+    },
+    "top1_miss_top5_hit_16px": 0.0390625,
+    "fb_consistency_pass_rate": null,
+    "go_criteria": {
+      "overall_top5_at16px_ge_20": true,
+      "long_occ_top5_at16px_ge_10": true,
+      "top1_miss_top5_hit_at16px_ge_10": false
+    },
+    "decision": "BRANCH_GO -> P3A (diagnostic only)"
+  }
+}

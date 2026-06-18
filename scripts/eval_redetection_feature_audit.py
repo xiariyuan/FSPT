@@ -60,7 +60,12 @@ def audit_feature_recall(
     payload = load_attempt0_cache(Path(cache_path))
     ct_off_payload = load_attempt0_cache(Path(ct_offline_cache))
     records = payload["records"][:max_videos]
-    ct_off_records = ct_off_payload["records"][:max_videos]
+    ct_off_by_video = {}
+    for rec in ct_off_payload["records"]:
+        vid_key = str(rec["video_id"])
+        if vid_key in ct_off_by_video:
+            raise ValueError(f"Duplicate video_id in ct-offline cache: {vid_key}")
+        ct_off_by_video[vid_key] = rec
 
     import pickle
     with open(pkl_path, "rb") as f:
@@ -88,7 +93,9 @@ def audit_feature_recall(
         gt_vis = np.asarray(r["gt_visibility"], dtype=bool)
         gt_tracks = np.asarray(r["gt_tracks"], dtype=np.float32)
         qpts = np.asarray(r["query_points"], dtype=np.float32)
-        ct_pred = np.asarray(ct_off_records[rec_idx]["pred_tracks"], dtype=np.float32)
+        if vid not in ct_off_by_video:
+            raise ValueError(f"ct-offline cache missing video_id={vid}")
+        ct_pred = np.asarray(ct_off_by_video[vid]["pred_tracks"], dtype=np.float32)
 
         for qi in range(qpts.shape[0]):
             if max_queries > 0 and total >= max_queries:

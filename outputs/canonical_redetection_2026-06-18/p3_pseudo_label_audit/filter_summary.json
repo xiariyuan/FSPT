@@ -6,6 +6,8 @@
   "kept_by_source_bucket": {
     "ct_offline": 30
   },
+  "fb_available_n": 0,
+  "flow_available_n": 0,
   "filters": {
     "require_flag": [],
     "min_teacher_conf": 0.0,

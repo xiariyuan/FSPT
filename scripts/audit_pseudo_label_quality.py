@@ -238,7 +238,7 @@ def _render_md(result: Dict[str, Any]) -> str:
     lines.append("")
     lines.append("## Error Statistics")
     lines.append("")
-    lines.append("| Metric | Pseudo-label | CT-offline | Gain |")
+    lines.append("| Metric | Pseudo-label | CT-offline | Delta |")
     lines.append("|---|---:|---:|---:|")
     lines.append(
         f"| median px | {p_err['median_px']} | {ct_err['median_px']} | {gain['median_px']} |"
@@ -247,14 +247,16 @@ def _render_md(result: Dict[str, Any]) -> str:
         f"| mean px | {p_err['mean_px']} | {ct_err['mean_px']} | {gain['mean_px']} |"
     )
     lines.append(
-        f"| <4px | {p_err['lt4px']} | {ct_err['lt4px']} | {gain['better_than_ct_offline_frac']} |"
+        f"| <4px | {p_err['lt4px']} | {ct_err['lt4px']} | {round((p_err['lt4px'] or 0.0) - (ct_err['lt4px'] or 0.0), 4)} |"
     )
     lines.append(
-        f"| <8px | {p_err['lt8px']} | {ct_err['lt8px']} | - |"
+        f"| <8px | {p_err['lt8px']} | {ct_err['lt8px']} | {round((p_err['lt8px'] or 0.0) - (ct_err['lt8px'] or 0.0), 4)} |"
     )
     lines.append(
-        f"| <16px | {p_err['lt16px']} | {ct_err['lt16px']} | - |"
+        f"| <16px | {p_err['lt16px']} | {ct_err['lt16px']} | {round((p_err['lt16px'] or 0.0) - (ct_err['lt16px'] or 0.0), 4)} |"
     )
+    lines.append("")
+    lines.append(f"- Better than CT-offline: `{gain['better_than_ct_offline_frac']}`")
     lines.append("")
     lines.append("## Consistency")
     lines.append("")

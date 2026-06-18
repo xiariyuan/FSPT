@@ -1,0 +1,41 @@
+{
+  "phase": "P2",
+  "title": "Zero-shot feature watershed audit",
+  "date": "2026-06-18",
+  "git_commit": "1802a90a6f43f7cb4612a450b1897fed34a0a1e4",
+  "protocol": "strided+original",
+  "cache_schema_version": 1,
+  "coord_format": "xy_pixel",
+  "teacher_name": "cotracker3_offline",
+  "feature_source": "dino_vits14_local_ct_offline_centered",
+  "checkpoint_sha256": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9",
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+  "environment": {
+    "python": "3.11.8",
+    "torch": "2.4.1+cu121",
+    "platform": "Linux-5.4.0-42-generic-x86_64-with-glibc2.35"
+  },
+  "command_line": {
+    "audit_vdit_resource_smoke": "python scripts/audit_vdit_resource_smoke.py --cache-path outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt --pkl-path /gemini/code/datasets/tapvid_davis/tapvid_davis.pkl --max-videos 2 --max-events 64 --output-json outputs/canonical_redetection_2026-06-18/p2_feature_audit/p2a_resource_smoke.json --feature-sources dinov2",
+    "eval_redetection_feature_audit": "python scripts/eval_redetection_feature_audit.py --cache-path caches/trackon2_strided_original.pt --ct-offline-cache outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt --pkl-path /gemini/code/datasets/tapvid_davis/tapvid_davis.pkl --dino-weights weights/dinov2/dinov2_vits14_pretrain.pth --max-videos 5 --max-queries 128 --output-json outputs/canonical_redetection_2026-06-18/p2_feature_audit/p2b_feature_recall.json"
+  },
+  "scripts_used": [
+    "scripts/audit_vdit_resource_smoke.py",
+    "scripts/eval_redetection_feature_audit.py"
+  ],
+  "inputs": {
+    "cotracker3_offline": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt",
+    "trackon2": "caches/trackon2_strided_original.pt",
+    "tapvid_davis": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+    "dino_weights": "weights/dinov2/dinov2_vits14_pretrain.pth"
+  },
+  "outputs": [
+    "p2_feature_audit/manifest.json",
+    "p2_feature_audit/p2a_resource_smoke.json",
+    "p2_feature_audit/p2b_feature_recall.json",
+    "p2_feature_audit/per_query_metrics.json",
+    "p2_feature_audit/metrics_summary.json",
+    "p2_feature_audit/summary.md",
+    "p2_feature_audit/decision.md"
+  ]
+}

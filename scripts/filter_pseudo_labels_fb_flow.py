@@ -35,6 +35,19 @@ def _write_jsonl(path: Path, rows: Iterable[Dict[str, Any]]) -> None:
             f.write(json.dumps(row, ensure_ascii=True) + "\n")
 
 
+def _metric_value(row: Dict[str, Any], key: str) -> float | None:
+    value = row.get(key, None)
+    if value is None:
+        return None
+    try:
+        value_f = float(value)
+    except (TypeError, ValueError):
+        return None
+    if value_f < 0:
+        return None
+    return value_f
+
+
 def _passes(row: Dict[str, Any], args: argparse.Namespace) -> bool:
     flags = set(row.get("quality_flags", []))
     required_flags = set(args.require_flag)
@@ -47,13 +60,13 @@ def _passes(row: Dict[str, Any], args: argparse.Namespace) -> bool:
             return False
 
     if args.max_fb_error is not None:
-        fb = float(row.get("fb_error", -1.0))
-        if fb < 0 or fb > args.max_fb_error:
+        fb = _metric_value(row, "fb_error")
+        if fb is not None and fb > args.max_fb_error:
             return False
 
     if args.max_flow_error is not None:
-        flow = float(row.get("flow_consistency_error", -1.0))
-        if flow < 0 or flow > args.max_flow_error:
+        flow = _metric_value(row, "flow_consistency_error")
+        if flow is not None and flow > args.max_flow_error:
             return False
 
     if args.min_occ_run_len is not None:
@@ -90,6 +103,8 @@ def main() -> None:
         kept = [{k: v for k, v in row.items() if k not in drop_keys} for row in kept]
 
     kept_counts = Counter(str(row.get("source_bucket", "unknown")) for row in kept)
+    fb_available = sum(1 for row in rows if _metric_value(row, "fb_error") is not None)
+    flow_available = sum(1 for row in rows if _metric_value(row, "flow_consistency_error") is not None)
     dropped = len(rows) - len(kept)
     summary = {
         "input_n": len(rows),
@@ -97,6 +112,8 @@ def main() -> None:
         "dropped_n": dropped,
         "keep_rate": round(len(kept) / max(len(rows), 1), 4),
         "kept_by_source_bucket": dict(kept_counts),
+        "fb_available_n": int(fb_available),
+        "flow_available_n": int(flow_available),
         "filters": {
             "require_flag": args.require_flag,
             "min_teacher_conf": args.min_teacher_conf,

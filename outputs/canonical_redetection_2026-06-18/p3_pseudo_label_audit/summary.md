@@ -15,13 +15,15 @@ Reason: smoke quality is too weak to justify full P3A rollout
 
 ## Error Statistics
 
-| Metric | Pseudo-label | CT-offline | Gain |
+| Metric | Pseudo-label | CT-offline | Delta |
 |---|---:|---:|---:|
 | median px | 46.15 | 5.99 | -28.9 |
 | mean px | 39.95 | 10.97 | -28.98 |
-| <4px | 0.0 | 0.2581 | 0.0323 |
-| <8px | 0.0 | 0.7258 | - |
-| <16px | 0.0806 | 0.8065 | - |
+| <4px | 0.0 | 0.2581 | -0.2581 |
+| <8px | 0.0 | 0.7258 | -0.7258 |
+| <16px | 0.0806 | 0.8065 | -0.7259 |
+
+- Better than CT-offline: `0.0323`
 
 ## Consistency
 
