@@ -40,10 +40,10 @@ def main():
 
     # Decision logic
     aj_rd_delta = results["aj_rd_comparison"]["delta"]
-    long_occ_oracle = results["oracle"]["long_occ_ge20"]
-    fixed_best_lt4 = results["teachers"][results["fixed_best_teacher"]]["long_occ_ge20"]["lt4px"]
-
-    if aj_rd_delta >= 0.05:
+    if aj_rd_delta is None:
+        decision = "STOP"
+        reason = "AJ_RD delta unavailable; audit did not produce a valid comparison"
+    elif aj_rd_delta >= 0.05:
         decision = "GO"
         reason = f"oracle teacher selection AJ_RD gain +{aj_rd_delta*100:.1f}pp >= 5pp"
     elif aj_rd_delta >= 0.02:
@@ -56,7 +56,7 @@ def main():
     results["decision"] = {
         "verdict": decision,
         "reason": reason,
-        "aj_rd_delta": round(aj_rd_delta, 4),
+        "aj_rd_delta": round(aj_rd_delta, 4) if aj_rd_delta is not None else None,
     }
 
     Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)

@@ -4,22 +4,56 @@
   "n_total_queries": 5882,
   "n_reentry_queries": 1385,
   "n_reentry_events": 2466,
-  "occ_length_buckets": {"1-4": 1315, "5-9": 474, "10-19": 431, "20-49": 241, "50-99": 5, "100+": 0},
+  "occ_length_buckets": {
+    "1-4": 1315,
+    "5-9": 474,
+    "10-19": 431,
+    "20-49": 241,
+    "50-99": 5,
+    "100+": 0
+  },
   "coord_roundtrip_test": {
     "max_error": 5.960464477539063e-08,
     "pass": true,
     "threshold_1e-6": true
   },
   "schema_audit": {
-    "cotracker3_online": {"n_records": 30, "n_clean": 10, "n_issues": 20, "issue_type": "pred_tracks_out_of_0_1_range"},
-    "cotracker3_offline": {"n_records": 30, "n_clean": 13, "n_issues": 17, "issue_type": "pred_tracks_out_of_0_1_range"},
-    "trackon2": {"n_records": 30, "n_clean": 20, "n_issues": 10, "issue_type": "pred_tracks_marginally_out_of_range"}
+    "cotracker3_online": {
+      "n_records": 30,
+      "n_clean": 10,
+      "n_issues": 20,
+      "issue_type": "pred_tracks_out_of_0_1_range"
+    },
+    "cotracker3_offline": {
+      "n_records": 30,
+      "n_clean": 13,
+      "n_issues": 17,
+      "issue_type": "pred_tracks_out_of_0_1_range"
+    },
+    "trackon2": {
+      "n_records": 30,
+      "n_clean": 20,
+      "n_issues": 10,
+      "issue_type": "pred_tracks_marginally_out_of_range"
+    }
   },
   "aj_rd_summary": {
-    "cotracker3_online": {"AJ_RD": 0.4926, "median_reentry_px": 3.86, "lt4px": 0.513},
-    "cotracker3_offline": {"AJ_RD": 0.5099, "median_reentry_px": 3.71, "lt4px": 0.538},
-    "trackon2": {"AJ_RD": 0.4734, "median_reentry_px": 3.91, "lt4px": 0.510}
+    "cotracker3_online": {
+      "AJ_RD": 0.4101,
+      "median_reentry_px": 3.86,
+      "lt4px": 0.513
+    },
+    "cotracker3_offline": {
+      "AJ_RD": 0.387,
+      "median_reentry_px": 3.71,
+      "lt4px": 0.538
+    },
+    "trackon2": {
+      "AJ_RD": 0.37,
+      "median_reentry_px": 3.91,
+      "lt4px": 0.51
+    }
   },
   "n_reappearance_events_consistency": "1385 (matches across all caches — same GT data)",
-  "decision": "GO — all metrics reproducible, roundtrip passes, AJ_RD aligned with re-entry definition"
+  "decision": "GO — all metrics reproducible, roundtrip passes, AJ_RD aligned with re-entry definition (per-sample)"
 }

@@ -27,9 +27,9 @@
 
 | Baseline | AJ_RD | Median re-entry | <4px | <8px |
 |---|---:|---:|---:|---:|
-| CoTracker3 online | 0.4926 | 3.86px | 51.3% | 77.0% |
-| CoTracker3 offline | 0.5099 | 3.71px | 53.8% | 80.2% |
-| Track-On2 | 0.4734 | 3.91px | 51.0% | 73.6% |
+| CoTracker3 online | 0.4101 | 3.86px | 51.3% | 77.0% |
+| CoTracker3 offline | 0.3870 | 3.71px | 53.8% | 80.2% |
+| Track-On2 | 0.3700 | 3.91px | 51.0% | 73.6% |
 
 ## 4. Re-entry Events
 
@@ -41,4 +41,4 @@
 
 ## 5. 决策
 
-**GO → P1**。所有 P0 检查通过。
+**GO → P1**。P0 的坐标、schema 和 re-entry 事件统计通过；`AJ_RD` 口径已按 per-sample 汇总重算。

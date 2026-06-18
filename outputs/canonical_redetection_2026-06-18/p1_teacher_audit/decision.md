@@ -1,7 +1,7 @@
 # P1 Decision
 
 **日期**: 2026-06-18  
-**Decision**: `ADVANCE_TO_P2` (GO)
+**Decision**: `WEAK_GO`
 
 ## Teacher Audit Results
 
@@ -15,11 +15,11 @@
 
 | Metric | Fixed Best (CT-offline) | Oracle Selection | Gain |
 |---|---:|---:|---:|
-| AJ_RD | 0.5099 | 0.5867 | **+0.0768 (+7.7pp)** |
+| AJ_RD | 0.3870 | 0.4117 | **+0.0247 (+2.5pp)** |
 | Median re-entry | 3.71px | 1.70px | -2.01px |
 
 ## Go/Stop 判定
 
 | Criteria | 状态 |
 |---|---|
-| Oracle AJ_RD gain >= 5pp | ✅ **+7.7pp** → GO |
+| Oracle AJ_RD gain >= 5pp | ⚠️ **+2.5pp** → WEAK_GO |

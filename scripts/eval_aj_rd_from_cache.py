@@ -1,20 +1,21 @@
 #!/usr/bin/env python3
-"""Compute re-entry Jaccard metrics from unified strided+original cache.
+"""Compute re-entry metrics from unified strided+original cache.
 
-The historical name `AJ_RD` is retained for compatibility, but this script now
-computes the official TAP-Vid-style Jaccard on the first re-entry frame:
+This script reports two distinct quantities:
 
-  - visibility is part of the score
-  - thresholds are configurable
-  - the result is the mean Jaccard across the selected thresholds
+  - `aj_proxy`: the historical first-reentry-frame proxy used for diagnostics
+  - `aj_rd`: TAPNext++-style post-reappearance AJ_RD over eligible events
 
-Also reports: re-entry first-frame error, long-occ bucket metrics, n_reentry.
+The two metrics are intentionally kept separate so that proxy-based sanity
+checks do not get confused with the paper metric.
 """
 from __future__ import annotations
 
-import argparse, json, sys
+import argparse
+import json
+import sys
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Sequence
 
 import numpy as np
 
@@ -22,13 +23,32 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.coords import (
-    find_first_reentry, pixel_l2_error,
-)
 from utils.attempt0_schema import load_attempt0_cache
+from utils.reentry_metrics import (
+    DEFAULT_AJRD_D_MINS,
+    DEFAULT_PROXY_THRESHOLDS,
+    compute_first_reentry_proxy,
+    compute_reappearance_segment_aj,
+    eligible_reentry_events,
+    summarize_reappearance_ajrd,
+)
 
 
-def compute_aj_rd(
+def _bucket_stats(vals: np.ndarray) -> Dict[str, Any]:
+    if vals.size == 0:
+        return {"n": 0, "median_px": 0.0, "mean_px": 0.0, "p95_px": 0.0, "lt4px": 0.0, "lt8px": 0.0, "lt16px": 0.0}
+    return {
+        "n": int(vals.size),
+        "median_px": round(float(np.median(vals)), 2),
+        "mean_px": round(float(np.mean(vals)), 2),
+        "p95_px": round(float(np.percentile(vals, 95)), 2),
+        "lt4px": round(float(np.mean(vals < 4)), 4),
+        "lt8px": round(float(np.mean(vals < 8)), 4),
+        "lt16px": round(float(np.mean(vals < 16)), 4),
+    }
+
+
+def compute_reentry_metrics(
     pred_tracks: np.ndarray,
     gt_tracks: np.ndarray,
     pred_vis: np.ndarray,
@@ -36,133 +56,113 @@ def compute_aj_rd(
     query_points: np.ndarray,
     height: int,
     width: int,
-    thresholds: tuple = (1, 2, 4, 8, 16),
+    thresholds: Sequence[int] = DEFAULT_PROXY_THRESHOLDS,
+    d_mins: Sequence[int] = DEFAULT_AJRD_D_MINS,
 ) -> Dict[str, Any]:
-    """Compute re-entry Jaccard and error metrics for a single video.
+    """Compute per-query proxy and TAPNext++-style AJ_RD metrics for one video."""
+    per_query: List[Dict[str, Any]] = []
+    proxy_errors: List[float] = []
+    proxy_aj_terms: List[float] = []
+    eligible_counts = {int(d): 0 for d in d_mins}
 
-    Args:
-        pred_tracks: (N, T, 2) [y,x] normalized
-        gt_tracks: (N, T, 2) [y,x] normalized
-        pred_vis: (N, T) bool (True = visible)
-        gt_vis: (N, T) bool (True = visible)
-        query_points: (N, 3) [t, y, x] normalized
-        height, width: original image dimensions
-
-    Returns:
-        dict with per-query re-entry metrics and video-level summary
-    """
-    N, T = gt_tracks.shape[:2]
-    per_query = []
-    reentry_errors = []
-    reentry_pred_vis_errors = []  # error when model thinks visible at re-entry
-
-    for i in range(N):
+    for i in range(gt_tracks.shape[0]):
         qt = int(round(float(query_points[i, 0])))
-        re = find_first_reentry(gt_vis[i], qt)
-        if re is None:
+        proxy = compute_first_reentry_proxy(
+            pred_tracks=pred_tracks[i],
+            gt_tracks=gt_tracks[i],
+            pred_visibility=pred_vis[i],
+            gt_visibility=gt_vis[i],
+            query_t=qt,
+            height=height,
+            width=width,
+            thresholds=thresholds,
+        )
+        if proxy is None:
             continue
 
-        t_re = re["reentry_frame"]
-        occ_len = re["occ_length"]
+        eligible_events = eligible_reentry_events(gt_vis[i], qt)
+        for evt in eligible_events:
+            occ_len = int(evt["occ_length"])
+            for d in d_mins:
+                if occ_len >= int(d):
+                    eligible_counts[int(d)] += 1
 
-        # Error at re-entry frame
-        pred_yx = pred_tracks[i, t_re]
-        gt_yx = gt_tracks[i, t_re]
-        err = float(pixel_l2_error(
-            pred_yx[None, :], gt_yx[None, :], height, width,
-            pred_fmt="yx_norm", gt_fmt="yx_norm"
-        )[0])
+        proxy_errors.append(float(proxy["error_px"]))
+        proxy_aj_terms.append(float(proxy["aj_proxy"]))
+        ajrd_events = []
+        for evt in eligible_events:
+            ajrd = compute_reappearance_segment_aj(
+                pred_tracks=pred_tracks[i],
+                gt_tracks=gt_tracks[i],
+                pred_visibility=pred_vis[i],
+                gt_visibility=gt_vis[i],
+                event=evt,
+                height=height,
+                width=width,
+                thresholds=DEFAULT_PROXY_THRESHOLDS,
+            )
+            if ajrd is not None:
+                ajrd_events.append(ajrd)
 
-        # Predicted visibility at re-entry
-        pred_visible_at_re = bool(pred_vis[i, t_re])
-        gt_visible_at_re = bool(gt_vis[i, t_re])
-
-        # Official TAP-Vid-style Jaccard at a single frame:
-        # true positive requires visibility agreement and position correctness;
-        # false positives count visible-but-wrong predictions.
-        jaccards = {}
-        for thr in thresholds:
-            within_dist = err < thr
-            true_positive = 1.0 if (pred_visible_at_re and gt_visible_at_re and within_dist) else 0.0
-            gt_positive = 1.0 if gt_visible_at_re else 0.0
-            false_positive = 1.0 if (pred_visible_at_re and ((not gt_visible_at_re) or (not within_dist))) else 0.0
-            jaccards[f"jaccard_{thr}"] = true_positive / (gt_positive + false_positive) if (gt_positive + false_positive) > 0 else 0.0
-
-        aj = np.mean(list(jaccards.values()))
-
+        ajrd_summary = summarize_reappearance_ajrd(ajrd_events, d_mins=d_mins)
         per_query.append({
             "query_idx": i,
             "query_t": qt,
-            "reentry_t": t_re,
-            "occ_length": occ_len,
-            "error_px": round(err, 3),
-            "pred_visible": pred_visible_at_re,
-            "gt_visible": gt_visible_at_re,
-            **{k: round(v, 3) for k, v in jaccards.items()},
-            "aj": round(aj, 3),
+            "reentry_t": int(proxy["reentry_t"]),
+            "occ_length": int(proxy["occ_length"]),
+            "proxy_error_px": round(float(proxy["error_px"]), 3),
+            "proxy_pred_visible": bool(proxy["pred_visible"]),
+            "proxy_gt_visible": bool(proxy["gt_visible"]),
+            "aj_proxy": round(float(proxy["aj_proxy"]), 4),
+            "ajrd_events": ajrd_events,
+            "ajrd_summary": ajrd_summary,
+            **{k: v for k, v in proxy.items() if k.startswith("jaccard_")},
         })
-        reentry_errors.append(err)
 
     n_q = len(per_query)
     if n_q == 0:
-        return {"n_reentry_queries": 0}
+        return {
+            "n_reentry_queries": 0,
+            "n_eligible_events_by_dmin": {str(int(d)): 0 for d in d_mins},
+            "per_query": [],
+        }
 
-    errs = np.array(reentry_errors)
-
-    # Long-occ splits
-    occ_lengths = np.array([q["occ_length"] for q in per_query])
+    occ_lengths = np.array([q["occ_length"] for q in per_query], dtype=np.int64)
     long_20 = occ_lengths >= 20
     long_50 = occ_lengths >= 50
 
-    def _bucket_stats(mask):
-        if not mask.any():
-            return None
-        e = errs[mask]
-        return {
-            "n": int(mask.sum()),
-            "median_px": round(float(np.median(e)), 2),
-            "mean_px": round(float(np.mean(e)), 2),
-            "p95_px": round(float(np.percentile(e, 95)), 2),
-            "lt4px": round(float(np.mean(e < 4)), 4),
-            "lt8px": round(float(np.mean(e < 8)), 4),
-            "lt16px": round(float(np.mean(e < 16)), 4),
-        }
-
-    aj_vals = np.array([q["aj"] for q in per_query])
-
     return {
         "n_reentry_queries": n_q,
-        "aj_rd": round(float(np.mean(aj_vals)), 4),
-        "reentry_error": _bucket_stats(np.ones(n_q, dtype=bool)),
-        "long_occ_ge20": _bucket_stats(long_20),
-        "long_occ_ge50": _bucket_stats(long_50),
+        "aj_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
+        "aj_rd": round(float(np.mean([q["ajrd_summary"]["aj_rd"] for q in per_query if q.get("ajrd_summary", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else None,
+        "n_eligible_events_by_dmin": {str(int(d)): int(eligible_counts[int(d)]) for d in d_mins},
+        "reentry_error": _bucket_stats(np.asarray(proxy_errors, dtype=np.float32)),
+        "long_occ_ge20": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 20], dtype=np.float32)),
+        "long_occ_ge50": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 50], dtype=np.float32)),
         "per_query": per_query,
     }
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Compute AJ_RD from unified cache")
+def main() -> None:
+    parser = argparse.ArgumentParser(description="Compute re-entry metrics from unified cache")
     parser.add_argument("--cache-path", type=str, required=True)
     parser.add_argument("--output-json", type=str, required=True)
     parser.add_argument("--max-videos", type=int, default=0, help="0 = all")
-    parser.add_argument(
-        "--thresholds",
-        type=str,
-        default="1,2,4,8,16",
-        help="Comma-separated pixel thresholds used for re-entry Jaccard.",
-    )
+    parser.add_argument("--thresholds", type=str, default="1,2,4,8,16")
+    parser.add_argument("--ajrd-d-mins", type=str, default="1,4,16,64,256")
     args = parser.parse_args()
 
-    thresholds = tuple(int(t) for t in args.thresholds.split(",") if t.strip())
+    proxy_thresholds = tuple(int(t) for t in args.thresholds.split(",") if t.strip())
+    d_mins = tuple(int(t) for t in args.ajrd_d_mins.split(",") if t.strip())
 
     payload = load_attempt0_cache(Path(args.cache_path))
     records = payload["records"]
     if args.max_videos > 0:
         records = records[:args.max_videos]
 
-    all_results = []
+    all_results: List[Dict[str, Any]] = []
     for r in records:
-        vid = r["video_id"]
+        vid = str(r["video_id"])
         h, w = int(r["original_size"][0]), int(r["original_size"][1])
         pred = np.asarray(r["pred_tracks"], dtype=np.float32)
         gt = np.asarray(r["gt_tracks"], dtype=np.float32)
@@ -170,64 +170,73 @@ def main():
         gvis = np.asarray(r["gt_visibility"], dtype=bool)
         qpts = np.asarray(r["query_points"], dtype=np.float32)
 
-        vid_result = compute_aj_rd(pred, gt, pvis, gvis, qpts, h, w, thresholds=thresholds)
+        vid_result = compute_reentry_metrics(
+            pred_tracks=pred,
+            gt_tracks=gt,
+            pred_vis=pvis,
+            gt_vis=gvis,
+            query_points=qpts,
+            height=h,
+            width=w,
+            thresholds=proxy_thresholds,
+            d_mins=d_mins,
+        )
         vid_result["video_id"] = vid
         all_results.append(vid_result)
 
-    # Aggregate across videos
-    total_n = sum(r["n_reentry_queries"] for r in all_results)
-    all_aj = []
-    all_errs = []
-    all_long20_errs = []
-    all_long50_errs = []
+    total_n = sum(int(r["n_reentry_queries"]) for r in all_results)
+    proxy_vals: List[float] = []
+    ajrd_vals: List[float] = []
+    proxy_errs: List[float] = []
+    long20_errs: List[float] = []
+    long50_errs: List[float] = []
 
     for r in all_results:
         for q in r.get("per_query", []):
-            all_aj.append(q["aj"])
-            all_errs.append(q["error_px"])
+            proxy_vals.append(float(q["aj_proxy"]))
+            proxy_errs.append(float(q["proxy_error_px"]))
+            if q.get("ajrd_summary", {}).get("aj_rd") is not None:
+                ajrd_vals.append(float(q["ajrd_summary"]["aj_rd"]))
             if q["occ_length"] >= 20:
-                all_long20_errs.append(q["error_px"])
+                long20_errs.append(float(q["proxy_error_px"]))
             if q["occ_length"] >= 50:
-                all_long50_errs.append(q["error_px"])
+                long50_errs.append(float(q["proxy_error_px"]))
 
     summary = {
         "cache_path": args.cache_path,
         "protocol": payload.get("protocol", "unknown"),
         "model_name": payload.get("model_name", "unknown"),
-        "metric_name": "reentry_average_jaccard",
-        "thresholds": list(thresholds),
+        "metric_name": "reentry_proxy_and_ajrd",
+        "thresholds": list(proxy_thresholds),
+        "ajrd_d_mins": list(d_mins),
         "n_videos": len(all_results),
         "n_reentry_queries_total": total_n,
-        "aj_rd": round(float(np.mean(all_aj)) if all_aj else 0, 4),
-        "reentry_average_jaccard": round(float(np.mean(all_aj)) if all_aj else 0, 4),
-        "reentry_error": {
-            "median_px": round(float(np.median(all_errs)) if all_errs else 0, 2),
-            "mean_px": round(float(np.mean(all_errs)) if all_errs else 0, 2),
-            "lt4px": round(float(np.mean(np.array(all_errs) < 4)) if all_errs else 0, 4),
+        "aj_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
+        "aj_rd": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
+        "reentry_average_jaccard_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
+        "reentry_average_jaccard": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
+        "n_eligible_events_by_dmin": {
+            str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
+            for d in d_mins
         },
-        "long_occ_ge20": {
-            "n": len(all_long20_errs),
-            "median_px": round(float(np.median(all_long20_errs)) if all_long20_errs else 0, 2),
-            "lt4px": round(float(np.mean(np.array(all_long20_errs) < 4)) if all_long20_errs else 0, 4),
-        } if all_long20_errs else None,
-        "long_occ_ge50": {
-            "n": len(all_long50_errs),
-            "median_px": round(float(np.median(all_long50_errs)) if all_long50_errs else 0, 2),
-            "lt4px": round(float(np.mean(np.array(all_long50_errs) < 4)) if all_long50_errs else 0, 4),
-        } if all_long50_errs else None,
-        "per_video": [
-            {k: v for k, v in r.items() if k != "per_query"}
-            for r in all_results
-        ],
+        "reentry_error": _bucket_stats(np.asarray(proxy_errs, dtype=np.float32)),
+        "long_occ_ge20": _bucket_stats(np.asarray(long20_errs, dtype=np.float32)),
+        "long_occ_ge50": _bucket_stats(np.asarray(long50_errs, dtype=np.float32)),
+        "per_video": [{k: v for k, v in r.items() if k != "per_query"} for r in all_results],
     }
 
     Path(args.output_json).parent.mkdir(parents=True, exist_ok=True)
     with open(args.output_json, "w") as f:
         json.dump(summary, f, indent=2)
+
     print(f"Wrote {args.output_json}")
-    print(f"AJ_RD={summary['aj_rd']:.4f}, n_reentry={total_n}, "
-          f"median={summary['reentry_error']['median_px']:.1f}px, "
-          f"<4px={summary['reentry_error']['lt4px']*100:.1f}%")
+    print(
+        f"AJ_PROXY={summary['aj_proxy']:.4f}, "
+        f"AJ_RD={summary['aj_rd']}, "
+        f"n_reentry={total_n}, "
+        f"median={summary['reentry_error']['median_px']:.1f}px, "
+        f"<4px={summary['reentry_error']['lt4px']*100:.1f}%"
+    )
 
 
 if __name__ == "__main__":
