@@ -78,6 +78,32 @@ def yx_norm_to_xy_pixel(
     return yx_to_xy(yx_px)
 
 
+def feat_yx_to_xy_pixel(
+    feat_yx: np.ndarray,
+    feat_height: int,
+    feat_width: int,
+    height: int,
+    width: int,
+) -> np.ndarray:
+    """Map feature-grid indices [y, x] to pixel [x, y] via cell centers.
+
+    The feature grid is interpreted as covering the original image domain with
+    evenly spaced cell centers. Output remains in pixel coordinates on the
+    original image scale.
+
+    This helper is intentionally used for feature-map candidates only. It does
+    not apply to normalized query / GT coordinates, which continue to use the
+    (size - 1) convention elsewhere in this module.
+    """
+    feat_yx = np.asarray(feat_yx, dtype=np.float32)
+    scale_x = max(width - 1, 1) / max(feat_width, 1)
+    scale_y = max(height - 1, 1) / max(feat_height, 1)
+    out = feat_yx.astype(np.float32, copy=True)
+    out[..., 0] = (feat_yx[..., 1] + 0.5) * scale_x
+    out[..., 1] = (feat_yx[..., 0] + 0.5) * scale_y
+    return out
+
+
 def xy_pixel_to_yx_norm(
     xy: np.ndarray, height: int, width: int
 ) -> np.ndarray:

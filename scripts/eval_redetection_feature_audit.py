@@ -20,23 +20,20 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.coords import find_first_reentry, yx_norm_to_xy_pixel
+from utils.coords import feat_yx_to_xy_pixel, find_first_reentry, yx_norm_to_xy_pixel
 from utils.attempt0_schema import load_attempt0_cache
 
 
-def _topk_coords(score_map: torch.Tensor, topk: int, W: int, H: int) -> np.ndarray:
+def _topk_coords(score_map: torch.Tensor, topk: int, feat_h: int, feat_w: int, H: int, W: int) -> np.ndarray:
     """Extract top-k (x,y) pixel coords from score map."""
     h, w = score_map.shape
     vals, idx = torch.topk(score_map.reshape(-1), k=min(topk, score_map.numel()))
-    coords = []
+    feat_coords = []
     for i in idx.tolist():
         y = i // w
         x = i % w
-        coords.append([
-            (x + 0.5) * W / float(w),
-            (y + 0.5) * H / float(h),
-        ])
-    return np.asarray(coords, dtype=np.float32)
+        feat_coords.append([y, x])
+    return feat_yx_to_xy_pixel(np.asarray(feat_coords, dtype=np.float32), feat_h, feat_w, H, W)
 
 
 def audit_feature_recall(
@@ -121,7 +118,7 @@ def audit_feature_recall(
             score_map = torch.stack([template_score_map(t, reentry_feat) for t in templates], dim=0).mean(dim=0)
 
             # V0: whole-frame top-k
-            wf_coords = _topk_coords(score_map, topk, w, h)
+            wf_coords = _topk_coords(score_map, topk, score_map.shape[0], score_map.shape[1], h, w)
             wf_dists = np.linalg.norm(wf_coords - gt_xy_px[None, :], axis=1)
             wf_top1 = float(wf_dists[0])
             wf_top5 = float(wf_dists[:5].min())
@@ -135,7 +132,7 @@ def audit_feature_recall(
             last_feat = dino.feature_map(last_crop)
             last_templates = [extract_template(last_feat, qc, query_crop_size, r) for r in (1, 2)]
             last_score_map = torch.stack([template_score_map(t, reentry_feat) for t in last_templates], dim=0).mean(dim=0)
-            lv_coords = _topk_coords(last_score_map, topk, w, h)
+            lv_coords = _topk_coords(last_score_map, topk, last_score_map.shape[0], last_score_map.shape[1], h, w)
             lv_dists = np.linalg.norm(lv_coords - gt_xy_px[None, :], axis=1)
             lv_top1 = float(lv_dists[0])
             lv_top5 = float(lv_dists[:5].min())
@@ -161,7 +158,7 @@ def audit_feature_recall(
                 local_score = last_score_map
             else:
                 local_score = last_score_map.masked_fill(~local_mask, float("-inf"))
-            ct_local_coords = _topk_coords(local_score, topk, w, h)
+            ct_local_coords = _topk_coords(local_score, topk, local_score.shape[0], local_score.shape[1], h, w)
             ct_local_dists = np.linalg.norm(ct_local_coords - gt_xy_px[None, :], axis=1)
             ct_local_top1 = float(ct_local_dists[0])
             ct_local_top5 = float(ct_local_dists[:5].min())

@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""Build re-entry pseudo-label dataset from CT-offline centered local search.
+"""Build re-entry oracle labels from CT-offline centered local search.
 
-P3A: Feature-based pseudo labels.
+P3A is oracle-only diagnostic code. It is not a deployable pseudo-label
+generation pipeline and must not be used as a training-data source on DAVIS.
 
 For each re-entry query:
   1. CoTracker3 offline prediction → coarse center
@@ -28,7 +29,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
-from utils.coords import find_first_reentry, yx_norm_to_xy_pixel
+from utils.coords import feat_yx_to_xy_pixel, find_first_reentry, yx_norm_to_xy_pixel
 from utils.attempt0_schema import load_attempt0_cache
 
 
@@ -70,6 +71,8 @@ def build_pseudo_labels(
             frame_feat_cache[key] = dino.feature_map(frame_rgb)
         return frame_feat_cache[key]
 
+    ct_off_by_video = {str(rec["video_id"]): rec for rec in ct_off_records}
+
     labels: List[Dict[str, Any]] = []
     total = 0
     stop = False
@@ -83,7 +86,9 @@ def build_pseudo_labels(
         gt_vis = np.asarray(r["gt_visibility"], dtype=bool)
         gt_tracks = np.asarray(r["gt_tracks"], dtype=np.float32)
         qpts = np.asarray(r["query_points"], dtype=np.float32)
-        ct_pred = np.asarray(ct_off_records[rec_idx]["pred_tracks"], dtype=np.float32)
+        if vid not in ct_off_by_video:
+            raise ValueError(f"ct-offline cache missing video_id={vid}")
+        ct_pred = np.asarray(ct_off_by_video[vid]["pred_tracks"], dtype=np.float32)
 
         for qi in range(qpts.shape[0]):
             if max_queries > 0 and total >= max_queries:
@@ -139,8 +144,15 @@ def build_pseudo_labels(
             best_idx = int(torch.argmax(local_score.reshape(-1)).item())
             best_y = best_idx // w_s
             best_x = best_idx % w_s
-            pl_x = (best_x + 0.5) * w / float(w_s)
-            pl_y = (best_y + 0.5) * h / float(h_s)
+            pl_xy = feat_yx_to_xy_pixel(
+                np.asarray([[best_y, best_x]], dtype=np.float32),
+                h_s,
+                w_s,
+                h,
+                w,
+            )[0]
+            pl_x = float(pl_xy[0])
+            pl_y = float(pl_xy[1])
             pl_error = float(np.linalg.norm(np.array([pl_x, pl_y]) - gt_xy_px))
 
             # Quality flags

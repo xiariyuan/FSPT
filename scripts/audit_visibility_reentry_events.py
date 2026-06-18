@@ -38,9 +38,18 @@ def audit_visibility_reentry(
         if max_videos > 0:
             caches[name] = caches[name][:max_videos]
 
-    # Use first cache as GT reference
+    # Use first cache as GT reference, but align all caches by video_id.
     ref_name = list(caches.keys())[0]
     ref_records = caches[ref_name]
+    cache_by_video = {
+        name: {str(rec["video_id"]): rec for rec in records}
+        for name, records in caches.items()
+    }
+    ref_video_ids = [str(rec["video_id"]) for rec in ref_records]
+    for name, by_video in cache_by_video.items():
+        missing = [vid for vid in ref_video_ids if vid not in by_video]
+        if missing:
+            raise ValueError(f"Cache {name} is missing videos present in reference cache: {missing[:5]}")
 
     all_events = []
     per_video = []
@@ -98,7 +107,8 @@ def audit_visibility_reentry(
             n_checked = 0
             for rec_idx in range(len(ref_records)):
                 r_ref = ref_records[rec_idx]
-                r_other = caches[other_name][rec_idx]
+                vid = str(r_ref["video_id"])
+                r_other = cache_by_video[other_name][vid]
                 gt_vis = np.asarray(r_ref["gt_visibility"], dtype=bool)
                 other_pvis = np.asarray(r_other["pred_visibility"], dtype=bool)
                 qpts = np.asarray(r_ref["query_points"], dtype=np.float32)

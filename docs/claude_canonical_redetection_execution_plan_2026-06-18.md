@@ -442,7 +442,18 @@ P3 不训练 student，只生成并审计伪标签。
 
 #### P3A — feature-based pseudo labels
 
-如果 P2 的 top-k recall 过门槛，就走：
+**状态：oracle-only / stop.**
+
+当前 DAVIS 上的 feature-based pseudo-label 路线已被复核为方法学泄漏，且实测样本量与质量均不足以支撑训练链。该分支只保留为诊断审计，不再作为可训练主线。
+
+如果后续要恢复同类路线，必须先满足以下前提：
+
+- 输入切换到外部无标注数据源，不再使用 DAVIS GT 造标签
+- `FB consistency` / `flow consistency` 真正接入
+- `train/val split leakage audit` 通过
+- 样本规模达到 `n_reentry_events >= 10k`
+
+在满足上述前提之前，不再推进：
 
 - feature-based candidate generation
 - `cost-level` 筛选
@@ -867,4 +878,3 @@ P6 里不要做这些事：
 - 是否所有失败记录都保留了
 
 如果这些点对了，再看具体数值。
-

@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
-"""Compute AJ_RD and re-entry metrics from unified strided+original cache.
+"""Compute re-entry Jaccard metrics from unified strided+original cache.
 
-AJ_RD = average Jaccard on re-entry detection: for each query, evaluate only
-at the first re-entry frame. Complements the standard AJ which averages over
-all evaluation frames.
+The historical name `AJ_RD` is retained for compatibility, but this script now
+computes the official TAP-Vid-style Jaccard on the first re-entry frame:
+
+  - visibility is part of the score
+  - thresholds are configurable
+  - the result is the mean Jaccard across the selected thresholds
 
 Also reports: re-entry first-frame error, long-occ bucket metrics, n_reentry.
 """
@@ -21,7 +24,6 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from utils.coords import (
     find_first_reentry, pixel_l2_error,
-    yx_norm_to_xy_pixel, assert_coord_range,
 )
 from utils.attempt0_schema import load_attempt0_cache
 
@@ -36,7 +38,7 @@ def compute_aj_rd(
     width: int,
     thresholds: tuple = (1, 2, 4, 8, 16),
 ) -> Dict[str, Any]:
-    """Compute AJ_RD and re-entry metrics for a single video.
+    """Compute re-entry Jaccard and error metrics for a single video.
 
     Args:
         pred_tracks: (N, T, 2) [y,x] normalized
@@ -73,13 +75,18 @@ def compute_aj_rd(
 
         # Predicted visibility at re-entry
         pred_visible_at_re = bool(pred_vis[i, t_re])
+        gt_visible_at_re = bool(gt_vis[i, t_re])
 
-        # AJ at re-entry frame: for each threshold, compute Jaccard
+        # Official TAP-Vid-style Jaccard at a single frame:
+        # true positive requires visibility agreement and position correctness;
+        # false positives count visible-but-wrong predictions.
         jaccards = {}
         for thr in thresholds:
-            # Jaccard at a single frame = indicator(pred < thr)
-            # (standard Jaccard: |pred ∩ gt| / |pred ∪ gt| = 1 if correct else 0 for single point)
-            jaccards[f"jaccard_{thr}"] = 1.0 if err < thr else 0.0
+            within_dist = err < thr
+            true_positive = 1.0 if (pred_visible_at_re and gt_visible_at_re and within_dist) else 0.0
+            gt_positive = 1.0 if gt_visible_at_re else 0.0
+            false_positive = 1.0 if (pred_visible_at_re and ((not gt_visible_at_re) or (not within_dist))) else 0.0
+            jaccards[f"jaccard_{thr}"] = true_positive / (gt_positive + false_positive) if (gt_positive + false_positive) > 0 else 0.0
 
         aj = np.mean(list(jaccards.values()))
 
@@ -90,6 +97,7 @@ def compute_aj_rd(
             "occ_length": occ_len,
             "error_px": round(err, 3),
             "pred_visible": pred_visible_at_re,
+            "gt_visible": gt_visible_at_re,
             **{k: round(v, 3) for k, v in jaccards.items()},
             "aj": round(aj, 3),
         })
@@ -137,7 +145,15 @@ def main():
     parser.add_argument("--cache-path", type=str, required=True)
     parser.add_argument("--output-json", type=str, required=True)
     parser.add_argument("--max-videos", type=int, default=0, help="0 = all")
+    parser.add_argument(
+        "--thresholds",
+        type=str,
+        default="1,2,4,8,16",
+        help="Comma-separated pixel thresholds used for re-entry Jaccard.",
+    )
     args = parser.parse_args()
+
+    thresholds = tuple(int(t) for t in args.thresholds.split(",") if t.strip())
 
     payload = load_attempt0_cache(Path(args.cache_path))
     records = payload["records"]
@@ -154,7 +170,7 @@ def main():
         gvis = np.asarray(r["gt_visibility"], dtype=bool)
         qpts = np.asarray(r["query_points"], dtype=np.float32)
 
-        vid_result = compute_aj_rd(pred, gt, pvis, gvis, qpts, h, w)
+        vid_result = compute_aj_rd(pred, gt, pvis, gvis, qpts, h, w, thresholds=thresholds)
         vid_result["video_id"] = vid
         all_results.append(vid_result)
 
@@ -178,9 +194,12 @@ def main():
         "cache_path": args.cache_path,
         "protocol": payload.get("protocol", "unknown"),
         "model_name": payload.get("model_name", "unknown"),
+        "metric_name": "reentry_average_jaccard",
+        "thresholds": list(thresholds),
         "n_videos": len(all_results),
         "n_reentry_queries_total": total_n,
         "aj_rd": round(float(np.mean(all_aj)) if all_aj else 0, 4),
+        "reentry_average_jaccard": round(float(np.mean(all_aj)) if all_aj else 0, 4),
         "reentry_error": {
             "median_px": round(float(np.median(all_errs)) if all_errs else 0, 2),
             "mean_px": round(float(np.mean(all_errs)) if all_errs else 0, 2),

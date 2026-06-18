@@ -22,6 +22,16 @@ from utils.coords import find_first_reentry, pixel_l2_error
 from utils.attempt0_schema import load_attempt0_cache
 
 
+def _index_by_video(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
+    by_video: Dict[str, Dict[str, Any]] = {}
+    for rec in records:
+        vid = str(rec["video_id"])
+        if vid in by_video:
+            raise ValueError(f"Duplicate video_id in cache: {vid}")
+        by_video[vid] = rec
+    return by_video
+
+
 def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[str, Any]:
     """Audit multiple teachers on re-entry error.
 
@@ -33,10 +43,11 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
         teachers[name] = payload["records"]
         if max_videos > 0:
             teachers[name] = teachers[name][:max_videos]
+        teachers[name] = _index_by_video(teachers[name])
 
     teacher_names = list(teachers.keys())
     ref_name = teacher_names[0]
-    ref_records = teachers[ref_name]
+    ref_records = list(teachers[ref_name].values())
 
     # Per-teacher error accumulators
     per_teacher_errors: Dict[str, List[float]] = {n: [] for n in teacher_names}
@@ -77,7 +88,9 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
 
             teacher_errors = {}
             for tname in teacher_names:
-                pred_tracks = np.asarray(teachers[tname][rec_idx]["pred_tracks"], dtype=np.float32)
+                if vid not in teachers[tname]:
+                    raise ValueError(f"Teacher cache {tname} missing video_id={vid}")
+                pred_tracks = np.asarray(teachers[tname][vid]["pred_tracks"], dtype=np.float32)
                 pred_yx = pred_tracks[qi, t_re]
                 err = float(pixel_l2_error(
                     pred_yx[None, :], gt_yx[None, :], h, w,
