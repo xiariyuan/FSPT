@@ -1,0 +1,21 @@
+{
+  "cache_path": "caches/trackon2_strided_original.pt",
+  "model_name": "trackon2",
+  "protocol": "strided+original",
+  "n_records": 30,
+  "n_clean": 20,
+  "n_issues": 10,
+  "pass": false,
+  "issues": [
+    "[car-roundabout] pred_tracks: expected range [0.0, 1.0], got [-0.000256, 0.999647]",
+    "[dance-twirl] pred_tracks: expected range [0.0, 1.0], got [0.000000, 1.000762]",
+    "[drift-straight] pred_tracks: expected range [0.0, 1.0], got [0.000000, 1.002261]",
+    "[gold-fish] pred_tracks: expected range [0.0, 1.0], got [0.000000, 1.001945]",
+    "[horsejump-high] pred_tracks: expected range [0.0, 1.0], got [-0.000279, 0.627620]",
+    "[india] pred_tracks: expected range [0.0, 1.0], got [0.000000, 1.000724]",
+    "[lab-coat] pred_tracks: expected range [0.0, 1.0], got [0.000000, 1.001369]",
+    "[pigs] pred_tracks: expected range [0.0, 1.0], got [-0.000145, 0.832327]",
+    "[shooting] pred_tracks: expected range [0.0, 1.0], got [-0.000255, 1.000475]",
+    "[soapbox] pred_tracks: expected range [0.0, 1.0], got [-0.000687, 0.999967]"
+  ]
+}

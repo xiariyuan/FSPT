@@ -1,0 +1,111 @@
+{
+  "n_events": 1385,
+  "fixed_best_teacher": "cotracker3_offline",
+  "fixed_best_median_px": 3.71,
+  "teacher_medians": {
+    "cotracker3_offline": 3.71,
+    "cotracker3_online": 3.86,
+    "trackon2": 3.91
+  },
+  "teachers": {
+    "cotracker3_offline": {
+      "overall": {
+        "n": 1385,
+        "median_px": 3.71,
+        "mean_px": 12.21,
+        "p95_px": 44.97,
+        "lt4px": 0.5379,
+        "lt8px": 0.8022,
+        "lt16px": 0.8852
+      },
+      "long_occ_ge20": {
+        "n": 146,
+        "median_px": 5.58,
+        "mean_px": 22.1,
+        "p95_px": 164.99,
+        "lt4px": 0.3151,
+        "lt8px": 0.6986,
+        "lt16px": 0.7808
+      }
+    },
+    "cotracker3_online": {
+      "overall": {
+        "n": 1385,
+        "median_px": 3.86,
+        "mean_px": 14.73,
+        "p95_px": 74.95,
+        "lt4px": 0.5134,
+        "lt8px": 0.7697,
+        "lt16px": 0.857
+      },
+      "long_occ_ge20": {
+        "n": 146,
+        "median_px": 6.39,
+        "mean_px": 31.15,
+        "p95_px": 226.24,
+        "lt4px": 0.3151,
+        "lt8px": 0.5822,
+        "lt16px": 0.774
+      }
+    },
+    "trackon2": {
+      "overall": {
+        "n": 1385,
+        "median_px": 3.91,
+        "mean_px": 18.47,
+        "p95_px": 109.77,
+        "lt4px": 0.5097,
+        "lt8px": 0.7365,
+        "lt16px": 0.8267
+      },
+      "long_occ_ge20": {
+        "n": 146,
+        "median_px": 5.7,
+        "mean_px": 32.65,
+        "p95_px": 198.04,
+        "lt4px": 0.3767,
+        "lt8px": 0.5616,
+        "lt16px": 0.6712
+      }
+    }
+  },
+  "oracle": {
+    "overall": {
+      "n": 1385,
+      "median_px": 2.99,
+      "mean_px": 7.88,
+      "p95_px": 21.49,
+      "lt4px": 0.6491,
+      "lt8px": 0.8527,
+      "lt16px": 0.9321
+    },
+    "long_occ_ge20": {
+      "n": 146,
+      "median_px": 4.06,
+      "mean_px": 13.26,
+      "p95_px": 32.62,
+      "lt4px": 0.4932,
+      "lt8px": 0.774,
+      "lt16px": 0.8904
+    },
+    "oracle_gain_vs_fixed_best": {
+      "median_px": 0.34,
+      "mean_px": 4.33
+    },
+    "teacher_usage": {
+      "cotracker3_offline": 512,
+      "cotracker3_online": 419,
+      "trackon2": 454
+    }
+  },
+  "aj_rd_comparison": {
+    "fixed_best_cotracker3_offline": 0.5099,
+    "oracle_teacher_selection": 0.5869,
+    "delta": 0.077
+  },
+  "decision": {
+    "verdict": "GO",
+    "reason": "oracle teacher selection AJ_RD gain +7.7pp >= 5pp",
+    "aj_rd_delta": 0.077
+  }
+}

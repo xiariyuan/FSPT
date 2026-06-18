@@ -1,0 +1,30 @@
+{
+  "device": "cuda",
+  "max_videos": 2,
+  "max_events": 64,
+  "feature_sources": [
+    {
+      "name": "dinov2",
+      "n_frames_processed": 2,
+      "total_time_s": 4.9,
+      "time_per_frame_s": 2.47,
+      "feature_grid_shape": [
+        1,
+        384,
+        37,
+        37
+      ],
+      "feature_dim": 384,
+      "gpu_mem_before_gb": 0.03,
+      "gpu_mem_peak_gb": 0.06,
+      "gpu_mem_after_gb": 0.04,
+      "crashes": 0,
+      "oom": false,
+      "cacheable_to_disk": true
+    }
+  ],
+  "decision": {
+    "can_proceed_to_p2b": true,
+    "blockers": []
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "n_labels": 62,
+  "n_videos": 1,
+  "n_tracks": 62,
+  "n_reentry_events": 62,
+  "occ_length": {
+    "histogram": {
+      "1-4": 6,
+      "5-9": 14,
+      "10-15": 12,
+      "16-31": 13,
+      "32-63": 17,
+      "64+": 0
+    },
+    "stats": {
+      "n": 62,
+      "mean_px": 17.89,
+      "median_px": 12.0,
+      "p95_px": 40.8,
+      "lt4px": 0.0323,
+      "lt8px": 0.1935,
+      "lt16px": 0.5161
+    },
+    "long_occ_ge16_ratio": 0.4839
+  },
+  "pseudo_label_error_px": {
+    "n": 62,
+    "mean_px": 39.95,
+    "median_px": 46.15,
+    "p95_px": 53.81,
+    "lt4px": 0.0,
+    "lt8px": 0.0,
+    "lt16px": 0.0806
+  },
+  "ct_offline_error_px": {
+    "n": 62,
+    "mean_px": 10.97,
+    "median_px": 5.99,
+    "p95_px": 32.76,
+    "lt4px": 0.2581,
+    "lt8px": 0.7258,
+    "lt16px": 0.8065
+  },
+  "gain_vs_ct_offline_px": {
+    "n": 62,
+    "mean_px": -28.98,
+    "median_px": -28.9,
+    "p95_px": -9.71,
+    "better_than_ct_offline_frac": 0.0323
+  },
+  "teacher_conf": {
+    "n": 62,
+    "mean_px": 0.27,
+    "median_px": 0.27,
+    "p95_px": 0.33,
+    "lt4px": 1.0,
+    "lt8px": 1.0,
+    "lt16px": 1.0
+  },
+  "quality_flags": {
+    "better_than_ct_offline": 2,
+    "within_16px": 5
+  },
+  "source_bucket": {
+    "ct_offline": 62
+  },
+  "per_video": [
+    {
+      "video_id": "bike-packing",
+      "count": 62,
+      "share": 1.0
+    }
+  ],
+  "max_video_share": 1.0,
+  "fb_consistency": {
+    "available": false,
+    "pass_rate": null,
+    "threshold_px": 1.0
+  },
+  "flow_consistency": {
+    "available": false,
+    "pass_rate": null,
+    "threshold_px": 1.0
+  },
+  "verdict": "SMOKE_STOP",
+  "reason": "smoke quality is too weak to justify full P3A rollout",
+  "mode": "smoke",
+  "checks": {
+    "enough_labels": false,
+    "enough_long_occ_ratio": true,
+    "enough_lt16": false,
+    "max_video_share_ok": false,
+    "fb_ok": true,
+    "flow_ok": true
+  }
+}

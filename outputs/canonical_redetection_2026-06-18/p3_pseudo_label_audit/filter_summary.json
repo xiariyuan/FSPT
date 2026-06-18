@@ -1,0 +1,18 @@
+{
+  "input_n": 62,
+  "output_n": 30,
+  "dropped_n": 32,
+  "keep_rate": 0.4839,
+  "kept_by_source_bucket": {
+    "ct_offline": 30
+  },
+  "filters": {
+    "require_flag": [],
+    "min_teacher_conf": 0.0,
+    "max_fb_error": null,
+    "max_flow_error": null,
+    "min_occ_run_len": 16,
+    "max_ct_offline_error": 32.0,
+    "drop_debug_fields": true
+  }
+}

@@ -1,0 +1,557 @@
+{
+  "cache_path": "caches/trackon2_strided_original.pt",
+  "protocol": "strided+original",
+  "model_name": "trackon2",
+  "n_videos": 30,
+  "n_reentry_queries_total": 1385,
+  "aj_rd": 0.4734,
+  "reentry_error": {
+    "median_px": 3.91,
+    "mean_px": 18.47,
+    "lt4px": 0.5097
+  },
+  "long_occ_ge20": {
+    "n": 146,
+    "median_px": 5.7,
+    "lt4px": 0.3767
+  },
+  "long_occ_ge50": {
+    "n": 2,
+    "median_px": 223.05,
+    "lt4px": 0.0
+  },
+  "per_video": [
+    {
+      "n_reentry_queries": 62,
+      "aj_rd": 0.3581,
+      "reentry_error": {
+        "n": 62,
+        "median_px": 6.22,
+        "mean_px": 15.26,
+        "p95_px": 46.35,
+        "lt4px": 0.2903,
+        "lt8px": 0.629,
+        "lt16px": 0.7258
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 6.14,
+        "mean_px": 7.16,
+        "p95_px": 14.75,
+        "lt4px": 0.3,
+        "lt8px": 0.75,
+        "lt16px": 0.95
+      },
+      "long_occ_ge50": null,
+      "video_id": "bike-packing"
+    },
+    {
+      "n_reentry_queries": 0,
+      "video_id": "blackswan"
+    },
+    {
+      "n_reentry_queries": 205,
+      "aj_rd": 0.5171,
+      "reentry_error": {
+        "n": 205,
+        "median_px": 3.46,
+        "mean_px": 10.82,
+        "p95_px": 28.26,
+        "lt4px": 0.561,
+        "lt8px": 0.8146,
+        "lt16px": 0.8927
+      },
+      "long_occ_ge20": {
+        "n": 33,
+        "median_px": 4.14,
+        "mean_px": 5.31,
+        "p95_px": 14.77,
+        "lt4px": 0.4848,
+        "lt8px": 0.8182,
+        "lt16px": 0.9394
+      },
+      "long_occ_ge50": null,
+      "video_id": "bmx-trees"
+    },
+    {
+      "n_reentry_queries": 110,
+      "aj_rd": 0.6636,
+      "reentry_error": {
+        "n": 110,
+        "median_px": 2.11,
+        "mean_px": 12.46,
+        "p95_px": 78.42,
+        "lt4px": 0.8273,
+        "lt8px": 0.9,
+        "lt16px": 0.9182
+      },
+      "long_occ_ge20": {
+        "n": 17,
+        "median_px": 2.98,
+        "mean_px": 29.06,
+        "p95_px": 205.58,
+        "lt4px": 0.7647,
+        "lt8px": 0.8235,
+        "lt16px": 0.8824
+      },
+      "long_occ_ge50": {
+        "n": 2,
+        "median_px": 223.05,
+        "mean_px": 223.05,
+        "p95_px": 249.25,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "video_id": "breakdance"
+    },
+    {
+      "n_reentry_queries": 4,
+      "aj_rd": 0.65,
+      "reentry_error": {
+        "n": 4,
+        "median_px": 2.24,
+        "mean_px": 2.23,
+        "p95_px": 2.66,
+        "lt4px": 1.0,
+        "lt8px": 1.0,
+        "lt16px": 1.0
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "camel"
+    },
+    {
+      "n_reentry_queries": 10,
+      "aj_rd": 0.18,
+      "reentry_error": {
+        "n": 10,
+        "median_px": 32.75,
+        "mean_px": 33.97,
+        "p95_px": 66.92,
+        "lt4px": 0.1,
+        "lt8px": 0.3,
+        "lt16px": 0.5
+      },
+      "long_occ_ge20": {
+        "n": 3,
+        "median_px": 49.75,
+        "mean_px": 36.87,
+        "p95_px": 55.38,
+        "lt4px": 0.0,
+        "lt8px": 0.3333,
+        "lt16px": 0.3333
+      },
+      "long_occ_ge50": null,
+      "video_id": "car-roundabout"
+    },
+    {
+      "n_reentry_queries": 21,
+      "aj_rd": 0.6095,
+      "reentry_error": {
+        "n": 21,
+        "median_px": 1.98,
+        "mean_px": 28.61,
+        "p95_px": 145.81,
+        "lt4px": 0.8095,
+        "lt8px": 0.8095,
+        "lt16px": 0.8095
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "car-shadow"
+    },
+    {
+      "n_reentry_queries": 10,
+      "aj_rd": 0.58,
+      "reentry_error": {
+        "n": 10,
+        "median_px": 3.61,
+        "mean_px": 3.55,
+        "p95_px": 4.23,
+        "lt4px": 0.9,
+        "lt8px": 1.0,
+        "lt16px": 1.0
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "cows"
+    },
+    {
+      "n_reentry_queries": 109,
+      "aj_rd": 0.4257,
+      "reentry_error": {
+        "n": 109,
+        "median_px": 4.27,
+        "mean_px": 17.66,
+        "p95_px": 60.03,
+        "lt4px": 0.4862,
+        "lt8px": 0.5688,
+        "lt16px": 0.6514
+      },
+      "long_occ_ge20": {
+        "n": 23,
+        "median_px": 22.33,
+        "mean_px": 29.25,
+        "p95_px": 61.95,
+        "lt4px": 0.0,
+        "lt8px": 0.087,
+        "lt16px": 0.2174
+      },
+      "long_occ_ge50": null,
+      "video_id": "dance-twirl"
+    },
+    {
+      "n_reentry_queries": 0,
+      "video_id": "dog"
+    },
+    {
+      "n_reentry_queries": 77,
+      "aj_rd": 0.5403,
+      "reentry_error": {
+        "n": 77,
+        "median_px": 3.68,
+        "mean_px": 3.9,
+        "p95_px": 6.91,
+        "lt4px": 0.5584,
+        "lt8px": 0.987,
+        "lt16px": 1.0
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "dogs-jump"
+    },
+    {
+      "n_reentry_queries": 1,
+      "aj_rd": 0.6,
+      "reentry_error": {
+        "n": 1,
+        "median_px": 3.11,
+        "mean_px": 3.11,
+        "p95_px": 3.11,
+        "lt4px": 1.0,
+        "lt8px": 1.0,
+        "lt16px": 1.0
+      },
+      "long_occ_ge20": {
+        "n": 1,
+        "median_px": 3.11,
+        "mean_px": 3.11,
+        "p95_px": 3.11,
+        "lt4px": 1.0,
+        "lt8px": 1.0,
+        "lt16px": 1.0
+      },
+      "long_occ_ge50": null,
+      "video_id": "drift-chicane"
+    },
+    {
+      "n_reentry_queries": 34,
+      "aj_rd": 0.6176,
+      "reentry_error": {
+        "n": 34,
+        "median_px": 2.98,
+        "mean_px": 6.82,
+        "p95_px": 3.91,
+        "lt4px": 0.9706,
+        "lt8px": 0.9706,
+        "lt16px": 0.9706
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "drift-straight"
+    },
+    {
+      "n_reentry_queries": 0,
+      "video_id": "goat"
+    },
+    {
+      "n_reentry_queries": 16,
+      "aj_rd": 0.4375,
+      "reentry_error": {
+        "n": 16,
+        "median_px": 5.24,
+        "mean_px": 19.77,
+        "p95_px": 108.58,
+        "lt4px": 0.25,
+        "lt8px": 0.875,
+        "lt16px": 0.875
+      },
+      "long_occ_ge20": {
+        "n": 5,
+        "median_px": 1.75,
+        "mean_px": 51.47,
+        "p95_px": 148.25,
+        "lt4px": 0.6,
+        "lt8px": 0.6,
+        "lt16px": 0.6
+      },
+      "long_occ_ge50": null,
+      "video_id": "gold-fish"
+    },
+    {
+      "n_reentry_queries": 67,
+      "aj_rd": 0.4746,
+      "reentry_error": {
+        "n": 67,
+        "median_px": 4.36,
+        "mean_px": 11.61,
+        "p95_px": 26.04,
+        "lt4px": 0.4328,
+        "lt8px": 0.6866,
+        "lt16px": 0.8657
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "horsejump-high"
+    },
+    {
+      "n_reentry_queries": 181,
+      "aj_rd": 0.5304,
+      "reentry_error": {
+        "n": 181,
+        "median_px": 3.51,
+        "mean_px": 14.95,
+        "p95_px": 143.88,
+        "lt4px": 0.5801,
+        "lt8px": 0.8729,
+        "lt16px": 0.895
+      },
+      "long_occ_ge20": {
+        "n": 13,
+        "median_px": 3.09,
+        "mean_px": 7.88,
+        "p95_px": 28.68,
+        "lt4px": 0.6154,
+        "lt8px": 0.7692,
+        "lt16px": 0.8462
+      },
+      "long_occ_ge50": null,
+      "video_id": "india"
+    },
+    {
+      "n_reentry_queries": 49,
+      "aj_rd": 0.2531,
+      "reentry_error": {
+        "n": 49,
+        "median_px": 14.83,
+        "mean_px": 101.58,
+        "p95_px": 371.13,
+        "lt4px": 0.2041,
+        "lt8px": 0.4286,
+        "lt16px": 0.5306
+      },
+      "long_occ_ge20": {
+        "n": 3,
+        "median_px": 239.59,
+        "mean_px": 226.43,
+        "p95_px": 240.23,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge50": null,
+      "video_id": "judo"
+    },
+    {
+      "n_reentry_queries": 0,
+      "video_id": "kite-surf"
+    },
+    {
+      "n_reentry_queries": 7,
+      "aj_rd": 0.1429,
+      "reentry_error": {
+        "n": 7,
+        "median_px": 15.33,
+        "mean_px": 15.82,
+        "p95_px": 19.96,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.7143
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "lab-coat"
+    },
+    {
+      "n_reentry_queries": 40,
+      "aj_rd": 0.43,
+      "reentry_error": {
+        "n": 40,
+        "median_px": 4.05,
+        "mean_px": 17.2,
+        "p95_px": 111.58,
+        "lt4px": 0.475,
+        "lt8px": 0.65,
+        "lt16px": 0.825
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "libby"
+    },
+    {
+      "n_reentry_queries": 38,
+      "aj_rd": 0.4421,
+      "reentry_error": {
+        "n": 38,
+        "median_px": 5.08,
+        "mean_px": 43.8,
+        "p95_px": 374.65,
+        "lt4px": 0.3947,
+        "lt8px": 0.8421,
+        "lt16px": 0.8684
+      },
+      "long_occ_ge20": {
+        "n": 4,
+        "median_px": 375.18,
+        "mean_px": 375.02,
+        "p95_px": 376.63,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge50": null,
+      "video_id": "loading"
+    },
+    {
+      "n_reentry_queries": 46,
+      "aj_rd": 0.3609,
+      "reentry_error": {
+        "n": 46,
+        "median_px": 6.18,
+        "mean_px": 8.74,
+        "p95_px": 19.97,
+        "lt4px": 0.2826,
+        "lt8px": 0.587,
+        "lt16px": 0.8478
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "mbike-trick"
+    },
+    {
+      "n_reentry_queries": 6,
+      "aj_rd": 0.0667,
+      "reentry_error": {
+        "n": 6,
+        "median_px": 168.87,
+        "mean_px": 117.52,
+        "p95_px": 172.27,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.3333
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "motocross-jump"
+    },
+    {
+      "n_reentry_queries": 19,
+      "aj_rd": 0.5053,
+      "reentry_error": {
+        "n": 19,
+        "median_px": 3.82,
+        "mean_px": 7.1,
+        "p95_px": 16.64,
+        "lt4px": 0.5263,
+        "lt8px": 0.5789,
+        "lt16px": 0.8947
+      },
+      "long_occ_ge20": {
+        "n": 12,
+        "median_px": 2.05,
+        "mean_px": 5.17,
+        "p95_px": 15.58,
+        "lt4px": 0.6667,
+        "lt8px": 0.75,
+        "lt16px": 0.9167
+      },
+      "long_occ_ge50": null,
+      "video_id": "paragliding-launch"
+    },
+    {
+      "n_reentry_queries": 97,
+      "aj_rd": 0.1629,
+      "reentry_error": {
+        "n": 97,
+        "median_px": 16.15,
+        "mean_px": 38.29,
+        "p95_px": 113.38,
+        "lt4px": 0.0722,
+        "lt8px": 0.2474,
+        "lt16px": 0.4845
+      },
+      "long_occ_ge20": {
+        "n": 3,
+        "median_px": 33.1,
+        "mean_px": 51.56,
+        "p95_px": 102.67,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.3333
+      },
+      "long_occ_ge50": null,
+      "video_id": "parkour"
+    },
+    {
+      "n_reentry_queries": 30,
+      "aj_rd": 0.34,
+      "reentry_error": {
+        "n": 30,
+        "median_px": 6.17,
+        "mean_px": 17.07,
+        "p95_px": 46.61,
+        "lt4px": 0.2333,
+        "lt8px": 0.7,
+        "lt16px": 0.7
+      },
+      "long_occ_ge20": {
+        "n": 9,
+        "median_px": 46.2,
+        "mean_px": 45.7,
+        "p95_px": 46.88,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge50": null,
+      "video_id": "pigs"
+    },
+    {
+      "n_reentry_queries": 0,
+      "video_id": "scooter-black"
+    },
+    {
+      "n_reentry_queries": 14,
+      "aj_rd": 0.3571,
+      "reentry_error": {
+        "n": 14,
+        "median_px": 6.06,
+        "mean_px": 9.12,
+        "p95_px": 22.37,
+        "lt4px": 0.2857,
+        "lt8px": 0.5714,
+        "lt16px": 0.9286
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "shooting"
+    },
+    {
+      "n_reentry_queries": 132,
+      "aj_rd": 0.6212,
+      "reentry_error": {
+        "n": 132,
+        "median_px": 2.95,
+        "mean_px": 5.82,
+        "p95_px": 8.81,
+        "lt4px": 0.7424,
+        "lt8px": 0.9167,
+        "lt16px": 0.9697
+      },
+      "long_occ_ge20": null,
+      "long_occ_ge50": null,
+      "video_id": "soapbox"
+    }
+  ]
+}

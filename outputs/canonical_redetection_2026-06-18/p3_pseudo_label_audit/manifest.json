@@ -1,0 +1,21 @@
+{
+  "git_commit": "5b461211a46be6c94dcaf736e3b1ad0b29d283b9",
+  "command_line": {
+    "build_reentry_pseudo_labels": "python scripts/build_reentry_pseudo_labels.py --cache-path caches/trackon2_strided_original.pt --ct-offline-cache outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt --pkl-path /gemini/code/datasets/tapvid_davis/tapvid_davis.pkl --dino-weights weights/dinov2/dinov2_vits14_pretrain.pth --max-videos 2 --max-queries 64 --output-jsonl outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/p3a_smoke_labels.jsonl",
+    "audit_visibility_reentry_events": "python scripts/audit_visibility_reentry_events.py --cache-paths trackon2=caches/trackon2_strided_original.pt ct_offline=outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt --output-json outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/p3a_reentry_audit.json",
+    "audit_pseudo_label_quality": "python scripts/audit_pseudo_label_quality.py --labels-jsonl outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/p3a_smoke_labels.jsonl --mode smoke --output-json outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/metrics_summary.json --output-md outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/summary.md",
+    "filter_pseudo_labels_fb_flow": "python scripts/filter_pseudo_labels_fb_flow.py --labels-jsonl outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/p3a_smoke_labels.jsonl --output-jsonl outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/labels_train.jsonl --output-json outputs/canonical_redetection_2026-06-18/p3_pseudo_label_audit/filter_summary.json --max-ct-offline-error 32 --min-occ-run-len 16 --min-teacher-conf 0.0 --drop-debug-fields"
+  },
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
+  "protocol": "strided+original",
+  "cache_schema_version": 1,
+  "coord_format": "xy_pixel",
+  "teacher_name": "cotracker3_offline",
+  "feature_source": "dino_vits14_local_ct_offline_centered",
+  "checkpoint_sha256": "b938bf1bc15cd2ec0feacfe3a1bb553fe8ea9ca46a7e1d8d00217f29aef60cd9",
+  "environment": {
+    "python": "3.11.8",
+    "torch": "2.4.1+cu121",
+    "platform": "Linux-5.4.0-42-generic-x86_64-with-glibc2.35"
+  }
+}

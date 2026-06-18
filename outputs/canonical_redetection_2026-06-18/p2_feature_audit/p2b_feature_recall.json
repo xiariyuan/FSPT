@@ -1,0 +1,4002 @@
+{
+  "n_videos": 5,
+  "n_queries": 128,
+  "n_long_occ": 20,
+  "summary": {
+    "v0_dinov2_query_anchor_top1_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 136.02,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 108.1,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v0_dinov2_query_anchor_top5_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 85.05,
+        "lt4px": 0.0,
+        "lt8px": 0.0156,
+        "lt16px": 0.0156
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 85.02,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v0_dinov2_query_anchor_top10_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 74.8,
+        "lt4px": 0.0,
+        "lt8px": 0.0312,
+        "lt16px": 0.0625
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 78.0,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v1_last_visible_anchor_top1_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 131.56,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 173.25,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v1_last_visible_anchor_top5_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 88.97,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 149.25,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v1_last_visible_anchor_top10_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 77.59,
+        "lt4px": 0.0,
+        "lt8px": 0.0234,
+        "lt16px": 0.0703
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 78.0,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v2_ct_offline_local_top1_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 38.88,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0391
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 39.81,
+        "lt4px": 0.0,
+        "lt8px": 0.0,
+        "lt16px": 0.0
+      }
+    },
+    "v2_ct_offline_local_top5_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 18.19,
+        "lt4px": 0.0234,
+        "lt8px": 0.0781,
+        "lt16px": 0.2578
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 16.34,
+        "lt4px": 0.0,
+        "lt8px": 0.15,
+        "lt16px": 0.2
+      }
+    },
+    "v2_ct_offline_local_top10_px": {
+      "overall": {
+        "n": 128,
+        "median_px": 10.31,
+        "lt4px": 0.0938,
+        "lt8px": 0.2578,
+        "lt16px": 0.7656
+      },
+      "long_occ_ge20": {
+        "n": 20,
+        "median_px": 13.86,
+        "lt4px": 0.0,
+        "lt8px": 0.2,
+        "lt16px": 0.55
+      }
+    }
+  },
+  "top1_miss_top5_hit_16px": 0.015625,
+  "fb_consistency_pass_rate": null,
+  "config": {
+    "max_videos": 5,
+    "max_queries": 128,
+    "topk": 10,
+    "query_crop_size": 112,
+    "search_radius_px": 32
+  },
+  "samples": [
+    {
+      "video_id": "bike-packing",
+      "query_idx": 0,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        619.1813354492188,
+        68.09876251220703
+      ],
+      "ct_offline_error_px": 4.788680553436279,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 221.7893829345703,
+        "top5_px": 200.40293884277344,
+        "top10_px": 175.2528533935547
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 1,
+      "reentry_t": 58,
+      "occ_length": 37,
+      "gt_xy_px": [
+        569.4823608398438,
+        357.37225341796875
+      ],
+      "ct_offline_xy_px": [
+        563.3446044921875,
+        360.3668212890625
+      ],
+      "ct_offline_error_px": 6.829311370849609,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 108.10054779052734,
+        "top5_px": 87.26188659667969,
+        "top10_px": 77.99990844726562
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.428062438964844,
+        "top5_px": 16.023008346557617,
+        "top10_px": 16.023008346557617
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 2,
+      "reentry_t": 58,
+      "occ_length": 41,
+      "gt_xy_px": [
+        560.72119140625,
+        331.9708251953125
+      ],
+      "ct_offline_xy_px": [
+        563.4901123046875,
+        337.564697265625
+      ],
+      "ct_offline_error_px": 6.2416605949401855,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 93.66796112060547,
+        "top5_px": 85.02299499511719,
+        "top10_px": 77.59332275390625
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 85.02299499511719,
+        "top10_px": 77.59332275390625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.85831832885742,
+        "top5_px": 17.290725708007812,
+        "top10_px": 17.290725708007812
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 5,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        469.9349365234375,
+        153.55833435058594
+      ],
+      "ct_offline_error_px": 1.837372064590454,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 73.89098358154297,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 6,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        588.917236328125,
+        28.84761619567871
+      ],
+      "ct_offline_error_px": 18.507661819458008,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 222.07586669921875,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 7,
+      "reentry_t": 20,
+      "occ_length": 12,
+      "gt_xy_px": [
+        392.6584777832031,
+        120.0
+      ],
+      "ct_offline_xy_px": [
+        398.06634521484375,
+        129.88970947265625
+      ],
+      "ct_offline_error_px": 11.271706581115723,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 261.9023742675781,
+        "top5_px": 236.58087158203125,
+        "top10_px": 100.72149658203125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 100.72149658203125,
+        "top5_px": 82.14089965820312,
+        "top10_px": 82.14089965820312
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 56.590431213378906,
+        "top5_px": 32.0155143737793,
+        "top10_px": 20.879411697387695
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 12,
+      "reentry_t": 51,
+      "occ_length": 33,
+      "gt_xy_px": [
+        575.4284057617188,
+        178.78334045410156
+      ],
+      "ct_offline_xy_px": [
+        574.4635009765625,
+        172.57920837402344
+      ],
+      "ct_offline_error_px": 6.278717994689941,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 79.4924545288086,
+        "top5_px": 79.4924545288086,
+        "top10_px": 79.4924545288086
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 173.2459259033203,
+        "top5_px": 149.25045776367188,
+        "top10_px": 66.96277618408203
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.359113693237305,
+        "top5_px": 4.44794225692749,
+        "top10_px": 4.44794225692749
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 13,
+      "reentry_t": 21,
+      "occ_length": 4,
+      "gt_xy_px": [
+        554.061279296875,
+        343.67999267578125
+      ],
+      "ct_offline_xy_px": [
+        547.89501953125,
+        342.4291076660156
+      ],
+      "ct_offline_error_px": 6.291857719421387,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 107.64695739746094
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 25.851184844970703,
+        "top5_px": 25.851184844970703,
+        "top10_px": 12.88727855682373
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 14,
+      "reentry_t": 53,
+      "occ_length": 36,
+      "gt_xy_px": [
+        561.7431640625,
+        241.92001342773438
+      ],
+      "ct_offline_xy_px": [
+        559.6136474609375,
+        236.3154754638672
+      ],
+      "ct_offline_error_px": 5.995471954345703,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 57.586002349853516,
+        "top10_px": 57.586002349853516
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 304.44940185546875,
+        "top10_px": 82.1709976196289
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 19.636045455932617,
+        "top5_px": 16.342973709106445,
+        "top10_px": 13.861385345458984
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 15,
+      "reentry_t": 10,
+      "occ_length": 5,
+      "gt_xy_px": [
+        505.0887756347656,
+        311.0400085449219
+      ],
+      "ct_offline_xy_px": [
+        507.9177551269531,
+        313.0015563964844
+      ],
+      "ct_offline_error_px": 3.4424984455108643,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 142.79739379882812,
+        "top5_px": 99.3416519165039,
+        "top10_px": 99.3416519165039
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 142.79739379882812,
+        "top5_px": 94.60120391845703,
+        "top10_px": 86.92277526855469
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 24.650867462158203,
+        "top5_px": 6.240323543548584,
+        "top10_px": 6.240323543548584
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 16,
+      "reentry_t": 12,
+      "occ_length": 2,
+      "gt_xy_px": [
+        512.7706909179688,
+        225.60000610351562
+      ],
+      "ct_offline_xy_px": [
+        509.95587158203125,
+        230.87973022460938
+      ],
+      "ct_offline_error_px": 5.983201026916504,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 205.3432159423828,
+        "top5_px": 16.076581954956055,
+        "top10_px": 16.076581954956055
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 131.56222534179688,
+        "top5_px": 106.96939086914062,
+        "top10_px": 83.6146011352539
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 16.763118743896484,
+        "top5_px": 16.763118743896484,
+        "top10_px": 8.699352264404297
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 18,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        615.2549438476562,
+        67.5822982788086
+      ],
+      "ct_offline_error_px": 8.381365776062012,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 210.96832275390625,
+        "top5_px": 167.33529663085938,
+        "top10_px": 167.33529663085938
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 19,
+      "reentry_t": 58,
+      "occ_length": 37,
+      "gt_xy_px": [
+        569.4823608398438,
+        357.37225341796875
+      ],
+      "ct_offline_xy_px": [
+        564.1672973632812,
+        360.6958923339844
+      ],
+      "ct_offline_error_px": 6.26869010925293,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 108.10054779052734,
+        "top5_px": 97.3749771118164,
+        "top10_px": 77.99990844726562
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.428062438964844,
+        "top5_px": 16.023008346557617,
+        "top10_px": 16.023008346557617
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 20,
+      "reentry_t": 58,
+      "occ_length": 41,
+      "gt_xy_px": [
+        560.72119140625,
+        331.9708251953125
+      ],
+      "ct_offline_xy_px": [
+        563.58251953125,
+        335.4953308105469
+      ],
+      "ct_offline_error_px": 4.539751052856445,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 89.3967514038086,
+        "top10_px": 78.1690673828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 85.02299499511719,
+        "top10_px": 77.59332275390625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.85831832885742,
+        "top5_px": 17.290725708007812,
+        "top10_px": 17.290725708007812
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 23,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        469.2862854003906,
+        153.9695281982422
+      ],
+      "ct_offline_error_px": 2.1057491302490234,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 107.6408462524414,
+        "top5_px": 72.59302520751953,
+        "top10_px": 36.909671783447266
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 24,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        592.9193115234375,
+        30.518993377685547
+      ],
+      "ct_offline_error_px": 14.326175689697266,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 225.62155151367188,
+        "top5_px": 209.1587371826172,
+        "top10_px": 208.2541046142578
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 25,
+      "reentry_t": 20,
+      "occ_length": 12,
+      "gt_xy_px": [
+        392.6584777832031,
+        120.0
+      ],
+      "ct_offline_xy_px": [
+        455.7807312011719,
+        167.8946533203125
+      ],
+      "ct_offline_error_px": 79.23582458496094,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 278.7534484863281,
+        "top5_px": 207.81631469726562,
+        "top10_px": 94.74750518798828
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 100.72149658203125,
+        "top5_px": 82.14089965820312,
+        "top10_px": 82.14089965820312
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 77.86875915527344,
+        "top5_px": 66.8185043334961,
+        "top10_px": 47.71623229980469
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 30,
+      "reentry_t": 51,
+      "occ_length": 33,
+      "gt_xy_px": [
+        575.4284057617188,
+        178.78334045410156
+      ],
+      "ct_offline_xy_px": [
+        576.9960327148438,
+        174.60409545898438
+      ],
+      "ct_offline_error_px": 4.4635796546936035,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 79.4924545288086,
+        "top5_px": 79.4924545288086,
+        "top10_px": 79.4924545288086
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 173.2459259033203,
+        "top5_px": 149.25045776367188,
+        "top10_px": 66.96277618408203
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.359113693237305,
+        "top5_px": 4.44794225692749,
+        "top10_px": 4.44794225692749
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 31,
+      "reentry_t": 21,
+      "occ_length": 4,
+      "gt_xy_px": [
+        554.061279296875,
+        343.67999267578125
+      ],
+      "ct_offline_xy_px": [
+        548.3517456054688,
+        341.9660949707031
+      ],
+      "ct_offline_error_px": 5.961226463317871,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 25.851184844970703,
+        "top5_px": 25.851184844970703,
+        "top10_px": 12.88727855682373
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 32,
+      "reentry_t": 53,
+      "occ_length": 36,
+      "gt_xy_px": [
+        561.7431640625,
+        241.92001342773438
+      ],
+      "ct_offline_xy_px": [
+        559.9906616210938,
+        236.0440216064453
+      ],
+      "ct_offline_error_px": 6.131765365600586,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 82.1709976196289,
+        "top10_px": 82.1709976196289
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 304.44940185546875,
+        "top10_px": 82.1709976196289
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 19.636045455932617,
+        "top5_px": 16.342973709106445,
+        "top10_px": 13.861385345458984
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 33,
+      "reentry_t": 12,
+      "occ_length": 2,
+      "gt_xy_px": [
+        512.7706909179688,
+        225.60000610351562
+      ],
+      "ct_offline_xy_px": [
+        512.4364624023438,
+        229.91482543945312
+      ],
+      "ct_offline_error_px": 4.327744960784912,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 132.34024047851562,
+        "top5_px": 119.77644348144531,
+        "top10_px": 83.6146011352539
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 131.56222534179688,
+        "top5_px": 106.96939086914062,
+        "top10_px": 83.6146011352539
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 16.763118743896484,
+        "top5_px": 16.763118743896484,
+        "top10_px": 8.699352264404297
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 35,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        619.88232421875,
+        67.85809326171875
+      ],
+      "ct_offline_error_px": 4.054142951965332,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 200.40293884277344,
+        "top5_px": 200.40293884277344,
+        "top10_px": 162.3800048828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 36,
+      "reentry_t": 58,
+      "occ_length": 37,
+      "gt_xy_px": [
+        569.4823608398438,
+        357.37225341796875
+      ],
+      "ct_offline_xy_px": [
+        565.8036499023438,
+        359.6938171386719
+      ],
+      "ct_offline_error_px": 4.350008487701416,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 108.10054779052734,
+        "top5_px": 97.3749771118164,
+        "top10_px": 77.99990844726562
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.428062438964844,
+        "top5_px": 16.023008346557617,
+        "top10_px": 16.023008346557617
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 37,
+      "reentry_t": 58,
+      "occ_length": 41,
+      "gt_xy_px": [
+        560.72119140625,
+        331.9708251953125
+      ],
+      "ct_offline_xy_px": [
+        562.3263549804688,
+        333.0040588378906
+      ],
+      "ct_offline_error_px": 1.9089583158493042,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 44.168548583984375,
+        "top5_px": 44.168548583984375,
+        "top10_px": 41.862449645996094
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 85.02299499511719,
+        "top10_px": 77.59332275390625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.85831832885742,
+        "top5_px": 17.290725708007812,
+        "top10_px": 17.290725708007812
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 40,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        466.72119140625,
+        151.3369598388672
+      ],
+      "ct_offline_error_px": 5.709883689880371,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 115.27792358398438,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 41,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        577.9170532226562,
+        21.957590103149414
+      ],
+      "ct_offline_error_px": 30.88083839416504,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 219.3899383544922,
+        "top5_px": 207.11886596679688,
+        "top10_px": 207.11886596679688
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 46,
+      "reentry_t": 51,
+      "occ_length": 33,
+      "gt_xy_px": [
+        575.4284057617188,
+        178.78334045410156
+      ],
+      "ct_offline_xy_px": [
+        573.8834228515625,
+        175.05288696289062
+      ],
+      "ct_offline_error_px": 4.037728786468506,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 173.2459259033203,
+        "top5_px": 66.96277618408203,
+        "top10_px": 66.96277618408203
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 173.2459259033203,
+        "top5_px": 149.25045776367188,
+        "top10_px": 66.96277618408203
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.359113693237305,
+        "top5_px": 4.44794225692749,
+        "top10_px": 4.44794225692749
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 47,
+      "reentry_t": 21,
+      "occ_length": 4,
+      "gt_xy_px": [
+        554.061279296875,
+        343.67999267578125
+      ],
+      "ct_offline_xy_px": [
+        549.6782836914062,
+        341.95086669921875
+      ],
+      "ct_offline_error_px": 4.711743354797363,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 180.90809631347656,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 25.851184844970703,
+        "top5_px": 25.851184844970703,
+        "top10_px": 12.88727855682373
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 48,
+      "reentry_t": 53,
+      "occ_length": 36,
+      "gt_xy_px": [
+        561.7431640625,
+        241.92001342773438
+      ],
+      "ct_offline_xy_px": [
+        559.5806884765625,
+        236.1494903564453
+      ],
+      "ct_offline_error_px": 6.162405014038086,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 303.70111083984375,
+        "top10_px": 82.1709976196289
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 304.44940185546875,
+        "top10_px": 82.1709976196289
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 19.636045455932617,
+        "top5_px": 16.342973709106445,
+        "top10_px": 13.861385345458984
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 51,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        612.2367553710938,
+        64.71088409423828
+      ],
+      "ct_offline_error_px": 11.322465896606445,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 225.78887939453125,
+        "top5_px": 162.3800048828125,
+        "top10_px": 162.3800048828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 52,
+      "reentry_t": 58,
+      "occ_length": 37,
+      "gt_xy_px": [
+        569.4823608398438,
+        357.37225341796875
+      ],
+      "ct_offline_xy_px": [
+        563.9010620117188,
+        359.9104919433594
+      ],
+      "ct_offline_error_px": 6.1313581466674805,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 108.10054779052734,
+        "top5_px": 87.26188659667969,
+        "top10_px": 77.99990844726562
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.428062438964844,
+        "top5_px": 16.023008346557617,
+        "top10_px": 16.023008346557617
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 53,
+      "reentry_t": 58,
+      "occ_length": 41,
+      "gt_xy_px": [
+        560.72119140625,
+        331.9708251953125
+      ],
+      "ct_offline_xy_px": [
+        559.452392578125,
+        333.60626220703125
+      ],
+      "ct_offline_error_px": 2.0699045658111572,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 85.02299499511719,
+        "top10_px": 67.56940460205078
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 103.22337341308594,
+        "top5_px": 85.02299499511719,
+        "top10_px": 77.59332275390625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.85831832885742,
+        "top5_px": 17.290725708007812,
+        "top10_px": 17.290725708007812
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 56,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        405.38800048828125,
+        135.92051696777344
+      ],
+      "ct_offline_error_px": 68.46519470214844,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 156.70785522460938,
+        "top5_px": 36.909671783447266,
+        "top10_px": 25.87786865234375
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 41.158878326416016,
+        "top5_px": 41.158878326416016,
+        "top10_px": 41.158878326416016
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 57,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        574.7096557617188,
+        26.79495620727539
+      ],
+      "ct_offline_error_px": 32.86164855957031,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 209.1587371826172,
+        "top5_px": 201.7753143310547,
+        "top10_px": 191.90084838867188
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 62,
+      "reentry_t": 51,
+      "occ_length": 33,
+      "gt_xy_px": [
+        575.4284057617188,
+        178.78334045410156
+      ],
+      "ct_offline_xy_px": [
+        570.54931640625,
+        173.02520751953125
+      ],
+      "ct_offline_error_px": 7.547291278839111,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 66.96277618408203,
+        "top5_px": 66.96277618408203,
+        "top10_px": 66.96277618408203
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 173.2459259033203,
+        "top5_px": 149.25045776367188,
+        "top10_px": 66.96277618408203
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 51.70016860961914,
+        "top5_px": 22.442462921142578,
+        "top10_px": 4.44794225692749
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 63,
+      "reentry_t": 21,
+      "occ_length": 4,
+      "gt_xy_px": [
+        554.061279296875,
+        343.67999267578125
+      ],
+      "ct_offline_xy_px": [
+        546.3119506835938,
+        342.49432373046875
+      ],
+      "ct_offline_error_px": 7.839509010314941,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 103.51322937011719
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 117.35863494873047,
+        "top5_px": 117.35863494873047,
+        "top10_px": 117.35863494873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 25.851184844970703,
+        "top5_px": 25.851184844970703,
+        "top10_px": 12.88727855682373
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 64,
+      "reentry_t": 53,
+      "occ_length": 36,
+      "gt_xy_px": [
+        561.7431640625,
+        241.92001342773438
+      ],
+      "ct_offline_xy_px": [
+        557.5819091796875,
+        235.8859100341797
+      ],
+      "ct_offline_error_px": 7.329832553863525,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 304.44940185546875,
+        "top10_px": 82.1709976196289
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 328.9730224609375,
+        "top5_px": 304.44940185546875,
+        "top10_px": 82.1709976196289
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 19.636045455932617,
+        "top5_px": 16.342973709106445,
+        "top10_px": 8.5823335647583
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 67,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        624.6495971679688,
+        68.38909912109375
+      ],
+      "ct_offline_error_px": 2.6575729846954346,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 444.6158142089844,
+        "top5_px": 360.7846984863281,
+        "top10_px": 354.7101745605469
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 22.263267517089844,
+        "top5_px": 21.591686248779297,
+        "top10_px": 6.492621898651123
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 68,
+      "reentry_t": 58,
+      "occ_length": 37,
+      "gt_xy_px": [
+        569.4823608398438,
+        357.37225341796875
+      ],
+      "ct_offline_xy_px": [
+        565.576171875,
+        365.9781188964844
+      ],
+      "ct_offline_error_px": 9.450884819030762,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 97.3749771118164,
+        "top5_px": 77.99990844726562,
+        "top10_px": 77.99990844726562
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.428062438964844,
+        "top5_px": 16.023008346557617,
+        "top10_px": 16.023008346557617
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 71,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        469.060546875,
+        155.0379638671875
+      ],
+      "ct_offline_error_px": 2.1050641536712646,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 107.6408462524414,
+        "top5_px": 80.00753021240234,
+        "top10_px": 67.72706604003906
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 72,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        569.0313720703125,
+        23.099605560302734
+      ],
+      "ct_offline_error_px": 39.13569641113281,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 222.07586669921875,
+        "top5_px": 209.1587371826172,
+        "top10_px": 209.1587371826172
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 29.222299575805664
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 83,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        617.3712768554688,
+        67.20934295654297
+      ],
+      "ct_offline_error_px": 6.232768535614014,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.33529663085938,
+        "top5_px": 162.3800048828125,
+        "top10_px": 154.89157104492188
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 86,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        468.9046630859375,
+        155.6050262451172
+      ],
+      "ct_offline_error_px": 2.3580081462860107,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 115.27792358398438,
+        "top5_px": 80.00753021240234,
+        "top10_px": 61.57515335083008
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 87,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        580.6405639648438,
+        27.627803802490234
+      ],
+      "ct_offline_error_px": 26.873197555541992,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 231.73748779296875,
+        "top5_px": 225.62155151367188,
+        "top10_px": 219.3899383544922
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 92,
+      "reentry_t": 57,
+      "occ_length": 21,
+      "gt_xy_px": [
+        448.70391845703125,
+        66.13135528564453
+      ],
+      "ct_offline_xy_px": [
+        442.5107421875,
+        91.38121032714844
+      ],
+      "ct_offline_error_px": 25.998279571533203,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 275.93524169921875,
+        "top5_px": 62.388671875,
+        "top10_px": 62.388671875
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 214.11456298828125,
+        "top5_px": 198.74835205078125,
+        "top10_px": 148.05662536621094
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.8487548828125,
+        "top5_px": 8.178567886352539,
+        "top10_px": 8.178567886352539
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 94,
+      "reentry_t": 52,
+      "occ_length": 6,
+      "gt_xy_px": [
+        543.49853515625,
+        314.8800048828125
+      ],
+      "ct_offline_xy_px": [
+        547.6041259765625,
+        311.57904052734375
+      ],
+      "ct_offline_error_px": 5.268039703369141,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 105.8645248413086,
+        "top5_px": 85.5665283203125,
+        "top10_px": 73.33283996582031
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 15.009056091308594,
+        "top5_px": 10.313078880310059,
+        "top10_px": 10.313078880310059
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 100,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        621.3402709960938,
+        69.2573013305664
+      ],
+      "ct_offline_error_px": 3.9003114700317383,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.33529663085938,
+        "top5_px": 162.3800048828125,
+        "top10_px": 162.3800048828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 103,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        469.59515380859375,
+        155.44375610351562
+      ],
+      "ct_offline_error_px": 1.6509407758712769,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 73.89098358154297,
+        "top10_px": 48.903778076171875
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 104,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        581.9904174804688,
+        32.0826416015625
+      ],
+      "ct_offline_error_px": 25.199554443359375,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 221.2240753173828,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 109,
+      "reentry_t": 57,
+      "occ_length": 21,
+      "gt_xy_px": [
+        448.70391845703125,
+        66.13135528564453
+      ],
+      "ct_offline_xy_px": [
+        444.93170166015625,
+        69.47151184082031
+      ],
+      "ct_offline_error_px": 5.038478374481201,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 326.907958984375,
+        "top5_px": 240.2805938720703,
+        "top10_px": 209.38912963867188
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 214.11456298828125,
+        "top5_px": 198.74835205078125,
+        "top10_px": 148.05662536621094
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 37.19945526123047,
+        "top5_px": 21.66115379333496,
+        "top10_px": 8.178567886352539
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 111,
+      "reentry_t": 52,
+      "occ_length": 6,
+      "gt_xy_px": [
+        543.49853515625,
+        314.8800048828125
+      ],
+      "ct_offline_xy_px": [
+        547.1934814453125,
+        311.0799255371094
+      ],
+      "ct_offline_error_px": 5.300304889678955,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 169.88575744628906,
+        "top5_px": 73.33283996582031,
+        "top10_px": 73.33283996582031
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 15.009056091308594,
+        "top5_px": 10.313078880310059,
+        "top10_px": 10.313078880310059
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 117,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        622.5753173828125,
+        69.0829849243164
+      ],
+      "ct_offline_error_px": 3.2145609855651855,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.33529663085938,
+        "top5_px": 162.3800048828125,
+        "top10_px": 162.3800048828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 22.263267517089844,
+        "top5_px": 21.591686248779297,
+        "top10_px": 6.492621898651123
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 120,
+      "reentry_t": 46,
+      "occ_length": 9,
+      "gt_xy_px": [
+        471.16259765625,
+        154.9253692626953
+      ],
+      "ct_offline_xy_px": [
+        471.77685546875,
+        153.8438262939453
+      ],
+      "ct_offline_error_px": 1.2438037395477295,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 73.89098358154297,
+        "top5_px": 73.89098358154297,
+        "top10_px": 72.59302520751953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 85.49147033691406,
+        "top5_px": 72.59302520751953,
+        "top10_px": 72.59302520751953
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.55705261230469,
+        "top5_px": 25.87786865234375,
+        "top10_px": 21.89824867248535
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 121,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        582.799072265625,
+        35.26603698730469
+      ],
+      "ct_offline_error_px": 24.634737014770508,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 208.2541046142578,
+        "top5_px": 208.2541046142578,
+        "top10_px": 195.28453063964844
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 126,
+      "reentry_t": 57,
+      "occ_length": 21,
+      "gt_xy_px": [
+        448.70391845703125,
+        66.13135528564453
+      ],
+      "ct_offline_xy_px": [
+        442.86334228515625,
+        68.77936553955078
+      ],
+      "ct_offline_error_px": 6.412822246551514,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 214.11456298828125,
+        "top5_px": 198.74835205078125,
+        "top10_px": 148.05662536621094
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 214.11456298828125,
+        "top5_px": 198.74835205078125,
+        "top10_px": 148.05662536621094
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 37.19945526123047,
+        "top5_px": 21.66115379333496,
+        "top10_px": 8.178567886352539
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 128,
+      "reentry_t": 52,
+      "occ_length": 6,
+      "gt_xy_px": [
+        543.49853515625,
+        314.8800048828125
+      ],
+      "ct_offline_xy_px": [
+        545.5128784179688,
+        310.7929382324219
+      ],
+      "ct_offline_error_px": 4.55649995803833,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 73.33283996582031,
+        "top5_px": 73.33283996582031,
+        "top10_px": 73.33283996582031
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 15.009056091308594,
+        "top5_px": 10.313078880310059,
+        "top10_px": 10.313078880310059
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 134,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        622.3204345703125,
+        68.93437194824219
+      ],
+      "ct_offline_error_px": 3.157235860824585,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.33529663085938,
+        "top5_px": 162.3800048828125,
+        "top10_px": 162.3800048828125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 22.263267517089844,
+        "top5_px": 21.591686248779297,
+        "top10_px": 6.492621898651123
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 137,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        581.0424194335938,
+        34.173213958740234
+      ],
+      "ct_offline_error_px": 26.253677368164062,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 208.2541046142578,
+        "top5_px": 195.28453063964844,
+        "top10_px": 195.28453063964844
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 143,
+      "reentry_t": 52,
+      "occ_length": 6,
+      "gt_xy_px": [
+        543.49853515625,
+        314.8800048828125
+      ],
+      "ct_offline_xy_px": [
+        542.5219116210938,
+        311.5995178222656
+      ],
+      "ct_offline_error_px": 3.4227750301361084,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 73.33283996582031,
+        "top10_px": 73.33283996582031
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 15.009056091308594,
+        "top5_px": 10.313078880310059,
+        "top10_px": 10.313078880310059
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 149,
+      "reentry_t": 63,
+      "occ_length": 16,
+      "gt_xy_px": [
+        623.485595703125,
+        66.0
+      ],
+      "ct_offline_xy_px": [
+        621.0482177734375,
+        68.35565948486328
+      ],
+      "ct_offline_error_px": 3.389681816101074,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.33529663085938,
+        "top5_px": 162.3800048828125,
+        "top10_px": 154.89157104492188
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.3800048828125,
+        "top5_px": 149.5244598388672,
+        "top10_px": 147.7545166015625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 49.955352783203125,
+        "top5_px": 22.263267517089844,
+        "top10_px": 8.462050437927246
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 152,
+      "reentry_t": 60,
+      "occ_length": 11,
+      "gt_xy_px": [
+        607.1883544921875,
+        31.79715919494629
+      ],
+      "ct_offline_xy_px": [
+        587.3468017578125,
+        34.90423583984375
+      ],
+      "ct_offline_error_px": 20.083354949951172,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 208.2541046142578,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 234.1943817138672,
+        "top5_px": 208.2541046142578,
+        "top10_px": 208.2541046142578
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.81374740600586,
+        "top5_px": 32.2292366027832,
+        "top10_px": 13.174616813659668
+      }
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 158,
+      "reentry_t": 52,
+      "occ_length": 6,
+      "gt_xy_px": [
+        543.49853515625,
+        314.8800048828125
+      ],
+      "ct_offline_xy_px": [
+        541.0347290039062,
+        311.8148193359375
+      ],
+      "ct_offline_error_px": 3.9326460361480713,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 88.97298431396484,
+        "top5_px": 88.97298431396484,
+        "top10_px": 80.48760223388672
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 15.009056091308594,
+        "top5_px": 10.313078880310059,
+        "top10_px": 10.313078880310059
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 0,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        392.71923828125,
+        266.2773742675781
+      ],
+      "ct_offline_xy_px": [
+        393.1847839355469,
+        265.6130676269531
+      ],
+      "ct_offline_error_px": 0.8111942410469055,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 312.3609924316406,
+        "top5_px": 85.0723876953125,
+        "top10_px": 85.0723876953125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.714630126953125,
+        "top5_px": 58.04449462890625,
+        "top10_px": 43.73644256591797
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 43.73644256591797,
+        "top5_px": 17.83745765686035,
+        "top10_px": 17.39079475402832
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 1,
+      "reentry_t": 17,
+      "occ_length": 3,
+      "gt_xy_px": [
+        481.2563781738281,
+        275.0364685058594
+      ],
+      "ct_offline_xy_px": [
+        481.5813293457031,
+        276.4267272949219
+      ],
+      "ct_offline_error_px": 1.4277299642562866,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 38.19288635253906,
+        "top5_px": 38.19288635253906,
+        "top10_px": 32.47362518310547
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 54.395111083984375,
+        "top5_px": 54.395111083984375,
+        "top10_px": 54.395111083984375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.416114807128906,
+        "top5_px": 31.416114807128906,
+        "top10_px": 12.171838760375977
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 2,
+      "reentry_t": 21,
+      "occ_length": 3,
+      "gt_xy_px": [
+        348.88897705078125,
+        317.08026123046875
+      ],
+      "ct_offline_xy_px": [
+        353.4696960449219,
+        316.48260498046875
+      ],
+      "ct_offline_error_px": 4.619543075561523,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 88.0621337890625,
+        "top5_px": 60.520633697509766,
+        "top10_px": 60.520633697509766
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 56.36940383911133,
+        "top5_px": 56.36940383911133,
+        "top10_px": 56.36940383911133
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 34.20446014404297,
+        "top5_px": 8.900068283081055,
+        "top10_px": 8.900068283081055
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 3,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        499.6651306152344,
+        316.2043762207031
+      ],
+      "ct_offline_xy_px": [
+        501.28106689453125,
+        318.13531494140625
+      ],
+      "ct_offline_error_px": 2.5178909301757812,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 202.92271423339844,
+        "top5_px": 169.14999389648438,
+        "top10_px": 161.07481384277344
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 161.07481384277344,
+        "top5_px": 134.60362243652344,
+        "top10_px": 108.13531494140625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.266286849975586,
+        "top5_px": 22.695131301879883,
+        "top10_px": 11.844562530517578
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 4,
+      "reentry_t": 16,
+      "occ_length": 3,
+      "gt_xy_px": [
+        494.48126220703125,
+        301.46820068359375
+      ],
+      "ct_offline_xy_px": [
+        498.2279052734375,
+        302.42230224609375
+      ],
+      "ct_offline_error_px": 3.866218328475952,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 171.21961975097656,
+        "top5_px": 167.00181579589844,
+        "top10_px": 31.031822204589844
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 171.21961975097656,
+        "top5_px": 145.0702667236328,
+        "top10_px": 145.0702667236328
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 41.42865753173828,
+        "top5_px": 22.618022918701172,
+        "top10_px": 3.8264827728271484
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 5,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        458.9670715332031,
+        160.93023681640625
+      ],
+      "ct_offline_xy_px": [
+        456.6114807128906,
+        158.94317626953125
+      ],
+      "ct_offline_error_px": 3.0817556381225586,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.24435424804688,
+        "top5_px": 147.3104705810547,
+        "top10_px": 96.34483337402344
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 167.24435424804688,
+        "top5_px": 147.3104705810547,
+        "top10_px": 111.1584701538086
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.891014099121094,
+        "top5_px": 16.755290985107422,
+        "top10_px": 8.97097396850586
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 6,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        470.2275085449219,
+        206.19717407226562
+      ],
+      "ct_offline_xy_px": [
+        469.1300354003906,
+        208.72679138183594
+      ],
+      "ct_offline_error_px": 2.7574284076690674,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 162.1944122314453,
+        "top5_px": 47.984375,
+        "top10_px": 43.935726165771484
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.1944122314453,
+        "top5_px": 139.70298767089844,
+        "top10_px": 39.351104736328125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 54.87484359741211,
+        "top5_px": 28.97863006591797,
+        "top10_px": 20.785879135131836
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 7,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        442.209716796875,
+        159.0697784423828
+      ],
+      "ct_offline_xy_px": [
+        438.0419616699219,
+        160.56619262695312
+      ],
+      "ct_offline_error_px": 4.4282546043396,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 78.00238800048828,
+        "top5_px": 56.84307861328125,
+        "top10_px": 56.84307861328125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 78.00238800048828,
+        "top5_px": 38.415470123291016,
+        "top10_px": 38.415470123291016
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.415470123291016,
+        "top5_px": 17.890052795410156,
+        "top10_px": 15.52089786529541
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 8,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        393.7993469238281,
+        213.9534912109375
+      ],
+      "ct_offline_xy_px": [
+        395.53631591796875,
+        215.499755859375
+      ],
+      "ct_offline_error_px": 2.325509786605835,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 16.532480239868164,
+        "top5_px": 16.532480239868164,
+        "top10_px": 10.120067596435547
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 86.23247528076172,
+        "top5_px": 18.40972900390625,
+        "top10_px": 10.120067596435547
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.40972900390625,
+        "top5_px": 10.120067596435547,
+        "top10_px": 10.120067596435547
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 9,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        452.4502868652344,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        452.4530334472656,
+        175.33384704589844
+      ],
+      "ct_offline_error_px": 3.240830659866333,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 49.07591247558594,
+        "top5_px": 38.574928283691406,
+        "top10_px": 30.069921493530273
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 316.65155029296875,
+        "top5_px": 313.0517578125,
+        "top10_px": 294.6869812011719
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 30.069921493530273,
+        "top5_px": 16.18938636779785,
+        "top10_px": 3.8558497428894043
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 10,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        461.760009765625,
+        187.906982421875
+      ],
+      "ct_offline_xy_px": [
+        459.7480773925781,
+        190.06480407714844
+      ],
+      "ct_offline_error_px": 2.950265407562256,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 69.8281478881836,
+        "top5_px": 63.476463317871094,
+        "top10_px": 43.49628829956055
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 155.17739868164062,
+        "top5_px": 69.8281478881836,
+        "top10_px": 69.8281478881836
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.33197784423828,
+        "top5_px": 11.680656433105469,
+        "top10_px": 11.403934478759766
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 11,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        456.1741638183594,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        457.6607666015625,
+        174.6293182373047
+      ],
+      "ct_offline_error_px": 2.9398653507232666,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 45.2694206237793,
+        "top5_px": 17.1350154876709,
+        "top10_px": 17.1350154876709
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 276.4065246582031,
+        "top5_px": 33.28084945678711,
+        "top10_px": 17.1350154876709
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 33.28084945678711,
+        "top5_px": 17.1350154876709,
+        "top10_px": 6.810291290283203
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 12,
+      "reentry_t": 17,
+      "occ_length": 1,
+      "gt_xy_px": [
+        440.6268615722656,
+        166.4788818359375
+      ],
+      "ct_offline_xy_px": [
+        442.16632080078125,
+        167.23880004882812
+      ],
+      "ct_offline_error_px": 1.7168024778366089,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 367.2770080566406,
+        "top5_px": 63.5810661315918,
+        "top10_px": 42.606300354003906
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.5810661315918,
+        "top5_px": 42.606300354003906,
+        "top10_px": 16.14379119873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.606300354003906,
+        "top5_px": 16.14379119873047,
+        "top10_px": 12.818464279174805
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 13,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        383.5586853027344,
+        205.58139038085938
+      ],
+      "ct_offline_xy_px": [
+        384.430419921875,
+        204.3057098388672
+      ],
+      "ct_offline_error_px": 1.5450831651687622,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 75.09156799316406,
+        "top5_px": 20.851659774780273,
+        "top10_px": 5.258878231048584
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 349.3742980957031,
+        "top5_px": 53.38035583496094,
+        "top10_px": 5.258878231048584
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 20.851659774780273,
+        "top5_px": 5.258878231048584,
+        "top10_px": 5.258878231048584
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 14,
+      "reentry_t": 21,
+      "occ_length": 7,
+      "gt_xy_px": [
+        379.5701599121094,
+        251.3868865966797
+      ],
+      "ct_offline_xy_px": [
+        382.3804626464844,
+        252.61070251464844
+      ],
+      "ct_offline_error_px": 3.0652124881744385,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 183.95799255371094,
+        "top5_px": 183.3878173828125,
+        "top10_px": 67.4254150390625
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 84.5656509399414,
+        "top5_px": 67.4254150390625,
+        "top10_px": 46.3160285949707
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 24.606632232666016,
+        "top5_px": 11.457232475280762,
+        "top10_px": 2.030435562133789
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 15,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        403.2384948730469,
+        240.0
+      ],
+      "ct_offline_xy_px": [
+        398.8206787109375,
+        238.91473388671875
+      ],
+      "ct_offline_error_px": 4.54916524887085,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 25.88605499267578,
+        "top10_px": 22.400665283203125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 45.48175048828125,
+        "top10_px": 45.48175048828125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 0.680419921875,
+        "top10_px": 0.680419921875
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 16,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        412.88116455078125,
+        244.3795623779297
+      ],
+      "ct_offline_xy_px": [
+        411.07843017578125,
+        243.8218536376953
+      ],
+      "ct_offline_error_px": 1.887032151222229,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 124.6641845703125,
+        "top5_px": 32.34123992919922,
+        "top10_px": 12.416468620300293
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 124.6641845703125,
+        "top5_px": 32.34123992919922,
+        "top10_px": 9.975092887878418
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 32.34123992919922,
+        "top5_px": 9.975092887878418,
+        "top10_px": 9.975092887878418
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 17,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        405.8683166503906,
+        221.6058349609375
+      ],
+      "ct_offline_xy_px": [
+        409.3734436035156,
+        222.63072204589844
+      ],
+      "ct_offline_error_px": 3.6518912315368652,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 57.433624267578125,
+        "top5_px": 40.13007354736328,
+        "top10_px": 18.497175216674805
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 114.93743896484375,
+        "top5_px": 18.497175216674805,
+        "top10_px": 18.497175216674805
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.497175216674805,
+        "top5_px": 18.497175216674805,
+        "top10_px": 5.761028289794922
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 18,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        390.9660339355469,
+        220.72991943359375
+      ],
+      "ct_offline_xy_px": [
+        389.9182434082031,
+        222.73512268066406
+      ],
+      "ct_offline_error_px": 2.262455701828003,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 46.286842346191406,
+        "top5_px": 21.769622802734375,
+        "top10_px": 21.769622802734375
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 21.769622802734375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 11.926191329956055
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 19,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        405.03668212890625,
+        304.0993957519531
+      ],
+      "ct_offline_xy_px": [
+        408.8778381347656,
+        305.69573974609375
+      ],
+      "ct_offline_error_px": 4.15966272354126,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 192.55982971191406,
+        "top5_px": 80.14073944091797,
+        "top10_px": 64.10913848876953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 192.67349243164062,
+        "top5_px": 59.03120803833008,
+        "top10_px": 21.976652145385742
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 21.976652145385742,
+        "top5_px": 21.976652145385742,
+        "top10_px": 1.3547515869140625
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 20,
+      "reentry_t": 20,
+      "occ_length": 14,
+      "gt_xy_px": [
+        388.6889343261719,
+        303.03424072265625
+      ],
+      "ct_offline_xy_px": [
+        389.14654541015625,
+        300.685546875
+      ],
+      "ct_offline_error_px": 2.3928582668304443,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 206.96194458007812,
+        "top5_px": 167.002685546875,
+        "top10_px": 133.03494262695312
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 206.96194458007812,
+        "top5_px": 180.76504516601562,
+        "top10_px": 111.9876937866211
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 53.32240295410156,
+        "top5_px": 8.061701774597168,
+        "top10_px": 8.061701774597168
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 21,
+      "reentry_t": 24,
+      "occ_length": 19,
+      "gt_xy_px": [
+        366.99456787109375,
+        303.3540344238281
+      ],
+      "ct_offline_xy_px": [
+        366.0207214355469,
+        303.91668701171875
+      ],
+      "ct_offline_error_px": 1.1247020959854126,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 173.92530822753906,
+        "top5_px": 90.36660766601562,
+        "top10_px": 77.57221221923828
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 290.6112060546875,
+        "top5_px": 104.48493957519531,
+        "top10_px": 104.48493957519531
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 44.27733612060547,
+        "top5_px": 28.08399772644043,
+        "top10_px": 17.972652435302734
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 22,
+      "reentry_t": 23,
+      "occ_length": 10,
+      "gt_xy_px": [
+        379.6752624511719,
+        297.3913269042969
+      ],
+      "ct_offline_xy_px": [
+        376.3612365722656,
+        304.6291809082031
+      ],
+      "ct_offline_error_px": 7.960483551025391,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 141.40907287597656,
+        "top5_px": 109.09666442871094,
+        "top10_px": 77.10895538330078
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 191.04661560058594,
+        "top5_px": 168.6833953857422,
+        "top10_px": 64.90470123291016
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 48.643516540527344,
+        "top5_px": 18.50895881652832,
+        "top10_px": 5.620959281921387
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 23,
+      "reentry_t": 31,
+      "occ_length": 16,
+      "gt_xy_px": [
+        384.1507873535156,
+        339.8757629394531
+      ],
+      "ct_offline_xy_px": [
+        379.58935546875,
+        343.7030334472656
+      ],
+      "ct_offline_error_px": 5.954381942749023,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 143.7284393310547,
+        "top5_px": 133.7841339111328,
+        "top10_px": 76.52709197998047
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 130.69676208496094,
+        "top5_px": 120.70995330810547,
+        "top10_px": 119.67444610595703
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 29.604887008666992,
+        "top5_px": 20.150718688964844,
+        "top10_px": 5.123310565948486
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 24,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        392.71923828125,
+        266.2773742675781
+      ],
+      "ct_offline_xy_px": [
+        400.6895751953125,
+        265.83502197265625
+      ],
+      "ct_offline_error_px": 7.982602596282959,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 37.4083251953125,
+        "top5_px": 37.4083251953125,
+        "top10_px": 28.838661193847656
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.714630126953125,
+        "top5_px": 58.04449462890625,
+        "top10_px": 43.73644256591797
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 43.73644256591797,
+        "top5_px": 17.83745765686035,
+        "top10_px": 17.39079475402832
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 25,
+      "reentry_t": 17,
+      "occ_length": 3,
+      "gt_xy_px": [
+        481.2563781738281,
+        275.0364685058594
+      ],
+      "ct_offline_xy_px": [
+        482.0166931152344,
+        275.85223388671875
+      ],
+      "ct_offline_error_px": 1.1151466369628906,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 56.81426239013672,
+        "top5_px": 54.395111083984375,
+        "top10_px": 54.395111083984375
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 54.395111083984375,
+        "top5_px": 54.395111083984375,
+        "top10_px": 54.395111083984375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.416114807128906,
+        "top5_px": 31.416114807128906,
+        "top10_px": 12.171838760375977
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 26,
+      "reentry_t": 21,
+      "occ_length": 3,
+      "gt_xy_px": [
+        348.88897705078125,
+        317.08026123046875
+      ],
+      "ct_offline_xy_px": [
+        355.7764587402344,
+        316.93963623046875
+      ],
+      "ct_offline_error_px": 6.888916969299316,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 109.7392349243164,
+        "top5_px": 86.9345703125,
+        "top10_px": 86.9345703125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 56.36940383911133,
+        "top5_px": 56.36940383911133,
+        "top10_px": 56.36940383911133
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 34.20446014404297,
+        "top5_px": 8.900068283081055,
+        "top10_px": 8.900068283081055
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 27,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        499.6651306152344,
+        316.2043762207031
+      ],
+      "ct_offline_xy_px": [
+        506.2564392089844,
+        317.0166320800781
+      ],
+      "ct_offline_error_px": 6.641167640686035,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 187.54763793945312,
+        "top5_px": 114.74121856689453,
+        "top10_px": 56.81827163696289
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 161.07481384277344,
+        "top5_px": 134.60362243652344,
+        "top10_px": 108.13531494140625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.266286849975586,
+        "top5_px": 22.695131301879883,
+        "top10_px": 22.695131301879883
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 28,
+      "reentry_t": 16,
+      "occ_length": 3,
+      "gt_xy_px": [
+        494.48126220703125,
+        301.46820068359375
+      ],
+      "ct_offline_xy_px": [
+        501.3946838378906,
+        303.5465087890625
+      ],
+      "ct_offline_error_px": 7.219055652618408,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 61.49345016479492,
+        "top5_px": 48.527225494384766,
+        "top10_px": 48.527225494384766
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 171.21961975097656,
+        "top5_px": 145.0702667236328,
+        "top10_px": 145.0702667236328
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 41.42865753173828,
+        "top5_px": 22.618022918701172,
+        "top10_px": 9.737044334411621
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 29,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        458.9670715332031,
+        160.93023681640625
+      ],
+      "ct_offline_xy_px": [
+        457.9735412597656,
+        159.9522705078125
+      ],
+      "ct_offline_error_px": 1.3941020965576172,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 96.34483337402344,
+        "top5_px": 86.01793670654297,
+        "top10_px": 76.50122833251953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 167.24435424804688,
+        "top5_px": 147.3104705810547,
+        "top10_px": 111.1584701538086
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.891014099121094,
+        "top5_px": 16.755290985107422,
+        "top10_px": 8.97097396850586
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 30,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        470.2275085449219,
+        206.19717407226562
+      ],
+      "ct_offline_xy_px": [
+        475.6966857910156,
+        212.49383544921875
+      ],
+      "ct_offline_error_px": 8.340254783630371,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 143.3955078125,
+        "top5_px": 143.3955078125,
+        "top10_px": 139.70298767089844
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.1944122314453,
+        "top5_px": 139.70298767089844,
+        "top10_px": 39.351104736328125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.351104736328125,
+        "top5_px": 20.785879135131836,
+        "top10_px": 5.898016929626465
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 31,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        442.209716796875,
+        159.0697784423828
+      ],
+      "ct_offline_xy_px": [
+        441.8888244628906,
+        160.97146606445312
+      ],
+      "ct_offline_error_px": 1.928571343421936,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 78.00238800048828,
+        "top5_px": 56.84307861328125,
+        "top10_px": 38.415470123291016
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 78.00238800048828,
+        "top5_px": 38.415470123291016,
+        "top10_px": 38.415470123291016
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.415470123291016,
+        "top5_px": 17.890052795410156,
+        "top10_px": 15.52089786529541
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 32,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        393.7993469238281,
+        213.9534912109375
+      ],
+      "ct_offline_xy_px": [
+        392.26873779296875,
+        215.0491180419922
+      ],
+      "ct_offline_error_px": 1.882328987121582,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 112.28368377685547,
+        "top5_px": 16.532480239868164,
+        "top10_px": 16.532480239868164
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 86.23247528076172,
+        "top5_px": 18.40972900390625,
+        "top10_px": 10.120067596435547
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.40972900390625,
+        "top5_px": 10.120067596435547,
+        "top10_px": 10.120067596435547
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 33,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        452.4502868652344,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        452.1715393066406,
+        176.85504150390625
+      ],
+      "ct_offline_error_px": 4.770175457000732,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 162.42503356933594,
+        "top5_px": 60.54305648803711,
+        "top10_px": 49.07591247558594
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 316.65155029296875,
+        "top5_px": 313.0517578125,
+        "top10_px": 294.6869812011719
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 30.069921493530273,
+        "top5_px": 25.63145637512207,
+        "top10_px": 3.8558497428894043
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 34,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        461.760009765625,
+        187.906982421875
+      ],
+      "ct_offline_xy_px": [
+        461.9833068847656,
+        190.09092712402344
+      ],
+      "ct_offline_error_px": 2.1953306198120117,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 63.476463317871094,
+        "top5_px": 43.49628829956055,
+        "top10_px": 34.760589599609375
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 155.17739868164062,
+        "top5_px": 69.8281478881836,
+        "top10_px": 69.8281478881836
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.33197784423828,
+        "top5_px": 11.680656433105469,
+        "top10_px": 11.403934478759766
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 35,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        456.1741638183594,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        457.0560302734375,
+        176.26748657226562
+      ],
+      "ct_offline_error_px": 4.266600608825684,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 159.73292541503906,
+        "top5_px": 42.40110397338867,
+        "top10_px": 42.40110397338867
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 276.4065246582031,
+        "top5_px": 33.28084945678711,
+        "top10_px": 17.1350154876709
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 33.28084945678711,
+        "top5_px": 17.1350154876709,
+        "top10_px": 6.810291290283203
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 36,
+      "reentry_t": 17,
+      "occ_length": 1,
+      "gt_xy_px": [
+        440.6268615722656,
+        166.4788818359375
+      ],
+      "ct_offline_xy_px": [
+        442.21929931640625,
+        168.13095092773438
+      ],
+      "ct_offline_error_px": 2.294600248336792,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 344.6940612792969,
+        "top5_px": 322.1817321777344,
+        "top10_px": 42.606300354003906
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.5810661315918,
+        "top5_px": 42.606300354003906,
+        "top10_px": 16.14379119873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.606300354003906,
+        "top5_px": 16.14379119873047,
+        "top10_px": 12.818464279174805
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 37,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        383.5586853027344,
+        205.58139038085938
+      ],
+      "ct_offline_xy_px": [
+        383.38983154296875,
+        205.80010986328125
+      ],
+      "ct_offline_error_px": 0.2763146758079529,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 53.04830551147461,
+        "top5_px": 5.258878231048584,
+        "top10_px": 5.258878231048584
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 349.3742980957031,
+        "top5_px": 53.38035583496094,
+        "top10_px": 5.258878231048584
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 20.851659774780273,
+        "top5_px": 5.258878231048584,
+        "top10_px": 5.258878231048584
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 38,
+      "reentry_t": 21,
+      "occ_length": 7,
+      "gt_xy_px": [
+        379.5701599121094,
+        251.3868865966797
+      ],
+      "ct_offline_xy_px": [
+        382.40283203125,
+        253.4905548095703
+      ],
+      "ct_offline_error_px": 3.5283780097961426,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 231.39247131347656,
+        "top5_px": 216.54759216308594,
+        "top10_px": 205.22390747070312
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 84.5656509399414,
+        "top5_px": 67.4254150390625,
+        "top10_px": 46.3160285949707
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 24.606632232666016,
+        "top5_px": 11.457232475280762,
+        "top10_px": 2.030435562133789
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 39,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        403.2384948730469,
+        240.0
+      ],
+      "ct_offline_xy_px": [
+        398.6933898925781,
+        238.817626953125
+      ],
+      "ct_offline_error_px": 4.696380138397217,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 115.45613098144531,
+        "top5_px": 92.55754852294922,
+        "top10_px": 73.30791473388672
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 45.48175048828125,
+        "top10_px": 45.48175048828125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 0.680419921875,
+        "top10_px": 0.680419921875
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 40,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        412.88116455078125,
+        244.3795623779297
+      ],
+      "ct_offline_xy_px": [
+        411.46923828125,
+        243.76315307617188
+      ],
+      "ct_offline_error_px": 1.540615439414978,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 124.6641845703125,
+        "top5_px": 78.67619323730469,
+        "top10_px": 78.67619323730469
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 124.6641845703125,
+        "top5_px": 32.34123992919922,
+        "top10_px": 9.975092887878418
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 32.34123992919922,
+        "top5_px": 9.975092887878418,
+        "top10_px": 9.975092887878418
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 41,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        405.8683166503906,
+        221.6058349609375
+      ],
+      "ct_offline_xy_px": [
+        407.3371887207031,
+        222.00111389160156
+      ],
+      "ct_offline_error_px": 1.5211280584335327,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 21.815988540649414,
+        "top5_px": 5.761028289794922,
+        "top10_px": 5.761028289794922
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 114.93743896484375,
+        "top5_px": 18.497175216674805,
+        "top10_px": 18.497175216674805
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.497175216674805,
+        "top5_px": 18.497175216674805,
+        "top10_px": 5.761028289794922
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 42,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        390.9660339355469,
+        220.72991943359375
+      ],
+      "ct_offline_xy_px": [
+        388.9570617675781,
+        222.69554138183594
+      ],
+      "ct_offline_error_px": 2.8106296062469482,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 11.926191329956055
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 21.769622802734375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 11.926191329956055
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 43,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        405.03668212890625,
+        304.0993957519531
+      ],
+      "ct_offline_xy_px": [
+        408.77886962890625,
+        303.9461364746094
+      ],
+      "ct_offline_error_px": 3.7453243732452393,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 79.65001678466797,
+        "top5_px": 79.65001678466797,
+        "top10_px": 68.51508331298828
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 192.67349243164062,
+        "top5_px": 59.03120803833008,
+        "top10_px": 21.976652145385742
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 59.03120803833008,
+        "top5_px": 21.976652145385742,
+        "top10_px": 21.976652145385742
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 44,
+      "reentry_t": 20,
+      "occ_length": 14,
+      "gt_xy_px": [
+        388.6889343261719,
+        303.03424072265625
+      ],
+      "ct_offline_xy_px": [
+        396.1632080078125,
+        275.2963562011719
+      ],
+      "ct_offline_error_px": 28.727251052856445,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 206.96194458007812,
+        "top5_px": 180.76504516601562,
+        "top10_px": 111.9876937866211
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 206.96194458007812,
+        "top5_px": 180.76504516601562,
+        "top10_px": 111.9876937866211
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 73.76349639892578,
+        "top5_px": 52.326690673828125,
+        "top10_px": 37.9101676940918
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 45,
+      "reentry_t": 23,
+      "occ_length": 10,
+      "gt_xy_px": [
+        379.6752624511719,
+        297.3913269042969
+      ],
+      "ct_offline_xy_px": [
+        377.42987060546875,
+        296.71441650390625
+      ],
+      "ct_offline_error_px": 2.3452062606811523,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 211.28884887695312,
+        "top5_px": 211.28884887695312,
+        "top10_px": 186.1610870361328
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 191.04661560058594,
+        "top5_px": 168.6833953857422,
+        "top10_px": 64.90470123291016
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.705997467041016,
+        "top5_px": 31.466856002807617,
+        "top10_px": 18.50895881652832
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 46,
+      "reentry_t": 31,
+      "occ_length": 16,
+      "gt_xy_px": [
+        384.1507873535156,
+        339.8757629394531
+      ],
+      "ct_offline_xy_px": [
+        374.8800964355469,
+        336.2536315917969
+      ],
+      "ct_offline_error_px": 9.953167915344238,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 154.12374877929688,
+        "top5_px": 130.69676208496094,
+        "top10_px": 108.67945098876953
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 130.69676208496094,
+        "top5_px": 120.70995330810547,
+        "top10_px": 119.67444610595703
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 40.20623779296875,
+        "top5_px": 21.747459411621094,
+        "top10_px": 20.150718688964844
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 47,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        392.71923828125,
+        266.2773742675781
+      ],
+      "ct_offline_xy_px": [
+        396.6123046875,
+        267.09100341796875
+      ],
+      "ct_offline_error_px": 3.977179527282715,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 81.12531280517578,
+        "top5_px": 43.73644256591797,
+        "top10_px": 43.73644256591797
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.714630126953125,
+        "top5_px": 58.04449462890625,
+        "top10_px": 43.73644256591797
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 43.73644256591797,
+        "top5_px": 17.83745765686035,
+        "top10_px": 17.39079475402832
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 48,
+      "reentry_t": 17,
+      "occ_length": 3,
+      "gt_xy_px": [
+        481.2563781738281,
+        275.0364685058594
+      ],
+      "ct_offline_xy_px": [
+        479.9186096191406,
+        276.662109375
+      ],
+      "ct_offline_error_px": 2.1053106784820557,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 77.43485260009766,
+        "top5_px": 77.43485260009766,
+        "top10_px": 46.89832305908203
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 54.395111083984375,
+        "top5_px": 54.395111083984375,
+        "top10_px": 54.395111083984375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.416114807128906,
+        "top5_px": 31.416114807128906,
+        "top10_px": 12.171838760375977
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 49,
+      "reentry_t": 21,
+      "occ_length": 3,
+      "gt_xy_px": [
+        348.88897705078125,
+        317.08026123046875
+      ],
+      "ct_offline_xy_px": [
+        352.3650817871094,
+        317.4430236816406
+      ],
+      "ct_offline_error_px": 3.4949822425842285,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 109.7392349243164,
+        "top5_px": 109.7392349243164,
+        "top10_px": 86.9345703125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 56.36940383911133,
+        "top5_px": 56.36940383911133,
+        "top10_px": 56.36940383911133
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 34.20446014404297,
+        "top5_px": 8.900068283081055,
+        "top10_px": 8.900068283081055
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 50,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        499.6651306152344,
+        316.2043762207031
+      ],
+      "ct_offline_xy_px": [
+        500.24920654296875,
+        318.4884338378906
+      ],
+      "ct_offline_error_px": 2.3575546741485596,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 161.07481384277344,
+        "top5_px": 88.35231018066406,
+        "top10_px": 88.35231018066406
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 161.07481384277344,
+        "top5_px": 134.60362243652344,
+        "top10_px": 108.13531494140625
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.266286849975586,
+        "top5_px": 22.695131301879883,
+        "top10_px": 11.844562530517578
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 51,
+      "reentry_t": 16,
+      "occ_length": 3,
+      "gt_xy_px": [
+        494.48126220703125,
+        301.46820068359375
+      ],
+      "ct_offline_xy_px": [
+        495.1538391113281,
+        305.3714904785156
+      ],
+      "ct_offline_error_px": 3.9608118534088135,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 176.29324340820312,
+        "top5_px": 83.0993881225586,
+        "top10_px": 76.25975799560547
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 171.21961975097656,
+        "top5_px": 145.0702667236328,
+        "top10_px": 145.0702667236328
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 31.031822204589844,
+        "top5_px": 9.737044334411621,
+        "top10_px": 3.8264827728271484
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 52,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        458.9670715332031,
+        160.93023681640625
+      ],
+      "ct_offline_xy_px": [
+        457.5829772949219,
+        158.86399841308594
+      ],
+      "ct_offline_error_px": 2.4869775772094727,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 167.24435424804688,
+        "top5_px": 147.3104705810547,
+        "top10_px": 86.01793670654297
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 167.24435424804688,
+        "top5_px": 147.3104705810547,
+        "top10_px": 111.1584701538086
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.891014099121094,
+        "top5_px": 16.755290985107422,
+        "top10_px": 8.97097396850586
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 53,
+      "reentry_t": 16,
+      "occ_length": 2,
+      "gt_xy_px": [
+        470.2275085449219,
+        206.19717407226562
+      ],
+      "ct_offline_xy_px": [
+        474.0176086425781,
+        212.02908325195312
+      ],
+      "ct_offline_error_px": 6.955287456512451,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 139.70298767089844,
+        "top5_px": 43.935726165771484,
+        "top10_px": 28.97863006591797
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 162.1944122314453,
+        "top5_px": 139.70298767089844,
+        "top10_px": 39.351104736328125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 39.351104736328125,
+        "top5_px": 20.785879135131836,
+        "top10_px": 5.898016929626465
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 54,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        442.209716796875,
+        159.0697784423828
+      ],
+      "ct_offline_xy_px": [
+        442.6227111816406,
+        159.54559326171875
+      ],
+      "ct_offline_error_px": 0.6300508975982666,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 74.373779296875,
+        "top5_px": 56.84307861328125,
+        "top10_px": 38.415470123291016
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 78.00238800048828,
+        "top5_px": 38.415470123291016,
+        "top10_px": 38.415470123291016
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.415470123291016,
+        "top5_px": 17.890052795410156,
+        "top10_px": 15.52089786529541
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 55,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        393.7993469238281,
+        213.9534912109375
+      ],
+      "ct_offline_xy_px": [
+        393.8616638183594,
+        214.1416015625
+      ],
+      "ct_offline_error_px": 0.19816382229328156,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 90.99526977539062,
+        "top5_px": 16.532480239868164,
+        "top10_px": 10.120067596435547
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 86.23247528076172,
+        "top5_px": 18.40972900390625,
+        "top10_px": 10.120067596435547
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.40972900390625,
+        "top5_px": 10.120067596435547,
+        "top10_px": 10.120067596435547
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 56,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        452.4502868652344,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        452.90264892578125,
+        177.1177520751953
+      ],
+      "ct_offline_error_px": 5.045055866241455,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 49.07591247558594,
+        "top5_px": 38.574928283691406,
+        "top10_px": 30.069921493530273
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 316.65155029296875,
+        "top5_px": 313.0517578125,
+        "top10_px": 294.6869812011719
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 30.069921493530273,
+        "top5_px": 25.63145637512207,
+        "top10_px": 3.8558497428894043
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 57,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        461.760009765625,
+        187.906982421875
+      ],
+      "ct_offline_xy_px": [
+        460.4342956542969,
+        191.45352172851562
+      ],
+      "ct_offline_error_px": 3.786219596862793,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 69.8281478881836,
+        "top5_px": 63.476463317871094,
+        "top10_px": 37.17277526855469
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 155.17739868164062,
+        "top5_px": 69.8281478881836,
+        "top10_px": 69.8281478881836
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 52.33197784423828,
+        "top5_px": 11.680656433105469,
+        "top10_px": 11.403934478759766
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 58,
+      "reentry_t": 17,
+      "occ_length": 2,
+      "gt_xy_px": [
+        456.1741638183594,
+        172.093017578125
+      ],
+      "ct_offline_xy_px": [
+        457.4173889160156,
+        176.74034118652344
+      ],
+      "ct_offline_error_px": 4.8107404708862305,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 54.65431594848633,
+        "top5_px": 33.28084945678711,
+        "top10_px": 17.1350154876709
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 276.4065246582031,
+        "top5_px": 33.28084945678711,
+        "top10_px": 17.1350154876709
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 33.28084945678711,
+        "top5_px": 17.1350154876709,
+        "top10_px": 6.810291290283203
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 59,
+      "reentry_t": 17,
+      "occ_length": 1,
+      "gt_xy_px": [
+        440.6268615722656,
+        166.4788818359375
+      ],
+      "ct_offline_xy_px": [
+        443.0787658691406,
+        168.17236328125
+      ],
+      "ct_offline_error_px": 2.9798848628997803,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 344.6940612792969,
+        "top5_px": 322.1817321777344,
+        "top10_px": 42.606300354003906
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 63.5810661315918,
+        "top5_px": 42.606300354003906,
+        "top10_px": 16.14379119873047
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 42.606300354003906,
+        "top5_px": 16.14379119873047,
+        "top10_px": 12.818464279174805
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 60,
+      "reentry_t": 19,
+      "occ_length": 2,
+      "gt_xy_px": [
+        383.5586853027344,
+        205.58139038085938
+      ],
+      "ct_offline_xy_px": [
+        386.47613525390625,
+        205.95346069335938
+      ],
+      "ct_offline_error_px": 2.94107985496521,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 75.09156799316406,
+        "top5_px": 53.38035583496094,
+        "top10_px": 5.258878231048584
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 349.3742980957031,
+        "top5_px": 53.38035583496094,
+        "top10_px": 5.258878231048584
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 20.851659774780273,
+        "top5_px": 5.258878231048584,
+        "top10_px": 5.258878231048584
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 61,
+      "reentry_t": 21,
+      "occ_length": 7,
+      "gt_xy_px": [
+        379.5701599121094,
+        251.3868865966797
+      ],
+      "ct_offline_xy_px": [
+        381.5160217285156,
+        252.11537170410156
+      ],
+      "ct_offline_error_px": 2.0777556896209717,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 223.71717834472656,
+        "top5_px": 216.54759216308594,
+        "top10_px": 213.5648651123047
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 84.5656509399414,
+        "top5_px": 67.4254150390625,
+        "top10_px": 46.3160285949707
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 24.606632232666016,
+        "top5_px": 11.457232475280762,
+        "top10_px": 2.030435562133789
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 62,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        403.2384948730469,
+        240.0
+      ],
+      "ct_offline_xy_px": [
+        399.7713623046875,
+        239.73988342285156
+      ],
+      "ct_offline_error_px": 3.4768762588500977,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 69.77934265136719,
+        "top5_px": 68.56280517578125,
+        "top10_px": 68.56280517578125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 45.48175048828125,
+        "top10_px": 45.48175048828125
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 47.295745849609375,
+        "top5_px": 0.680419921875,
+        "top10_px": 0.680419921875
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 63,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        412.88116455078125,
+        244.3795623779297
+      ],
+      "ct_offline_xy_px": [
+        412.1431579589844,
+        241.95394897460938
+      ],
+      "ct_offline_error_px": 2.535400152206421,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 309.1357421875,
+        "top5_px": 286.0643005371094,
+        "top10_px": 124.6641845703125
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 124.6641845703125,
+        "top5_px": 32.34123992919922,
+        "top10_px": 9.975092887878418
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 32.34123992919922,
+        "top5_px": 9.975092887878418,
+        "top10_px": 9.975092887878418
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 64,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        405.8683166503906,
+        221.6058349609375
+      ],
+      "ct_offline_xy_px": [
+        408.2239074707031,
+        221.6935272216797
+      ],
+      "ct_offline_error_px": 2.357222557067871,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 256.5016784667969,
+        "top5_px": 18.497175216674805,
+        "top10_px": 18.497175216674805
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 114.93743896484375,
+        "top5_px": 18.497175216674805,
+        "top10_px": 18.497175216674805
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 18.497175216674805,
+        "top5_px": 18.497175216674805,
+        "top10_px": 5.761028289794922
+      }
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 65,
+      "reentry_t": 19,
+      "occ_length": 3,
+      "gt_xy_px": [
+        390.9660339355469,
+        220.72991943359375
+      ],
+      "ct_offline_xy_px": [
+        389.0961608886719,
+        222.4833526611328
+      ],
+      "ct_offline_error_px": 2.563387155532837,
+      "v0_dinov2_query_anchor": {
+        "top1_px": 59.49738311767578,
+        "top5_px": 59.49738311767578,
+        "top10_px": 38.39521789550781
+      },
+      "v1_last_visible_anchor": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 21.769622802734375
+      },
+      "v2_ct_offline_local": {
+        "top1_px": 38.39521789550781,
+        "top5_px": 21.769622802734375,
+        "top10_px": 11.926191329956055
+      }
+    }
+  ]
+}

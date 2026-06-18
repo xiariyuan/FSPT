@@ -1,0 +1,31 @@
+{
+  "cache_path": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_online_strided_original.pt",
+  "model_name": "cotracker3_online_strided",
+  "protocol": "strided+original",
+  "n_records": 30,
+  "n_clean": 10,
+  "n_issues": 20,
+  "pass": false,
+  "issues": [
+    "[bike-packing] pred_tracks: expected range [0.0, 1.0], got [-0.031506, 1.014276]",
+    "[breakdance] pred_tracks: expected range [0.0, 1.0], got [-0.176718, 0.919624]",
+    "[camel] pred_tracks: expected range [0.0, 1.0], got [-0.157369, 0.849540]",
+    "[car-roundabout] pred_tracks: expected range [0.0, 1.0], got [-0.631526, 0.875889]",
+    "[car-shadow] pred_tracks: expected range [0.0, 1.0], got [0.197233, 1.001332]",
+    "[dance-twirl] pred_tracks: expected range [0.0, 1.0], got [-0.095399, 1.542748]",
+    "[dogs-jump] pred_tracks: expected range [0.0, 1.0], got [-0.038555, 1.231120]",
+    "[drift-straight] pred_tracks: expected range [0.0, 1.0], got [0.007667, 1.743434]",
+    "[gold-fish] pred_tracks: expected range [0.0, 1.0], got [0.083132, 1.142412]",
+    "[horsejump-high] pred_tracks: expected range [0.0, 1.0], got [-0.014224, 0.757736]",
+    "[india] pred_tracks: expected range [0.0, 1.0], got [-0.174001, 1.246811]",
+    "[lab-coat] pred_tracks: expected range [0.0, 1.0], got [0.016213, 3.445896]",
+    "[libby] pred_tracks: expected range [0.0, 1.0], got [-0.028977, 1.106090]",
+    "[loading] pred_tracks: expected range [0.0, 1.0], got [-0.062954, 1.018160]",
+    "[mbike-trick] pred_tracks: expected range [0.0, 1.0], got [-0.205763, 0.970903]",
+    "[motocross-jump] pred_tracks: expected range [0.0, 1.0], got [-0.762019, 0.910334]",
+    "[pigs] pred_tracks: expected range [0.0, 1.0], got [-0.026074, 0.934108]",
+    "[scooter-black] pred_tracks: expected range [0.0, 1.0], got [0.185978, 1.012638]",
+    "[shooting] pred_tracks: expected range [0.0, 1.0], got [-0.142160, 1.037529]",
+    "[soapbox] pred_tracks: expected range [0.0, 1.0], got [-0.249734, 1.088280]"
+  ]
+}
