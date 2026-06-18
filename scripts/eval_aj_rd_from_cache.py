@@ -26,6 +26,7 @@ if str(PROJECT_ROOT) not in sys.path:
 from utils.attempt0_schema import load_attempt0_cache
 from utils.reentry_metrics import (
     DEFAULT_AJRD_D_MINS,
+    DEFAULT_AJ_THRESHOLDS,
     DEFAULT_PROXY_THRESHOLDS,
     compute_first_reentry_proxy,
     compute_reappearance_segment_aj,
@@ -99,7 +100,7 @@ def compute_reentry_metrics(
                 event=evt,
                 height=height,
                 width=width,
-                thresholds=DEFAULT_PROXY_THRESHOLDS,
+                thresholds=DEFAULT_AJ_THRESHOLDS,
             )
             if ajrd is not None:
                 ajrd_events.append(ajrd)
@@ -218,10 +219,6 @@ def main() -> None:
         "n_reentry_queries_total": total_n,
         "first_reentry_frame_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
         "true_AJ_RD": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
-        "n_eligible_events_by_dmin": {
-            str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
-            for d in d_mins
-        },
         "n_eligible_events_by_dmin": {
             str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
             for d in d_mins

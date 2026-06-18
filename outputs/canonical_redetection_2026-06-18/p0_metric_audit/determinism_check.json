@@ -1,0 +1,27 @@
+{
+  "first_reentry_frame_proxy": {
+    "run1": 0.3551,
+    "run2": 0.3551,
+    "diff": 0.0,
+    "pass": true
+  },
+  "true_AJ_RD": {
+    "run1": 0.2937,
+    "run2": 0.2937,
+    "diff": 0.0,
+    "pass": true
+  },
+  "n_reentry_queries_total": {
+    "run1": 267,
+    "run2": 267,
+    "diff": 0.0,
+    "pass": true
+  },
+  "_summary": {
+    "cache_path": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt",
+    "n_comparisons": 7,
+    "all_pass": true,
+    "max_diff": 0.0,
+    "tol": 1e-06
+  }
+}

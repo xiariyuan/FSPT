@@ -1,35 +1,25 @@
 {
-  "phase": "P0",
-  "title": "Metric, Coordinate, and Cache Audit",
-  "date": "2026-06-18",
-  "git_commit": "5b46121",
+  "date": "2026-06-19",
+  "git_commit": "05e60bf3fbdc0d470050b45bd24bba3caac19458",
+  "git_diff": "scripts/eval_aj_rd_from_cache.py | 7 ++-----\n 1 file changed, 2 insertions(+), 5",
   "protocol": "strided+original",
+  "dataset_path": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl",
   "cache_schema_version": 1,
   "coord_format": "yx_normalized_by_size_minus_1",
+  "teacher_name": "cotracker3_offline,cotracker3_online,trackon2",
+  "feature_source": "",
+  "checkpoint_path": "",
   "environment": {
-    "python": "3.11.8",
-    "device": "cuda"
+    "python_version": "3.11.8",
+    "device": "cuda",
+    "cuda_version": "12.1",
+    "gpu_name": "B1.gpu.medium"
   },
-  "inputs": {
-    "cotracker3_online": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_online_strided_original.pt",
-    "cotracker3_offline": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt",
-    "trackon2": "caches/trackon2_strided_original.pt",
-    "tapvid_davis": "/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl"
-  },
-  "scripts_used": [
-    "utils/coords.py (new)",
-    "scripts/eval_aj_rd_from_cache.py (new)",
-    "scripts/audit_cache_schema.py (new)",
-    "scripts/audit_visibility_reentry_events.py (new)"
+  "determinism_pass": true,
+  "n_run_scripts": [
+    "eval_aj_rd_from_cache.py",
+    "audit_cache_schema.py",
+    "audit_visibility_reentry_events.py"
   ],
-  "outputs": [
-    "p0_metric_audit/manifest.json",
-    "p0_metric_audit/metrics_summary.json",
-    "p0_metric_audit/per_video_metrics.json",
-    "p0_metric_audit/summary.md",
-    "p0_metric_audit/decision.md",
-    "p0_metric_audit/schema_*.json",
-    "p0_metric_audit/aj_rd_*.json",
-    "p0_metric_audit/reentry_audit.json"
-  ]
+  "phase": "P0"
 }
