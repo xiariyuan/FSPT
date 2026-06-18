@@ -54,10 +54,15 @@ def build_pseudo_labels(
     payload = load_attempt0_cache(Path(cache_path))
     ct_off_payload = load_attempt0_cache(Path(ct_offline_cache))
     records = payload["records"]
-    ct_off_records = ct_off_payload["records"]
+    # Build full ct_off dict by video_id (fix D: avoid positional mismatch)
+    ct_off_by_video = {str(r["video_id"]): r for r in ct_off_payload["records"]}
     if max_videos > 0:
         records = records[:max_videos]
-        ct_off_records = ct_off_records[:max_videos]
+    # Verify all records have ct_off data
+    for r in records:
+        vid = str(r["video_id"])
+        if vid not in ct_off_by_video:
+            raise ValueError(f"ct-offline cache missing video: {vid}")
 
     import pickle
     with open(pkl_path, "rb") as f:
@@ -71,7 +76,7 @@ def build_pseudo_labels(
             frame_feat_cache[key] = dino.feature_map(frame_rgb)
         return frame_feat_cache[key]
 
-    ct_off_by_video = {str(rec["video_id"]): rec for rec in ct_off_records}
+        from utils.fb_consistency import compute_fb_error
 
     labels: List[Dict[str, Any]] = []
     total = 0
@@ -164,9 +169,18 @@ def build_pseudo_labels(
             if pl_error < 16:
                 quality_flags.append("within_16px")
 
-            # FB consistency placeholder (TBD with actual flow)
-            fb_error = -1.0  # placeholder
-            flow_consistency_error = -1.0  # placeholder
+            # FB consistency: forward-backward tracking via DINO
+            if t_re + 1 < len(video_rgb):
+                from utils.fb_consistency import compute_fb_error
+                fb_error = compute_fb_error(
+                    video_rgb[t_re], video_rgb[t_re + 1],
+                    float(pl_x), float(pl_y),
+                    dino.model, device,
+                    patch_size=48, search_radius=12,
+                )
+            else:
+                fb_error = -1.0
+            flow_consistency_error = -1.0  # TBD: requires external flow
 
             labels.append({
                 "video_id": vid,
