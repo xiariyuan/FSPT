@@ -34,7 +34,8 @@ Go/Stop criteria:
 
 ## Decision
 
-`BRANCH_GO -> P3A (diagnostic only)`
+`PARTIAL_LOCAL_FEATURE_SMOKE`
 
-This does not reopen training. It means the only useful signal is the
-CT-offline-centered local search branch; whole-frame retrieval remains weak.
+This is diagnostic only. The only useful signal is the CT-offline-centered
+local search branch; whole-frame retrieval remains weak. P3A pseudo-label
+smoke is already stopped and must not be treated as a training path.

@@ -1,7 +1,7 @@
 # P0 — Metric, Coordinate, and Cache Audit Summary
 
 **日期**: 2026-06-18  
-**结论**: ✅ **GO** — 所有检查通过
+**结论**: ⚠️ **BLOCKED_METRIC_RECONCILIATION** — technical audit passes, final gate remains blocked
 
 ---
 
@@ -41,4 +41,4 @@
 
 ## 5. 决策
 
-**GO → P1**。P0 的坐标、schema 和 re-entry 事件统计通过；`AJ_RD` 口径已按 per-sample 汇总重算。
+**BLOCKED_METRIC_RECONCILIATION**。P0 的坐标、schema 和 re-entry 事件统计通过；`AJ_RD` 口径已按 per-sample 汇总重算，但 phase gate 仍保留为 blocked，等待后续复核一致性确认。
