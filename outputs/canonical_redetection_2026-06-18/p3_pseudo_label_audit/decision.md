@@ -1,7 +1,17 @@
 # P3A Decision
 
-**日期**: 2026-06-18
-**结论**: `SMOKE_STOP`
+**日期**: 2026-06-19
+
+## 统一口径
+
+```
+P2 local smoke produced weak diagnostic signal.
+P3A pseudo-label rollout failed.
+Do not proceed to P4. Do not train.
+```
+
+P2 决策已从 `BRANCH_GO → P3A` 改为 `PARTIAL_LOCAL_FEATURE_SMOKE`。
+P3A 保留 `SMOKE_STOP`。
 
 ## Smoke 结果
 

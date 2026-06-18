@@ -1,25 +1,26 @@
 # P1 Decision
 
-**日期**: 2026-06-18  
-**Decision**: `WEAK_GO`
+**日期**: 2026-06-19
 
-## Teacher Audit Results
+**Decision**: `INVALID_UNTIL_P0_FIXED`
 
-| Teacher | Median re-entry | <4px | <8px |
-|---|---:|---:|---:|
-| CoTracker3 offline | **3.71px** | **53.8%** | **80.2%** |
-| CoTracker3 online | 3.86px | 51.3% | 77.0% |
-| Track-On2 | 3.91px | 51.0% | 73.6% |
+## 状态说明
 
-## Oracle Teacher Selection
+P1 的 oracle teacher gain 当前基于 `first_reentry_frame_proxy`，不是 true AJ_RD。在 P0 的 true AJ_RD 口径完全锁定前，P1 的 Go/Stop 判定视为无效。
+
+## Oracle Teacher Selection（基于 first_reentry_frame_proxy）
 
 | Metric | Fixed Best (CT-offline) | Oracle Selection | Gain |
 |---|---:|---:|---:|
-| AJ_RD | 0.3870 | 0.4117 | **+0.0247 (+2.5pp)** |
+| first_reentry_frame_proxy | 0.4101 | 不变待复核 | TBD |
 | Median re-entry | 3.71px | 1.70px | -2.01px |
 
-## Go/Stop 判定
+## 当前阻止 P1 通过的问题
 
-| Criteria | 状态 |
-|---|---|
-| Oracle AJ_RD gain >= 5pp | ⚠️ **+2.5pp** → WEAK_GO |
+1. P0 = `BLOCKED_METRIC_RECONCILIATION`，P1 不能单独 GO
+2. Oracle gain 使用的 AJ_RD proxy 与 true AJ_RD 存在差异
+3. 需要等 P0 的 true AJ_RD 完全确认后，用真实 AJ_RD 重算 oracle gain
+
+## 下一步
+
+P0 通过 → P1 用 true AJ_RD 重算 oracle teacher gain → 再判定 Go/Stop

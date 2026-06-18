@@ -133,8 +133,8 @@ def compute_reentry_metrics(
 
     return {
         "n_reentry_queries": n_q,
-        "aj_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
-        "aj_rd": round(float(np.mean([q["ajrd_summary"]["aj_rd"] for q in per_query if q.get("ajrd_summary", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else None,
+        "first_reentry_frame_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
+        "true_AJ_RD": round(float(np.mean([q["ajrd_summary"]["aj_rd"] for q in per_query if q.get("ajrd_summary", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else None,
         "n_eligible_events_by_dmin": {str(int(d)): int(eligible_counts[int(d)]) for d in d_mins},
         "reentry_error": _bucket_stats(np.asarray(proxy_errors, dtype=np.float32)),
         "long_occ_ge20": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 20], dtype=np.float32)),
@@ -207,14 +207,21 @@ def main() -> None:
         "protocol": payload.get("protocol", "unknown"),
         "model_name": payload.get("model_name", "unknown"),
         "metric_name": "reentry_proxy_and_ajrd",
+        "note": (
+            "first_reentry_frame_proxy = single-frame Jaccard at first re-entry frame. "
+            "true_AJ_RD = TAPNext++ style AJ computed over full post-reappearance trajectory. "
+            "Only true AJ_RD should be used for paper-level comparisons."
+        ),
         "thresholds": list(proxy_thresholds),
         "ajrd_d_mins": list(d_mins),
         "n_videos": len(all_results),
         "n_reentry_queries_total": total_n,
-        "aj_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
-        "aj_rd": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
-        "reentry_average_jaccard_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
-        "reentry_average_jaccard": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
+        "first_reentry_frame_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
+        "true_AJ_RD": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
+        "n_eligible_events_by_dmin": {
+            str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
+            for d in d_mins
+        },
         "n_eligible_events_by_dmin": {
             str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
             for d in d_mins
@@ -231,8 +238,8 @@ def main() -> None:
 
     print(f"Wrote {args.output_json}")
     print(
-        f"AJ_PROXY={summary['aj_proxy']:.4f}, "
-        f"AJ_RD={summary['aj_rd']}, "
+        f"first_reentry_proxy={summary['first_reentry_frame_proxy']:.4f}, "
+        f"true_AJ_RD={summary['true_AJ_RD']}, "
         f"n_reentry={total_n}, "
         f"median={summary['reentry_error']['median_px']:.1f}px, "
         f"<4px={summary['reentry_error']['lt4px']*100:.1f}%"
