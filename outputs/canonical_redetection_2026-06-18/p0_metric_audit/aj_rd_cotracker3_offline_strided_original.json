@@ -5,10 +5,15 @@
   "metric_name": "reentry_proxy_and_ajrd",
   "aggregation_unit": "query_weighted",
   "consistency_check": {
-    "true_AJ_RD_from_per_query_mean": 0.387,
-    "true_AJ_RD_from_per_video_mean": 0.3455,
-    "max_abs_diff": 0.0415,
-    "pass": false
+    "note": "from_dmin_means != summary_ajrd because per-query aj_rd averages per-d_min means, while from_dmin_means averages all per-query per-d_min values directly. Expected when queries have unequal d_min coverage.",
+    "summary_ajrd": 0.387,
+    "from_dmin_means": 0.368,
+    "diff": 0.019000000000000017,
+    "weighting_diagnostic": {
+      "per_query_mean": 0.387,
+      "per_video_mean": 0.3455,
+      "diff": 0.0415
+    }
   },
   "n_valid_samples_by_dmin": {
     "1": 1385,

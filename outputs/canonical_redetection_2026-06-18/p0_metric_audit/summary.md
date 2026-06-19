@@ -63,7 +63,7 @@ N/A = d_min 无 eligible events（排除，不计入 AJ_RD 平均）。AJ_RD 只
 |---|---:|---:|---:|---:|---:|---:|
 | 全部（GT 一致） | 1863 | 1214 | 421 | 0 | 0 |
 
-`d_min=64` 和 `d_min=256` 无 eligible events。原因：d_min=256 超出最大遮挡长度（99 帧）；d_min=64 虽最大值 99 帧 ≥ 64，但落在 [64,99] 的 5 个 occlusion run 均未通过 eligibility 过滤（需满足 record-breaking reappearance 定义）。详见 `reentry_metrics.py:summarize_reappearance_ajrd` docstring。
+`d_min=64` 和 `d_min=256` 无 eligible events。原因：没有任何 reappearance 事件的遮挡长度达到 64 帧（最长的几个事件落在 [50,63] 区间）。occ 分桶中的 50-99 区间 5 个事件全部落在 [50,63]。
 
 ### 3.5 事件层级关系
 

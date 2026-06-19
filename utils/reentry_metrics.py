@@ -199,10 +199,11 @@ def summarize_reappearance_ajrd(
     with at least one eligible event contribute to the mean; dmin values with
     zero eligible events are silently excluded (N/A), not counted as 0.
 
-    Note for DAVIS: d_min=64 and d_min=256 have no eligible events (max occlusion
-    on DAVIS is 99 frames, but no occ run in [64,99] survived the eligibility
-    filter). Therefore on DAVIS this function effectively averages over
-    {1, 4, 16} rather than the full {1, 4, 16, 64, 256} set.
+    Note for DAVIS: d_min=64 and d_min=256 have no eligible events because no
+    reappearance event has occlusion length >= 64 (the longest events fall in
+    [50, 63]). The 5 events in the 50-99 occlusion bucket all fall in [50, 63].
+    Therefore on DAVIS this function effectively averages over {1, 4, 16}
+    rather than the full {1, 4, 16, 64, 256} set.
     This is not equivalent to the TAPNext++ AJ_RD definition which uses
     the full fixed d_min set; see compute_reappearance_segment_aj with
     use_256_space=True for the TAPNext++-comparable path.
