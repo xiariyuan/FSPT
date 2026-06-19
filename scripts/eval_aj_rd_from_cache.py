@@ -149,11 +149,29 @@ def compute_reentry_metrics(
     long_20 = occ_lengths >= 20
     long_50 = occ_lengths >= 50
 
+    # Aggregate by_dmin across all eligible queries
+    def _aggregate_by_dmin(queries: List[Dict], summary_key: str) -> Dict[str, float]:
+        """Compute mean AJ_RD@d_min across all queries with by_dmin data."""
+        dmin_buckets: Dict[str, List[float]] = {}
+        for q in queries:
+            s = q.get(summary_key, {})
+            bd = s.get("by_dmin", {})
+            for dm_str, dm_dict in bd.items():
+                mean_val = dm_dict.get("mean")
+                if mean_val is not None:
+                    dmin_buckets.setdefault(dm_str, []).append(float(mean_val))
+        return {k: round(float(np.mean(v)), 4) for k, v in dmin_buckets.items()}
+
+    ajrd_by_dmin = _aggregate_by_dmin(per_query, "ajrd_summary")
+    ajrd_by_dmin_256 = _aggregate_by_dmin(per_query, "ajrd_summary_256")
+
     return {
         "n_reentry_queries": n_q,
         "first_reentry_frame_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
         "true_AJ_RD": round(float(np.mean([q["ajrd_summary"]["aj_rd"] for q in per_query if q.get("ajrd_summary", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else None,
         "true_AJ_RD_256": round(float(np.mean([q["ajrd_summary_256"]["aj_rd"] for q in per_query if q.get("ajrd_summary_256", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else None,
+        "aj_rd_by_dmin": ajrd_by_dmin,
+        "aj_rd_by_dmin_256": ajrd_by_dmin_256,
         "n_eligible_events_by_dmin": {str(int(d)): int(eligible_counts[int(d)]) for d in d_mins},
         "reentry_error": _bucket_stats(np.asarray(proxy_errors, dtype=np.float32)),
         "long_occ_ge20": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 20], dtype=np.float32)),
@@ -224,6 +242,15 @@ def main() -> None:
             if q["occ_length"] >= 50:
                 long50_errs.append(float(q["proxy_error_px"]))
 
+    # Aggregate by_dmin across videos
+    all_by_dmin: Dict[str, List[float]] = {}
+    all_by_dmin_256: Dict[str, List[float]] = {}
+    for r in all_results:
+        for dm_str, val in r.get("aj_rd_by_dmin", {}).items():
+            all_by_dmin.setdefault(dm_str, []).append(float(val))
+        for dm_str, val in r.get("aj_rd_by_dmin_256", {}).items():
+            all_by_dmin_256.setdefault(dm_str, []).append(float(val))
+
     summary = {
         "cache_path": args.cache_path,
         "protocol": payload.get("protocol", "unknown"),
@@ -241,6 +268,8 @@ def main() -> None:
         "first_reentry_frame_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
         "true_AJ_RD": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
         "true_AJ_RD_256": round(float(np.mean(ajrd_vals_256)) if ajrd_vals_256 else 0.0, 4) if ajrd_vals_256 else None,
+        "aj_rd_by_dmin": {k: round(float(np.mean(v)), 4) for k, v in all_by_dmin.items()},
+        "aj_rd_by_dmin_256": {k: round(float(np.mean(v)), 4) for k, v in all_by_dmin_256.items()},
         "n_eligible_events_by_dmin": {
             str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
             for d in d_mins

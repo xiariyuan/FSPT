@@ -39,37 +39,41 @@
 - 256-space 值较高的原因：相同 px 阈值在 256×256 下比 480×854 下占比更大
 - `true_AJ_RD < true_AJ_RD_256 < first_reentry_proxy` 符合预期
 
-### 3.2 Eligible events by d_min
+### 3.2 true_AJ_RD breakdown by d_min
 
-d_min = 最小遮挡长度，用于筛选 eligible re-appearance event。
+| Baseline | AJ_RD | AJ_RD@1 | AJ_RD@4 | AJ_RD@16 | AJ_RD@64 | AJ_RD@256 |
+|---|---:|---:|---:|---:|---:|---:|
+| CoTracker3 online | 0.4101 | 0.3618 | 0.3325 | 0.2511 | N/A | N/A |
+| CoTracker3 offline | 0.3870 | 0.3458 | 0.3110 | 0.2342 | N/A | N/A |
+| Track-On2 | 0.3700 | 0.3271 | 0.2994 | 0.2170 | N/A | N/A |
+
+### 3.3 true_AJ_RD_256 breakdown by d_min (TAPNext++ comparable)
+
+| Baseline | AJ_RD_256 | AJ_RD_256@1 | AJ_RD_256@4 | AJ_RD_256@16 | AJ_RD_256@64 | AJ_RD_256@256 |
+|---|---:|---:|---:|---:|---:|---:|
+| CoTracker3 online | 0.5972 | 0.5312 | 0.4914 | 0.3972 | N/A | N/A |
+| CoTracker3 offline | 0.5546 | 0.4975 | 0.4467 | 0.3556 | N/A | N/A |
+| Track-On2 | 0.5383 | 0.4909 | 0.4519 | 0.3478 | N/A | N/A |
+
+### 3.4 Eligible events by d_min
 
 | Baseline | d_min=1 | d_min=4 | d_min=16 | d_min=64 | d_min=256 |
-|---|---:|---:|---:|---:|---:|
-| 全部 | 1863 | 1214 | 421 | 0 | 0 |
+|---|---:|---:|---:|---:|---:|---:|
+| 全部（GT 一致） | 1863 | 1214 | 421 | 0 | 0 |
 
-所有 baseline 使用相同的 GT，eligible events 一致。
+`d_min=64` 和 `d_min=256` 无 eligible events（最长遮挡只有 99 帧）。
 
-### 3.3 true_AJ_RD@d_min 分解
-
-当前输出尚未分解 AJ_RD@d_min。代码中的 `summarize_reappearance_ajrd` 已实现 per-d_min 聚合，
-但 summary 输出层尚未展开。预计在最终 audit closure 中补全：
+### 3.5 事件层级关系
 
 ```
-AJ_RD@1   AJ_RD@4   AJ_RD@16  AJ_RD@64  AJ_RD@256
+Total queries:    5882
+  └─ w/ ≥1 re-entry (query-level): 1385  → canonical first_reentry_frame_proxy / median re-entry
+       └─ all re-entry events: 2466      → GT events from audit_visibility_reentry_events
+            └─ eligible by d_min=1: 1863 → AJ_RD 口径基础（1385 queries × 1.34 events/query avg）
+                 └─ eligible by d_min=16: 421 → long-occ 子集
 ```
 
-### 3.4 事件层级关系
-
-| 层级 | n | 说明 |
-|---|---:|---|
-| Total queries | 5882 | 所有 strided query |
-| Queries with ≥1 re-entry | 1385 | 用于 canonical P0 AJ_RD |
-| Re-entry events (all) | 2466 | 所有 re-appearance 事件 |
-| Eligible events (phase0/phase2b) | 2736 | 历史统计，含旧 cache/probe 数据 |
-| Eligible by d_min=1 | 1863 | AJ_RD 口径基础 |
-| Eligible by d_min=16 | 421 | long-occ 子集 |
-
-1385 ≠ 2466 ≠ 2736 的原因是口径不同，已在 `reentry_metric_reconciliation.md` 中详细解释。
+1385 ≠ 2466 ≠ 1863 ≠ 2736 是口径差异，详见 `reentry_metric_reconciliation.md`。
 
 ## 4. Re-entry Events
 

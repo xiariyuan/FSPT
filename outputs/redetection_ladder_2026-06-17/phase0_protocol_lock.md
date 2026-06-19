@@ -1,5 +1,10 @@
 # Phase 0 — Protocol Lock (strided+original)
 
+> **⚠️ 历史记录 / Historical / Superseded**  
+> 此文档对应 `redetection_ladder_2026-06-17` 阶段的协议锁定。  
+> 当前 canonical 决策以 `outputs/canonical_redetection_2026-06-18/` 为准。  
+> 此状态不应用作当前 Phase gate 依据。
+
 **日期**: 2026-06-17  
 **协议**: `strided+original` (confirmed runnable)  
 **状态**: ✅ LOCKED
