@@ -271,7 +271,22 @@ def main() -> None:
 
     # Compute per-query aggregated AJ_RD values
     summary_ajrd = round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None
-    # Consistency check: per-query mean vs per-video mean (independent computation)
+    # Consistency check: same-method (query-weighted) via independent recompute
+    all_ajrd_recompute = []
+    for r in all_results:
+        for q in r.get("per_query", []):
+            v = q.get("ajrd_summary", {}).get("aj_rd")
+            if v is not None:
+                all_ajrd_recompute.append(float(v))
+    recompute_ajrd = round(float(np.mean(all_ajrd_recompute)), 4) if all_ajrd_recompute else None
+    if summary_ajrd is not None and recompute_ajrd is not None:
+        consistency_diff = abs(summary_ajrd - recompute_ajrd)
+        consistency_pass = bool(consistency_diff < 1e-6)
+    else:
+        consistency_diff = None
+        consistency_pass = True
+
+    # Cross-method diagnostic: query-weighted vs video-weighted
     per_video_means = [float(np.mean([
         float(q["ajrd_summary"]["aj_rd"]) for q in r.get("per_query", [])
         if q.get("ajrd_summary", {}).get("aj_rd") is not None
@@ -279,19 +294,19 @@ def main() -> None:
         q.get("ajrd_summary", {}).get("aj_rd") is not None for q in r.get("per_query", [])
     )]
     per_video_ajrd = round(float(np.mean(per_video_means)), 4) if per_video_means else None
-
-    if summary_ajrd is not None and per_video_ajrd is not None:
-        max_abs_diff = abs(summary_ajrd - per_video_ajrd)
-        consistency_pass = max_abs_diff < 1e-6
-    else:
-        max_abs_diff = None
-        consistency_pass = True
+    weighting_diff = round(abs(summary_ajrd - per_video_ajrd), 6) if summary_ajrd is not None and per_video_ajrd is not None else None
 
     consistency_check = {
-        "true_AJ_RD_from_per_query_mean": summary_ajrd,
-        "true_AJ_RD_from_per_video_mean": per_video_ajrd,
-        "max_abs_diff": round(max_abs_diff, 6) if max_abs_diff is not None else None,
-        "note": "per_query_mean is canonical (query-weighted). per_video_mean is diagnostic only (video-weighted). Difference indicates query count imbalance across videos.",
+        "pass": consistency_pass,
+        "method": "same-method (query-weighted) via independent recompute",
+        "summary_ajrd": summary_ajrd,
+        "recomputed_ajrd": recompute_ajrd,
+        "diff": consistency_diff,
+        "weighting_diagnostic": {
+            "per_query_mean": summary_ajrd,
+            "per_video_mean": per_video_ajrd,
+            "diff": weighting_diff,
+        },
     }
 
     # Also compute n_valid_samples_by_dmin

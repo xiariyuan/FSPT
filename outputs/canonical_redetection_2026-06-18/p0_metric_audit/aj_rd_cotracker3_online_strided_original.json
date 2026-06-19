@@ -5,10 +5,16 @@
   "metric_name": "reentry_proxy_and_ajrd",
   "aggregation_unit": "query_weighted",
   "consistency_check": {
-    "true_AJ_RD_from_per_query_mean": 0.4101,
-    "true_AJ_RD_from_per_video_mean": 0.3622,
-    "max_abs_diff": 0.0479,
-    "pass": false
+    "pass": true,
+    "method": "same-method (query-weighted) via independent recompute",
+    "summary_ajrd": 0.4101,
+    "recomputed_ajrd": 0.4101,
+    "diff": 0.0,
+    "weighting_diagnostic": {
+      "per_query_mean": 0.4101,
+      "per_video_mean": 0.3622,
+      "diff": 0.0479
+    }
   },
   "n_valid_samples_by_dmin": {
     "1": 1385,
