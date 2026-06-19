@@ -5,7 +5,10 @@ from typing import Any, Dict, List, Optional, Sequence
 
 import numpy as np
 
-from .coords import find_first_reentry, find_reentry_events, pixel_l2_error, yx_norm_to_xy_pixel
+from .coords import (
+    find_first_reentry, find_reentry_events,
+    pixel_l2_error, yx_norm_to_xy_256, yx_norm_to_xy_pixel,
+)
 
 DEFAULT_PROXY_THRESHOLDS: tuple[int, ...] = (1, 2, 4, 8, 16)
 DEFAULT_AJ_THRESHOLDS: tuple[int, ...] = (1, 2, 4, 8, 16)
@@ -127,8 +130,16 @@ def compute_reappearance_segment_aj(
     height: int,
     width: int,
     thresholds: Sequence[int] = DEFAULT_AJ_THRESHOLDS,
+    use_256_space: bool = False,
 ) -> Optional[Dict[str, Any]]:
-    """Compute AJ on the post-reappearance segment for one eligible event."""
+    """Compute AJ on the post-reappearance segment for one eligible event.
+
+    Args:
+        ...
+        use_256_space: If True, convert to 256×256 space (TAPNext++ convention)
+                       instead of original resolution. When True, thresholds
+                       are interpreted in 256-space pixels.
+    """
     reentry_t = int(event["reentry_frame"])
     if reentry_t < 0 or reentry_t >= int(pred_tracks.shape[0]):
         return None
@@ -141,8 +152,13 @@ def compute_reappearance_segment_aj(
     if pred_seg.shape[0] == 0:
         return None
 
-    pred_px = yx_norm_to_xy_pixel(pred_seg, height, width)
-    gt_px = yx_norm_to_xy_pixel(gt_seg, height, width)
+    if use_256_space:
+        # Convert to 256×256 space for TAPNext++ comparable AJ_RD
+        pred_px = yx_norm_to_xy_256(pred_seg)
+        gt_px = yx_norm_to_xy_256(gt_seg)
+    else:
+        pred_px = yx_norm_to_xy_pixel(pred_seg, height, width)
+        gt_px = yx_norm_to_xy_pixel(gt_seg, height, width)
 
     sq_dist = np.sum((pred_px - gt_px) ** 2, axis=-1)
     jaccards: Dict[str, float] = {}

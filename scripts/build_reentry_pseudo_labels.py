@@ -76,8 +76,6 @@ def build_pseudo_labels(
             frame_feat_cache[key] = dino.feature_map(frame_rgb)
         return frame_feat_cache[key]
 
-        from utils.fb_consistency import compute_fb_error
-
     labels: List[Dict[str, Any]] = []
     total = 0
     stop = False

@@ -27,14 +27,17 @@
 
 ### 3.1 概要
 
-| Baseline | true_AJ_RD | first_reentry_proxy | Median re-entry | <4px |
-|---|---:|---:|---:|---:|
-| CoTracker3 online | **0.4101** | 0.4732 | 3.86px | 51.3% |
-| CoTracker3 offline | **0.3870** | 0.4101 | 3.71px | 53.8% |
-| Track-On2 | **0.3700** | 0.3681 | 3.91px | 51.0% |
+| Baseline | true_AJ_RD | true_AJ_RD_256 | first_reentry_proxy | Median re-entry | <4px |
+|---|---:|---:|---:|---:|---:|
+| CoTracker3 online | **0.4101** | **0.5972** | 0.4732 | 3.86px | 51.3% |
+| CoTracker3 offline | **0.3870** | **0.5546** | 0.4101 | 3.71px | 53.8% |
+| Track-On2 | **0.3700** | **0.5383** | 0.3681 | 3.91px | 51.0% |
 
-注：true_AJ_RD < first_reentry_proxy 符合预期（完整 post-reappearance 轨迹比单帧更难）。
-Track-On2 true_AJ_RD ≈ proxy，因为 [0,0] occluded pred 在 segment AJ 中受 visibility 抑制。
+注：
+- `true_AJ_RD` = original resolution（当前项目内口径，偏严）
+- `true_AJ_RD_256` = 256-space（TAPNext++ 可比口径，推荐用于论文对比）
+- 256-space 值较高的原因：相同 px 阈值在 256×256 下比 480×854 下占比更大
+- `true_AJ_RD < true_AJ_RD_256 < first_reentry_proxy` 符合预期
 
 ### 3.2 Eligible events by d_min
 

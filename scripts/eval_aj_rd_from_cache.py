@@ -91,6 +91,7 @@ def compute_reentry_metrics(
         proxy_errors.append(float(proxy["error_px"]))
         proxy_aj_terms.append(float(proxy["aj_proxy"]))
         ajrd_events = []
+        ajrd_events_256 = []
         for evt in eligible_events:
             ajrd = compute_reappearance_segment_aj(
                 pred_tracks=pred_tracks[i],
@@ -101,11 +102,26 @@ def compute_reentry_metrics(
                 height=height,
                 width=width,
                 thresholds=DEFAULT_AJ_THRESHOLDS,
+                use_256_space=False,
+            )
+            ajrd_256 = compute_reappearance_segment_aj(
+                pred_tracks=pred_tracks[i],
+                gt_tracks=gt_tracks[i],
+                pred_visibility=pred_vis[i],
+                gt_visibility=gt_vis[i],
+                event=evt,
+                height=height,
+                width=width,
+                thresholds=DEFAULT_AJ_THRESHOLDS,
+                use_256_space=True,
             )
             if ajrd is not None:
                 ajrd_events.append(ajrd)
+            if ajrd_256 is not None:
+                ajrd_events_256.append(ajrd_256)
 
         ajrd_summary = summarize_reappearance_ajrd(ajrd_events, d_mins=d_mins)
+        ajrd_summary_256 = summarize_reappearance_ajrd(ajrd_events_256, d_mins=d_mins)
         per_query.append({
             "query_idx": i,
             "query_t": qt,
@@ -117,6 +133,7 @@ def compute_reentry_metrics(
             "aj_proxy": round(float(proxy["aj_proxy"]), 4),
             "ajrd_events": ajrd_events,
             "ajrd_summary": ajrd_summary,
+            "ajrd_summary_256": ajrd_summary_256,
             **{k: v for k, v in proxy.items() if k.startswith("jaccard_")},
         })
 
@@ -136,6 +153,7 @@ def compute_reentry_metrics(
         "n_reentry_queries": n_q,
         "first_reentry_frame_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
         "true_AJ_RD": round(float(np.mean([q["ajrd_summary"]["aj_rd"] for q in per_query if q.get("ajrd_summary", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary", {}).get("aj_rd") is not None for q in per_query) else None,
+        "true_AJ_RD_256": round(float(np.mean([q["ajrd_summary_256"]["aj_rd"] for q in per_query if q.get("ajrd_summary_256", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else None,
         "n_eligible_events_by_dmin": {str(int(d)): int(eligible_counts[int(d)]) for d in d_mins},
         "reentry_error": _bucket_stats(np.asarray(proxy_errors, dtype=np.float32)),
         "long_occ_ge20": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 20], dtype=np.float32)),
@@ -188,6 +206,7 @@ def main() -> None:
     total_n = sum(int(r["n_reentry_queries"]) for r in all_results)
     proxy_vals: List[float] = []
     ajrd_vals: List[float] = []
+    ajrd_vals_256: List[float] = []
     proxy_errs: List[float] = []
     long20_errs: List[float] = []
     long50_errs: List[float] = []
@@ -198,6 +217,8 @@ def main() -> None:
             proxy_errs.append(float(q["proxy_error_px"]))
             if q.get("ajrd_summary", {}).get("aj_rd") is not None:
                 ajrd_vals.append(float(q["ajrd_summary"]["aj_rd"]))
+            if q.get("ajrd_summary_256", {}).get("aj_rd") is not None:
+                ajrd_vals_256.append(float(q["ajrd_summary_256"]["aj_rd"]))
             if q["occ_length"] >= 20:
                 long20_errs.append(float(q["proxy_error_px"]))
             if q["occ_length"] >= 50:
@@ -219,6 +240,7 @@ def main() -> None:
         "n_reentry_queries_total": total_n,
         "first_reentry_frame_proxy": round(float(np.mean(proxy_vals)) if proxy_vals else 0.0, 4),
         "true_AJ_RD": round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None,
+        "true_AJ_RD_256": round(float(np.mean(ajrd_vals_256)) if ajrd_vals_256 else 0.0, 4) if ajrd_vals_256 else None,
         "n_eligible_events_by_dmin": {
             str(int(d)): int(sum(int(r["n_eligible_events_by_dmin"][str(int(d))]) for r in all_results))
             for d in d_mins

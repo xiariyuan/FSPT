@@ -121,6 +121,15 @@ def yx_norm_to_yx_256(yx: np.ndarray) -> np.ndarray:
     return (yx * 255.0).astype(np.float32)
 
 
+def yx_norm_to_xy_256(yx: np.ndarray) -> np.ndarray:
+    """Convert [..., y, x] from [0,1] normalized to [..., x, y] in 256-space.
+
+    TAPNext++ convention: 256-space absolute pixels for cross-video comparability.
+    """
+    yx_256 = yx_norm_to_yx_256(yx)
+    return yx_to_xy(yx_256)
+
+
 def yx_256_to_yx_norm(yx_256: np.ndarray) -> np.ndarray:
     """Convert [..., y, x] from legacy 256-space [0, 255] to [0,1]."""
     return (yx_256.astype(np.float32) / 255.0).astype(np.float32)
