@@ -76,6 +76,8 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
     oracle_long_errors: List[float] = []
     oracle_teacher_usage: Dict[str, int] = {n: 0 for n in teacher_names}
     oracle_query_rows: List[Dict[str, Any]] = []
+    oracle_ajrd_rows: List[Dict[str, Any]] = []
+    oracle_ajrd256_rows: List[Dict[str, Any]] = []
     per_event: List[Dict[str, Any]] = []
 
     n_events = 0
@@ -133,6 +135,7 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
                     thresholds=DEFAULT_PROXY_THRESHOLDS,
                 )
                 ajrd_events: List[Dict[str, Any]] = []
+                ajrd_events_256: List[Dict[str, Any]] = []
                 for evt in eligible_events:
                     ajrd_evt = compute_reappearance_segment_aj(
                         pred_tracks=pred_tracks[qi],
@@ -151,7 +154,27 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
                     )
                     if ajrd_evt is not None:
                         ajrd_events.append(ajrd_evt)
+                    # 256-space variant for TAPNext++ comparability
+                    ajrd_evt_256 = compute_reappearance_segment_aj(
+                        pred_tracks=pred_tracks[qi],
+                        gt_tracks=gt_tracks[qi],
+                        pred_visibility=pred_vis,
+                        gt_visibility=gt_vis[qi],
+                        event={
+                            "reentry_frame": int(evt["reentry_frame"]),
+                            "occ_length": int(evt["occ_length"]),
+                            "last_visible_t": int(evt["last_visible_t"]),
+                            "query_t": qt,
+                        },
+                        height=h,
+                        width=w,
+                        thresholds=DEFAULT_AJ_THRESHOLDS,
+                        use_256_space=True,
+                    )
+                    if ajrd_evt_256 is not None:
+                        ajrd_events_256.append(ajrd_evt_256)
                 ajrd = summarize_reappearance_ajrd(ajrd_events, DEFAULT_AJRD_D_MINS)
+                ajrd_256 = summarize_reappearance_ajrd(ajrd_events_256, DEFAULT_AJRD_D_MINS)
                 row = {
                     "video_id": vid,
                     "query_idx": qi,
@@ -165,17 +188,36 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
                     "proxy_gt_visible": bool(proxy["gt_visible"]) if proxy is not None else None,
                     "aj_proxy": float(proxy["aj_proxy"]) if proxy is not None else None,
                     "ajrd_summary": ajrd,
+                    "ajrd_summary_256": ajrd_256,
                 }
                 current_rows[tname] = row
                 per_teacher_query_rows[tname].append(row)
 
             best_teacher = min(teacher_errors, key=teacher_errors.get)
+
+            # Oracle by true_AJ_RD (original resolution)
+            teacher_ajrd = {n: current_rows[n].get("ajrd_summary", {}).get("aj_rd")
+                           for n in teacher_names}
+            valid_ajrd = {n: v for n, v in teacher_ajrd.items() if v is not None}
+            best_teacher_ajrd = max(valid_ajrd, key=valid_ajrd.get) if valid_ajrd else best_teacher
+
+            # Oracle by true_AJ_RD_256 (256-space, TAPNext++ comparable)
+            teacher_ajrd_256 = {n: current_rows[n].get("ajrd_summary_256", {}).get("aj_rd")
+                               for n in teacher_names}
+            valid_ajrd_256 = {n: v for n, v in teacher_ajrd_256.items() if v is not None}
+            best_teacher_ajrd_256 = max(valid_ajrd_256, key=valid_ajrd_256.get) if valid_ajrd_256 else best_teacher
+
             best_error = teacher_errors[best_teacher]
             oracle_errors.append(best_error)
             oracle_teacher_usage[best_teacher] += 1
             if occ_len >= 20:
                 oracle_long_errors.append(best_error)
             oracle_query_rows.append(dict(current_rows[best_teacher]))
+
+            # Oracle rows by true_AJ_RD (original resolution)
+            oracle_ajrd_rows.append(dict(current_rows[best_teacher_ajrd]))
+            # Oracle rows by true_AJ_RD_256 (256-space)
+            oracle_ajrd256_rows.append(dict(current_rows[best_teacher_ajrd_256]))
 
             per_event.append({
                 "video_id": vid,
