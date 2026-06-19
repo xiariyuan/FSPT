@@ -50,6 +50,7 @@ def check_determinism(cache_path: str, max_videos: int = 0, tol: float = 1e-6) -
     compare_keys = [
         "first_reentry_frame_proxy",
         "true_AJ_RD",
+        "true_AJ_RD_256",
         "n_reentry_queries_total",
     ]
 

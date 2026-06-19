@@ -6,9 +6,19 @@
   "aggregation_unit": "query_weighted",
   "consistency_check": {
     "true_AJ_RD_from_per_query_mean": 0.4101,
-    "true_AJ_RD_from_video_agg": 0.4101,
-    "max_abs_diff": 0.0,
-    "pass": true
+    "true_AJ_RD_from_per_video_mean": 0.3622,
+    "max_abs_diff": 0.0479,
+    "pass": false
+  },
+  "n_valid_samples_by_dmin": {
+    "1": 1385,
+    "4": 1076,
+    "16": 414
+  },
+  "n_valid_samples_by_dmin_256": {
+    "1": 1385,
+    "4": 1076,
+    "16": 414
   },
   "note": "first_reentry_frame_proxy = single-frame Jaccard at first re-entry frame. true_AJ_RD = TAPNext++ style AJ computed over full post-reappearance trajectory. Only true AJ_RD should be used for paper-level comparisons.",
   "thresholds": [

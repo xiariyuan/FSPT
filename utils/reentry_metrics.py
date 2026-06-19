@@ -195,9 +195,17 @@ def summarize_reappearance_ajrd(
     """Summarize eligible reappearance events for one query/sample.
 
     For each dmin, we average AJ over eligible reappearance events, then take
-    the mean across the available dmin values for this sample. This matches the
-    TAPNext++ definition of AJRD as a per-sample quantity averaged across the
-    dataset.
+    the mean across the available dmin values for this sample. Only dmin values
+    with at least one eligible event contribute to the mean; dmin values with
+    zero eligible events are silently excluded (N/A), not counted as 0.
+
+    Note for DAVIS: d_min=64 and d_min=256 have no eligible events (max occlusion
+    on DAVIS is 99 frames, but no occ run in [64,99] survived the eligibility
+    filter). Therefore on DAVIS this function effectively averages over
+    {1, 4, 16} rather than the full {1, 4, 16, 64, 256} set.
+    This is not equivalent to the TAPNext++ AJ_RD definition which uses
+    the full fixed d_min set; see compute_reappearance_segment_aj with
+    use_256_space=True for the TAPNext++-comparable path.
     """
     by_dmin: Dict[str, Dict[str, Any]] = {}
     dmin_means: List[float] = []

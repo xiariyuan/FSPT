@@ -11,6 +11,12 @@
     "diff": 0.0,
     "pass": true
   },
+  "true_AJ_RD_256": {
+    "run1": 0.4482,
+    "run2": 0.4482,
+    "diff": 0.0,
+    "pass": true
+  },
   "n_reentry_queries_total": {
     "run1": 267,
     "run2": 267,
@@ -19,7 +25,7 @@
   },
   "_summary": {
     "cache_path": "outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt",
-    "n_comparisons": 7,
+    "n_comparisons": 8,
     "all_pass": true,
     "max_diff": 0.0,
     "tol": 1e-06

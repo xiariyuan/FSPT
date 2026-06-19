@@ -271,15 +271,38 @@ def main() -> None:
 
     # Compute per-query aggregated AJ_RD values
     summary_ajrd = round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None
-    summary_ajrd_256 = round(float(np.mean(ajrd_vals_256)) if ajrd_vals_256 else 0.0, 4) if ajrd_vals_256 else None
+    # Consistency check: per-query mean vs per-video mean (independent computation)
+    per_video_means = [float(np.mean([
+        float(q["ajrd_summary"]["aj_rd"]) for q in r.get("per_query", [])
+        if q.get("ajrd_summary", {}).get("aj_rd") is not None
+    ])) for r in all_results if any(
+        q.get("ajrd_summary", {}).get("aj_rd") is not None for q in r.get("per_query", [])
+    )]
+    per_video_ajrd = round(float(np.mean(per_video_means)), 4) if per_video_means else None
 
-    # Consistency check: verify per-query mean matches video-level aggregation
+    if summary_ajrd is not None and per_video_ajrd is not None:
+        max_abs_diff = abs(summary_ajrd - per_video_ajrd)
+        consistency_pass = max_abs_diff < 1e-6
+    else:
+        max_abs_diff = None
+        consistency_pass = True
+
     consistency_check = {
         "true_AJ_RD_from_per_query_mean": summary_ajrd,
-        "true_AJ_RD_from_video_agg": summary_ajrd,  # same value, kept for audit
-        "max_abs_diff": 0.0,
-        "pass": True,
+        "true_AJ_RD_from_per_video_mean": per_video_ajrd,
+        "max_abs_diff": round(max_abs_diff, 6) if max_abs_diff is not None else None,
+        "note": "per_query_mean is canonical (query-weighted). per_video_mean is diagnostic only (video-weighted). Difference indicates query count imbalance across videos.",
     }
+
+    # Also compute n_valid_samples_by_dmin
+    n_valid_by_dmin: Dict[str, int] = {}
+    for r in all_results:
+        for dm_str, vals in r.get("aj_rd_by_dmin_raw", {}).items():
+            n_valid_by_dmin[dm_str] = n_valid_by_dmin.get(dm_str, 0) + len(vals)
+    n_valid_by_dmin_256: Dict[str, int] = {}
+    for r in all_results:
+        for dm_str, vals in r.get("aj_rd_by_dmin_256_raw", {}).items():
+            n_valid_by_dmin_256[dm_str] = n_valid_by_dmin_256.get(dm_str, 0) + len(vals)
 
     summary = {
         "cache_path": args.cache_path,
@@ -288,6 +311,8 @@ def main() -> None:
         "metric_name": "reentry_proxy_and_ajrd",
         "aggregation_unit": "query_weighted",
         "consistency_check": consistency_check,
+        "n_valid_samples_by_dmin": n_valid_by_dmin,
+        "n_valid_samples_by_dmin_256": n_valid_by_dmin_256,
         "note": (
             "first_reentry_frame_proxy = single-frame Jaccard at first re-entry frame. "
             "true_AJ_RD = TAPNext++ style AJ computed over full post-reappearance trajectory. "
