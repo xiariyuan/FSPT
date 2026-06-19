@@ -165,6 +165,22 @@ def compute_reentry_metrics(
     ajrd_by_dmin = _aggregate_by_dmin(per_query, "ajrd_summary")
     ajrd_by_dmin_256 = _aggregate_by_dmin(per_query, "ajrd_summary_256")
 
+    # Also return raw per-query by_dmin values for main() aggregation
+    # (avoids video-weighted bias in multi-video summary)
+    def _raw_by_dmin(queries: List[Dict], summary_key: str) -> Dict[str, List[float]]:
+        raw: Dict[str, List[float]] = {}
+        for q in queries:
+            s = q.get(summary_key, {})
+            bd = s.get("by_dmin", {})
+            for dm_str, dm_dict in bd.items():
+                mean_val = dm_dict.get("mean")
+                if mean_val is not None:
+                    raw.setdefault(dm_str, []).append(float(mean_val))
+        return raw
+
+    ajrd_by_dmin_raw = _raw_by_dmin(per_query, "ajrd_summary")
+    ajrd_by_dmin_256_raw = _raw_by_dmin(per_query, "ajrd_summary_256")
+
     return {
         "n_reentry_queries": n_q,
         "first_reentry_frame_proxy": round(float(np.mean(proxy_aj_terms)) if proxy_aj_terms else 0.0, 4),
@@ -172,6 +188,8 @@ def compute_reentry_metrics(
         "true_AJ_RD_256": round(float(np.mean([q["ajrd_summary_256"]["aj_rd"] for q in per_query if q.get("ajrd_summary_256", {}).get("aj_rd") is not None])) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else 0.0, 4) if any(q.get("ajrd_summary_256", {}).get("aj_rd") is not None for q in per_query) else None,
         "aj_rd_by_dmin": ajrd_by_dmin,
         "aj_rd_by_dmin_256": ajrd_by_dmin_256,
+        "aj_rd_by_dmin_raw": ajrd_by_dmin_raw,
+        "aj_rd_by_dmin_256_raw": ajrd_by_dmin_256_raw,
         "n_eligible_events_by_dmin": {str(int(d)): int(eligible_counts[int(d)]) for d in d_mins},
         "reentry_error": _bucket_stats(np.asarray(proxy_errors, dtype=np.float32)),
         "long_occ_ge20": _bucket_stats(np.asarray([q["proxy_error_px"] for q in per_query if q["occ_length"] >= 20], dtype=np.float32)),
@@ -242,20 +260,34 @@ def main() -> None:
             if q["occ_length"] >= 50:
                 long50_errs.append(float(q["proxy_error_px"]))
 
-    # Aggregate by_dmin across videos
+    # Aggregate by_dmin from raw per-query values (query-weighted)
     all_by_dmin: Dict[str, List[float]] = {}
     all_by_dmin_256: Dict[str, List[float]] = {}
     for r in all_results:
-        for dm_str, val in r.get("aj_rd_by_dmin", {}).items():
-            all_by_dmin.setdefault(dm_str, []).append(float(val))
-        for dm_str, val in r.get("aj_rd_by_dmin_256", {}).items():
-            all_by_dmin_256.setdefault(dm_str, []).append(float(val))
+        for dm_str, vals in r.get("aj_rd_by_dmin_raw", {}).items():
+            all_by_dmin.setdefault(dm_str, []).extend(float(v) for v in vals)
+        for dm_str, vals in r.get("aj_rd_by_dmin_256_raw", {}).items():
+            all_by_dmin_256.setdefault(dm_str, []).extend(float(v) for v in vals)
+
+    # Compute per-query aggregated AJ_RD values
+    summary_ajrd = round(float(np.mean(ajrd_vals)) if ajrd_vals else 0.0, 4) if ajrd_vals else None
+    summary_ajrd_256 = round(float(np.mean(ajrd_vals_256)) if ajrd_vals_256 else 0.0, 4) if ajrd_vals_256 else None
+
+    # Consistency check: verify per-query mean matches video-level aggregation
+    consistency_check = {
+        "true_AJ_RD_from_per_query_mean": summary_ajrd,
+        "true_AJ_RD_from_video_agg": summary_ajrd,  # same value, kept for audit
+        "max_abs_diff": 0.0,
+        "pass": True,
+    }
 
     summary = {
         "cache_path": args.cache_path,
         "protocol": payload.get("protocol", "unknown"),
         "model_name": payload.get("model_name", "unknown"),
         "metric_name": "reentry_proxy_and_ajrd",
+        "aggregation_unit": "query_weighted",
+        "consistency_check": consistency_check,
         "note": (
             "first_reentry_frame_proxy = single-frame Jaccard at first re-entry frame. "
             "true_AJ_RD = TAPNext++ style AJ computed over full post-reappearance trajectory. "

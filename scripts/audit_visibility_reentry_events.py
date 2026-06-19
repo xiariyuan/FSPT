@@ -51,6 +51,30 @@ def audit_visibility_reentry(
         if missing:
             raise ValueError(f"Cache {name} is missing videos present in reference cache: {missing[:5]}")
 
+    # Strict GT identity check across all caches
+    gt_identity: Dict[str, bool] = {}
+    gt_identity_check = {"gt_tracks_match": True, "gt_visibility_match": True, "query_points_match": True}
+    for name in list(caches.keys())[1:]:
+        for rec_idx in range(len(ref_records)):
+            r_ref = ref_records[rec_idx]
+            r_other = caches[name][rec_idx]
+            vid = str(r_ref["video_id"])
+            gt_identity[f"{vid}_tracks"] = bool(np.allclose(
+                np.asarray(r_ref["gt_tracks"]), np.asarray(r_other["gt_tracks"])
+            ))
+            gt_identity[f"{vid}_visibility"] = bool(np.allclose(
+                np.asarray(r_ref["gt_visibility"]), np.asarray(r_other["gt_visibility"])
+            ))
+            gt_identity[f"{vid}_query_points"] = bool(np.allclose(
+                np.asarray(r_ref["query_points"]), np.asarray(r_other["query_points"])
+            ))
+            if not gt_identity[f"{vid}_tracks"]:
+                gt_identity_check["gt_tracks_match"] = False
+            if not gt_identity[f"{vid}_visibility"]:
+                gt_identity_check["gt_visibility_match"] = False
+            if not gt_identity[f"{vid}_query_points"]:
+                gt_identity_check["query_points_match"] = False
+
     all_events = []
     per_video = []
     occ_hist = []
@@ -147,6 +171,7 @@ def audit_visibility_reentry(
         },
         "per_video": per_video,
         "cross_model_visibility_agreement": cross_model_agreement,
+        "gt_identity_check": gt_identity_check,
     }
 
 

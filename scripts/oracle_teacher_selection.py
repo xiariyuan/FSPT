@@ -38,17 +38,17 @@ def main():
 
     results = audit_teachers(cache_map, args.max_videos)
 
-    # Decision logic
+    # Decision logic (diagnostic only — does not authorize training)
     aj_rd_delta = results["aj_rd_comparison"]["delta"]
     if aj_rd_delta is None:
         decision = "STOP"
         reason = "AJ_RD delta unavailable; audit did not produce a valid comparison"
     elif aj_rd_delta >= 0.05:
-        decision = "GO"
+        decision = "STRONG_DIAGNOSTIC_HEADROOM"
         reason = f"oracle teacher selection AJ_RD gain +{aj_rd_delta*100:.1f}pp >= 5pp"
     elif aj_rd_delta >= 0.02:
-        decision = "WEAK_GO"
-        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp in [2pp, 5pp), proceed but don't over-promise"
+        decision = "WEAK_DIAGNOSTIC_ONLY"
+        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp in [2pp, 5pp), diagnostic only, no training"
     else:
         decision = "STOP"
         reason = f"oracle gain +{aj_rd_delta*100:.1f}pp < 2pp, insufficient headroom"

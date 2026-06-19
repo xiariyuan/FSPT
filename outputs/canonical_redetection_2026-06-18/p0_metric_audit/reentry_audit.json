@@ -2704,5 +2704,10 @@
       "disagree": 872,
       "agree_rate": 0.6464
     }
+  },
+  "gt_identity_check": {
+    "gt_tracks_match": true,
+    "gt_visibility_match": true,
+    "query_points_match": true
   }
 }
