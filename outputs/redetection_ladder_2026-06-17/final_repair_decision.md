@@ -1,5 +1,10 @@
 # Final Repair Decision
 
+> **⚠️ 历史记录 / Historical / Superseded**  
+> 此文档对应 `redetection_ladder_2026-06-17` 阶段的最终修复决策。  
+> 当前 canonical 决策以 `outputs/canonical_redetection_2026-06-18/` 为准。  
+> 此状态不应用作当前 Phase gate 依据。
+
 **日期**: 2026-06-18  
 **类型**: `PHASE0_PHASE1_FULLY_REPAIRED`
 

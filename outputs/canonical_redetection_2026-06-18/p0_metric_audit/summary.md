@@ -25,11 +25,48 @@
 
 ## 3. AJ_RD
 
-| Baseline | AJ_RD | Median re-entry | <4px | <8px |
+### 3.1 概要
+
+| Baseline | true_AJ_RD | first_reentry_proxy | Median re-entry | <4px |
 |---|---:|---:|---:|---:|
-| CoTracker3 online | 0.4101 | 3.86px | 51.3% | 77.0% |
-| CoTracker3 offline | 0.3870 | 3.71px | 53.8% | 80.2% |
-| Track-On2 | 0.3700 | 3.91px | 51.0% | 73.6% |
+| CoTracker3 online | **0.4101** | 0.4732 | 3.86px | 51.3% |
+| CoTracker3 offline | **0.3870** | 0.4101 | 3.71px | 53.8% |
+| Track-On2 | **0.3700** | 0.3681 | 3.91px | 51.0% |
+
+注：true_AJ_RD < first_reentry_proxy 符合预期（完整 post-reappearance 轨迹比单帧更难）。
+Track-On2 true_AJ_RD ≈ proxy，因为 [0,0] occluded pred 在 segment AJ 中受 visibility 抑制。
+
+### 3.2 Eligible events by d_min
+
+d_min = 最小遮挡长度，用于筛选 eligible re-appearance event。
+
+| Baseline | d_min=1 | d_min=4 | d_min=16 | d_min=64 | d_min=256 |
+|---|---:|---:|---:|---:|---:|
+| 全部 | 1863 | 1214 | 421 | 0 | 0 |
+
+所有 baseline 使用相同的 GT，eligible events 一致。
+
+### 3.3 true_AJ_RD@d_min 分解
+
+当前输出尚未分解 AJ_RD@d_min。代码中的 `summarize_reappearance_ajrd` 已实现 per-d_min 聚合，
+但 summary 输出层尚未展开。预计在最终 audit closure 中补全：
+
+```
+AJ_RD@1   AJ_RD@4   AJ_RD@16  AJ_RD@64  AJ_RD@256
+```
+
+### 3.4 事件层级关系
+
+| 层级 | n | 说明 |
+|---|---:|---|
+| Total queries | 5882 | 所有 strided query |
+| Queries with ≥1 re-entry | 1385 | 用于 canonical P0 AJ_RD |
+| Re-entry events (all) | 2466 | 所有 re-appearance 事件 |
+| Eligible events (phase0/phase2b) | 2736 | 历史统计，含旧 cache/probe 数据 |
+| Eligible by d_min=1 | 1863 | AJ_RD 口径基础 |
+| Eligible by d_min=16 | 421 | long-occ 子集 |
+
+1385 ≠ 2466 ≠ 2736 的原因是口径不同，已在 `reentry_metric_reconciliation.md` 中详细解释。
 
 ## 4. Re-entry Events
 

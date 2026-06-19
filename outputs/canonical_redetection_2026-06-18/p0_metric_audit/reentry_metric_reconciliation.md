@@ -69,7 +69,22 @@ Track-On2 在 strided+original 下约 44% 的预测为 `[0,0]`（模型标为 oc
 
 两者都有效，但口径不同。
 
-## 5. canonical 定义
+## 5. 事件层级关系（1385 vs 2466 vs 2736）
+
+三个 n 值反映不同统计粒度，不是同一口径的冲突：
+
+```
+Total queries:    5882  (30 videos × strided queries)
+  └─ w/ ≥1 re-entry: 1385  → canonical P0 first-reentry-per-query
+       └─ all events: 2466  → 同一数据集所有 re-appearance 事件
+            └─ historical: 2736  → 含旧 cache/probe 数据，已废弃
+```
+
+- **1385** = per-query first re-entry（canonical，与 AJ_RD 对齐）
+- **2466** = all re-entry events（同一 GT，同一 cache，full coverage）
+- **2736** = 历史版本（旧 cache / probe 数据，`deprecated`）
+
+## 6. canonical 定义
 
 | 用途 | 使用 | 原因 |
 |---|---|---|

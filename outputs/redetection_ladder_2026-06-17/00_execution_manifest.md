@@ -1,6 +1,9 @@
 # FSPT v2 — Re-detection / Re-association 四级实验阶梯
 ## 启动清单 (00_execution_manifest)
 
+> **⚠️ 历史记录 / Superseded**  
+> 当前 canonical 执行计划以 `docs/claude_canonical_redetection_execution_plan_2026-06-18.md` 为准。
+
 **日期**: 2026-06-17  
 **session_id**: `3e7cc46c-bc14-43d0-b3bf-a4754fc13ab2` (延续)  
 **前序**: M0 Re-Acquisition 主线 Phase A→E 完成，CoTracker3 head-to-head 完成  
