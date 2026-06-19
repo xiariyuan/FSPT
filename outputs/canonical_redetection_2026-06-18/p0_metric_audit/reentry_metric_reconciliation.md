@@ -90,5 +90,8 @@ Total queries:    5882  (30 videos × strided queries)
 |---|---|---|
 | AJ_RD 主指标 | `true_AJ_RD`（post-reappearance segment AJ） | 官方 TAPNext++ 口径 |
 | 位置误差参考 | `first_reentry_frame_proxy`（单帧 Jaccard） | 与历史记录对齐 |
-| oracle 上界 | 2736 events（含所有 re-entry） | 覆盖更全 |
+| 历史 oracle 参考（已废弃） | 2736 events（含旧 cache/probe） | deprecated，不用于当前 gate |
+| canonical oracle 上界 | 2466 events（canonical P0 all re-entry） | 覆盖当前 GT 所有 re-appearance |
+| true_AJ_RD | eligible events by d_min | 官方 TAPNext++ 口径 |
+| 位置误差参考 | `first_reentry_frame_proxy`（单帧 Jaccard） | 与历史记录对齐 |
 | 训练/审计 | 1385 queries（per-query first re-entry） | 与 AJ_RD 事件定义一致 |

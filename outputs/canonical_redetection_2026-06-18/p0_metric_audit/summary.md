@@ -41,19 +41,21 @@
 
 ### 3.2 true_AJ_RD breakdown by d_min
 
-| Baseline | AJ_RD | AJ_RD@1 | AJ_RD@4 | AJ_RD@16 | AJ_RD@64 | AJ_RD@256 |
-|---|---:|---:|---:|---:|---:|---:|
-| CoTracker3 online | 0.4101 | 0.3618 | 0.3325 | 0.2511 | N/A | N/A |
-| CoTracker3 offline | 0.3870 | 0.3458 | 0.3110 | 0.2342 | N/A | N/A |
-| Track-On2 | 0.3700 | 0.3271 | 0.2994 | 0.2170 | N/A | N/A |
+N/A = d_min 无 eligible events（排除，不计入 AJ_RD 平均）。AJ_RD 只平均有 ≥1 eligible event 的 d_min。
+
+| Baseline | AJ_RD | AJ_RD@1 | AJ_RD@4 | AJ_RD@16 | AJ_RD@64 | AJ_RD@256 | eligible(1/4/16) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| CoTracker3 online | 0.4101 | 0.3618 | 0.3325 | 0.2511 | N/A(excl) | N/A(excl) | 1863/1214/421 |
+| CoTracker3 offline | 0.3870 | 0.3458 | 0.3110 | 0.2342 | N/A(excl) | N/A(excl) | 1863/1214/421 |
+| Track-On2 | 0.3700 | 0.3271 | 0.2994 | 0.2170 | N/A(excl) | N/A(excl) | 1863/1214/421 |
 
 ### 3.3 true_AJ_RD_256 breakdown by d_min (TAPNext++ comparable)
 
 | Baseline | AJ_RD_256 | AJ_RD_256@1 | AJ_RD_256@4 | AJ_RD_256@16 | AJ_RD_256@64 | AJ_RD_256@256 |
 |---|---:|---:|---:|---:|---:|---:|
-| CoTracker3 online | 0.5972 | 0.5312 | 0.4914 | 0.3972 | N/A | N/A |
-| CoTracker3 offline | 0.5546 | 0.4975 | 0.4467 | 0.3556 | N/A | N/A |
-| Track-On2 | 0.5383 | 0.4909 | 0.4519 | 0.3478 | N/A | N/A |
+| CoTracker3 online | 0.5972 | 0.5312 | 0.4914 | 0.3972 | N/A(excl) | N/A(excl) |
+| CoTracker3 offline | 0.5546 | 0.4975 | 0.4467 | 0.3556 | N/A(excl) | N/A(excl) |
+| Track-On2 | 0.5383 | 0.4909 | 0.4519 | 0.3478 | N/A(excl) | N/A(excl) |
 
 ### 3.4 Eligible events by d_min
 
