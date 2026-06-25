@@ -1,0 +1,1449 @@
+{
+  "cotracker3_online": [
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 6.4642,
+        "p75": 8.7109,
+        "p90": 9.6719,
+        "p95": 10.0611
+      },
+      "oracle_aj_rd": 0.381
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 16,
+      "coverage": {
+        "coverage@16": 0.875,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 5.5018,
+        "p75": 8.7262,
+        "p90": 18.3129,
+        "p95": 21.1509
+      },
+      "oracle_aj_rd": 0.4167
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 10,
+      "coverage": {
+        "coverage@16": 0.8,
+        "coverage@32": 0.8,
+        "coverage@64": 0.8,
+        "coverage@128": 0.9,
+        "coverage@256": 1.0,
+        "median": 4.2596,
+        "p75": 6.252,
+        "p90": 117.7544,
+        "p95": 129.4972
+      },
+      "oracle_aj_rd": 0.4667
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.0,
+        "coverage@64": 0.0,
+        "coverage@128": 0.0,
+        "coverage@256": 1.0,
+        "median": 165.2108,
+        "p75": 185.7731,
+        "p90": 217.2847,
+        "p95": 227.7885
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 0.5714,
+        "coverage@32": 0.8571,
+        "coverage@64": 0.8571,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 14.4893,
+        "p75": 26.6575,
+        "p90": 63.9573,
+        "p95": 88.5185
+      },
+      "oracle_aj_rd": 0.1905
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 7.0138,
+        "p75": 7.0138,
+        "p90": 7.0138,
+        "p95": 7.0138
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 5.2835,
+        "p75": 5.2835,
+        "p90": 5.2835,
+        "p95": 5.2835
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 11,
+      "coverage": {
+        "coverage@16": 0.9091,
+        "coverage@32": 0.9091,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 3.7754,
+        "p75": 9.2706,
+        "p90": 10.0506,
+        "p95": 27.4668
+      },
+      "oracle_aj_rd": 0.4848
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.0,
+        "coverage@64": 0.0,
+        "coverage@128": 0.0,
+        "coverage@256": 1.0,
+        "median": 229.349,
+        "p75": 230.2099,
+        "p90": 230.7264,
+        "p95": 230.8985
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.5,
+        "coverage@32": 0.5,
+        "coverage@64": 0.5,
+        "coverage@128": 0.5,
+        "coverage@256": 0.5,
+        "median": 195.153,
+        "p75": 290.8692,
+        "p90": 348.2989,
+        "p95": 367.4421
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 0.75,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 7.0377,
+        "p75": 11.7672,
+        "p90": 18.0147,
+        "p95": 20.0973
+      },
+      "oracle_aj_rd": 0.25
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 5,
+      "coverage": {
+        "coverage@16": 0.2,
+        "coverage@32": 0.8,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 26.3937,
+        "p75": 31.6903,
+        "p90": 46.8027,
+        "p95": 51.8402
+      },
+      "oracle_aj_rd": 0.0667
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 3,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 4.6197,
+        "p75": 4.9204,
+        "p90": 5.1009,
+        "p95": 5.1611
+      },
+      "oracle_aj_rd": 0.4444
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_online",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    }
+  ],
+  "cotracker3_offline": [
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 0.8571,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 6.7217,
+        "p75": 7.5806,
+        "p90": 13.3198,
+        "p95": 17.3666
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 16,
+      "coverage": {
+        "coverage@16": 0.8125,
+        "coverage@32": 0.9375,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 6.3586,
+        "p75": 7.5338,
+        "p90": 19.2546,
+        "p95": 23.8351
+      },
+      "oracle_aj_rd": 0.3958
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 10,
+      "coverage": {
+        "coverage@16": 0.7,
+        "coverage@32": 0.7,
+        "coverage@64": 0.7,
+        "coverage@128": 0.8,
+        "coverage@256": 1.0,
+        "median": 3.3839,
+        "p75": 57.8102,
+        "p90": 143.9398,
+        "p95": 152.982
+      },
+      "oracle_aj_rd": 0.5333
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.0,
+        "coverage@64": 0.0,
+        "coverage@128": 0.25,
+        "coverage@256": 1.0,
+        "median": 157.0277,
+        "p75": 179.1767,
+        "p90": 200.1127,
+        "p95": 207.0913
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 0.4286,
+        "coverage@32": 0.7143,
+        "coverage@64": 0.8571,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 24.2565,
+        "p75": 33.5369,
+        "p90": 71.8396,
+        "p95": 96.4883
+      },
+      "oracle_aj_rd": 0.1429
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 3.6705,
+        "p75": 3.6705,
+        "p90": 3.6705,
+        "p95": 3.6705
+      },
+      "oracle_aj_rd": 0.6667
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 5.6905,
+        "p75": 5.6905,
+        "p90": 5.6905,
+        "p95": 5.6905
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 11,
+      "coverage": {
+        "coverage@16": 0.9091,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 5.216,
+        "p75": 6.6814,
+        "p90": 11.8065,
+        "p95": 17.8512
+      },
+      "oracle_aj_rd": 0.4545
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.0,
+        "coverage@64": 0.0,
+        "coverage@128": 0.0,
+        "coverage@256": 1.0,
+        "median": 208.8838,
+        "p75": 225.8173,
+        "p90": 235.9774,
+        "p95": 239.3641
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.5,
+        "coverage@32": 0.5,
+        "coverage@64": 0.5,
+        "coverage@128": 0.5,
+        "coverage@256": 1.0,
+        "median": 113.6223,
+        "p75": 168.1763,
+        "p90": 200.9088,
+        "p95": 211.8196
+      },
+      "oracle_aj_rd": 0.1667
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 9.2858,
+        "p75": 12.0015,
+        "p90": 12.709,
+        "p95": 12.9448
+      },
+      "oracle_aj_rd": 0.4167
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 5,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.2,
+        "coverage@64": 0.6,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 62.4589,
+        "p75": 74.0467,
+        "p90": 75.6606,
+        "p95": 76.1985
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 3,
+      "coverage": {
+        "coverage@16": 0.6667,
+        "coverage@32": 0.6667,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 5.1428,
+        "p75": 22.9458,
+        "p90": 33.6276,
+        "p95": 37.1882
+      },
+      "oracle_aj_rd": 0.2222
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "cotracker3_offline",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    }
+  ],
+  "trackon2": [
+    {
+      "baseline": "trackon2",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 0.7143,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 7.1989,
+        "p75": 15.3617,
+        "p90": 25.968,
+        "p95": 28.1429
+      },
+      "oracle_aj_rd": 0.2381
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 16,
+      "coverage": {
+        "coverage@16": 0.8125,
+        "coverage@32": 0.9375,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 3.7077,
+        "p75": 6.5726,
+        "p90": 21.953,
+        "p95": 33.2994
+      },
+      "oracle_aj_rd": 0.4583
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 10,
+      "coverage": {
+        "coverage@16": 0.8,
+        "coverage@32": 0.8,
+        "coverage@64": 0.8,
+        "coverage@128": 0.9,
+        "coverage@256": 1.0,
+        "median": 4.8646,
+        "p75": 8.7529,
+        "p90": 121.2815,
+        "p95": 135.8168
+      },
+      "oracle_aj_rd": 0.4
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 0.5,
+        "coverage@32": 0.75,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 10.8389,
+        "p75": 24.8649,
+        "p90": 39.514,
+        "p95": 44.3971
+      },
+      "oracle_aj_rd": 0.1667
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 7,
+      "coverage": {
+        "coverage@16": 0.4286,
+        "coverage@32": 0.4286,
+        "coverage@64": 0.5714,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 58.1282,
+        "p75": 79.7821,
+        "p90": 105.4675,
+        "p95": 113.069
+      },
+      "oracle_aj_rd": 0.1429
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 6.8589,
+        "p75": 6.8589,
+        "p90": 6.8589,
+        "p95": 6.8589
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 1,
+      "coverage": {
+        "coverage@16": 1.0,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 2.2557,
+        "p75": 2.2557,
+        "p90": 2.2557,
+        "p95": 2.2557
+      },
+      "oracle_aj_rd": 0.6667
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 11,
+      "coverage": {
+        "coverage@16": 0.9091,
+        "coverage@32": 0.9091,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 4.7383,
+        "p75": 5.2416,
+        "p90": 8.0173,
+        "p95": 29.2273
+      },
+      "oracle_aj_rd": 0.4848
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.0,
+        "coverage@32": 0.0,
+        "coverage@64": 0.0,
+        "coverage@128": 0.0,
+        "coverage@256": 1.0,
+        "median": 220.2383,
+        "p75": 230.3199,
+        "p90": 236.3688,
+        "p95": 238.3851
+      },
+      "oracle_aj_rd": 0.0
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 2,
+      "coverage": {
+        "coverage@16": 0.5,
+        "coverage@32": 0.5,
+        "coverage@64": 0.5,
+        "coverage@128": 0.5,
+        "coverage@256": 0.5,
+        "median": 147.1139,
+        "p75": 219.9927,
+        "p90": 263.72,
+        "p95": 278.2957
+      },
+      "oracle_aj_rd": 0.3333
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 4,
+      "coverage": {
+        "coverage@16": 0.5,
+        "coverage@32": 1.0,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 13.7943,
+        "p75": 23.108,
+        "p90": 25.6384,
+        "p95": 26.4818
+      },
+      "oracle_aj_rd": 0.25
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 5,
+      "coverage": {
+        "coverage@16": 0.4,
+        "coverage@32": 0.6,
+        "coverage@64": 0.8,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 19.6386,
+        "p75": 37.27,
+        "p90": 63.0733,
+        "p95": 71.6744
+      },
+      "oracle_aj_rd": 0.2
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 3,
+      "coverage": {
+        "coverage@16": 0.6667,
+        "coverage@32": 0.6667,
+        "coverage@64": 1.0,
+        "coverage@128": 1.0,
+        "coverage@256": 1.0,
+        "median": 6.6993,
+        "p75": 25.9777,
+        "p90": 37.5448,
+        "p95": 41.4005
+      },
+      "oracle_aj_rd": 0.2222
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    },
+    {
+      "baseline": "trackon2",
+      "n_events": 0,
+      "coverage": {
+        "coverage@16": null,
+        "coverage@32": null,
+        "coverage@64": null,
+        "coverage@128": null,
+        "coverage@256": null,
+        "median": null,
+        "p75": null,
+        "p90": null,
+        "p95": null
+      },
+      "oracle_aj_rd": null
+    }
+  ],
+  "oracle_teacher": []
+}
