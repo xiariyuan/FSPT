@@ -240,8 +240,8 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
         for tname in teacher_names
     }
     oracle_ajrd_agg = aggregate_reappearance_ajrd(oracle_query_rows, DEFAULT_AJRD_D_MINS)
-    oracle_ajrd_only_agg = aggregate_reappearance_ajrd(oracle_ajrd_rows, DEFAULT_AJRD_D_MINS)
-    oracle_ajrd256_only_agg = aggregate_reappearance_ajrd(oracle_ajrd256_rows, DEFAULT_AJRD_D_MINS)
+    oracle_ajrd_only_agg = aggregate_reappearance_ajrd(oracle_ajrd_rows, DEFAULT_AJRD_D_MINS, summary_key="ajrd_summary")
+    oracle_ajrd256_only_agg = aggregate_reappearance_ajrd(oracle_ajrd256_rows, DEFAULT_AJRD_D_MINS, summary_key="ajrd_summary_256")
     fixed_ajrd_agg = aggregate_reappearance_ajrd(per_teacher_query_rows[best_fixed_name], DEFAULT_AJRD_D_MINS)
 
     fixed_proxy_vals = np.asarray(

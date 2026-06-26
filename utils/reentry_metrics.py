@@ -234,15 +234,25 @@ def summarize_reappearance_ajrd(
 def aggregate_reappearance_ajrd(
     sample_rows: Sequence[Dict[str, Any]],
     d_mins: Sequence[int] = DEFAULT_AJRD_D_MINS,
+    summary_key: str = "ajrd_summary",
 ) -> Dict[str, Any]:
-    """Aggregate per-sample AJRD scores into a dataset-level AJRD."""
+    """Aggregate per-sample AJRD scores into a dataset-level AJRD.
+
+    Args:
+        sample_rows: per-sample dicts, each containing either ``aj_rd`` or
+            ``<summary_key>["aj_rd"]``.
+        d_mins: occlusion-length thresholds to aggregate over.
+        summary_key: which summary dict to read from when ``aj_rd`` is absent.
+            Defaults to ``"ajrd_summary"``.  Pass ``"ajrd_summary_256"`` to
+            aggregate the 256-space variant.
+    """
     sample_vals: List[float] = []
     by_dmin: Dict[str, Dict[str, Any]] = {}
 
     for row in sample_rows:
         row_score = row.get("aj_rd")
-        if row_score is None and isinstance(row.get("ajrd_summary"), dict):
-            row_score = row["ajrd_summary"].get("aj_rd")
+        if row_score is None and isinstance(row.get(summary_key), dict):
+            row_score = row[summary_key].get("aj_rd")
         if row_score is not None:
             sample_vals.append(float(row_score))
 
@@ -250,8 +260,8 @@ def aggregate_reappearance_ajrd(
         vals: List[float] = []
         for row in sample_rows:
             by_dmin_row = row.get("ajrd_by_dmin")
-            if by_dmin_row is None and isinstance(row.get("ajrd_summary"), dict):
-                by_dmin_row = row["ajrd_summary"].get("ajrd_by_dmin")
+            if by_dmin_row is None and isinstance(row.get(summary_key), dict):
+                by_dmin_row = row[summary_key].get("ajrd_by_dmin")
             if by_dmin_row is None:
                 by_dmin_row = row.get("by_dmin")
             stats = by_dmin_row.get(str(int(d))) if isinstance(by_dmin_row, dict) else None

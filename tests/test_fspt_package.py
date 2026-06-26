@@ -29,3 +29,20 @@ def test_wrapper_imports():
     assert hasattr(fspt_reentry, "compute_reappearance_segment_aj")
     assert hasattr(fspt_schema, "load_attempt0_cache")
     assert fspt_paths.repo_root().name == "FSPT"
+
+
+def test_top_level_imports():
+    from fspt.paths import caches_dir, data_root, output_root, outputs_dir, repo_root, resolve_repo_path
+    from fspt.coords import find_reentry_events, yx_norm_to_xy_pixel
+    from fspt.reentry_metrics import aggregate_reappearance_ajrd, compute_reappearance_segment_aj
+
+    assert repo_root().name == "FSPT"
+    assert resolve_repo_path("README.md").exists()
+    assert callable(yx_norm_to_xy_pixel)
+    assert callable(find_reentry_events)
+    assert callable(compute_reappearance_segment_aj)
+    assert callable(aggregate_reappearance_ajrd)
+    assert callable(outputs_dir)
+    assert callable(caches_dir)
+    assert callable(data_root)
+    assert callable(output_root)

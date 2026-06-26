@@ -39,23 +39,33 @@ def main():
     results = audit_teachers(cache_map, args.max_videos)
 
     # Decision logic (diagnostic only — does not authorize training)
-    aj_rd_delta = results["aj_rd_comparison"]["delta"]
+    # Canonical metric: true_AJ_RD_256 (256-space, TAPNext++ comparable)
+    aj_rd_comparison = results.get("aj_rd_comparison", {})
+    aj_rd_delta = aj_rd_comparison.get("delta_max_ajrd256_vs_fixed")
+    selection_metric = "true_AJ_RD_256"
+    if aj_rd_delta is None:
+        aj_rd_delta = aj_rd_comparison.get("delta_max_ajrd_vs_fixed")
+        selection_metric = "true_AJ_RD"
+    if aj_rd_delta is None:
+        aj_rd_delta = aj_rd_comparison.get("delta_min_error_vs_fixed")
+        selection_metric = "min_pixel_error"
     if aj_rd_delta is None:
         decision = "STOP"
         reason = "AJ_RD delta unavailable; audit did not produce a valid comparison"
     elif aj_rd_delta >= 0.05:
         decision = "STRONG_DIAGNOSTIC_HEADROOM"
-        reason = f"oracle teacher selection AJ_RD gain +{aj_rd_delta*100:.1f}pp >= 5pp"
+        reason = f"oracle teacher selection AJ_RD gain +{aj_rd_delta*100:.1f}pp >= 5pp (metric={selection_metric})"
     elif aj_rd_delta >= 0.02:
         decision = "WEAK_DIAGNOSTIC_ONLY"
-        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp in [2pp, 5pp), diagnostic only, no training"
+        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp in [2pp, 5pp), diagnostic only, no training (metric={selection_metric})"
     else:
         decision = "STOP"
-        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp < 2pp, insufficient headroom"
+        reason = f"oracle gain +{aj_rd_delta*100:.1f}pp < 2pp, insufficient headroom (metric={selection_metric})"
 
     results["decision"] = {
         "verdict": decision,
         "reason": reason,
+        "selection_metric": selection_metric,
         "aj_rd_delta": round(aj_rd_delta, 4) if aj_rd_delta is not None else None,
     }
 
