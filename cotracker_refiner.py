@@ -1,4 +1,8 @@
 """
+DEPRECATED / CLOSED ROUTE ARTIFACT.
+
+This root-level module belongs to the legacy CoTracker-refinement route and contains closed local-refiner/verifier branches. Do not use for current Route B or new training without a new gate document.
+
 CoTracker-based Refiner for FSPT
 
 Route A: Use a strong point-tracking base (CoTracker3) and learn a lightweight

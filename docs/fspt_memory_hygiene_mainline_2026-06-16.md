@@ -1,5 +1,7 @@
 # FSPT Memory Hygiene Mainline (2026-06-16)
 
+> Status note (2026-06-26): historical note only. This document records the 2026-06-16 memory-hygiene hypothesis and is not the current mainline. For current status, use `CURRENT_MAINLINE.md`, `docs/current_mainline_status_2026-06-26.md`, and `docs/current_redetection_route_closure_2026-06-26.md`.
+
 ## 1. 当前主线的一句话版本
 
 我们的核心假设是：

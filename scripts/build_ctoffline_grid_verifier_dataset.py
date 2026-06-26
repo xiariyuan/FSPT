@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build CT-offline-centered local grid verifier dataset.
+"""DEPRECATED / CLOSED ROUTE ARTIFACT.
+
+This belongs to the closed CT-offline-centered local grid verifier route. Do not use for current Route B or any new training without a new gate document.
+
+Build CT-offline-centered local grid verifier dataset.
 
 For each re-entry query:
   - CT-offline prediction at re-entry = center

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Build CT-offline-centered local refiner dataset (Phase 3).
+"""DEPRECATED / CLOSED ROUTE ARTIFACT.
+
+This belongs to the closed CT-offline-centered local refiner route. Do not use for current Route B or any new training without a new gate document.
+
+Build CT-offline-centered local refiner dataset (Phase 3).
 
 Key differences from v3 builder:
   - Center is CoTracker3 offline prediction at re-entry (not base tracker)
