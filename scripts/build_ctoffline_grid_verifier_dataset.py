@@ -80,7 +80,15 @@ def main():
     parser.add_argument("--stride-px", type=int, default=2)
     parser.add_argument("--patch-size", type=int, default=64)
     parser.add_argument("--output-dir", type=str, required=True)
+    parser.add_argument("--allow-deprecated-closed-route", action="store_true",
+                        help="Required to run this deprecated closed-route artifact.")
     args = parser.parse_args()
+
+    if not args.allow_deprecated_closed_route:
+        raise SystemExit(
+            "This is a DEPRECATED / CLOSED ROUTE ARTIFACT (CT-offline grid verifier). "
+            "Pass --allow-deprecated-closed-route only for historical reproduction."
+        )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     out_dir = Path(args.output_dir)

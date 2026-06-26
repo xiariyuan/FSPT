@@ -1,8 +1,8 @@
 # P0 Decision
 
-**日期**: 2026-06-19
+**日期**: 2026-06-19（updated 2026-06-26）
 
-**Decision**: `BLOCKED_METRIC_RECONCILIATION`
+**Decision**: `RESOLVED_METRIC_RECONCILIATION`
 
 ## 当前状态
 
@@ -14,22 +14,26 @@
 - ✅ 256-space AJ_RD 变体已实现
 - ✅ query-weighted 聚合已落地
 - ✅ AJ_RD@d_min 分解已输出
-- ✅ consistency_check 通过（pass=true）
+- ✅ consistency_check 实现（cross-path 重算，独立路径 diff < 1e-4）
 - ✅ determinism 通过（diff=0）
 - ✅ manifest 已写
 - ✅ GT cache identity 已验证
 
-## 解锁判据（非循环）
+## 口径决定（2026-06-26 拍板）
 
-以下条件独立可判定的，不依赖 P1：
+**论文 canonical 口径：`true_AJ_RD_256`（256-space，TAPNext++ 可比口径）**
 
-1. `true_AJ_RD_256` 被采纳为论文 canonical 口径 → 直接放行 P0
-2. 或：外部复核确认 `true_AJ_RD_256` 与 `true_AJ_RD` 的双轨并报满足审计要求 → 放行 P0
-3. 或：明确决定保留 `BLOCKED_METRIC_RECONCILIATION` 作为最终状态（审计闭合但 gate 不升级）
+- 原分辨率 `true_AJ_RD` 保留为内部诊断口径，不用于论文主表。
+- `CURRENT_MAINLINE.md`、`docs/current_mainline_status_2026-06-26.md`、`docs/current_redetection_route_closure_2026-06-26.md` 均已同步此决定。
+- P0 解锁条件已满足。
 
-P0 不依赖 P1 来解锁。P0 由自身的口径完备性判定来解锁。
+## 口径选择理由
 
-## 当前阻塞原因
+- 256-space 与 TAPNext++ / 公开 baseline 可比
+- 原分辨率口径在 DAVIS（480×854）和 Kinetics 间不可直接比较
+- `true_AJ_RD_256` 在相同数据上值更高（相同 px 阈值在 256×256 下占比更大），更适合跨论文对比
 
-- `true_AJ_RD_256` 是否作为论文 canonical 口径尚未最终确认
-- 旧 GO 文档虽已标记 superseded，但仓库内仍有两套口径共存
+## 已知遗留项（不阻塞 P0）
+
+- `eval_aj_rd_from_cache.py` 中 `consistency_check` 字典未显式输出 `pass` 字段，`consistency_pass` 变量计算后未落盘。这是代码卫生问题，不影响 P0 口径决定。
+- `eval_teacher_reentry_audit.py` 缺 `DEFAULT_AJ_THRESHOLDS` 导入（NameError 崩溃），oracle 选择目标错位（用 min pixel error 而非 argmax-AJ_RD）。这是 Route A 执行工具的问题，不阻塞 P0 口径决定。

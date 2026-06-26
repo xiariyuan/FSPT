@@ -111,7 +111,15 @@ def main():
                         help="Comma-separated video names for val split")
     parser.add_argument("--output-dir", type=str, required=True)
     parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--allow-deprecated-closed-route", action="store_true",
+                        help="Required to run this deprecated closed-route artifact.")
     args = parser.parse_args()
+
+    if not args.allow_deprecated_closed_route:
+        raise SystemExit(
+            "This is a DEPRECATED / CLOSED ROUTE ARTIFACT (CT-offline local refiner). "
+            "Pass --allow-deprecated-closed-route only for historical reproduction."
+        )
 
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     rng = np.random.default_rng(args.seed)

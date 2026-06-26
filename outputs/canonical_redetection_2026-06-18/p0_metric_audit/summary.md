@@ -87,4 +87,4 @@ Total queries:    5882
 
 ## 5. 决策
 
-**BLOCKED_METRIC_RECONCILIATION**。P0 的坐标、schema 和 re-entry 事件统计通过；`AJ_RD` 口径已按 per-sample 汇总重算，但 phase gate 仍保留为 blocked，等待后续复核一致性确认。
+**RESOLVED_METRIC_RECONCILIATION**（2026-06-26 更新）。P0 的坐标、schema 和 re-entry 事件统计通过；`AJ_RD` 口径已按 per-sample 汇总重算。论文 canonical 口径拍板为 `true_AJ_RD_256`（256-space，TAPNext++ 可比口径）。原分辨率 `true_AJ_RD` 保留为内部诊断口径。P0 解锁条件已满足。

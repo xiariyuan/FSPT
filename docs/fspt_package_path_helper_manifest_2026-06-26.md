@@ -47,6 +47,19 @@ These are left for the next pass because they require careful behavior checks an
 - `python -c "from fspt.reentry_metrics import aggregate_reappearance_ajrd"`
 - `python -m py_compile fspt/__init__.py fspt/paths.py fspt/coords.py fspt/reentry_metrics.py fspt/core/paths.py verify_project.py`
 
+## Canonical import policy
+
+Active code should use:
+
+```python
+from fspt.paths import repo_root, resolve_repo_path, outputs_dir, caches_dir
+from fspt.coords import yx_norm_to_xy_pixel, find_reentry_events, pixel_l2_error
+from fspt.reentry_metrics import aggregate_reappearance_ajrd, compute_reappearance_segment_aj
+from fspt.io.attempt0_schema import load_attempt0_cache
+```
+
+Legacy `utils.*` remains for compatibility. Do not copy implementations into new files; re-export from `fspt.*`.
+
 ## Notes
 
 - No training routes were reopened.
