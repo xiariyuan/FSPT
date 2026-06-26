@@ -10,7 +10,12 @@ import traceback
 from pathlib import Path
 
 # 添加项目根目录到路径
-PROJECT_ROOT = Path(__file__).parent
+try:
+    from fspt.core.paths import repo_root
+
+    PROJECT_ROOT = repo_root()
+except Exception:
+    PROJECT_ROOT = Path(__file__).parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
 
