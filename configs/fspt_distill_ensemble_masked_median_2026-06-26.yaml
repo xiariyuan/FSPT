@@ -1,0 +1,81 @@
+defaults:
+  - fspt_base
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_2026_06_26"
+  description: "Route A deployable distillation from visibility-masked-median three-teacher ensemble cache."
+  seed: 42
+
+data:
+  train:
+    # The exported ensemble cache is DAVIS-strided/full-video supervision, so this
+    # config is for a controlled DAVIS distillation smoke/feasibility run, not a
+    # reopened old pseudo-label training route.
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    backend: "auto"
+    num_frames: -1
+    num_points: null
+    resolution: null
+    query_stride: 5
+    points_order: "xy"
+    augmentation:
+      enabled: false
+    base_tracks_dir: "/gemini/code/FSPT/outputs/ensemble_distill_base_tracks_masked_median_2026-06-26"
+    base_tracks_strict: true
+    base_tracks_query_tol: 1.0e-4
+  val:
+    dataset: "tapvid_davis"
+    root: "/gemini/code/datasets/tapvid_davis"
+    backend: "auto"
+    num_frames: -1
+    num_points: null
+    resolution: null
+    query_stride: 5
+    points_order: "xy"
+    augmentation:
+      enabled: false
+    base_tracks_dir: "/gemini/code/FSPT/outputs/ensemble_distill_base_tracks_masked_median_2026-06-26"
+    base_tracks_strict: false
+    base_tracks_query_tol: 1.0e-4
+
+training:
+  epochs: 20
+  batch_size: 1
+  num_workers: 2
+  amp:
+    enabled: true
+    dtype: "float16"
+  checkpoint:
+    save_every: 5
+    keep_last: 3
+
+loss:
+  exclude_query_frame: true
+  position:
+    weight: 1.0
+    type: "l1"
+  occlusion:
+    weight: 0.5
+    type: "bce"
+  base_track_consistency:
+    weight: 1.0
+    type: "smooth_l1"
+    mask: "both_visible"
+    smooth_l1_beta: 0.01
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.2
+      end_weight: 1.0
+  base_visibility_consistency:
+    weight: 0.3
+    type: "bce"
+    mask: "all"
+    schedule:
+      type: "linear"
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.05
+      end_weight: 0.3
