@@ -10,28 +10,37 @@
 
 ---
 
-## 项目概述
+## 当前状态
 
-本项目旨在解决当前点追踪(Point Tracking / Tracking Any Point)领域的核心挑战：
+本仓库目前处于 **re-entry / re-detection 方向 pivot** 阶段。当前事实以 [`CURRENT_MAINLINE.md`](CURRENT_MAINLINE.md) 为准。
 
-| 问题 | 现有方法的局限 | 我们的解决方案 |
-|------|---------------|--------------|
-| 遮挡处理能力不足 | 依赖可见性插值或简单预测 | 频率感知遮挡推理 |
-| 缺乏长程时序一致性 | 逐帧匹配导致漂移 | 低频轨迹建模保持一致性 |
-| 缺失语义理解能力 | 纯几何特征匹配 | CLIP语义特征增强 |
-| 多尺度运动处理不灵活 | 固定窗口或尺度 | 可学习频率分解自适应 |
-| 合成-真实域差距 | 域特定训练 | 语义一致性伪标签跨域训练 |
+已经正式关闭的路线包括：
 
-## 核心创新
+- DINOv2 whole-frame / multi-anchor retrieval
+- DINOv2 local feature pseudo-label rollout
+- CT-offline-centered local refiner
+- CT-offline-centered grid verifier
+- frozen DINOv2 features 上的 learned offset regression
+- 任何基于上述路线的继续训练或 P4 rollout
 
-| 创新点 | 描述 |
-|--------|------|
-| 频率自适应点追踪 | 将点轨迹按运动频率分解，低频做长程关联，高频做精确定位 |
-| 语义增强点匹配 | 利用CLIP语义特征引导点匹配 |
-| 频率感知遮挡推理 | 用低频轨迹预测遮挡期间的点位置 |
-| 跨域自适应训练 | 利用语义一致性做伪标签 |
-| 多尺度几何特征融合 | FPN风格融合多尺度几何特征（可选） |
-| 迭代精化追踪 | 多次位置更新提升细节一致性（可选） |
+仍然保留的问题方向：
+
+- 长遮挡后的 point re-entry / re-detection 是有效瓶颈
+- `true_AJ_RD_256` 是论文 canonical AJ_RD 口径
+- raw CoTracker3 offline 是当前最强可用 re-entry signal
+- 下一步只允许走：外部强 teacher 评估、工程地基修复、或 analysis / benchmark paper 收尾
+
+## 当前主线
+
+| 路线 | 状态 | 说明 |
+|------|------|------|
+| Route A: 外部强 teacher | 待执行 | 获取 TAPNext++ / Track-On-R / AllTracker checkpoint，并在 strided+original 协议下评估 |
+| Route B: 工程地基 | 进行中 | 建立 `fspt/` package、统一路径/坐标/指标入口、清理硬编码路径 |
+| Route C: analysis / benchmark paper | 备选收尾 | 如果没有更强 teacher，则整理 AJ_RD、failure map、null-result ladder |
+
+## 不再声明的内容
+
+本仓库当前**不再声明**已有可复现的 FSPT SOTA 方法结果。旧文档中关于 “67%+ AJ / 超越所有 SOTA / 完整频率-语义追踪器已完成” 的表述均视为历史草稿，不代表当前主线。
 
 ## 目录结构
 
@@ -120,27 +129,16 @@ bash scripts/download_datasets.sh
 python verify_project.py
 ```
 
-### 5. 训练模型
+### 5. 训练状态
+
+当前主线不允许启动旧 DINO/local refiner/verifier 或 P4 训练。以下历史训练入口仅用于工程兼容和遗留实验复现，不代表当前推荐路线：
 
 ```bash
-# 使用基础配置训练
+# 历史入口；运行前请先确认 CURRENT_MAINLINE.md
 python train.py --config configs/fspt_base.yaml
-
-# 从检查点恢复训练
-python train.py --config configs/fspt_base.yaml --resume checkpoints/fspt_base/latest.pth
-
-# Debug模式（减少数据量）
-python train.py --config configs/fspt_base.yaml --debug
-
-# 多卡训练（DDP，推荐脚本）
-torchrun --nproc_per_node=2 scripts/train_distributed.py --config configs/fspt_base.yaml
-
-# 如需直接用 train.py，需要启用 distributed 配置：
-# --hardware.distributed.enabled true
-torchrun --nproc_per_node=2 train.py --config configs/fspt_base.yaml --hardware.distributed.enabled true
 ```
 
-### 5.1 Route A（推荐）：CoTracker3 作为 base + FSPT 作为 refinement
+### 5.1 历史 Route A：CoTracker3 作为 base + FSPT refinement
 
 该路线用于顶会实验闭环：先用强基线（CoTracker3）产生粗轨迹，再用本项目的频率/语义/遮挡模块做残差精化。
 
@@ -355,13 +353,15 @@ Input Video + Query Points
 | **< δ^x_avg** | 各阈值下的位置精度 | 位置误差 < x像素的比例 |
 | **OA (Occlusion Accuracy)** | 遮挡预测准确率 | 正确预测遮挡/可见的比例 |
 
-### 预期性能目标
+### 当前评估重点
 
-| 方法 | TAP-Vid-DAVIS AJ | TAP-Vid-Kinetics AJ |
-|------|-----------------|---------------------|
-| TAPIR (baseline) | 61.3 | 49.6 |
-| CoTracker3 (SOTA) | 64.8 | 52.1 |
-| **FSPT (ours)** | **67.0+** | **54.0+** |
+当前不维护 FSPT SOTA 性能声明。评估重点转为：
+
+- strided+original 统一协议
+- `true_AJ_RD_256` canonical re-entry 指标
+- per-occlusion-length 分桶
+- 外部 teacher 是否能显著超过 raw CoTracker3 offline re-entry signal
+- 旧 DINO/local refiner/verifier 路线的 null-result ladder
 
 ## 数据集
 
