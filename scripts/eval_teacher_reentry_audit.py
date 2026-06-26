@@ -321,8 +321,8 @@ def main() -> None:
     print(f"Oracle teacher selection AJ_RD (max-AJ_RD): {results['aj_rd_comparison']['oracle_teacher_selection_by_max_ajrd']:.4f}")
     print(f"Oracle teacher selection AJ_RD_256 (max-AJ_RD_256): {results['aj_rd_comparison']['oracle_teacher_selection_by_max_ajrd_256']:.4f}")
     print(f"Oracle gain (min-error): {results['aj_rd_comparison']['delta_min_error_vs_fixed']:.4f}")
-    print(f"Oracle gain (max-AJ_RD): {results['ajrd_comparison']['delta_max_ajrd_vs_fixed']:.4f}")
-    print(f"Oracle gain (max-AJ_RD_256): {results['ajrd_comparison']['delta_max_ajrd256_vs_fixed']:.4f}")
+    print(f"Oracle gain (max-AJ_RD): {results['aj_rd_comparison']['delta_max_ajrd_vs_fixed']:.4f}")
+    print(f"Oracle gain (max-AJ_RD_256): {results['aj_rd_comparison']['delta_max_ajrd256_vs_fixed']:.4f}")
     print(f"Oracle teacher usage: {results['oracle']['teacher_usage']}")
     print(f"Wrote {args.output_json}")
 
