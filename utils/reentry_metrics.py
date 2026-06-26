@@ -244,24 +244,27 @@ def aggregate_reappearance_ajrd(
         d_mins: occlusion-length thresholds to aggregate over.
         summary_key: which summary dict to read from when ``aj_rd`` is absent.
             Defaults to ``"ajrd_summary"``.  Pass ``"ajrd_summary_256"`` to
-            aggregate the 256-space variant.
+            aggregate the 256-space variant.  When present, ``summary_key`` takes
+            precedence over top-level ``aj_rd``/``ajrd_by_dmin`` fields.
     """
     sample_vals: List[float] = []
     by_dmin: Dict[str, Dict[str, Any]] = {}
 
     for row in sample_rows:
-        row_score = row.get("aj_rd")
-        if row_score is None and isinstance(row.get(summary_key), dict):
-            row_score = row[summary_key].get("aj_rd")
+        summary = row.get(summary_key)
+        row_score = summary.get("aj_rd") if isinstance(summary, dict) else None
+        if row_score is None:
+            row_score = row.get("aj_rd")
         if row_score is not None:
             sample_vals.append(float(row_score))
 
     for d in d_mins:
         vals: List[float] = []
         for row in sample_rows:
-            by_dmin_row = row.get("ajrd_by_dmin")
-            if by_dmin_row is None and isinstance(row.get(summary_key), dict):
-                by_dmin_row = row[summary_key].get("ajrd_by_dmin")
+            summary = row.get(summary_key)
+            by_dmin_row = summary.get("ajrd_by_dmin") if isinstance(summary, dict) else None
+            if by_dmin_row is None:
+                by_dmin_row = row.get("ajrd_by_dmin")
             if by_dmin_row is None:
                 by_dmin_row = row.get("by_dmin")
             stats = by_dmin_row.get(str(int(d))) if isinstance(by_dmin_row, dict) else None

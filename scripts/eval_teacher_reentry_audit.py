@@ -243,6 +243,7 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
     oracle_ajrd_only_agg = aggregate_reappearance_ajrd(oracle_ajrd_rows, DEFAULT_AJRD_D_MINS, summary_key="ajrd_summary")
     oracle_ajrd256_only_agg = aggregate_reappearance_ajrd(oracle_ajrd256_rows, DEFAULT_AJRD_D_MINS, summary_key="ajrd_summary_256")
     fixed_ajrd_agg = aggregate_reappearance_ajrd(per_teacher_query_rows[best_fixed_name], DEFAULT_AJRD_D_MINS)
+    fixed_ajrd256_agg = aggregate_reappearance_ajrd(per_teacher_query_rows[best_fixed_name], DEFAULT_AJRD_D_MINS, summary_key="ajrd_summary_256")
 
     fixed_proxy_vals = np.asarray(
         [float(row["aj_proxy"]) for row in per_teacher_query_rows[best_fixed_name] if row.get("aj_proxy") is not None],
@@ -278,13 +279,14 @@ def audit_teachers(teacher_caches: Dict[str, str], max_videos: int = 0) -> Dict[
             "delta": round(float(np.mean(oracle_proxy_vals) - np.mean(fixed_proxy_vals)) if (oracle_proxy_vals.size and fixed_proxy_vals.size) else 0.0, 4),
         },
         "aj_rd_comparison": {
-            f"fixed_best_{best_fixed_name}": fixed_ajrd_agg["aj_rd"],
+            "fixed_best_original": fixed_ajrd_agg["aj_rd"],
+            "fixed_best_256": fixed_ajrd256_agg["aj_rd"],
             "oracle_teacher_selection_by_min_error": oracle_ajrd_agg["aj_rd"],
             "oracle_teacher_selection_by_max_ajrd": oracle_ajrd_only_agg["aj_rd"],
             "oracle_teacher_selection_by_max_ajrd_256": oracle_ajrd256_only_agg["aj_rd"],
             "delta_min_error_vs_fixed": round(float(oracle_ajrd_agg["aj_rd"] - fixed_ajrd_agg["aj_rd"]), 4) if (oracle_ajrd_agg["aj_rd"] is not None and fixed_ajrd_agg["aj_rd"] is not None) else None,
             "delta_max_ajrd_vs_fixed": round(float(oracle_ajrd_only_agg["aj_rd"] - fixed_ajrd_agg["aj_rd"]), 4) if (oracle_ajrd_only_agg["aj_rd"] is not None and fixed_ajrd_agg["aj_rd"] is not None) else None,
-            "delta_max_ajrd256_vs_fixed": round(float(oracle_ajrd256_only_agg["aj_rd"] - fixed_ajrd_agg["aj_rd"]), 4) if (oracle_ajrd256_only_agg["aj_rd"] is not None and fixed_ajrd_agg["aj_rd"] is not None) else None,
+            "delta_max_ajrd256_vs_fixed": round(float(oracle_ajrd256_only_agg["aj_rd"] - fixed_ajrd256_agg["aj_rd"]), 4) if (oracle_ajrd256_only_agg["aj_rd"] is not None and fixed_ajrd256_agg["aj_rd"] is not None) else None,
         },
         "per_event": per_event,
         "oracle_query_rows": oracle_query_rows,
@@ -312,13 +314,15 @@ def main() -> None:
         json.dump(results, f, indent=2)
 
     print(f"Fixed best teacher: {results['fixed_best_teacher']} (median={results['fixed_best_median_px']}px)")
+    print(f"Fixed AJ_RD (original): {results['aj_rd_comparison']['fixed_best_original']:.4f}")
+    print(f"Fixed AJ_RD (256-space): {results['aj_rd_comparison']['fixed_best_256']:.4f}")
     print(f"Oracle teacher selection proxy (min-error): {results['proxy_comparison']['oracle_teacher_selection']:.4f}")
     print(f"Oracle teacher selection AJ_RD (min-error): {results['aj_rd_comparison']['oracle_teacher_selection_by_min_error']:.4f}")
     print(f"Oracle teacher selection AJ_RD (max-AJ_RD): {results['aj_rd_comparison']['oracle_teacher_selection_by_max_ajrd']:.4f}")
     print(f"Oracle teacher selection AJ_RD_256 (max-AJ_RD_256): {results['aj_rd_comparison']['oracle_teacher_selection_by_max_ajrd_256']:.4f}")
     print(f"Oracle gain (min-error): {results['aj_rd_comparison']['delta_min_error_vs_fixed']:.4f}")
-    print(f"Oracle gain (max-AJ_RD): {results['aj_rd_comparison']['delta_max_ajrd_vs_fixed']:.4f}")
-    print(f"Oracle gain (max-AJ_RD_256): {results['aj_rd_comparison']['delta_max_ajrd256_vs_fixed']:.4f}")
+    print(f"Oracle gain (max-AJ_RD): {results['ajrd_comparison']['delta_max_ajrd_vs_fixed']:.4f}")
+    print(f"Oracle gain (max-AJ_RD_256): {results['ajrd_comparison']['delta_max_ajrd256_vs_fixed']:.4f}")
     print(f"Oracle teacher usage: {results['oracle']['teacher_usage']}")
     print(f"Wrote {args.output_json}")
 
