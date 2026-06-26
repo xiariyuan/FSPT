@@ -36,7 +36,9 @@ logger = logging.getLogger(__name__)
 
 
 def _project_root() -> Path:
-    return Path(__file__).resolve().parents[1]
+    from fspt.paths import repo_root
+
+    return repo_root()
 
 
 def _as_bool(value, default: bool = False) -> bool:

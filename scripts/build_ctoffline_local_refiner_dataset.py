@@ -20,7 +20,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-PROJECT_ROOT = Path("/gemini/code/FSPT")
+from fspt.paths import repo_root, resolve_repo_path
+
+PROJECT_ROOT = repo_root()
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -93,7 +95,7 @@ def main():
     parser.add_argument("--gt-cache", type=str,
                         default="caches/trackon2_strided_original.pt")
     parser.add_argument("--pkl-path", type=str,
-                        default="/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl")
+                        default=str(resolve_repo_path("..", "datasets", "tapvid_davis", "tapvid_davis.pkl")))
     parser.add_argument("--max-videos", type=int, default=0, help="0 = all")
     parser.add_argument("--max-queries", type=int, default=0, help="0 = all")
     parser.add_argument("--min-occ-length", type=int, default=0)
@@ -129,7 +131,7 @@ def main():
 
     # DINOv2 feature extractor
     from scripts.eval_world_state_stage2_causal_dino import DINOFeatureExtractor
-    dino_weights = Path("/gemini/code/FSPT/weights/dinov2/dinov2_vits14_pretrain.pth")
+    dino_weights = resolve_repo_path("weights", "dinov2", "dinov2_vits14_pretrain.pth")
     dino_extractor = DINOFeatureExtractor(dino_weights, device)
     dino_model = dino_extractor.model
     dino_model.eval()

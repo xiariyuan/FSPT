@@ -20,7 +20,9 @@ import numpy as np
 import torch
 import torch.nn.functional as F
 
-PROJECT_ROOT = Path("/gemini/code/FSPT")
+from fspt.paths import repo_root, resolve_repo_path
+
+PROJECT_ROOT = repo_root()
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
 
@@ -67,7 +69,7 @@ def main():
     parser.add_argument("--ct-offline-cache", type=str,
                         default="outputs/redetection_ladder_2026-06-17/caches/cotracker3_offline_strided_original.pt")
     parser.add_argument("--gt-cache", type=str, default="caches/trackon2_strided_original.pt")
-    parser.add_argument("--pkl-path", type=str, default="/gemini/code/datasets/tapvid_davis/tapvid_davis.pkl")
+    parser.add_argument("--pkl-path", type=str, default=str(resolve_repo_path("..", "datasets", "tapvid_davis", "tapvid_davis.pkl")))
     parser.add_argument("--max-videos", type=int, default=5)
     parser.add_argument("--max-queries", type=int, default=128)
     parser.add_argument("--radius-px", type=int, default=8)
@@ -83,7 +85,7 @@ def main():
     # Load DINO
     from scripts.eval_world_state_stage2_causal_dino import DINOFeatureExtractor
     dino = DINOFeatureExtractor(
-        Path("/gemini/code/FSPT/weights/dinov2/dinov2_vits14_pretrain.pth"), device
+        resolve_repo_path("weights", "dinov2", "dinov2_vits14_pretrain.pth"), device
     )
     dino_model = dino.model.eval()
 
