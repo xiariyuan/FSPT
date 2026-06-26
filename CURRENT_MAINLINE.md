@@ -41,7 +41,8 @@ Result:
 - Fixed best `true_AJ_RD_256`: `0.5546`.
 - Per-event oracle teacher selection `true_AJ_RD_256`: `0.6509`.
 - Oracle upper-bound delta: `+0.0963` / `+9.6pp`.
-- Decision: `STRONG_DIAGNOSTIC_HEADROOM`.
+- Best corrected deployable ensemble so far: `visibility_masked_median`, `true_AJ_RD_256 = 0.5871`, `+0.0325` / `+3.25pp` over fixed best, about `33.8%` of oracle gap used.
+- Decision: `ENSEMBLE_GAIN_CONFIRMED_WITH_REMAINING_SELECTOR_HEADROOM`.
 
 Important caveat: this is an oracle upper bound from per-event teacher selection.  It is not a deployable model gain.  It means there is real teacher complementarity and a selector / ensemble / distillation route is worth testing before any new training is authorized.
 
@@ -51,10 +52,10 @@ Preserve the re-entry / re-detection problem statement and use audits before tra
 
 #### Route A: teacher complementarity and selector feasibility
 
-- Immediate next baseline: evaluate a uniform ensemble of the three existing teacher caches.
-- If uniform ensemble improves over `fixed_best_256`, start with ensemble distillation.
-- If uniform ensemble does not improve but oracle remains strong, prioritize an event-level teacher selector / confidence gate.
-- Add external teachers only after the current three-teacher baseline is understood.
+- Corrected visibility-masked ensemble baseline is positive: best `true_AJ_RD_256 = 0.5871` vs fixed best `0.5546`.
+- Primary next step: ensemble distillation from the corrected masked ensemble cache.
+- Parallel diagnostic: event-level teacher selector / confidence gate, because roughly two thirds of the oracle gap remains.
+- Add external teachers only after distillation/selector feasibility from the current three-teacher pool is understood.
 - Track-On-R / TAPNext++ / AllTracker can be added to the teacher pool, but their result must be reported as either single-teacher gain, ensemble gain, or oracle upper bound.
 
 #### Route B: engineering foundation
@@ -87,7 +88,7 @@ Preserve the re-entry / re-detection problem statement and use audits before tra
 ## This week's tasks
 
 - Document the three-teacher oracle result and its oracle-vs-deployable caveat.
-- Run the three-teacher uniform ensemble baseline from existing caches.
-- Decide whether the next Route A step is simple ensemble distillation or an event-level teacher selector.
+- Record the corrected visibility-masked ensemble baseline result.
+- Start ensemble distillation from the corrected ensemble cache; keep teacher selector / confidence gate as the parallel diagnostic.
 - Fetch/evaluate external teacher checkpoints only after the current three-teacher baseline is understood, or in parallel if the environment is ready.
 - Keep this file updated as the single source of truth for active mainline work.
