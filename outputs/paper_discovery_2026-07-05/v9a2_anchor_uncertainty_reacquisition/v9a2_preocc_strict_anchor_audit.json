@@ -1,0 +1,350 @@
+{
+  "w8": {
+    "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/cotracker3_online_v8c02_fine_risk_verifier_dataset/v8c02_fine_risk_dist_nc_le64_w8.npz",
+    "counts": {
+      "n": 1456,
+      "strict": 1456,
+      "found": 1456,
+      "fallback": 0,
+      "last_eq_pre": 860,
+      "last_ne_pre": 596,
+      "pre_eq_event": 0,
+      "pre_gt_event": 0
+    },
+    "rates": {
+      "strict_rate": 1.0,
+      "found_rate": 1.0,
+      "fallback_rate": 0.0,
+      "last_eq_pre_rate": 0.5906593406593407,
+      "last_ne_pre_rate": 0.40934065934065933,
+      "pre_eq_event_rate": 0.0,
+      "pre_gt_event_rate": 0.0
+    },
+    "by_video": {
+      "bike-packing": {
+        "n": 93,
+        "strict": 93,
+        "found": 93,
+        "last_ne_pre": 50
+      },
+      "bmx-trees": {
+        "n": 187,
+        "strict": 187,
+        "found": 187,
+        "last_ne_pre": 148
+      },
+      "breakdance": {
+        "n": 131,
+        "strict": 131,
+        "found": 131,
+        "last_ne_pre": 72
+      },
+      "camel": {
+        "n": 9,
+        "strict": 9,
+        "found": 9,
+        "last_ne_pre": 6
+      },
+      "car-roundabout": {
+        "n": 87,
+        "strict": 87,
+        "found": 87,
+        "last_ne_pre": 0
+      },
+      "car-shadow": {
+        "n": 23,
+        "strict": 23,
+        "found": 23,
+        "last_ne_pre": 22
+      },
+      "dance-twirl": {
+        "n": 134,
+        "strict": 134,
+        "found": 134,
+        "last_ne_pre": 75
+      },
+      "dog": {
+        "n": 12,
+        "strict": 12,
+        "found": 12,
+        "last_ne_pre": 0
+      },
+      "dogs-jump": {
+        "n": 75,
+        "strict": 75,
+        "found": 75,
+        "last_ne_pre": 18
+      },
+      "drift-chicane": {
+        "n": 6,
+        "strict": 6,
+        "found": 6,
+        "last_ne_pre": 0
+      },
+      "drift-straight": {
+        "n": 21,
+        "strict": 21,
+        "found": 21,
+        "last_ne_pre": 17
+      },
+      "gold-fish": {
+        "n": 54,
+        "strict": 54,
+        "found": 54,
+        "last_ne_pre": 12
+      },
+      "india": {
+        "n": 60,
+        "strict": 60,
+        "found": 60,
+        "last_ne_pre": 55
+      },
+      "judo": {
+        "n": 22,
+        "strict": 22,
+        "found": 22,
+        "last_ne_pre": 15
+      },
+      "lab-coat": {
+        "n": 1,
+        "strict": 1,
+        "found": 1,
+        "last_ne_pre": 0
+      },
+      "libby": {
+        "n": 47,
+        "strict": 47,
+        "found": 47,
+        "last_ne_pre": 12
+      },
+      "loading": {
+        "n": 43,
+        "strict": 43,
+        "found": 43,
+        "last_ne_pre": 24
+      },
+      "mbike-trick": {
+        "n": 57,
+        "strict": 57,
+        "found": 57,
+        "last_ne_pre": 0
+      },
+      "motocross-jump": {
+        "n": 25,
+        "strict": 25,
+        "found": 25,
+        "last_ne_pre": 0
+      },
+      "paragliding-launch": {
+        "n": 9,
+        "strict": 9,
+        "found": 9,
+        "last_ne_pre": 0
+      },
+      "parkour": {
+        "n": 216,
+        "strict": 216,
+        "found": 216,
+        "last_ne_pre": 18
+      },
+      "pigs": {
+        "n": 39,
+        "strict": 39,
+        "found": 39,
+        "last_ne_pre": 14
+      },
+      "scooter-black": {
+        "n": 30,
+        "strict": 30,
+        "found": 30,
+        "last_ne_pre": 13
+      },
+      "shooting": {
+        "n": 8,
+        "strict": 8,
+        "found": 8,
+        "last_ne_pre": 6
+      },
+      "soapbox": {
+        "n": 67,
+        "strict": 67,
+        "found": 67,
+        "last_ne_pre": 19
+      }
+    }
+  },
+  "w16": {
+    "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/cotracker3_online_v8c02_fine_risk_verifier_dataset/v8c02_fine_risk_dist_nc_le64_w16.npz",
+    "counts": {
+      "n": 2013,
+      "strict": 2013,
+      "found": 2013,
+      "fallback": 0,
+      "last_eq_pre": 850,
+      "last_ne_pre": 1163,
+      "pre_eq_event": 0,
+      "pre_gt_event": 0
+    },
+    "rates": {
+      "strict_rate": 1.0,
+      "found_rate": 1.0,
+      "fallback_rate": 0.0,
+      "last_eq_pre_rate": 0.42225534028812717,
+      "last_ne_pre_rate": 0.5777446597118728,
+      "pre_eq_event_rate": 0.0,
+      "pre_gt_event_rate": 0.0
+    },
+    "by_video": {
+      "bike-packing": {
+        "n": 148,
+        "strict": 148,
+        "found": 148,
+        "last_ne_pre": 105
+      },
+      "bmx-trees": {
+        "n": 295,
+        "strict": 295,
+        "found": 295,
+        "last_ne_pre": 259
+      },
+      "breakdance": {
+        "n": 194,
+        "strict": 194,
+        "found": 194,
+        "last_ne_pre": 143
+      },
+      "camel": {
+        "n": 17,
+        "strict": 17,
+        "found": 17,
+        "last_ne_pre": 14
+      },
+      "car-roundabout": {
+        "n": 91,
+        "strict": 91,
+        "found": 91,
+        "last_ne_pre": 0
+      },
+      "car-shadow": {
+        "n": 86,
+        "strict": 86,
+        "found": 86,
+        "last_ne_pre": 85
+      },
+      "dance-twirl": {
+        "n": 218,
+        "strict": 218,
+        "found": 218,
+        "last_ne_pre": 166
+      },
+      "dog": {
+        "n": 12,
+        "strict": 12,
+        "found": 12,
+        "last_ne_pre": 0
+      },
+      "dogs-jump": {
+        "n": 82,
+        "strict": 82,
+        "found": 82,
+        "last_ne_pre": 34
+      },
+      "drift-chicane": {
+        "n": 6,
+        "strict": 6,
+        "found": 6,
+        "last_ne_pre": 0
+      },
+      "drift-straight": {
+        "n": 23,
+        "strict": 23,
+        "found": 23,
+        "last_ne_pre": 19
+      },
+      "gold-fish": {
+        "n": 61,
+        "strict": 61,
+        "found": 61,
+        "last_ne_pre": 19
+      },
+      "india": {
+        "n": 121,
+        "strict": 121,
+        "found": 121,
+        "last_ne_pre": 116
+      },
+      "judo": {
+        "n": 27,
+        "strict": 27,
+        "found": 27,
+        "last_ne_pre": 21
+      },
+      "lab-coat": {
+        "n": 1,
+        "strict": 1,
+        "found": 1,
+        "last_ne_pre": 0
+      },
+      "libby": {
+        "n": 52,
+        "strict": 52,
+        "found": 52,
+        "last_ne_pre": 13
+      },
+      "loading": {
+        "n": 51,
+        "strict": 51,
+        "found": 51,
+        "last_ne_pre": 38
+      },
+      "mbike-trick": {
+        "n": 57,
+        "strict": 57,
+        "found": 57,
+        "last_ne_pre": 0
+      },
+      "motocross-jump": {
+        "n": 25,
+        "strict": 25,
+        "found": 25,
+        "last_ne_pre": 0
+      },
+      "paragliding-launch": {
+        "n": 18,
+        "strict": 18,
+        "found": 18,
+        "last_ne_pre": 1
+      },
+      "parkour": {
+        "n": 248,
+        "strict": 248,
+        "found": 248,
+        "last_ne_pre": 34
+      },
+      "pigs": {
+        "n": 59,
+        "strict": 59,
+        "found": 59,
+        "last_ne_pre": 34
+      },
+      "scooter-black": {
+        "n": 38,
+        "strict": 38,
+        "found": 38,
+        "last_ne_pre": 29
+      },
+      "shooting": {
+        "n": 12,
+        "strict": 12,
+        "found": 12,
+        "last_ne_pre": 10
+      },
+      "soapbox": {
+        "n": 71,
+        "strict": 71,
+        "found": 71,
+        "last_ne_pre": 23
+      }
+    }
+  }
+}

@@ -1,0 +1,450 @@
+{
+  "w16_path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/cotracker3_online_v8c02_fine_risk_verifier_dataset/v8c02_fine_risk_dist_nc_le64_w16.npz",
+  "w8_path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/cotracker3_online_v8c02_fine_risk_verifier_dataset/v8c02_fine_risk_dist_nc_le64_w8.npz",
+  "subsets": {
+    "all_w16": {
+      "n": 2013,
+      "set_counts": {
+        "candidate_good": 765,
+        "utility_positive": 765,
+        "good_not_worse": 596,
+        "safe_no_damage": 1354,
+        "non_false_visible": 1583,
+        "non_damage16": 1986
+      },
+      "pairwise": {
+        "candidate_good__vs__utility_positive": {
+          "a_sum": 765,
+          "b_sum": 765,
+          "intersection": 765,
+          "union": 765,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 1.0,
+          "jaccard": 1.0
+        },
+        "candidate_good__vs__good_not_worse": {
+          "a_sum": 765,
+          "b_sum": 596,
+          "intersection": 596,
+          "union": 765,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.7790849673202614,
+          "jaccard": 0.7790849673202614
+        },
+        "candidate_good__vs__safe_no_damage": {
+          "a_sum": 765,
+          "b_sum": 1354,
+          "intersection": 765,
+          "union": 1354,
+          "precision_a_given_b": 0.5649926144756278,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.5649926144756278
+        },
+        "candidate_good__vs__non_false_visible": {
+          "a_sum": 765,
+          "b_sum": 1583,
+          "intersection": 765,
+          "union": 1583,
+          "precision_a_given_b": 0.4832596336070752,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.4832596336070752
+        },
+        "candidate_good__vs__non_damage16": {
+          "a_sum": 765,
+          "b_sum": 1986,
+          "intersection": 765,
+          "union": 1986,
+          "precision_a_given_b": 0.3851963746223565,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.3851963746223565
+        },
+        "utility_positive__vs__good_not_worse": {
+          "a_sum": 765,
+          "b_sum": 596,
+          "intersection": 596,
+          "union": 765,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.7790849673202614,
+          "jaccard": 0.7790849673202614
+        },
+        "utility_positive__vs__safe_no_damage": {
+          "a_sum": 765,
+          "b_sum": 1354,
+          "intersection": 765,
+          "union": 1354,
+          "precision_a_given_b": 0.5649926144756278,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.5649926144756278
+        },
+        "utility_positive__vs__non_false_visible": {
+          "a_sum": 765,
+          "b_sum": 1583,
+          "intersection": 765,
+          "union": 1583,
+          "precision_a_given_b": 0.4832596336070752,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.4832596336070752
+        },
+        "utility_positive__vs__non_damage16": {
+          "a_sum": 765,
+          "b_sum": 1986,
+          "intersection": 765,
+          "union": 1986,
+          "precision_a_given_b": 0.3851963746223565,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.3851963746223565
+        },
+        "good_not_worse__vs__safe_no_damage": {
+          "a_sum": 596,
+          "b_sum": 1354,
+          "intersection": 596,
+          "union": 1354,
+          "precision_a_given_b": 0.4401772525849335,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.4401772525849335
+        },
+        "good_not_worse__vs__non_false_visible": {
+          "a_sum": 596,
+          "b_sum": 1583,
+          "intersection": 596,
+          "union": 1583,
+          "precision_a_given_b": 0.37650031585596966,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.37650031585596966
+        },
+        "good_not_worse__vs__non_damage16": {
+          "a_sum": 596,
+          "b_sum": 1986,
+          "intersection": 596,
+          "union": 1986,
+          "precision_a_given_b": 0.3001007049345418,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.3001007049345418
+        },
+        "safe_no_damage__vs__non_false_visible": {
+          "a_sum": 1354,
+          "b_sum": 1583,
+          "intersection": 1354,
+          "union": 1583,
+          "precision_a_given_b": 0.8553379658875553,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.8553379658875553
+        },
+        "safe_no_damage__vs__non_damage16": {
+          "a_sum": 1354,
+          "b_sum": 1986,
+          "intersection": 1354,
+          "union": 1986,
+          "precision_a_given_b": 0.6817724068479355,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.6817724068479355
+        },
+        "non_false_visible__vs__non_damage16": {
+          "a_sum": 1583,
+          "b_sum": 1986,
+          "intersection": 1556,
+          "union": 2013,
+          "precision_a_given_b": 0.783484390735146,
+          "recall_b_given_a": 0.9829437776373974,
+          "jaccard": 0.7729756582215599
+        }
+      }
+    },
+    "w16_only": {
+      "n": 557,
+      "set_counts": {
+        "candidate_good": 118,
+        "utility_positive": 118,
+        "good_not_worse": 114,
+        "safe_no_damage": 389,
+        "non_false_visible": 490,
+        "non_damage16": 556
+      },
+      "pairwise": {
+        "candidate_good__vs__utility_positive": {
+          "a_sum": 118,
+          "b_sum": 118,
+          "intersection": 118,
+          "union": 118,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 1.0,
+          "jaccard": 1.0
+        },
+        "candidate_good__vs__good_not_worse": {
+          "a_sum": 118,
+          "b_sum": 114,
+          "intersection": 114,
+          "union": 118,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.9661016949152542,
+          "jaccard": 0.9661016949152542
+        },
+        "candidate_good__vs__safe_no_damage": {
+          "a_sum": 118,
+          "b_sum": 389,
+          "intersection": 118,
+          "union": 389,
+          "precision_a_given_b": 0.3033419023136247,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.3033419023136247
+        },
+        "candidate_good__vs__non_false_visible": {
+          "a_sum": 118,
+          "b_sum": 490,
+          "intersection": 118,
+          "union": 490,
+          "precision_a_given_b": 0.24081632653061225,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.24081632653061225
+        },
+        "candidate_good__vs__non_damage16": {
+          "a_sum": 118,
+          "b_sum": 556,
+          "intersection": 118,
+          "union": 556,
+          "precision_a_given_b": 0.21223021582733814,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.21223021582733814
+        },
+        "utility_positive__vs__good_not_worse": {
+          "a_sum": 118,
+          "b_sum": 114,
+          "intersection": 114,
+          "union": 118,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.9661016949152542,
+          "jaccard": 0.9661016949152542
+        },
+        "utility_positive__vs__safe_no_damage": {
+          "a_sum": 118,
+          "b_sum": 389,
+          "intersection": 118,
+          "union": 389,
+          "precision_a_given_b": 0.3033419023136247,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.3033419023136247
+        },
+        "utility_positive__vs__non_false_visible": {
+          "a_sum": 118,
+          "b_sum": 490,
+          "intersection": 118,
+          "union": 490,
+          "precision_a_given_b": 0.24081632653061225,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.24081632653061225
+        },
+        "utility_positive__vs__non_damage16": {
+          "a_sum": 118,
+          "b_sum": 556,
+          "intersection": 118,
+          "union": 556,
+          "precision_a_given_b": 0.21223021582733814,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.21223021582733814
+        },
+        "good_not_worse__vs__safe_no_damage": {
+          "a_sum": 114,
+          "b_sum": 389,
+          "intersection": 114,
+          "union": 389,
+          "precision_a_given_b": 0.2930591259640103,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.2930591259640103
+        },
+        "good_not_worse__vs__non_false_visible": {
+          "a_sum": 114,
+          "b_sum": 490,
+          "intersection": 114,
+          "union": 490,
+          "precision_a_given_b": 0.23265306122448978,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.23265306122448978
+        },
+        "good_not_worse__vs__non_damage16": {
+          "a_sum": 114,
+          "b_sum": 556,
+          "intersection": 114,
+          "union": 556,
+          "precision_a_given_b": 0.20503597122302158,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.20503597122302158
+        },
+        "safe_no_damage__vs__non_false_visible": {
+          "a_sum": 389,
+          "b_sum": 490,
+          "intersection": 389,
+          "union": 490,
+          "precision_a_given_b": 0.7938775510204081,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.7938775510204081
+        },
+        "safe_no_damage__vs__non_damage16": {
+          "a_sum": 389,
+          "b_sum": 556,
+          "intersection": 389,
+          "union": 556,
+          "precision_a_given_b": 0.6996402877697842,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.6996402877697842
+        },
+        "non_false_visible__vs__non_damage16": {
+          "a_sum": 490,
+          "b_sum": 556,
+          "intersection": 489,
+          "union": 557,
+          "precision_a_given_b": 0.8794964028776978,
+          "recall_b_given_a": 0.9979591836734694,
+          "jaccard": 0.8779174147217235
+        }
+      }
+    },
+    "common_w8": {
+      "n": 1456,
+      "set_counts": {
+        "candidate_good": 647,
+        "utility_positive": 647,
+        "good_not_worse": 482,
+        "safe_no_damage": 965,
+        "non_false_visible": 1093,
+        "non_damage16": 1430
+      },
+      "pairwise": {
+        "candidate_good__vs__utility_positive": {
+          "a_sum": 647,
+          "b_sum": 647,
+          "intersection": 647,
+          "union": 647,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 1.0,
+          "jaccard": 1.0
+        },
+        "candidate_good__vs__good_not_worse": {
+          "a_sum": 647,
+          "b_sum": 482,
+          "intersection": 482,
+          "union": 647,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.7449768160741885,
+          "jaccard": 0.7449768160741885
+        },
+        "candidate_good__vs__safe_no_damage": {
+          "a_sum": 647,
+          "b_sum": 965,
+          "intersection": 647,
+          "union": 965,
+          "precision_a_given_b": 0.6704663212435233,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.6704663212435233
+        },
+        "candidate_good__vs__non_false_visible": {
+          "a_sum": 647,
+          "b_sum": 1093,
+          "intersection": 647,
+          "union": 1093,
+          "precision_a_given_b": 0.5919487648673376,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.5919487648673376
+        },
+        "candidate_good__vs__non_damage16": {
+          "a_sum": 647,
+          "b_sum": 1430,
+          "intersection": 647,
+          "union": 1430,
+          "precision_a_given_b": 0.45244755244755247,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.45244755244755247
+        },
+        "utility_positive__vs__good_not_worse": {
+          "a_sum": 647,
+          "b_sum": 482,
+          "intersection": 482,
+          "union": 647,
+          "precision_a_given_b": 1.0,
+          "recall_b_given_a": 0.7449768160741885,
+          "jaccard": 0.7449768160741885
+        },
+        "utility_positive__vs__safe_no_damage": {
+          "a_sum": 647,
+          "b_sum": 965,
+          "intersection": 647,
+          "union": 965,
+          "precision_a_given_b": 0.6704663212435233,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.6704663212435233
+        },
+        "utility_positive__vs__non_false_visible": {
+          "a_sum": 647,
+          "b_sum": 1093,
+          "intersection": 647,
+          "union": 1093,
+          "precision_a_given_b": 0.5919487648673376,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.5919487648673376
+        },
+        "utility_positive__vs__non_damage16": {
+          "a_sum": 647,
+          "b_sum": 1430,
+          "intersection": 647,
+          "union": 1430,
+          "precision_a_given_b": 0.45244755244755247,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.45244755244755247
+        },
+        "good_not_worse__vs__safe_no_damage": {
+          "a_sum": 482,
+          "b_sum": 965,
+          "intersection": 482,
+          "union": 965,
+          "precision_a_given_b": 0.49948186528497407,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.49948186528497407
+        },
+        "good_not_worse__vs__non_false_visible": {
+          "a_sum": 482,
+          "b_sum": 1093,
+          "intersection": 482,
+          "union": 1093,
+          "precision_a_given_b": 0.4409881061299177,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.4409881061299177
+        },
+        "good_not_worse__vs__non_damage16": {
+          "a_sum": 482,
+          "b_sum": 1430,
+          "intersection": 482,
+          "union": 1430,
+          "precision_a_given_b": 0.33706293706293705,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.33706293706293705
+        },
+        "safe_no_damage__vs__non_false_visible": {
+          "a_sum": 965,
+          "b_sum": 1093,
+          "intersection": 965,
+          "union": 1093,
+          "precision_a_given_b": 0.8828911253430924,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.8828911253430924
+        },
+        "safe_no_damage__vs__non_damage16": {
+          "a_sum": 965,
+          "b_sum": 1430,
+          "intersection": 965,
+          "union": 1430,
+          "precision_a_given_b": 0.6748251748251748,
+          "recall_b_given_a": 1.0,
+          "jaccard": 0.6748251748251748
+        },
+        "non_false_visible__vs__non_damage16": {
+          "a_sum": 1093,
+          "b_sum": 1430,
+          "intersection": 1067,
+          "union": 1456,
+          "precision_a_given_b": 0.7461538461538462,
+          "recall_b_given_a": 0.9762122598353157,
+          "jaccard": 0.7328296703296703
+        }
+      }
+    }
+  }
+}

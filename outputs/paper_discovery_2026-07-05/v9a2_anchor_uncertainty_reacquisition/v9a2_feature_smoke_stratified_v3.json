@@ -1,0 +1,515 @@
+{
+  "rows_per_video": 2,
+  "n_rows": 49,
+  "n_videos": 25,
+  "videos": [
+    "bike-packing",
+    "bmx-trees",
+    "breakdance",
+    "camel",
+    "car-roundabout",
+    "car-shadow",
+    "dance-twirl",
+    "dog",
+    "dogs-jump",
+    "drift-chicane",
+    "drift-straight",
+    "gold-fish",
+    "india",
+    "judo",
+    "lab-coat",
+    "libby",
+    "loading",
+    "mbike-trick",
+    "motocross-jump",
+    "paragliding-launch",
+    "parkour",
+    "pigs",
+    "scooter-black",
+    "shooting",
+    "soapbox"
+  ],
+  "feature_dim": 115,
+  "finite_rate": 1.0,
+  "valid_feature_min": 0.6000000238418579,
+  "valid_feature_mean": 0.9920876622200012,
+  "valid_feature_p05": 1.0,
+  "oob_flag_mean": 0.0,
+  "oob_any_row_rate": 0.0,
+  "oob_distance_max": 0.0,
+  "oob_distance_mean": 0.0,
+  "normalized_distance_min": 0.005593820009380579,
+  "normalized_distance_max": 2.213899850845337,
+  "normalized_distance_mean": 0.3517327904701233,
+  "per_video": {
+    "bike-packing": {
+      "n": 2,
+      "frame_tau_min": 49,
+      "frame_tau_max": 63,
+      "last_t_ne_preocc_count": 0
+    },
+    "bmx-trees": {
+      "n": 2,
+      "frame_tau_min": 58,
+      "frame_tau_max": 79,
+      "last_t_ne_preocc_count": 0
+    },
+    "breakdance": {
+      "n": 2,
+      "frame_tau_min": 22,
+      "frame_tau_max": 65,
+      "last_t_ne_preocc_count": 1
+    },
+    "camel": {
+      "n": 2,
+      "frame_tau_min": 27,
+      "frame_tau_max": 36,
+      "last_t_ne_preocc_count": 1
+    },
+    "car-roundabout": {
+      "n": 2,
+      "frame_tau_min": 12,
+      "frame_tau_max": 20,
+      "last_t_ne_preocc_count": 0
+    },
+    "car-shadow": {
+      "n": 2,
+      "frame_tau_min": 15,
+      "frame_tau_max": 16,
+      "last_t_ne_preocc_count": 2
+    },
+    "dance-twirl": {
+      "n": 2,
+      "frame_tau_min": 9,
+      "frame_tau_max": 40,
+      "last_t_ne_preocc_count": 1
+    },
+    "dog": {
+      "n": 2,
+      "frame_tau_min": 48,
+      "frame_tau_max": 59,
+      "last_t_ne_preocc_count": 0
+    },
+    "dogs-jump": {
+      "n": 2,
+      "frame_tau_min": 10,
+      "frame_tau_max": 39,
+      "last_t_ne_preocc_count": 0
+    },
+    "drift-chicane": {
+      "n": 2,
+      "frame_tau_min": 28,
+      "frame_tau_max": 48,
+      "last_t_ne_preocc_count": 0
+    },
+    "drift-straight": {
+      "n": 2,
+      "frame_tau_min": 20,
+      "frame_tau_max": 30,
+      "last_t_ne_preocc_count": 1
+    },
+    "gold-fish": {
+      "n": 2,
+      "frame_tau_min": 67,
+      "frame_tau_max": 70,
+      "last_t_ne_preocc_count": 1
+    },
+    "india": {
+      "n": 2,
+      "frame_tau_min": 39,
+      "frame_tau_max": 74,
+      "last_t_ne_preocc_count": 1
+    },
+    "judo": {
+      "n": 2,
+      "frame_tau_min": 11,
+      "frame_tau_max": 28,
+      "last_t_ne_preocc_count": 1
+    },
+    "lab-coat": {
+      "n": 1,
+      "frame_tau_min": 46,
+      "frame_tau_max": 46,
+      "last_t_ne_preocc_count": 0
+    },
+    "libby": {
+      "n": 2,
+      "frame_tau_min": 44,
+      "frame_tau_max": 48,
+      "last_t_ne_preocc_count": 2
+    },
+    "loading": {
+      "n": 2,
+      "frame_tau_min": 32,
+      "frame_tau_max": 49,
+      "last_t_ne_preocc_count": 2
+    },
+    "mbike-trick": {
+      "n": 2,
+      "frame_tau_min": 74,
+      "frame_tau_max": 78,
+      "last_t_ne_preocc_count": 0
+    },
+    "motocross-jump": {
+      "n": 2,
+      "frame_tau_min": 12,
+      "frame_tau_max": 38,
+      "last_t_ne_preocc_count": 0
+    },
+    "paragliding-launch": {
+      "n": 2,
+      "frame_tau_min": 14,
+      "frame_tau_max": 22,
+      "last_t_ne_preocc_count": 0
+    },
+    "parkour": {
+      "n": 2,
+      "frame_tau_min": 28,
+      "frame_tau_max": 28,
+      "last_t_ne_preocc_count": 1
+    },
+    "pigs": {
+      "n": 2,
+      "frame_tau_min": 9,
+      "frame_tau_max": 52,
+      "last_t_ne_preocc_count": 1
+    },
+    "scooter-black": {
+      "n": 2,
+      "frame_tau_min": 4,
+      "frame_tau_max": 42,
+      "last_t_ne_preocc_count": 0
+    },
+    "shooting": {
+      "n": 2,
+      "frame_tau_min": 3,
+      "frame_tau_max": 20,
+      "last_t_ne_preocc_count": 1
+    },
+    "soapbox": {
+      "n": 2,
+      "frame_tau_min": 63,
+      "frame_tau_max": 65,
+      "last_t_ne_preocc_count": 1
+    }
+  },
+  "rows": [
+    {
+      "video_id": "bike-packing",
+      "query_idx": 0,
+      "frame_tau": 63,
+      "first_event_t": 62,
+      "query_t": 0,
+      "last_t": 56,
+      "preocc_t": 56,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.14157986640930176,
+        0.6922037601470947
+      ],
+      "native_yx": [
+        0.13763165473937988,
+        0.6777681708335876
+      ],
+      "source_index": 0
+    },
+    {
+      "video_id": "bike-packing",
+      "query_idx": 20,
+      "frame_tau": 49,
+      "first_event_t": 42,
+      "query_t": 0,
+      "last_t": 16,
+      "preocc_t": 16,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.5491803884506226,
+        0.5964230895042419
+      ],
+      "native_yx": [
+        0.5243859887123108,
+        0.5276877284049988
+      ],
+      "source_index": 92
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 0,
+      "frame_tau": 58,
+      "first_event_t": 58,
+      "query_t": 0,
+      "last_t": 57,
+      "preocc_t": 57,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.4709048271179199,
+        0.31249234080314636
+      ],
+      "native_yx": [
+        0.4713156819343567,
+        0.308066725730896
+      ],
+      "source_index": 93
+    },
+    {
+      "video_id": "bmx-trees",
+      "query_idx": 24,
+      "frame_tau": 79,
+      "first_event_t": 72,
+      "query_t": 0,
+      "last_t": 55,
+      "preocc_t": 55,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.5920081734657288,
+        0.3845243453979492
+      ],
+      "native_yx": [
+        0.578425407409668,
+        0.36812570691108704
+      ],
+      "source_index": 279
+    },
+    {
+      "video_id": "breakdance",
+      "query_idx": 5,
+      "frame_tau": 22,
+      "first_event_t": 18,
+      "query_t": 0,
+      "last_t": 9,
+      "preocc_t": 9,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.8610293865203857,
+        0.36215341091156006
+      ],
+      "native_yx": [
+        0.8529168963432312,
+        0.4053065776824951
+      ],
+      "source_index": 280
+    },
+    {
+      "video_id": "breakdance",
+      "query_idx": 19,
+      "frame_tau": 65,
+      "first_event_t": 62,
+      "query_t": 0,
+      "last_t": 64,
+      "preocc_t": 45,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.8733274936676025,
+        0.3910366892814636
+      ],
+      "native_yx": [
+        0.8832815289497375,
+        0.39687636494636536
+      ],
+      "source_index": 410
+    },
+    {
+      "video_id": "camel",
+      "query_idx": 0,
+      "frame_tau": 27,
+      "first_event_t": 26,
+      "query_t": 0,
+      "last_t": 18,
+      "preocc_t": 18,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.18803361058235168,
+        0.4049297273159027
+      ],
+      "native_yx": [
+        0.20380042493343353,
+        0.4003771245479584
+      ],
+      "source_index": 411
+    },
+    {
+      "video_id": "camel",
+      "query_idx": 0,
+      "frame_tau": 36,
+      "first_event_t": 28,
+      "query_t": 0,
+      "last_t": 35,
+      "preocc_t": 18,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.2311580926179886,
+        0.36219361424446106
+      ],
+      "native_yx": [
+        0.23350128531455994,
+        0.3624078631401062
+      ],
+      "source_index": 419
+    },
+    {
+      "video_id": "car-roundabout",
+      "query_idx": 0,
+      "frame_tau": 12,
+      "first_event_t": 4,
+      "query_t": 0,
+      "last_t": 1,
+      "preocc_t": 1,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.400125116109848,
+        0.6234589219093323
+      ],
+      "native_yx": [
+        0.3980448842048645,
+        0.6166654229164124
+      ],
+      "source_index": 420
+    },
+    {
+      "video_id": "car-roundabout",
+      "query_idx": 14,
+      "frame_tau": 20,
+      "first_event_t": 12,
+      "query_t": 0,
+      "last_t": 11,
+      "preocc_t": 11,
+      "preocc_found": true,
+      "preocc_strictly_before_event": true,
+      "candidate_yx": [
+        0.44702693819999695,
+        0.5672889947891235
+      ],
+      "native_yx": [
+        0.4410090744495392,
+        0.4990074336528778
+      ],
+      "source_index": 506
+    }
+  ],
+  "feature_names": [
+    "candidate_oob_flag",
+    "candidate_oob_y_low_px",
+    "candidate_oob_y_high_px",
+    "candidate_oob_x_low_px",
+    "candidate_oob_x_high_px",
+    "candidate_oob_distance_px",
+    "native_oob_flag",
+    "native_oob_y_low_px",
+    "native_oob_y_high_px",
+    "native_oob_x_low_px",
+    "native_oob_x_high_px",
+    "native_oob_distance_px",
+    "query_anchor_oob_flag",
+    "query_anchor_oob_y_low_px",
+    "query_anchor_oob_y_high_px",
+    "query_anchor_oob_x_low_px",
+    "query_anchor_oob_x_high_px",
+    "query_anchor_oob_distance_px",
+    "last_anchor_oob_flag",
+    "last_anchor_oob_y_low_px",
+    "last_anchor_oob_y_high_px",
+    "last_anchor_oob_x_low_px",
+    "last_anchor_oob_x_high_px",
+    "last_anchor_oob_distance_px",
+    "preocc_anchor_oob_flag",
+    "preocc_anchor_oob_y_low_px",
+    "preocc_anchor_oob_y_high_px",
+    "preocc_anchor_oob_x_low_px",
+    "preocc_anchor_oob_x_high_px",
+    "preocc_anchor_oob_distance_px",
+    "last_anchor_native_visible",
+    "preocc_anchor_native_visible",
+    "last_anchor_vis_score",
+    "preocc_anchor_vis_score",
+    "last_anchor_conf_prob",
+    "preocc_anchor_conf_prob",
+    "last_anchor_native_candidate_disagree",
+    "preocc_anchor_native_candidate_disagree",
+    "last_anchor_motion_jump",
+    "preocc_anchor_motion_jump",
+    "last_preocc_anchor_distance",
+    "tau_minus_last_anchor",
+    "event_minus_preocc_anchor",
+    "preocc_anchor_found",
+    "preocc_anchor_age",
+    "preocc_anchor_score",
+    "r5_query_cand_cos",
+    "r5_query_cand_desc_l2",
+    "r5_query_cand_mad",
+    "r5_query_cand_mse",
+    "r5_query_valid",
+    "r5_cand_valid",
+    "r5_query_pair_valid_min",
+    "r5_last_cand_cos",
+    "r5_last_cand_desc_l2",
+    "r5_last_cand_mad",
+    "r5_last_cand_mse",
+    "r5_last_valid",
+    "r5_cand_valid",
+    "r5_last_pair_valid_min",
+    "r5_preocc_cand_cos",
+    "r5_preocc_cand_desc_l2",
+    "r5_preocc_cand_mad",
+    "r5_preocc_cand_mse",
+    "r5_preocc_valid",
+    "r5_cand_valid",
+    "r5_preocc_pair_valid_min",
+    "r9_query_cand_cos",
+    "r9_query_cand_desc_l2",
+    "r9_query_cand_mad",
+    "r9_query_cand_mse",
+    "r9_query_valid",
+    "r9_cand_valid",
+    "r9_query_pair_valid_min",
+    "r9_last_cand_cos",
+    "r9_last_cand_desc_l2",
+    "r9_last_cand_mad",
+    "r9_last_cand_mse",
+    "r9_last_valid",
+    "r9_cand_valid",
+    "r9_last_pair_valid_min",
+    "r9_preocc_cand_cos",
+    "r9_preocc_cand_desc_l2",
+    "r9_preocc_cand_mad",
+    "r9_preocc_cand_mse",
+    "r9_preocc_valid",
+    "r9_cand_valid",
+    "r9_preocc_pair_valid_min",
+    "r17_query_cand_cos",
+    "r17_query_cand_desc_l2",
+    "r17_query_cand_mad",
+    "r17_query_cand_mse",
+    "r17_query_valid",
+    "r17_cand_valid",
+    "r17_query_pair_valid_min",
+    "r17_last_cand_cos",
+    "r17_last_cand_desc_l2",
+    "r17_last_cand_mad",
+    "r17_last_cand_mse",
+    "r17_last_valid",
+    "r17_cand_valid",
+    "r17_last_pair_valid_min",
+    "r17_preocc_cand_cos",
+    "r17_preocc_cand_desc_l2",
+    "r17_preocc_cand_mad",
+    "r17_preocc_cand_mse",
+    "r17_preocc_valid",
+    "r17_cand_valid",
+    "r17_preocc_pair_valid_min",
+    "dist_native_candidate_norm_yx",
+    "event_age",
+    "invis_age",
+    "native_motion_prev_norm_yx",
+    "sigma_proxy",
+    "normalized_distance"
+  ]
+}

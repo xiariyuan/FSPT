@@ -1,0 +1,17 @@
+{
+  "w8_npz": "outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_features_dist_nc_le64_w8_v3.npz",
+  "w16_npz": "outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_features_dist_nc_le64_w16_v3.npz",
+  "n_w8": 1456,
+  "n_w16": 2013,
+  "n_common": 1456,
+  "anchor_max_abs_diff": 38.0,
+  "anchor_mean_abs_diff": 0.0766298845410347,
+  "anchor_mismatched_rows": 662,
+  "base_max_abs_diff": 16.0,
+  "base_mean_abs_diff": 0.1525951772928238,
+  "base_mismatched_rows": 662,
+  "feature_dim_anchor_w8": 115,
+  "feature_dim_anchor_w16": 115,
+  "feature_dim_base_w8": 28,
+  "feature_dim_base_w16": 28
+}
