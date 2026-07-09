@@ -1,0 +1,26 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_2026-06-26
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemA_2026_06_26"
+  description: "A-tier low-memory smoke: pure ensemble distillation with minimal model stack to validate training viability. Not a final paper-result config."
+
+model:
+  backbone:
+    use_multiscale: false
+  frequency:
+    enabled: false
+  semantic:
+    enabled: false
+  temporal:
+    num_refinement_iters: 1
+    use_gradient_checkpointing: true
+  occlusion:
+    use_semantic_propagation: false
+
+# Keep the same clean distillation semantics; only lower input memory.
+data:
+  train:
+    resolution: [256, 256]
+  val:
+    resolution: [256, 256]

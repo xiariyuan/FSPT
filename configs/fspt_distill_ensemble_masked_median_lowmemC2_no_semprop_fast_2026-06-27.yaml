@@ -1,0 +1,12 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_2026-06-27
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_fast_2026_06_27"
+  description: "Fast C2 mainline: semantic on, frequency on, semantic propagation off, visualization disabled for 20 epoch run."
+
+logging:
+  visualize:
+    enabled: false
+    save_every: 1000000
+    num_samples: 0

@@ -1,0 +1,251 @@
+\documentclass[10pt,twocolumn]{article}
+
+% Draft LaTeX skeleton generated from REENTRY_TAP_PAPER_DRAFT_V1.md.
+% Replace with the target venue template before submission.
+
+\usepackage[margin=0.75in]{geometry}
+\usepackage{times}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath,amssymb}
+\usepackage{multirow}
+\usepackage{xcolor}
+\usepackage{hyperref}
+
+\title{Improving Re-entry Recovery in Tracking Any Point with Selective Local Override}
+\author{Anonymous Authors}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Tracking Any Point (TAP) models have made strong progress on standard point tracking metrics, but a point that disappears due to occlusion or leaving the frame and later reappears remains difficult to recover reliably. We target the re-entry recovery problem in TAP and study the tradeoff between re-entry reliability and standard tracking accuracy. We observe that a re-entry-strong online branch can improve re-detection, but applying it globally severely damages standard tracking performance. We propose B2-W16-P2, a training-free Selective Local Re-entry Override module that activates the override branch only inside short predicted re-entry windows. On RGB fresh20-49, B2-W16-P2 improves AJ\_RD\_256 from 0.3816 to 0.4454 while reducing AJ\_256 by only 0.528 points. We further propose ReEntry-Guard, an oracle-guided runtime reliability gate trained only on dev stress labels. When frozen on RGB fresh20-49, ReEntry-Guard further improves over B2-W16-P2 on natural, translate, and occluder validation, closing 20--32\% of the oracle routing gap while preserving or improving AJ. We validate the method with ReEntry-TAP, a controlled stress protocol covering out-of-frame and moving-occluder re-entry.
+\end{abstract}
+
+\section{Introduction}
+
+Tracking Any Point (TAP) estimates the trajectory and visibility of arbitrary query points throughout a video. Existing TAP trackers can perform well on standard aggregate metrics, but re-entry recovery remains a critical failure mode: after a point disappears due to occlusion or leaving the frame, the tracker must recover the same point identity when it reappears.
+
+This failure is not always reflected by standard average tracking metrics. A tracker can achieve high standard AJ while failing on post-reappearance segments. We therefore use AJ\_RD\_256 as the primary re-entry recovery metric and treat AJ\_256 as a constraint metric.
+
+A simple way to improve re-entry is to use a re-entry-strong online branch globally. However, on RGB fresh20-49, the online branch improves AJ\_RD\_256 from 0.3816 to 0.4121 but collapses AJ\_256 from 79.5944 to 44.6933. This motivates our main question: can we improve re-entry recovery while preserving standard tracking?
+
+We propose Selective Local Re-entry Override. The training-free instantiation, B2-W16-P2, uses a standard-strong base branch for most frames and activates a re-entry-strong override branch only inside short local windows triggered by visibility disagreement. We further train ReEntry-Guard, a lightweight reliability gate that accepts or rejects B2 candidate windows using only runtime branch features.
+
+\paragraph{Contributions.}
+\begin{itemize}
+    \item We identify TAP re-entry recovery as a key failure mode and use AJ\_RD\_256 as the primary metric.
+    \item We propose B2-W16-P2, a training-free selective local override module that improves AJ\_RD while preserving AJ.
+    \item We introduce ReEntry-Guard, a learned reliability gate trained from oracle routing labels on dev stress and frozen for fresh validation.
+    \item We validate on natural RGB fresh20-49, DAVIS, controlled dev stress, and frozen RGB fresh20-49 ReEntry-TAP stress.
+\end{itemize}
+
+\section{Related Work}
+
+\paragraph{Tracking Any Point.}
+TAP benchmarks evaluate arbitrary query point trajectories and visibility. Standard metrics such as AJ, OA, and average point accuracy summarize overall tracking quality but can under-emphasize reappearance failures. Recent work such as TAPNext++ highlights re-detection and AJ\_RD for reappearing points. Our work focuses directly on improving AJ\_RD while preserving standard AJ.
+
+\paragraph{Long-term tracking and re-detection.}
+Long-term tracking requires maintaining identity through occlusion, disappearance, and reappearance. Object tracking has long studied re-detection, while point tracking makes this harder because each query is a local point rather than a semantic object. Our method is complementary to stronger long-term trackers: it is a local routing framework that can be used as an inference-time reliability intervention.
+
+\paragraph{Stress testing and robustness.}
+Controlled stress protocols isolate failure modes that may be hidden in aggregate benchmark scores. ReEntry-TAP is not intended as a large-scale benchmark; instead, it is a controlled validation protocol for out-of-frame and occlusion-induced re-entry.
+
+\section{Re-entry Recovery Problem}
+
+Let a query point be visible at its query frame, become invisible for some interval, and later reappear. Re-entry recovery evaluates whether the tracker recovers the same point after this visibility gap. We evaluate:
+\begin{align}
+\text{primary:} \quad & \mathrm{AJ\_RD\_256}, \\
+\text{constraint:} \quad & \mathrm{AJ\_256}, \\
+\text{secondary:} \quad & \mathrm{OA\_256}, \Delta_{avg,256}.
+\end{align}
+
+On RGB fresh20-49, the base branch and online branch have the following tradeoff:
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Method & AJ\_RD\_256 & AJ\_256 & OA\_256 \\
+\midrule
+Offline & 0.3816 & 79.5944 & 91.4636 \\
+Online global & 0.4121 & 44.6933 & 55.7585 \\
+\bottomrule
+\end{tabular}
+\caption{Global online use improves AJ\_RD modestly but collapses standard AJ.}
+\end{table}
+
+\section{Method}
+
+\subsection{Selective Local Re-entry Override}
+
+The framework combines two branches:
+\begin{itemize}
+    \item Base branch $B$: standard-strong tracker with high AJ.
+    \item Override branch $O$: re-entry-strong branch that can recover some reappearing points but is unstable if used globally.
+\end{itemize}
+
+Let $v^B_t$ and $v^O_t$ denote base and override visibility at frame $t$. A B2 trigger fires when the base branch has been invisible immediately before $t$ and the override branch is visible for $P$ consecutive frames:
+\begin{equation}
+    g_t = \mathbb{1}\left[\mathrm{inv\_run}(v^B,t) \geq 1 \land v^O_t = 1 \land v^O_{t+1}=1\right].
+\end{equation}
+For B2-W16-P2, $P=2$ and the override window is $[t-1,t+16]$.
+
+The final prediction is:
+\begin{equation}
+Y_t = \begin{cases}
+O_t, & m_t=1,\\
+B_t, & m_t=0,
+\end{cases}
+\end{equation}
+where $m_t$ is the local override mask.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.98\linewidth]{figures/reentry_tap_method/reentry_guard_framework.png}
+\caption{Selective Local Re-entry Override framework. B2-W16-P2 accepts all triggered local windows; ReEntry-Guard learns to accept or reject candidate windows using runtime reliability features.}
+\label{fig:framework}
+\end{figure}
+
+\subsection{ReEntry-Guard}
+
+B2-W16-P2 accepts every triggered candidate window. Oracle analysis shows that some candidates improve AJ\_RD while others should be rejected. ReEntry-Guard adds a learned accept/reject decision over B2 candidate windows.
+
+Training labels are derived only on dev stress:
+\begin{equation}
+\ell_i = \mathbb{1}\left[\mathrm{AJ\_RD\_256}(\mathrm{B2}_i) > \mathrm{AJ\_RD\_256}(\mathrm{offline}_i)\right].
+\end{equation}
+At test time, ReEntry-Guard uses only runtime features from predicted branches, including visibility ratios, base/override disagreement, base invisible-run length, override visible persistence, geometry distance, motion smoothness, and trigger timing.
+
+\section{ReEntry-TAP Stress Validation}
+
+ReEntry-TAP contains two stress families. The translate stress moves the video without wrap-around so points leave the frame and later re-enter. The moving-occluder stress overlays a vertical full-height moving bar that temporarily hides points.
+
+Frozen RGB fresh20-49 validation uses fixed L16 parameters and covers:
+\begin{itemize}
+    \item 30 videos.
+    \item 70,984 query instances.
+    \item 32,676 re-entry events.
+\end{itemize}
+
+\section{Experiments}
+
+\subsection{Main Natural Result}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Method & AJ\_RD\_256 & AJ\_256 & OA\_256 \\
+\midrule
+Offline & 0.3816 & 79.5944 & 91.4636 \\
+Online global & 0.4121 & 44.6933 & 55.7585 \\
+B2-W16-P2 & 0.4454 & 79.0664 & 92.8804 \\
+ReEntry-Guard & \textbf{0.4499} & 79.1749 & 92.0864 \\
+\bottomrule
+\end{tabular}
+\caption{RGB fresh20-49 natural result. B2-W16-P2 improves AJ\_RD substantially while preserving AJ; ReEntry-Guard further improves beyond the fixed rule.}
+\label{tab:natural}
+\end{table}
+
+B2-W16-P2 improves AJ\_RD\_256 by +0.0638 over offline with only -0.5280 AJ cost. ReEntry-Guard improves over B2 by +0.0045 AJ\_RD and +0.1085 AJ.
+
+\subsection{Natural Ablation}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lrrrr}
+\toprule
+Method & AJ\_RD & AJ & $\Delta$AJ\_RD & $\Delta$AJ \\
+\midrule
+Offline & 0.3816 & 79.5944 & -- & -- \\
+Online global & 0.4121 & 44.6933 & +0.0305 & -34.9011 \\
+B2 fullpost P1 & 0.4219 & 78.9590 & +0.0403 & -0.6354 \\
+B2 W8 P2 & 0.4462 & 79.0753 & +0.0646 & -0.5191 \\
+B2 W16 P1 & 0.4456 & 79.0634 & +0.0640 & -0.5310 \\
+B2 W16 P2 & 0.4454 & 79.0664 & +0.0638 & -0.5280 \\
+B2 W32 P2 & 0.4421 & 79.0451 & +0.0605 & -0.5493 \\
+\bottomrule
+\end{tabular}
+\caption{Ablation on RGB fresh20-49. Local windows are critical; global online use collapses AJ.}
+\end{table}
+
+\subsection{Frozen ReEntry-TAP Validation}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{llrrr}
+\toprule
+Stress & Method & AJ\_RD & AJ & OA \\
+\midrule
+Translate & Offline & 0.4788 & 75.1940 & 90.7805 \\
+Translate & B2-W16-P2 & 0.5310 & 74.8457 & 92.2166 \\
+Translate & ReEntry-Guard & \textbf{0.5336} & 74.8490 & 91.4654 \\
+Occluder & Offline & 0.6311 & 77.6280 & 90.8918 \\
+Occluder & B2-W16-P2 & 0.6588 & 76.7991 & 92.1682 \\
+Occluder & ReEntry-Guard & \textbf{0.6632} & 77.0761 & 92.0632 \\
+\bottomrule
+\end{tabular}
+\caption{Frozen RGB fresh20-49 ReEntry-TAP stress validation. ReEntry-Guard further improves beyond B2 on both stress families.}
+\end{table}
+
+\subsection{Oracle Upper Bound}
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Setting & B2 & ReEntry-Guard & Oracle-B2 \\
+\midrule
+Natural & 0.4454 & 0.4499 & 0.4597 \\
+Translate L16 & 0.5310 & 0.5336 & 0.5437 \\
+Occluder L16 & 0.6588 & 0.6632 & 0.6732 \\
+\bottomrule
+\end{tabular}
+\caption{ReEntry-Guard closes 20--32\% of the oracle-B2 AJ\_RD gap.}
+\end{table}
+
+\subsection{External Baseline Supplement}
+
+A TAPNext ReEntry-TAP stress exporter is runnable but the available local checkpoint does not establish parity under this protocol. TrackOn2 ReEntry-TAP stress is pending an environment with \texttt{mmcv.ops}. We therefore use the existing parity-valid first-query/input-resolution TrackOn2 result only as a supplement.
+
+\begin{table}[h]
+\centering
+\small
+\begin{tabular}{lccc}
+\toprule
+Method & AJ\_RD\_256 & AJ\_256 & OA\_256 \\
+\midrule
+TrackOn2 first-input & 0.5444 & 67.0406 & 93.0615 \\
+B2-W16-P2 TrackOn2-base & 0.5509 & 67.1260 & 93.2224 \\
+\bottomrule
+\end{tabular}
+\caption{Supplemental external plug-in result under a parity-valid TrackOn2 first-input DAVIS protocol.}
+\end{table}
+
+\section{Analysis}
+
+Local override works because it restricts the unstable re-entry branch to the temporal region where it is most likely beneficial. ReEntry-Guard improves over B2 by rejecting part of the harmful candidate windows. The gains are modest but consistent, indicating that runtime gating is useful while also suggesting that stronger tracker-native uncertainty features may be needed to close the full oracle gap.
+
+\section{Limitations}
+
+B2-W16-P2 and ReEntry-Guard are inference-time routing methods over a base/override branch pair; they are not universal SOTA trackers. ReEntry-Guard gains beyond B2 are modest. Fully aligned TrackOn2/TAPNext++ ReEntry-TAP stress baselines remain future work pending environment and checkpoint parity.
+
+\section{Conclusion}
+
+We studied TAP re-entry recovery and proposed Selective Local Re-entry Override. B2-W16-P2 improves AJ\_RD substantially while preserving AJ, and ReEntry-Guard further improves beyond the fixed rule by learning runtime reliability gating from dev stress. ReEntry-TAP stress validation confirms that the gains persist under controlled out-of-frame and occlusion-induced re-entry.
+
+\bibliographystyle{plain}
+\begin{thebibliography}{9}
+\bibitem{placeholder-tapnext} TAPNext++ placeholder citation.
+\bibitem{placeholder-trackon2} TrackOn2 placeholder citation.
+\bibitem{placeholder-cotracker} CoTracker placeholder citation.
+\end{thebibliography}
+
+\end{document}

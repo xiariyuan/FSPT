@@ -1,0 +1,12 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemB_2026-06-26
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemB_fast_2026_06_27"
+  description: "B-fast-20 fair frequency-only baseline: semantic off, frequency on, semantic propagation off, visualization disabled."
+
+logging:
+  visualize:
+    enabled: false
+    save_every: 1000000
+    num_samples: 0

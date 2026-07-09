@@ -1,0 +1,183 @@
+% Paper-ready LaTeX tables for ReEntry-TAP
+% Generated: 2026-07-04
+% Suggested packages:
+% \usepackage{booktabs}
+% \usepackage{multirow}
+% \usepackage{tabularx}
+% \usepackage{adjustbox}
+% \usepackage{xcolor}
+%
+% Notation:
+% AJ = Average Jaccard, OA = Occlusion Accuracy, $\delta_{\mathrm{avg}}$ = average position accuracy.
+% AJ_RD is a re-entry / re-detection diagnostic metric, not an official TAP-Vid leaderboard metric.
+
+% -----------------------------------------------------------------------------
+% Table 1: Evaluation protocol summary
+% -----------------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\caption{Evaluation protocols used in this work. Official-style local evaluations follow TAP-Vid query modes and metric definitions locally; they are not official server/leaderboard submissions.}
+\label{tab:evaluation_protocols}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{llrrllll}
+\toprule
+Evaluation & Dataset & Videos & Queries & Query mode & Resolution & Metrics & Type \\
+\midrule
+DAVIS first/input & TAPVid-DAVIS & 30 & 650 & first & input / 256 & AJ, OA, $\delta_{\mathrm{avg}}$, AJ\_RD & official-style local \\
+DAVIS strided/original & TAPVid-DAVIS & 30 & 5,882 & strided & original & AJ, OA, $\delta_{\mathrm{avg}}$, AJ\_RD & official-style local \\
+RGB-Stacking full50 & TAPVid RGB-Stacking & 50 & 60,829 & local full50 cache & 256/local & AJ, OA, AJ\_RD & standard full50 local \\
+RGB fresh20--49 & TAPVid RGB-Stacking subset & 30 & -- & local re-entry split & 256/local & AJ, OA, AJ\_RD & diagnostic local \\
+Stress variants & RGB-Stacking derived & 30 each & -- & synthetic translate/occluder & 256/local & AJ, OA, AJ\_RD & diagnostic stress \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+% -----------------------------------------------------------------------------
+% Table 2: DAVIS first/input official-style local evaluation
+% -----------------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\caption{TAPVid-DAVIS first/input official-style local evaluation. ReEntry variants improve the CoTracker3 offline base in AJ, OA, and AJ\_RD while leaving coordinate accuracy unchanged because ReEntry modifies visibility rather than coordinates.}
+\label{tab:davis_first_input}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrr}
+\toprule
+Method & AJ $\uparrow$ & OA $\uparrow$ & $\delta_{\mathrm{avg}} \uparrow$ & $\delta_{4\mathrm{px}} \uparrow$ & AJ\_RD $\uparrow$ & AJ\_RD$_{256}$ $\uparrow$ \\
+\midrule
+CoTracker3 baseline & 64.8949 & 91.7983 & 77.3560 & 84.9284 & 0.3486 & 0.5246 \\
+CoTracker3 offline & 62.6566 & 88.1487 & 77.2244 & 84.5776 & 0.3142 & 0.4525 \\
+TrackOn2 & \textbf{67.0406} & \textbf{92.0916} & \textbf{79.8418} & \textbf{87.8233} & \textbf{0.3714} & \textbf{0.5444} \\
+ReEntry V1 & 64.5758 & 91.7274 & 77.2244 & 84.5776 & 0.3588 & 0.5305 \\
+ReEntry V22Q & 64.7260 & 91.7406 & 77.2244 & 84.5776 & 0.3556 & 0.5252 \\
+ReEntry V24-DINOScore & 64.8439 & 91.8851 & 77.2244 & 84.5776 & 0.3549 & 0.5236 \\
+\midrule
+V24 $-$ CoTracker3 offline & +2.1874 & +3.7363 & +0.0000 & +0.0000 & +0.0407 & +0.0711 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+% -----------------------------------------------------------------------------
+% Table 3: DAVIS strided/original official-style local evaluation
+% -----------------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\caption{TAPVid-DAVIS strided/original official-style local evaluation. Default ReEntry improves AJ\_RD but can reduce global AJ/OA; the conservative V25 threshold preserves official-style AJ/OA with a small AJ\_RD gain.}
+\label{tab:davis_strided_original}
+\small
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrrr}
+\toprule
+Method & AJ $\uparrow$ & OA $\uparrow$ & $\delta_{\mathrm{avg}} \uparrow$ & AJ\_RD $\uparrow$ \\
+\midrule
+CoTracker3 offline & 51.5385 & 92.1543 & 63.5892 & 0.3870 \\
+ReEntry V1 default & 50.7303 & 91.2730 & 63.5892 & \textbf{0.4144} \\
+ReEntry V22Q default & 50.8342 & 91.3439 & 63.5892 & 0.4136 \\
+ReEntry V25-safe ($\tau=0.80$) & \textbf{51.5648} & \textbf{92.2106} & 63.5892 & 0.3900 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+% -----------------------------------------------------------------------------
+% Table 4: RGB-Stacking full50 local standard evaluation
+% -----------------------------------------------------------------------------
+\begin{table}[t]
+\centering
+\caption{TAPVid RGB-Stacking full50 local standard evaluation over all 50 locally available videos. ReEntry improves AJ\_RD and OA substantially over CoTracker3 offline, with a small AJ trade-off.}
+\label{tab:rgb_full50}
+\small
+\begin{adjustbox}{max width=\linewidth}
+\begin{tabular}{lrrr}
+\toprule
+Method & AJ\_RD $\uparrow$ & AJ $\uparrow$ & OA $\uparrow$ \\
+\midrule
+CoTracker3 offline & 0.3617 & \textbf{79.9345} & 91.6371 \\
+CoTracker3 online & 0.4028 & 44.8432 & 55.8092 \\
+ReEntry V1 & \textbf{0.4414} & 79.4302 & \textbf{93.0758} \\
+ReEntry V22Q & 0.4400 & 79.5756 & 93.0481 \\
+ReEntry V24-DINOScore & 0.4394 & 79.5974 & 93.0389 \\
+\midrule
+V24 $-$ offline & +0.0777 & -0.3371 & +1.4018 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table}
+
+% -----------------------------------------------------------------------------
+% Table 5: Fresh/stress diagnostics
+% -----------------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\caption{RGB-Stacking fresh20--49 and stress diagnostics. These diagnostic settings isolate re-entry behavior and are not official benchmark submissions. V24 consistently improves AJ\_RD and OA with a small AJ trade-off.}
+\label{tab:fresh_stress}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrrrrrrr}
+\toprule
+Setting & Base AJ\_RD & V24 AJ\_RD & $\Delta$AJ\_RD & Base OA & V24 OA & $\Delta$OA & Base AJ & V24 AJ & $\Delta$AJ \\
+\midrule
+Natural & 0.3330 & 0.4027 & +0.0698 & 91.4636 & 92.9244 & +1.4608 & 79.5944 & 79.2884 & -0.3060 \\
+Translate-L16 & 0.5080 & 0.5564 & +0.0484 & 90.7805 & 92.1951 & +1.4146 & 75.1940 & 74.9987 & -0.1953 \\
+Occluder-L16 & 0.6417 & 0.6763 & +0.0345 & 90.8918 & 92.2293 & +1.3375 & 77.6280 & 77.2276 & -0.4004 \\
+\midrule
+Average & 0.4939 & 0.5451 & +0.0509 & 91.0453 & 92.4496 & +1.4043 & 77.4721 & 77.1716 & -0.3006 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+% -----------------------------------------------------------------------------
+% Appendix Table A1: DAVIS bridge local comparison
+% -----------------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\caption{Appendix: TAPVid-DAVIS bridge local comparison. V24 improves over the CoTracker3 offline base but does not surpass TrackOn2.}
+\label{tab:davis_bridge_appendix}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{lrrrr}
+\toprule
+Method & AJ\_RD$_{256}$ $\uparrow$ & AJ\_RD $\uparrow$ & AJ$_{256}$ $\uparrow$ & OA$_{256}$ $\uparrow$ \\
+\midrule
+CoTracker3 baseline & 0.5246 & 0.3486 & 62.8181 & 90.2631 \\
+CoTracker3 offline & 0.4525 & 0.3142 & 62.1660 & 89.0107 \\
+TrackOn2 & \textbf{0.5444} & \textbf{0.3714} & \textbf{67.0406} & \textbf{93.0615} \\
+ReEntry V1 & 0.5305 & 0.3588 & 64.0950 & 92.3477 \\
+ReEntry V22Q & 0.5252 & 0.3556 & 64.2383 & 92.3382 \\
+ReEntry V24-DINOScore & 0.5236 & 0.3549 & 64.3545 & 92.4712 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}
+
+% -----------------------------------------------------------------------------
+% Appendix Table A2: V25 threshold sweep
+% -----------------------------------------------------------------------------
+\begin{table*}[t]
+\centering
+\caption{Appendix: V25 threshold sweep on DAVIS strided/original. Threshold $0.80$ is the best official-safe candidate by AJ\_RD among non-negative AJ/OA candidates.}
+\label{tab:v25_threshold_sweep_appendix}
+\small
+\begin{adjustbox}{max width=\textwidth}
+\begin{tabular}{rrrrrrrr}
+\toprule
+Threshold & AJ & OA & $\delta_{\mathrm{avg}}$ & AJ\_RD & $\Delta$AJ & $\Delta$OA & $\Delta$AJ\_RD \\
+\midrule
+0.20 & 50.7569 & 91.2704 & 63.5892 & 0.4141 & -0.7816 & -0.8839 & +0.0271 \\
+0.30 & 50.8000 & 91.2821 & 63.5892 & 0.4136 & -0.7384 & -0.8722 & +0.0266 \\
+0.40 & 50.8522 & 91.3187 & 63.5892 & 0.4131 & -0.6863 & -0.8357 & +0.0261 \\
+0.50 & 50.9103 & 91.4152 & 63.5892 & 0.4118 & -0.6282 & -0.7391 & +0.0248 \\
+0.60 & 51.0521 & 91.6501 & 63.5892 & 0.4092 & -0.4864 & -0.5043 & +0.0222 \\
+0.70 & 51.3570 & 91.9982 & 63.5892 & 0.3988 & -0.1815 & -0.1562 & +0.0118 \\
+0.80 & \textbf{51.5648} & \textbf{92.2106} & 63.5892 & 0.3900 & +0.0263 & +0.0563 & +0.0030 \\
+0.90 & 51.5630 & 92.1914 & 63.5892 & 0.3875 & +0.0246 & +0.0370 & +0.0005 \\
+0.95 & 51.5420 & 92.1607 & 63.5892 & 0.3870 & +0.0035 & +0.0063 & +0.0000 \\
+0.99 & 51.5385 & 92.1543 & 63.5892 & 0.3870 & +0.0000 & +0.0000 & +0.0000 \\
+\bottomrule
+\end{tabular}
+\end{adjustbox}
+\end{table*}

@@ -1,0 +1,20 @@
+from pathlib import Path
+p=Path('docs/REENTRY_TAP_PAPER_DRAFT_V1.md')
+s=p.read_text()
+# Add appendix section before TODO
+marker='## Appendix C. TODO Before Submission\n'
+appendix='''## Appendix C. External Baseline Feasibility and Supplement\n\n### C.1 TAPNext ReEntry-TAP stress smoke\n\nWe implemented a TAPNext exporter for ReEntry-TAP stress datasets:\n\n```text\nscripts/export_tapnext_reentry_stress_cache.py\n```\n\nThe exporter successfully runs on dev0 translate_L16 with 1,116 queries. However, the available local TAPNext checkpoint / adapter does not establish a usable strong baseline under this stress protocol. On the same dev0 translate_L16 video:\n\n| Method | AJ_RD_256 | AJ_256 | OA_256 |\n|---|---:|---:|---:|\n| CoTracker3 offline | 0.6667 | 76.0920 | 88.5175 |\n| CoTracker3 online | 0.7061 | 46.4554 | 61.2806 |\n| B2-W16-P2 | 0.7239 | 77.2732 | 90.6263 |\n| TAPNext local checkpoint | 0.0311 | 10.7467 | 28.5831 |\n\nBecause parity is not established, this TAPNext stress result should not be interpreted as a strong external comparison. It is recorded only as an engineering feasibility attempt.\n\n### C.2 TrackOn2 stress smoke blocker\n\nWe also implemented a TrackOn2 exporter for ReEntry-TAP stress datasets:\n\n```text\nscripts/export_trackon2_reentry_stress_cache.py\n```\n\nThe current environment is blocked by a missing dependency:\n\n```text\nModuleNotFoundError: No module named 'mmcv'\nfrom mmcv.ops import MultiScaleDeformableAttention\n```\n\nTherefore, a strict ReEntry-TAP stress comparison with TrackOn2 is pending an environment with `mmcv.ops` support. We do not use a fallback attention implementation because that would change the TrackOn2 architecture and would not be a valid external baseline.\n\n### C.3 Parity-valid TrackOn2 first-input supplement\n\nAlthough TrackOn2 stress evaluation is blocked in the current environment, we have a parity-valid TrackOn2 first-query/input-resolution DAVIS bridge. Under that protocol, B2-W16-P2 can be applied as a plug-in local override on top of TrackOn2:\n\n| Method | AJ_RD_256 | AJ_256 | OA_256 |\n|---|---:|---:|---:|\n| TrackOn2 first-input | 0.5444 | 67.0406 | 93.0615 |\n| B2-W16-P2, TrackOn2 base + CoTracker3 override | 0.5509 | 67.1260 | 93.2224 |\n\nGain over TrackOn2:\n\n```text\nAJ_RD_256 +0.0065\nAJ_256    +0.0854\nOA_256    +0.1609\n```\n\nThis is a supplemental plug-in generality result, not a main-table comparison. It supports the claim that selective local override can provide small positive gains on top of an external reproduced baseline under a parity-valid protocol.\n\n'''
+if marker in s and '## Appendix C. External Baseline Feasibility and Supplement' not in s:
+    s=s.replace(marker, appendix+marker.replace('Appendix C','Appendix D'),1)
+# Update limitations external baseline line
+old='5. **External baselines remain limited.** The current main comparisons are within a CoTracker-style offline/online branch family. Future work should evaluate TrackOn2, TAPNext++, AllTracker, and other long-term point trackers under the same ReEntry-TAP protocol.'
+new='5. **External baselines remain limited.** The current main ReEntry-TAP comparisons are within a CoTracker-style offline/online branch family. We attempted TAPNext and TrackOn2 stress baselines: TAPNext was runnable but not parity-established under the stress protocol, and TrackOn2 was blocked by missing `mmcv.ops` support in the current environment. A parity-valid TrackOn2 first-input supplement shows small positive plug-in gains, but future work should evaluate TrackOn2, TAPNext++, AllTracker, and other long-term point trackers under a fully aligned ReEntry-TAP protocol.'
+if old in s:
+    s=s.replace(old,new,1)
+# Add external doc ref if artifact refs exist
+old='docs/reentry_guard_v1_v2_results_2026-07-01.md\n'
+new='docs/reentry_guard_v1_v2_results_2026-07-01.md\ndocs/reentry_tap_external_baseline_smoke_2026-07-01.md\n'
+if old in s and 'docs/reentry_tap_external_baseline_smoke_2026-07-01.md' not in s:
+    s=s.replace(old,new,1)
+p.write_text(s)
+print('updated', p, 'len', len(s))

@@ -3,14 +3,28 @@ defaults:
 
 experiment:
   name: "fspt_distill_ensemble_masked_median_2026_06_26"
-  description: "Route A deployable distillation from visibility-masked-median three-teacher ensemble cache."
+  description: "Route A pure ensemble-distillation smoke from visibility-masked-median three-teacher ensemble cache."
   seed: 42
 
 data:
+  # train.py passes this global block to the train dataloader. Keep it fully
+  # disabled so cached base_tracks/query_points stay aligned with runtime DAVIS samples.
+  augmentation:
+    enabled: false
+    random_crop: false
+    random_flip: false
+    color_jitter: 0.0
+    random_scale: [1.0, 1.0]
+    random_rotation: 0.0
+    temporal:
+      enabled: false
+      random_reverse: false
+      random_speed: [1.0, 1.0]
+      random_start: false
+
   train:
-    # The exported ensemble cache is DAVIS-strided/full-video supervision, so this
-    # config is for a controlled DAVIS distillation smoke/feasibility run, not a
-    # reopened old pseudo-label training route.
+    # Controlled DAVIS ensemble-distillation smoke only. This is not a held-out
+    # generalization claim and not a reopened old pseudo-label training route.
     dataset: "tapvid_davis"
     root: "/gemini/code/datasets/tapvid_davis"
     backend: "auto"
@@ -24,6 +38,7 @@ data:
     base_tracks_dir: "/gemini/code/FSPT/outputs/ensemble_distill_base_tracks_masked_median_2026-06-26"
     base_tracks_strict: true
     base_tracks_query_tol: 1.0e-4
+
   val:
     dataset: "tapvid_davis"
     root: "/gemini/code/datasets/tapvid_davis"
@@ -52,16 +67,19 @@ training:
 
 loss:
   exclude_query_frame: true
+  # Pure ensemble distillation: do not use DAVIS GT losses in this smoke.
   position:
-    weight: 1.0
+    weight: 0.0
     type: "l1"
   occlusion:
-    weight: 0.5
+    weight: 0.0
     type: "bce"
   base_track_consistency:
     weight: 1.0
     type: "smooth_l1"
-    mask: "both_visible"
+    # Re-entry frames must receive coordinate supervision when the ensemble is visible,
+    # even if the student initially predicts invisible.
+    mask: "base_visible"
     smooth_l1_beta: 0.01
     schedule:
       type: "linear"

@@ -1,0 +1,36 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_2026-06-26
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_2026_06_27"
+  description: "C2 isolation smoke: semantic on and frequency on, but disable semantic occlusion propagation. Tests whether C collapse comes from semantic propagation rather than semantic fusion itself."
+
+model:
+  backbone:
+    use_multiscale: false
+  frequency:
+    enabled: true
+    num_bands: 4
+    kernel_size: 7
+    strict_lfd: false
+  semantic:
+    enabled: true
+    modulation_type: multiplicative
+    fusion_type: cross_attention
+    cache:
+      enabled: false
+  temporal:
+    num_refinement_iters: 1
+    use_gradient_checkpointing: true
+  occlusion:
+    use_semantic_propagation: false
+    use_semantic_consistency: false
+    use_low_freq_prediction: true
+    use_semantic_propagation_note: "Disabled for C2 isolation after C 24GB OA collapse."
+
+# Same clean distillation setting as C.
+data:
+  train:
+    resolution: [256, 256]
+  val:
+    resolution: [256, 256]

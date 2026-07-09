@@ -1,0 +1,36 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemB_fast_2026-06-27
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemB_gtlite_pos005_fast_2026_06_27"
+  description: "B-GTlite-pos005 fair control: semantic off, frequency on, same GT-lite objective as C2-GTlite-pos005. Tests semantic contribution under less conservative training."
+
+loss:
+  position:
+    weight: 0.05
+    type: smooth_l1
+    smooth_l1_beta: 1.0
+  occlusion:
+    weight: 0.05
+    type: bce
+  base_track_consistency:
+    weight: 0.5
+    type: smooth_l1
+    mask: base_visible
+    smooth_l1_beta: 0.01
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.1
+      end_weight: 0.5
+  base_visibility_consistency:
+    weight: 0.2
+    type: bce
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.05
+      end_weight: 0.2

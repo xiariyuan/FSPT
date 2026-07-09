@@ -298,7 +298,11 @@ class TAPNext(nn.Module):
         ),
     )
 
-torch.export.register_dataclass(TAPNextTrackingState)
+# PyTorch 2.1 does not expose torch.export.register_dataclass.
+# This registration is only needed by newer export/compile paths; eager inference
+# works without it, so guard it for compatibility with the current environment.
+if hasattr(torch, "export") and hasattr(torch.export, "register_dataclass"):
+  torch.export.register_dataclass(TAPNextTrackingState)
 
 
 def flatten_tracking_state(state, _):

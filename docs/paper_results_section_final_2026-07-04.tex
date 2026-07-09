@@ -1,0 +1,80 @@
+% Paper-ready Results section for ReEntry-TAP
+% Generated: 2026-07-04
+
+\section{Experiments and Results}
+\label{sec:experiments}
+
+\subsection{Evaluation protocol}
+\label{sec:evaluation_protocol}
+
+We evaluate ReEntry on standard TAP-Vid datasets and re-entry-focused diagnostic settings. For standard TAP-Vid metrics, we report Average Jaccard (AJ), Occlusion Accuracy (OA), and average position accuracy ($\delta_{\mathrm{avg}}$), computed using the official TAP-Vid metric formulation or an equivalent local port. Since ReEntry targets a sparse failure mode that occurs after a point reappears following occlusion or disappearance, we additionally report AJ\_RD as a re-entry diagnostic metric. AJ\_RD is not an official leaderboard metric; it isolates the post-reappearance subset that can be diluted by full-trajectory averages.
+
+Unless otherwise stated, all results are local evaluations under the specified protocol, not official server or leaderboard submissions. Table~\ref{tab:evaluation_protocols} summarizes the evaluation settings used in this work.
+
+\subsection{DAVIS first-query evaluation}
+\label{sec:davis_first_input}
+
+Table~\ref{tab:davis_first_input} reports results on TAPVid-DAVIS under a first-query/input-resolution official-style local evaluation. This setting is the most favorable official-style DAVIS protocol for the current ReEntry family. Compared with the CoTracker3 offline base, ReEntry improves both standard TAP-Vid metrics and the re-entry diagnostic.
+
+The strongest ReEntry variant in this setting is V24-DINOScore. It improves AJ from $62.6566$ to $64.8439$, OA from $88.1487$ to $91.8851$, and AJ\_RD from $0.3142$ to $0.3549$. This corresponds to gains of $+2.1874$ AJ, $+3.7363$ OA, and $+0.0407$ AJ\_RD over the CoTracker3 offline base. The position metric $\delta_{\mathrm{avg}}$ remains unchanged because ReEntry modifies visibility decisions rather than coordinates.
+
+Paired-video statistics support this improvement. V24-DINOScore improves AJ over the offline base by $+2.1874$ percentage points with a 95\% bootstrap confidence interval of $[+1.2582,+3.2487]$, and improves OA by $+3.7363$ percentage points with a confidence interval of $[+2.1673,+5.7423]$. V24 also slightly improves over V22Q, with $+0.1179$ AJ and $+0.1445$ OA.
+
+TrackOn2 remains the strongest external baseline on DAVIS first/input, reaching $67.0406$ AJ and $92.0916$ OA. We therefore do not claim that ReEntry surpasses TrackOn2 on DAVIS. Instead, this result shows that ReEntry substantially improves the CoTracker3 offline base in the query-first setting while preserving the intended method scope.
+
+\subsection{DAVIS strided/original evaluation}
+\label{sec:davis_strided_original}
+
+Table~\ref{tab:davis_strided_original} reports results on TAPVid-DAVIS under a stricter strided/original official-style local evaluation. This setting exposes an important protocol sensitivity. The default ReEntry variants improve AJ\_RD but reduce global AJ/OA. V1 increases AJ\_RD from $0.3870$ to $0.4144$, and V22Q increases AJ\_RD to $0.4136$. However, their standard AJ and OA decrease relative to the CoTracker3 offline base.
+
+This behavior reflects an objective mismatch. ReEntry is designed to correct visibility lag after reappearance. Under strided evaluation, visibility predictions are scored over a broader set of query frames and time steps. Aggressive visibility recovery can therefore introduce false-positive visibility decisions that improve re-entry recovery while reducing global AJ/OA.
+
+To test whether ReEntry can be made official-style safe, we run a threshold sweep and identify V25-safe with threshold $0.80$. This conservative operating point reaches $51.5648$ AJ and $92.2106$ OA, slightly above the offline base of $51.5385$ AJ and $92.1543$ OA, while retaining a small AJ\_RD gain from $0.3870$ to $0.3900$. Paired-video intervals cross zero, so this should not be interpreted as a strong leaderboard-style improvement. We instead treat it as an official-style safe operating point.
+
+This result motivates future metric-aware selective ReEntry: rather than firing whenever re-entry recovery appears likely, the selector should also estimate the risk of harming standard AJ/OA.
+
+\subsection{RGB-Stacking full50 local standard evaluation}
+\label{sec:rgb_full50}
+
+Table~\ref{tab:rgb_full50} reports results on the complete locally available TAPVid RGB-Stacking full50 evaluation, covering videos \texttt{rgb\_stacking\_000000} through \texttt{rgb\_stacking\_000049}. This is the strongest full local standard evidence for ReEntry on the RGB-Stacking benchmark.
+
+The CoTracker3 offline base obtains $0.3617$ AJ\_RD, $79.9345$ AJ, and $91.6371$ OA. ReEntry V1 improves AJ\_RD to $0.4414$ and OA to $93.0758$, corresponding to $+0.0797$ AJ\_RD and $+1.4387$ OA. ReEntry V22Q and V24-DINOScore provide similar re-entry gains with slightly better AJ preservation than V1. V24-DINOScore reaches $0.4394$ AJ\_RD, $79.5974$ AJ, and $93.0389$ OA.
+
+The trade-off is a small reduction in standard AJ. V24-DINOScore improves AJ\_RD by $+0.0777$ and OA by $+1.4018$, but reduces AJ by $-0.3371$. Paired-video statistics show that the AJ\_RD and OA improvements are stable: V24 improves AJ\_RD on 48 videos with no losses and 2 ties, and improves OA on 40 videos with 10 losses. This supports the central claim that ReEntry improves re-entry recovery and visibility stability on RGB-Stacking full50, while introducing a small AJ trade-off.
+
+\subsection{Re-entry stress diagnostics}
+\label{sec:stress_diagnostics}
+
+Table~\ref{tab:fresh_stress} isolates the re-entry failure mode using RGB-Stacking fresh20--49 and synthetic translate/occluder stress variants. These settings are diagnostic rather than official benchmark submissions. They are designed to evaluate whether ReEntry remains useful when reappearance and occlusion-related failures are amplified.
+
+Across natural, translate-L16, and occluder-L16 settings, V24-DINOScore consistently improves AJ\_RD and OA over the base. Averaged over the three settings, AJ\_RD improves from $0.4939$ to $0.5451$, a gain of $+0.0509$. OA improves from $91.0453$ to $92.4496$, a gain of $+1.4043$. AJ decreases from $77.4721$ to $77.1716$, a small trade-off of $-0.3006$.
+
+These diagnostics confirm that the method addresses the intended failure mode: ReEntry improves post-reappearance recovery and visibility behavior, but aggressive recovery can slightly reduce standard AJ.
+
+\subsection{Ablation and method positioning}
+\label{sec:method_positioning}
+
+The current ReEntry family should be interpreted as follows.
+
+\textbf{V1 Learned ReEntry-VisCalibrator} is the AJ\_RD-oriented main method. It provides the strongest re-entry recovery on RGB-Stacking full50 and strong improvements over the CoTracker3 offline base in DAVIS first/input.
+
+\textbf{V22Q Interval/Gate} is the stability-oriented extension. It slightly reduces aggressive visibility updates and improves standard AJ relative to V1 in several settings.
+
+\textbf{V24-DINOScore} is an optional appearance micro-filter. It provides small standard-metric improvements over V22Q in DAVIS first/input and slightly better AJ preservation on RGB-Stacking full50, but it should not be presented as a universal replacement for V1/V22Q.
+
+\textbf{V25-safe threshold $0.80$} is an official-style safe operating point for DAVIS strided/original. It preserves AJ/OA while retaining only a small AJ\_RD gain. It is useful for protocol-safe reporting, but not a strong leaderboard-style method.
+
+\subsection{Summary of findings}
+\label{sec:results_summary}
+
+The experiments support four conclusions.
+
+First, ReEntry substantially improves the CoTracker3 offline base under DAVIS first/input evaluation, improving AJ, OA, and AJ\_RD without changing coordinates.
+
+Second, ReEntry improves re-entry recovery and OA on RGB-Stacking full50, the strongest full local standard evidence in the current evaluation suite, with a small standard-AJ trade-off.
+
+Third, diagnostic stress evaluations confirm that the improvements are concentrated on the intended failure mode: post-reappearance recovery and visibility correction.
+
+Fourth, official strided/original evaluation reveals a limitation. Default ReEntry variants improve AJ\_RD but can harm global AJ/OA. A conservative V25 threshold can make the method official-style safe, but the resulting gains are marginal. This motivates future official-metric-aware selective ReEntry.
+
+Overall, ReEntry should be claimed as a re-entry failure-mode method, not as a universal TAP-Vid leaderboard booster. The strongest safe claim is that ReEntry improves re-entry recovery across standard TAP-Vid local evaluations and diagnostic stress settings; it improves DAVIS first-query AJ/OA/AJ\_RD and RGB-Stacking full50 AJ\_RD/OA, while stricter strided/original evaluation requires conservative thresholding to preserve official-style AJ/OA.

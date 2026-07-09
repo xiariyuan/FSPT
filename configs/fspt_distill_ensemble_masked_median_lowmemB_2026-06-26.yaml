@@ -1,0 +1,29 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_2026-06-26
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemB_2026_06_26"
+  description: "B-tier low-memory smoke: preserve frequency module, disable semantic module, refinement=1. This is the first paper-relevant distillation capacity check on 11GB GPU."
+
+model:
+  backbone:
+    use_multiscale: false
+  frequency:
+    enabled: true
+    num_bands: 4
+    kernel_size: 7
+    strict_lfd: false
+  semantic:
+    enabled: false
+  temporal:
+    num_refinement_iters: 1
+    use_gradient_checkpointing: true
+  occlusion:
+    use_semantic_propagation: false
+
+# Keep clean distillation semantics; reduce input memory only.
+data:
+  train:
+    resolution: [256, 256]
+  val:
+    resolution: [256, 256]

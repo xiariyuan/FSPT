@@ -1,0 +1,211 @@
+#!/usr/bin/env python3
+"""Lightweight training control center for FSPT experiments.
+
+Usage:
+  python3 tools/trainctl.py start NAME -- COMMAND...
+  python3 tools/trainctl.py status NAME
+  python3 tools/trainctl.py stop NAME
+  python3 tools/trainctl.py list
+  python3 tools/trainctl.py logs NAME --lines 100
+  python3 tools/trainctl.py gpu
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import os
+import signal
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+EXPERIMENTS = ROOT / "experiments"
+
+
+def run_dir(name: str) -> Path:
+    safe = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in name).strip("._-")
+    if not safe:
+        raise SystemExit("invalid experiment name")
+    return EXPERIMENTS / safe
+
+
+def read_pid(path: Path) -> int | None:
+    try:
+        return int(path.read_text().strip())
+    except Exception:
+        return None
+
+
+def is_alive(pid: int | None) -> bool:
+    if not pid:
+        return False
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def write_json(path: Path, data: dict) -> None:
+    path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
+
+
+def load_json(path: Path) -> dict:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+
+
+def cmd_start(args: argparse.Namespace) -> int:
+    if not args.command:
+        print("missing command after --", file=sys.stderr)
+        return 2
+    rd = run_dir(args.name)
+    rd.mkdir(parents=True, exist_ok=True)
+    pid_file = rd / "pid.txt"
+    log_file = rd / "train.log"
+    meta_file = rd / "meta.json"
+
+    old_pid = read_pid(pid_file)
+    if is_alive(old_pid):
+        print(json.dumps({"ok": False, "error": "already running", "name": args.name, "pid": old_pid, "log": str(log_file)}, indent=2))
+        return 1
+
+    workdir = (ROOT / args.workdir).resolve() if not Path(args.workdir).is_absolute() else Path(args.workdir).resolve()
+    try:
+        workdir.relative_to(ROOT)
+    except ValueError:
+        print(f"workdir outside root: {workdir}", file=sys.stderr)
+        return 2
+
+    command = " ".join(args.command)
+    with log_file.open("ab") as log:
+        log.write((f"\n===== START {time.strftime('%Y-%m-%d %H:%M:%S')} =====\n").encode())
+        log.write((f"cwd: {workdir}\ncmd: {command}\n\n").encode())
+        proc = subprocess.Popen(
+            ["bash", "-lc", command],
+            cwd=str(workdir),
+            stdout=log,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+            env=os.environ.copy(),
+        )
+    pid_file.write_text(str(proc.pid), encoding="utf-8")
+    write_json(meta_file, {"name": args.name, "pid": proc.pid, "cmd": command, "workdir": str(workdir), "log": str(log_file), "started_at": time.time()})
+    print(json.dumps({"ok": True, "name": args.name, "pid": proc.pid, "log": str(log_file), "workdir": str(workdir)}, indent=2))
+    return 0
+
+
+def cmd_status(args: argparse.Namespace) -> int:
+    rd = run_dir(args.name)
+    pid_file = rd / "pid.txt"
+    meta_file = rd / "meta.json"
+    pid = read_pid(pid_file)
+    meta = load_json(meta_file)
+    out = {"ok": True, "name": args.name, "exists": rd.exists(), "pid": pid, "alive": is_alive(pid), "run_dir": str(rd), "meta": meta}
+    print(json.dumps(out, indent=2, ensure_ascii=False))
+    return 0
+
+
+def cmd_stop(args: argparse.Namespace) -> int:
+    rd = run_dir(args.name)
+    pid = read_pid(rd / "pid.txt")
+    if not pid:
+        print(json.dumps({"ok": False, "error": "pid not found", "name": args.name}, indent=2))
+        return 1
+    try:
+        os.killpg(pid, signal.SIGTERM)
+        stopped = True
+    except ProcessLookupError:
+        stopped = False
+    except Exception:
+        try:
+            os.kill(pid, signal.SIGTERM)
+            stopped = True
+        except Exception as exc:
+            print(json.dumps({"ok": False, "error": str(exc), "name": args.name, "pid": pid}, indent=2))
+            return 1
+    print(json.dumps({"ok": True, "name": args.name, "pid": pid, "stopped": stopped}, indent=2))
+    return 0
+
+
+def cmd_list(args: argparse.Namespace) -> int:
+    EXPERIMENTS.mkdir(parents=True, exist_ok=True)
+    runs = []
+    for rd in sorted(EXPERIMENTS.iterdir()):
+        if not rd.is_dir():
+            continue
+        pid = read_pid(rd / "pid.txt")
+        runs.append({"name": rd.name, "pid": pid, "alive": is_alive(pid), "run_dir": str(rd)})
+    print(json.dumps({"ok": True, "runs": runs}, indent=2))
+    return 0
+
+
+def cmd_logs(args: argparse.Namespace) -> int:
+    log_file = run_dir(args.name) / "train.log"
+    if not log_file.exists():
+        print(f"log not found: {log_file}", file=sys.stderr)
+        return 1
+    proc = subprocess.run(["tail", "-n", str(args.lines), str(log_file)], text=True, capture_output=True)
+    print(proc.stdout, end="")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="")
+    return proc.returncode
+
+
+def cmd_gpu(args: argparse.Namespace) -> int:
+    try:
+        proc = subprocess.run(["nvidia-smi"], text=True, capture_output=True, timeout=10)
+    except FileNotFoundError:
+        print(json.dumps({"ok": False, "error": "nvidia-smi not found"}, indent=2))
+        return 1
+    except Exception as exc:
+        print(json.dumps({"ok": False, "error": str(exc)}, indent=2))
+        return 1
+    print(proc.stdout, end="")
+    if proc.stderr:
+        print(proc.stderr, file=sys.stderr, end="")
+    return proc.returncode
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="FSPT training control center")
+    sub = parser.add_subparsers(dest="action", required=True)
+
+    p = sub.add_parser("start")
+    p.add_argument("name")
+    p.add_argument("--workdir", default=".")
+    p.add_argument("command", nargs=argparse.REMAINDER)
+    p.set_defaults(func=cmd_start)
+
+    p = sub.add_parser("status")
+    p.add_argument("name")
+    p.set_defaults(func=cmd_status)
+
+    p = sub.add_parser("stop")
+    p.add_argument("name")
+    p.set_defaults(func=cmd_stop)
+
+    p = sub.add_parser("list")
+    p.set_defaults(func=cmd_list)
+
+    p = sub.add_parser("logs")
+    p.add_argument("name")
+    p.add_argument("--lines", type=int, default=100)
+    p.set_defaults(func=cmd_logs)
+
+    p = sub.add_parser("gpu")
+    p.set_defaults(func=cmd_gpu)
+
+    args = parser.parse_args()
+    if getattr(args, "command", None) and args.command and args.command[0] == "--":
+        args.command = args.command[1:]
+    return args.func(args)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

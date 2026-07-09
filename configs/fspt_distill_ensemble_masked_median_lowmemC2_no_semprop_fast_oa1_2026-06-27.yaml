@@ -1,0 +1,18 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_fast_2026-06-27
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_fast_oa1_2026_06_27"
+  description: "C2-OA1: keep C2 mainline but strengthen base_visibility_consistency to reduce OA collapse while preserving position gains."
+
+loss:
+  base_visibility_consistency:
+    weight: 1.0
+    type: bce
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.3
+      end_weight: 1.0

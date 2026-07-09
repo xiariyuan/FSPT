@@ -46,6 +46,38 @@ def _to_tensor(value: Any, dtype: torch.dtype | None = None) -> torch.Tensor:
     return out.contiguous()
 
 
+
+
+def _scale_cache_normalized_to_davis_runtime(record: Dict[str, Any], tracks: torch.Tensor, query_points: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
+    """Convert cache-normalized [y,x] coords to TAPVidDAVIS runtime normalized coords.
+
+    The unified cache/eval path stores normalized spatial coordinates using the
+    pixel-corner convention (divide by H-1/W-1).  TAPVidDAVIS runtime samples in
+    this repo expose normalized coordinates from the annotation/generator path
+    using H/W.  For base_tracks strict injection, the cached teacher coordinates
+    must match the runtime dataset convention.
+    """
+    original_size = record.get("original_size", None)
+    if original_size is None:
+        raise ValueError("coord-convention=davis_runtime requires original_size in every record")
+    size = torch.as_tensor(np.asarray(original_size), dtype=torch.float32)
+    if size.numel() < 2:
+        raise ValueError(f"invalid original_size={original_size!r}")
+    height = float(size.flatten()[0].item())
+    width = float(size.flatten()[1].item())
+    if height <= 1.0 or width <= 1.0:
+        raise ValueError(f"invalid original_size height/width: {original_size!r}")
+    y_scale = (height - 1.0) / height
+    x_scale = (width - 1.0) / width
+    tracks = tracks.clone()
+    query_points = query_points.clone()
+    tracks[..., 0] *= y_scale
+    tracks[..., 1] *= x_scale
+    query_points[..., 1] *= y_scale
+    query_points[..., 2] *= x_scale
+    return tracks.contiguous(), query_points.contiguous()
+
+
 def _video_name(record: Dict[str, Any], fallback_idx: int) -> str:
     for key in ("video_name", "video_id", "sequence_name"):
         value = record.get(key, None)
@@ -54,7 +86,13 @@ def _video_name(record: Dict[str, Any], fallback_idx: int) -> str:
     return f"sequence_{fallback_idx:04d}"
 
 
-def export_cache(cache_path: Path, output_dir: Path, dataset_subdir: str | None = None, overwrite: bool = False) -> Dict[str, Any]:
+def export_cache(
+    cache_path: Path,
+    output_dir: Path,
+    dataset_subdir: str | None = None,
+    overwrite: bool = False,
+    coord_convention: str = "cache",
+) -> Dict[str, Any]:
     payload = _load_cache(cache_path)
     records = payload["records"]
     if not isinstance(records, list) or not records:
@@ -73,6 +111,10 @@ def export_cache(cache_path: Path, output_dir: Path, dataset_subdir: str | None 
         base_tracks = _to_tensor(record["pred_tracks"], torch.float32)
         base_visibility = _to_tensor(record["pred_visibility"], torch.bool)
         query_points = _to_tensor(record["query_points"], torch.float32)
+        if coord_convention == "davis_runtime":
+            base_tracks, query_points = _scale_cache_normalized_to_davis_runtime(record, base_tracks, query_points)
+        elif coord_convention != "cache":
+            raise ValueError(f"unsupported coord_convention={coord_convention!r}")
 
         if base_tracks.ndim != 3 or base_tracks.shape[-1] != 2:
             raise ValueError(f"{name}: expected pred_tracks shape (N,T,2), got {tuple(base_tracks.shape)}")
@@ -95,6 +137,7 @@ def export_cache(cache_path: Path, output_dir: Path, dataset_subdir: str | None 
             "ensemble_members": list(record.get("ensemble_members", payload.get("ensemble_members", []))),
             "ensemble_track_aggregation": record.get("ensemble_track_aggregation", payload.get("ensemble_track_aggregation", None)),
             "ensemble_visibility_strategy": record.get("ensemble_visibility_strategy", payload.get("ensemble_visibility_strategy", None)),
+            "base_tracks_coord_convention": coord_convention,
         }
         if "original_size" in record:
             out_payload["original_size"] = _to_tensor(record["original_size"], torch.int64)
@@ -118,6 +161,7 @@ def export_cache(cache_path: Path, output_dir: Path, dataset_subdir: str | None 
         "model_name": payload.get("model_name", "unknown"),
         "ensemble_track_aggregation": payload.get("ensemble_track_aggregation", None),
         "ensemble_visibility_strategy": payload.get("ensemble_visibility_strategy", None),
+        "base_tracks_coord_convention": coord_convention,
         "exported": exported,
     }
     with open(output_dir / "manifest.json", "w") as f:
@@ -130,6 +174,16 @@ def main() -> None:
     parser.add_argument("--cache-path", required=True)
     parser.add_argument("--output-dir", required=True)
     parser.add_argument("--dataset-subdir", default="", help="Optional subdir such as davis; wrapper will prefer it when dataset_name is set")
+    parser.add_argument(
+        "--coord-convention",
+        choices=("cache", "davis_runtime"),
+        default="cache",
+        help=(
+            "Coordinate convention for exported base_tracks/query_points. "
+            "cache preserves source cache values; davis_runtime rescales normalized "
+            "[y,x] coords from H-1/W-1 to the TAPVidDAVIS runtime H/W convention."
+        ),
+    )
     parser.add_argument("--overwrite", action="store_true")
     args = parser.parse_args()
 
@@ -138,6 +192,7 @@ def main() -> None:
         output_dir=Path(args.output_dir),
         dataset_subdir=str(args.dataset_subdir).strip() or None,
         overwrite=bool(args.overwrite),
+        coord_convention=str(args.coord_convention),
     )
     print(f"Wrote {manifest['n_records']} base-track files to {manifest['output_dir']}")
     print(f"manifest={Path(args.output_dir) / 'manifest.json'}")

@@ -14,6 +14,20 @@ build/
 dist/
 *.egg-info/
 
+# Large data and binary artifacts - do not track
+downloads/
+datasets/tapvid_davis/
+datasets/tapvid_kinetics/
+external/
+third_party_weights/
+checkpoints/
+outputs/paper_discovery_2026-07-05/tapnextpp_smoke/*.pt
+outputs/paper_discovery_2026-07-05/tapnextpp_smoke/*.pkl
+*.deb
+chatgpt_access_test.txt
+FileSystem-MCP-for-GPT-main/
+ccr-migration-package/
+
 # Local tooling and editor state
 .claude/
 .qoder/

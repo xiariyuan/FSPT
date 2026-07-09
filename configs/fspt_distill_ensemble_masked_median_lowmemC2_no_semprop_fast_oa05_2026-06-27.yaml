@@ -1,0 +1,18 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_fast_2026-06-27
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemC2_no_semprop_fast_oa05_2026_06_27"
+  description: "C2-OA05: moderate base_visibility_consistency to test OA stabilization without the position-learning penalty observed in OA1."
+
+loss:
+  base_visibility_consistency:
+    weight: 0.5
+    type: bce
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.1
+      end_weight: 0.5

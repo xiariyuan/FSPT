@@ -1,0 +1,36 @@
+defaults:
+  - fspt_distill_ensemble_masked_median_lowmemC2_gtlite_fast_2026-06-27
+
+experiment:
+  name: "fspt_distill_ensemble_masked_median_lowmemC2_gtlite_pos003_fast_2026_06_27"
+  description: "C2-GTlite-pos003: further reduce GT position supervision from 0.05 to 0.03 to test whether weaker GT alignment preserves OA while recovering fine localization."
+
+loss:
+  position:
+    weight: 0.03
+    type: smooth_l1
+    smooth_l1_beta: 1.0
+  occlusion:
+    weight: 0.05
+    type: bce
+  base_track_consistency:
+    weight: 0.5
+    type: smooth_l1
+    mask: base_visible
+    smooth_l1_beta: 0.01
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.1
+      end_weight: 0.5
+  base_visibility_consistency:
+    weight: 0.2
+    type: bce
+    mask: all
+    schedule:
+      type: linear
+      start_epoch: 0
+      end_epoch: 3
+      start_weight: 0.05
+      end_weight: 0.2
