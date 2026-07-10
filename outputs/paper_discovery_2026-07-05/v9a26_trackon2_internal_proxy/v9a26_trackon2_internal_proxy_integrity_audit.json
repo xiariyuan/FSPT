@@ -1,0 +1,120 @@
+{
+  "date": "2026-07-10",
+  "script": "scripts/v9a26_trackon2_internal_proxy_integrity_audit.py",
+  "provenance_boundary": "TrackOn2 256-space M24 support-grid20 rerun is an internal-state proxy. It is not claimed to be the exact latent state that generated the historical first-input cache.",
+  "artifacts": {
+    "joint": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_joint_w8_common_plus_w16_extension_v3.npz",
+      "sha256": "a0193d222e60b1aa4f927707942acba46630e70c1c944435499adfff7ee84501"
+    },
+    "full_features": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_features.npz",
+      "sha256": "868fb0d29e3adb64dfb5ad782fa65a72cf045d78c329b1ee4f202478c5fd2489"
+    },
+    "full_report": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_features.report.json",
+      "sha256": "7ac525026d238e67a5a2ef8df3e5189f45c7e78ccfa8ace5803005b5760fff5f"
+    },
+    "old_smoke": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_internal_proxy_smoke1video.npz",
+      "sha256": "db3a904865bd3ac2c96d660c6b08af510975eeb51bedc89a65a057da8a10b2a7"
+    },
+    "enhanced_smoke": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_internal_proxy_smoke1video_v2.npz",
+      "sha256": "db3a904865bd3ac2c96d660c6b08af510975eeb51bedc89a65a057da8a10b2a7"
+    },
+    "enhanced_smoke_report": {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_internal_proxy_smoke1video_v2.report.json",
+      "sha256": "a0972768a3800fc0fcfdc11b41c63465910e34fd241f8a171790a271ba562a58"
+    }
+  },
+  "checks": {
+    "full_shape": true,
+    "full_finite": true,
+    "full_indices_match_joint": true,
+    "full_row_keys_match_joint": true,
+    "unique_feature_names": true,
+    "old_smoke_matches_full_prefix": true,
+    "enhanced_smoke_matches_old_smoke": true,
+    "enhanced_smoke_matches_full_prefix": true,
+    "full_first_active_frame_parity": true,
+    "enhanced_long_sequence_parity": true
+  },
+  "full_matrix": {
+    "shape": [
+      557,
+      64
+    ],
+    "finite_rate": 1.0,
+    "videos": 20,
+    "seconds_original_full_build": 59.37144084647298
+  },
+  "official_forward_parity": {
+    "full_first_active_frame_checks": 20,
+    "full_max_abs": {
+      "p_max_abs": 0.0,
+      "v_max_abs": 0.0,
+      "q_max_abs": 0.0
+    },
+    "enhanced_target_frames": [
+      {
+        "video_id": "bike-packing",
+        "frame": 25,
+        "active_queries": 423
+      },
+      {
+        "video_id": "bike-packing",
+        "frame": 45,
+        "active_queries": 423
+      },
+      {
+        "video_id": "bike-packing",
+        "frame": 68,
+        "active_queries": 425
+      }
+    ],
+    "enhanced_max_abs": {
+      "p_max_abs": 0.0,
+      "v_max_abs": 0.0,
+      "q_max_abs": 0.0
+    }
+  },
+  "trackon_config": {
+    "input_size": [
+      384,
+      512
+    ],
+    "M_training": 24,
+    "M_inference": 24,
+    "support_grid_size": 20,
+    "delta_v": 0.8,
+    "memory_update_policy": "unconditional"
+  },
+  "hashes_from_enhanced_builder": {
+    "checkpoint_sha256": "0e319c279cbdf51a5fc761b47dc1969520e8cfccfb57dc5a019a8c56e1039cd4",
+    "config_sha256": "34c08c71be511b2cda6aaafb6e2e3af7e21c6fd5197de98a54fa4b9ac7a78c8e",
+    "old_cache_sha256": "d8669b8a19c39bf892c1e6d613d448909d9d1b5f8b15272608e7723dce62824c",
+    "row_key_alignment_preserved": true,
+    "query_time_alignment_pass": true
+  },
+  "proxy_alignment_model_pixels": {
+    "proxy_to_old_candidate": {
+      "mean": 3.4609868176803125,
+      "median": 1.3962668180465698,
+      "p95": 10.488231086730934,
+      "max": 162.7106475830078,
+      "std": 12.30236295975087
+    },
+    "proxy_to_native": {
+      "mean": 9.160660164949068,
+      "median": 2.4022958278656006,
+      "p95": 48.62225112915031,
+      "max": 190.54364013671875,
+      "std": 24.736384250452787
+    }
+  },
+  "decision": {
+    "status": "PASS_PROXY_FEATURE_LINEAGE_AND_FORWARD_PARITY",
+    "interpretation": "The patched builder preserves the original 64-dimensional features exactly on the smoke prefix, the full matrix is strictly aligned to all 557 extension rows, and the copied diagnostic forward matches official TrackOn2 position/visibility/query tensors exactly at both first-active and long-sequence target frames. The historical-latent provenance limitation remains explicit."
+  }
+}

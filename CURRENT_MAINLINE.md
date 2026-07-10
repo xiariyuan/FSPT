@@ -2399,15 +2399,42 @@ Artifacts:
 scripts/v9a26_build_trackon2_internal_proxy_features.py
 scripts/v9a26_eval_trackon2_internal_proxy.py
 scripts/v9a26_trackon2_internal_late_fusion_audit.py
+scripts/v9a26_trackon2_internal_feature_family_audit.py
+scripts/v9a26_trackon2_internal_logo_robustness_audit.py
+scripts/v9a26_trackon2_internal_proxy_integrity_audit.py
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_features.npz
 outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_eval.json
 outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_late_fusion_audit.json
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_feature_family_audit.json
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_logo_robustness_audit.json
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_integrity_audit.json
 docs/v9a26_trackon2_internal_proxy_design_2026-07-10.md
 docs/v9a26_trackon2_internal_proxy_result_2026-07-10.md
 docs/v9a26_trackon2_internal_late_fusion_audit_result_2026-07-10.md
+docs/v9a26_trackon2_internal_feature_family_audit_result_2026-07-10.md
+docs/v9a26_trackon2_internal_logo_robustness_audit_result_2026-07-10.md
+docs/v9a26_trackon2_internal_proxy_integrity_audit_result_2026-07-10.md
 ```
 
 Decision:
 
 ```text
-The diagnostic TrackOn2 forward exactly matches official track_frame for position/logit/query state on identical inputs, and 557 W16-extension rows receive 64 finite C1/C2/rerank/uncertainty/memory proxy features. Internal-only logreg has AP 0.3262 and AUC 0.5972; strong single signals include qinit-qnew L2 and correlation entropy (~0.69 best AUC). However, all+internal OOF-F1 reaches AJ_RD_256 Δ only +0.027958 versus frozen V9-A2 +0.029379. Predeclared late fusion weights also fail; frozen V9-A2 remains best. Together with V9-A2.5 DINO results, this closes the selector-only feature route. Next: V9-A3.0 TrackOn2 internal top-K multi-hypothesis oracle/action-space audit, followed by trainable multi-hypothesis reacquisition if the oracle gap is material.
+V9-A2.6 closes the selector-only feature route after a full integrity and robustness audit. The 557x64 internal proxy matrix is strictly aligned to the frozen W16-extension rows; old smoke, enhanced long-sequence smoke, and the full prefix are bit-identical. The copied diagnostic forward matches official TrackOn2 position/logit/query tensors with max_abs=0 on all 20 first-active checks and on three long-sequence target frames. The proxy remains explicitly non-identical to the historical cache latent state (proxy-to-old-candidate internal-model distance p95 10.49 px). Internal-only logreg has AP/AUC 0.3262/0.5972 and all+internal OOF-F1 reaches only AJ_RD_256 Δ +0.027958 versus frozen +0.029379; all predeclared late-fusion weights fail. Structured families confirm real internal signal: visibility/uncertainty AP 0.4368 and query-update AP 0.4230. Five-fold memory-consistency reaches aggregate Δ +0.030291, but its paired CI crosses zero; under 20-fold LOGO it falls to +0.028353. LOGO query-update is the strongest trajectory family at +0.030038, yet its paired CI [-0.000499,+0.006168] also crosses zero. No family has a positive paired-CI lower bound. Stop selector threshold/feature/fusion tuning. Next: V9-A3.0 TrackOn2 internal top-K multi-hypothesis oracle/action-space audit, followed by trainable multi-hypothesis reacquisition only if the oracle gap is material.
+```
+
+## V9-A3.0 TrackOn2 top-K multi-hypothesis oracle/action-space audit
+
+Artifacts:
+
+```text
+scripts/v9a30_trackon2_topk_hypothesis_oracle.py
+outputs/paper_discovery_2026-07-05/v9a30_topk_hypothesis/v9a30_trackon2_topk_hypothesis_oracle.json
+docs/v9a30_trackon2_topk_hypothesis_oracle_design_2026-07-10.md
+docs/v9a30_trackon2_topk_hypothesis_oracle_result_2026-07-10.md
+```
+
+Decision:
+
+```text
+V9-A3.0 passes strongly. On 490 GT-visible W16-extension rows, the union of old candidate + proxy final + C1 top16 + C2 top16 reduces mean coordinate error from 3.606 px to 1.432 px, improves 365 rows without worsening any visible row, and raises safe16 from 473 to 485. Oracle source attribution is old=125, proxy=60, C1=297, C2=8, showing that C1 top-K contains substantial information discarded by the final single-point decision. Coordinate-only union oracle reaches AJ_RD_256 Δ +0.036312 versus W16 +0.028587 (+0.007725); coordinate+GT-invisible rejection reaches +0.037056 (+0.008469). Naive C1/C2 top1 and existing rerank logits are worse than the old candidate, so the opportunity is candidate ranking, not raw top1 replacement. Next: V9-A3.1 video-heldout trainable multi-hypothesis ranking, with frozen V9-A2 event activation and learned coordinate selection.
 ```

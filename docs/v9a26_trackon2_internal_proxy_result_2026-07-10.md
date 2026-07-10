@@ -76,3 +76,36 @@ No dense trajectory threshold search was used.
 
 TrackOn2 internal proxy features do not improve the frozen V9-A2 policy under the predeclared OOF protocol.
 The selector route is saturated; proceed to V9-A3 multi-hypothesis candidate generation / trainable reacquisition.
+
+## Structured feature-family audit
+
+```text
+visibility/uncertainty OOF AP/AUC: 0.4368 / 0.6304
+query-update OOF AP/AUC: 0.4230 / 0.6740
+5-fold memory-consistency AJ_RD_256 Δ: +0.030291
+5-fold memory-consistency paired CI vs frozen: [-0.000400,+0.006235]
+```
+
+## Leave-one-video-out robustness
+
+```text
+LOGO memory-consistency AJ_RD_256 Δ: +0.028353
+LOGO query-update AJ_RD_256 Δ: +0.030038
+LOGO query-update aggregate vs frozen: +0.000659
+LOGO query-update paired CI: [-0.000499,+0.006168]
+No one of the 13 predeclared internal families has a positive paired-CI lower bound.
+```
+
+## Integrity audit
+
+```text
+557 x 64 finite internal proxy matrix; strict joint-index and row-key alignment.
+Old smoke == enhanced smoke == full prefix, bit-for-bit.
+Official TrackOn2 position/logit/query max_abs error: 0 on 20 first-active checks and 3 long-sequence checks.
+Proxy-to-old-candidate distance p95: 10.49 internal-model pixels.
+The proxy is not claimed to be the exact historical-cache latent state.
+```
+
+## Final V9-A2.6 decision
+
+Selector-side internal features contain real heldout signal, but the promising aggregate rows are not stable under paired uncertainty and LOGO. Stop selector threshold/feature/fusion tuning. Proceed to V9-A3.0 top-K multi-hypothesis action-space oracle.

@@ -909,14 +909,19 @@ all+internal primary AJ_RD_256 Δ: +0.027958
 frozen V9-A2 AJ_RD_256 Δ: +0.029379
 primary-vs-frozen paired mean: -0.001224
 95% CI: [-0.003855,+0.000207]
+visibility/uncertainty family AP: 0.4368
+query-update family AP: 0.4230
+5-fold memory-consistency AJ_RD_256 Δ: +0.030291 (CI crosses zero)
+LOGO memory-consistency AJ_RD_256 Δ: +0.028353
+LOGO query-update AJ_RD_256 Δ: +0.030038; paired CI [-0.000499,+0.006168]
 ```
 
-Predeclared late fusion also fails; frozen V9-A2 remains best.
+Predeclared late fusion also fails. Feature-family and LOGO audits find no internal selector with a positive paired-CI lower bound.
 
 Important provenance:
 
 ```text
-The proxy uses TrackOn2 256-space M24 support-grid20 inference. Diagnostic forward exactly matches official track_frame on identical inputs, but it is not the exact latent state of the historical old cache.
+The proxy uses TrackOn2 256-space M24 support-grid20 inference. The 557x64 matrix is strictly row-aligned; old smoke, enhanced long-sequence smoke, and the full prefix are bit-identical. Diagnostic forward exactly matches official track_frame with max_abs=0 on 20 first-active checks and three long-sequence target frames. It is not the exact latent state of the historical old cache; proxy-to-old-candidate distance p95 is 10.49 internal-model pixels.
 ```
 
 Decision:

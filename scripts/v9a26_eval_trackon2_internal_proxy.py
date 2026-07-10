@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 import torch
 
-ROOT = Path('/gemini/code/FSPT')
+ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 BASE = ROOT / 'outputs/paper_discovery_2026-07-05'
