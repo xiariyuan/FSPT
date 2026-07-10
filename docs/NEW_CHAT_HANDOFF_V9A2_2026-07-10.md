@@ -856,3 +856,43 @@ Decision:
 ```text
 V9-A2 is a positive paper-ready prototype/diagnostic but not a statistically established final method on DAVIS. Do not continue threshold tuning. Next experiment is V9-A2.5 semantic/internal identity feature audit under the frozen fixed0.05 dynamic-horizon protocol.
 ```
+
+---
+
+## 16. V9-A2.5 DINOv3 semantic identity pilot 已完成
+
+Key artifacts:
+
+```text
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_identity_eval.json
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_late_fusion_audit.json
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_feature_family_audit.json
+docs/v9a25_dinov3_identity_feature_pilot_result_2026-07-10.md
+docs/v9a25_dinov3_late_fusion_audit_result_2026-07-10.md
+docs/v9a25_dinov3_feature_family_audit_result_2026-07-10.md
+```
+
+Result:
+
+```text
+DINO-only logreg OOF: AP 0.3637, AUC 0.6429
+all+DINO primary AJ_RD_256 Δ: +0.029439
+frozen V9-A2 AJ_RD_256 Δ: +0.029379
+paired primary-vs-frozen mean: +0.000035
+95% CI: [-0.000227,+0.000277]
+exact sign-flip p: 0.875
+```
+
+Late fusion and feature-family audit:
+
+```text
+Frozen and DINO row scores are almost uncorrelated, but predeclared fusion weights do not beat frozen V9-A2.
+Historical candidate identity is real (AP/AUC 0.3703/0.6532), and local distinctiveness is the strongest ranking family (AP/AUC 0.3967/0.6537).
+Every feature family's paired trajectory CI versus frozen V9-A2 crosses zero.
+```
+
+Decision:
+
+```text
+DINO identity is informative for row ranking, including genuine historical-anchor and local-distinctiveness signal, but does not provide a robust trajectory improvement. Stop DINO concatenation/fusion/family tuning. Next: TrackOn2 internal matching/memory feature feasibility audit; then V9-A3 if needed.
+```

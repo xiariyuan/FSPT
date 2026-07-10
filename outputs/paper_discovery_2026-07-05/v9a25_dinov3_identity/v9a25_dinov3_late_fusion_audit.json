@@ -1,0 +1,3804 @@
+{
+  "protocol": "predeclared late fusion weights [0.25, 0.50, 0.75]; video-heldout OOF scores; event_max; OOF-F1; no trajectory threshold sweep",
+  "score_correlations": {
+    "row_pearson": 0.0029371204558121702,
+    "row_spearman": 0.02754898067993743
+  },
+  "dino_classifier": {
+    "ap": 0.363656437957514,
+    "brier": 0.19898357027312097,
+    "auc": 0.6429481487201267,
+    "threshold_f1": 0.32555191322027016
+  },
+  "rows": [
+    {
+      "variant": "frozen_v9a2_fixed0.05",
+      "metric": {
+        "AJ": 65.33912916430069,
+        "OA": 91.78969522379725,
+        "delta_avg": 78.38738042119495,
+        "delta_4px": 86.45178683106556,
+        "AJ_RD": 0.3708957528957529,
+        "AJ_RD_256": 0.5626930501930503,
+        "n_records": 30,
+        "n_queries": 650,
+        "n_reentry_queries_total": 259
+      },
+      "delta_vs_native": {
+        "AJ": 0.10254242754270138,
+        "OA": 0.97111128734673,
+        "delta_avg": 0.44155935568063853,
+        "delta_4px": 0.5847770185426953,
+        "AJ_RD": 0.017491891891891875,
+        "AJ_RD_256": 0.029379150579150637
+      },
+      "apply_stats": {
+        "accepted_frames": 1937,
+        "total_touched_candidates": 2013,
+        "gt_visible_accepted": 1513,
+        "native_err_sum": 12437.033966321498,
+        "candidate_err_sum": 8647.337180051953,
+        "repair4": 229,
+        "damage4": 92,
+        "candidate_safe4": 1064,
+        "native_safe4": 927,
+        "repair8": 213,
+        "damage8": 65,
+        "candidate_safe8": 1282,
+        "native_safe8": 1134,
+        "repair16": 130,
+        "damage16": 27,
+        "candidate_safe16": 1421,
+        "native_safe16": 1318,
+        "candidate_better_px": 860,
+        "candidate_worse_px": 653,
+        "gt_invisible_accepted": 424,
+        "false_visible_accepted": 424,
+        "accept_rate": 0.9622454048683556,
+        "false_visible_rate": 0.21889519876097058,
+        "mean_native_err_px": 8.220114981045272,
+        "mean_candidate_err_px": 5.715358347688006,
+        "repair4_rate": 0.15135492399206874,
+        "damage4_rate": 0.06080634500991408,
+        "candidate_safe4_rate": 0.7032385988103106,
+        "native_safe4_rate": 0.612690019828156,
+        "repair8_rate": 0.14077990746860541,
+        "damage8_rate": 0.04296100462656973,
+        "candidate_safe8_rate": 0.8473231989424983,
+        "native_safe8_rate": 0.7495042961004627,
+        "repair16_rate": 0.08592200925313946,
+        "damage16_rate": 0.01784534038334435,
+        "candidate_safe16_rate": 0.9391936549900859,
+        "native_safe16_rate": 0.8711169861202908,
+        "candidate_better_px_rate": 0.5684071381361533,
+        "candidate_worse_px_rate": 0.43159286186384666
+      },
+      "extension_stats": {
+        "accepted_extension": 481,
+        "accepted_ext_good": 109,
+        "accepted_ext_bad": 141,
+        "accepted_ext_false_visible": 61,
+        "accepted_ext_worse": 190
+      },
+      "per_video_summary": {
+        "n": 25,
+        "positive": 17,
+        "negative": 3,
+        "zero": 5,
+        "mean": 0.028777574060150374,
+        "median": 0.0037000000000000366,
+        "worst": [
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.628618272884154,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.006526666666666625,
+            "delta_AJ_RD_256": -0.009013333333333207
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "paragliding-launch",
+            "delta_AJ": -0.5123387449840848,
+            "delta_OA": -0.8633824276282382,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          }
+        ],
+        "best": [
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.266637577446417,
+            "delta_OA": 7.250912884715703,
+            "delta_AJ_RD": 0.053552631578947386,
+            "delta_AJ_RD_256": 0.10952631578947367
+          },
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.7912765897055039,
+            "delta_OA": -1.0631229235880397,
+            "delta_AJ_RD": 0.07800000000000001,
+            "delta_AJ_RD_256": 0.07999166666666657
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.3050399077411967,
+            "delta_OA": 0.5254860746190104,
+            "delta_AJ_RD": 0.028283333333333327,
+            "delta_AJ_RD_256": 0.05359583333333323
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.02800625000000001,
+            "delta_AJ_RD_256": 0.04913124999999996
+          }
+        ]
+      },
+      "per_video_rows": [
+        {
+          "video_id": "bike-packing",
+          "delta_AJ": -0.7912765897055039,
+          "delta_OA": -1.0631229235880397,
+          "delta_AJ_RD": 0.07800000000000001,
+          "delta_AJ_RD_256": 0.07999166666666657
+        },
+        {
+          "video_id": "blackswan",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "bmx-trees",
+          "delta_AJ": 0.3050399077411967,
+          "delta_OA": 0.5254860746190104,
+          "delta_AJ_RD": 0.028283333333333327,
+          "delta_AJ_RD_256": 0.05359583333333323
+        },
+        {
+          "video_id": "breakdance",
+          "delta_AJ": -2.628618272884154,
+          "delta_OA": -2.247191011235941,
+          "delta_AJ_RD": -0.006526666666666625,
+          "delta_AJ_RD_256": -0.009013333333333207
+        },
+        {
+          "video_id": "camel",
+          "delta_AJ": -0.5923479273674843,
+          "delta_OA": -0.39267015706806774,
+          "delta_AJ_RD": -0.07099999999999995,
+          "delta_AJ_RD_256": -0.07099999999999995
+        },
+        {
+          "video_id": "car-roundabout",
+          "delta_AJ": -1.9212701272924733,
+          "delta_OA": 1.243599122165321,
+          "delta_AJ_RD": 0.13713999999999998,
+          "delta_AJ_RD_256": 0.24000000000000005
+        },
+        {
+          "video_id": "car-shadow",
+          "delta_AJ": 0.038891076672840086,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": -0.007019999999999915,
+          "delta_AJ_RD_256": 4.666666666663932e-05
+        },
+        {
+          "video_id": "cows",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "delta_AJ": -1.152502636220774,
+          "delta_OA": -0.5522319374137226,
+          "delta_AJ_RD": 0.0006086956521738629,
+          "delta_AJ_RD_256": 0.004999999999999893
+        },
+        {
+          "video_id": "dog",
+          "delta_AJ": -0.8242984845445491,
+          "delta_OA": 2.2181146025878036,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "dogs-jump",
+          "delta_AJ": 2.0526820917085615,
+          "delta_OA": 4.076086956521735,
+          "delta_AJ_RD": 0.02800625000000001,
+          "delta_AJ_RD_256": 0.04913124999999996
+        },
+        {
+          "video_id": "drift-chicane",
+          "delta_AJ": -0.25333158991227833,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "delta_AJ": 0.23148733199222704,
+          "delta_OA": 0.16764459346187266,
+          "delta_AJ_RD": 0.001383333333333181,
+          "delta_AJ_RD_256": 0.0033333333333332993
+        },
+        {
+          "video_id": "goat",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "gold-fish",
+          "delta_AJ": -0.5429079728613573,
+          "delta_OA": -0.5564830272676744,
+          "delta_AJ_RD": 0.0353,
+          "delta_AJ_RD_256": 0.0037000000000000366
+        },
+        {
+          "video_id": "horsejump-high",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "india",
+          "delta_AJ": -0.1161737524626858,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0028083333333333016,
+          "delta_AJ_RD_256": 0.0014708333333333101
+        },
+        {
+          "video_id": "judo",
+          "delta_AJ": -0.3245945354412001,
+          "delta_OA": 0.86633663366338,
+          "delta_AJ_RD": 0.04637142857142859,
+          "delta_AJ_RD_256": 0.0565357142857143
+        },
+        {
+          "video_id": "kite-surf",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "lab-coat",
+          "delta_AJ": -0.011010432376750146,
+          "delta_OA": 0.08695652173912549,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "libby",
+          "delta_AJ": 3.795698257037877,
+          "delta_OA": 7.49414519906324,
+          "delta_AJ_RD": 0.008599999999999997,
+          "delta_AJ_RD_256": 0.00278000000000006
+        },
+        {
+          "video_id": "loading",
+          "delta_AJ": -0.09260687787966049,
+          "delta_OA": 1.200686106346481,
+          "delta_AJ_RD": 0.034557142857142786,
+          "delta_AJ_RD_256": 0.059042857142857175
+        },
+        {
+          "video_id": "mbike-trick",
+          "delta_AJ": 1.1206012603636495,
+          "delta_OA": 2.871794871794876,
+          "delta_AJ_RD": 0.004483333333333311,
+          "delta_AJ_RD_256": 0.009233333333333316
+        },
+        {
+          "video_id": "motocross-jump",
+          "delta_AJ": 0.17095749904267166,
+          "delta_OA": 2.259036144578303,
+          "delta_AJ_RD": 0.06015,
+          "delta_AJ_RD_256": 0.164
+        },
+        {
+          "video_id": "paragliding-launch",
+          "delta_AJ": -0.5123387449840848,
+          "delta_OA": -0.8633824276282382,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "delta_AJ": 3.266637577446417,
+          "delta_OA": 7.250912884715703,
+          "delta_AJ_RD": 0.053552631578947386,
+          "delta_AJ_RD_256": 0.10952631578947367
+        },
+        {
+          "video_id": "pigs",
+          "delta_AJ": 0.10210123708710483,
+          "delta_OA": 0.45998160073597205,
+          "delta_AJ_RD": 0.0063,
+          "delta_AJ_RD_256": 0.01046666666666668
+        },
+        {
+          "video_id": "scooter-black",
+          "delta_AJ": 1.7819090133135944,
+          "delta_OA": 2.294056308654845,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "shooting",
+          "delta_AJ": -0.2296723753592218,
+          "delta_OA": -0.3397508493771113,
+          "delta_AJ_RD": -0.0383375,
+          "delta_AJ_RD_256": -0.05333749999999998
+        },
+        {
+          "video_id": "soapbox",
+          "delta_AJ": 0.20321789316699324,
+          "delta_OA": 2.133333333333354,
+          "delta_AJ_RD": -0.000685714285714345,
+          "delta_AJ_RD_256": 0.0049357142857142655
+        }
+      ]
+    },
+    {
+      "variant": "dino_only_oof_f1",
+      "metric": {
+        "AJ": 65.34338679374375,
+        "OA": 91.81531984025283,
+        "delta_avg": 78.38604321517663,
+        "delta_4px": 86.43671841853622,
+        "AJ_RD": 0.3704065637065637,
+        "AJ_RD_256": 0.5619938223938223,
+        "n_records": 30,
+        "n_queries": 650,
+        "n_reentry_queries_total": 259
+      },
+      "delta_vs_native": {
+        "AJ": 0.10680005698576167,
+        "OA": 0.9967359038023034,
+        "delta_avg": 0.44022214966231843,
+        "delta_4px": 0.56970860601335,
+        "AJ_RD": 0.01700270270270271,
+        "AJ_RD_256": 0.028679922779922706
+      },
+      "apply_stats": {
+        "accepted_frames": 1864,
+        "total_touched_candidates": 2013,
+        "gt_visible_accepted": 1459,
+        "native_err_sum": 12442.033218253404,
+        "candidate_err_sum": 8735.58115074411,
+        "repair4": 229,
+        "damage4": 99,
+        "candidate_safe4": 998,
+        "native_safe4": 868,
+        "repair8": 214,
+        "damage8": 65,
+        "candidate_safe8": 1230,
+        "native_safe8": 1081,
+        "repair16": 131,
+        "damage16": 27,
+        "candidate_safe16": 1369,
+        "native_safe16": 1265,
+        "candidate_better_px": 827,
+        "candidate_worse_px": 632,
+        "gt_invisible_accepted": 405,
+        "false_visible_accepted": 405,
+        "accept_rate": 0.9259811227024342,
+        "false_visible_rate": 0.217274678111588,
+        "mean_native_err_px": 8.527781506684992,
+        "mean_candidate_err_px": 5.9873757030459975,
+        "repair4_rate": 0.15695681973954764,
+        "damage4_rate": 0.067854694996573,
+        "candidate_safe4_rate": 0.6840301576422207,
+        "native_safe4_rate": 0.594928032899246,
+        "repair8_rate": 0.14667580534612748,
+        "damage8_rate": 0.04455106237148732,
+        "candidate_safe8_rate": 0.8430431802604523,
+        "native_safe8_rate": 0.7409184372858122,
+        "repair16_rate": 0.08978752570253598,
+        "damage16_rate": 0.018505825908156272,
+        "candidate_safe16_rate": 0.9383139136394791,
+        "native_safe16_rate": 0.8670322138450994,
+        "candidate_better_px_rate": 0.566826593557231,
+        "candidate_worse_px_rate": 0.433173406442769
+      },
+      "extension_stats": {
+        "accepted_extension": 408,
+        "accepted_ext_good": 106,
+        "accepted_ext_bad": 121,
+        "accepted_ext_false_visible": 42,
+        "accepted_ext_worse": 169
+      },
+      "per_video_summary": {
+        "n": 25,
+        "positive": 16,
+        "negative": 4,
+        "zero": 5,
+        "mean": 0.028191611359921546,
+        "median": 0.003308695652173843,
+        "worst": [
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.6469323302511043,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.00773333333333337,
+            "delta_AJ_RD_256": -0.010253333333333337
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.032999792209878365,
+            "delta_OA": 0.08382229673092922,
+            "delta_AJ_RD": -0.0057916666666667505,
+            "delta_AJ_RD_256": -0.00708333333333333
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          }
+        ],
+        "best": [
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.322372122784717,
+            "delta_OA": 7.511737089201873,
+            "delta_AJ_RD": 0.050010526315789484,
+            "delta_AJ_RD_256": 0.10562105263157895
+          },
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.7151814147446913,
+            "delta_OA": -0.9302325581395223,
+            "delta_AJ_RD": 0.07675833333333337,
+            "delta_AJ_RD_256": 0.07890000000000008
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.32055551341157695,
+            "delta_OA": 0.5780346820809257,
+            "delta_AJ_RD": 0.029445833333333338,
+            "delta_AJ_RD_256": 0.056079166666666624
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.029243749999999957,
+            "delta_AJ_RD_256": 0.04913124999999996
+          }
+        ]
+      },
+      "per_video_rows": [
+        {
+          "video_id": "bike-packing",
+          "delta_AJ": -0.7151814147446913,
+          "delta_OA": -0.9302325581395223,
+          "delta_AJ_RD": 0.07675833333333337,
+          "delta_AJ_RD_256": 0.07890000000000008
+        },
+        {
+          "video_id": "blackswan",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "bmx-trees",
+          "delta_AJ": 0.32055551341157695,
+          "delta_OA": 0.5780346820809257,
+          "delta_AJ_RD": 0.029445833333333338,
+          "delta_AJ_RD_256": 0.056079166666666624
+        },
+        {
+          "video_id": "breakdance",
+          "delta_AJ": -2.6469323302511043,
+          "delta_OA": -2.247191011235941,
+          "delta_AJ_RD": -0.00773333333333337,
+          "delta_AJ_RD_256": -0.010253333333333337
+        },
+        {
+          "video_id": "camel",
+          "delta_AJ": -0.5923479273674843,
+          "delta_OA": -0.39267015706806774,
+          "delta_AJ_RD": -0.07099999999999995,
+          "delta_AJ_RD_256": -0.07099999999999995
+        },
+        {
+          "video_id": "car-roundabout",
+          "delta_AJ": -1.9212701272924733,
+          "delta_OA": 1.243599122165321,
+          "delta_AJ_RD": 0.13713999999999998,
+          "delta_AJ_RD_256": 0.24000000000000005
+        },
+        {
+          "video_id": "car-shadow",
+          "delta_AJ": 0.038891076672840086,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": -0.006240000000000023,
+          "delta_AJ_RD_256": 4.666666666663932e-05
+        },
+        {
+          "video_id": "cows",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "delta_AJ": -1.3080754055333017,
+          "delta_OA": -0.5522319374137226,
+          "delta_AJ_RD": -0.0017913043478260948,
+          "delta_AJ_RD_256": 0.003308695652173843
+        },
+        {
+          "video_id": "dog",
+          "delta_AJ": -0.8242984845445491,
+          "delta_OA": 2.2181146025878036,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "dogs-jump",
+          "delta_AJ": 2.0526820917085615,
+          "delta_OA": 4.076086956521735,
+          "delta_AJ_RD": 0.029243749999999957,
+          "delta_AJ_RD_256": 0.04913124999999996
+        },
+        {
+          "video_id": "drift-chicane",
+          "delta_AJ": -0.25333158991227833,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "delta_AJ": 0.032999792209878365,
+          "delta_OA": 0.08382229673092922,
+          "delta_AJ_RD": -0.0057916666666667505,
+          "delta_AJ_RD_256": -0.00708333333333333
+        },
+        {
+          "video_id": "goat",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "gold-fish",
+          "delta_AJ": -0.5429079728613573,
+          "delta_OA": -0.5564830272676744,
+          "delta_AJ_RD": 0.0353,
+          "delta_AJ_RD_256": 0.0037000000000000366
+        },
+        {
+          "video_id": "horsejump-high",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "india",
+          "delta_AJ": 0.00856884639836153,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.005120833333333297,
+          "delta_AJ_RD_256": 0.00268333333333326
+        },
+        {
+          "video_id": "judo",
+          "delta_AJ": -0.3245945354412001,
+          "delta_OA": 0.86633663366338,
+          "delta_AJ_RD": 0.04637142857142859,
+          "delta_AJ_RD_256": 0.0565357142857143
+        },
+        {
+          "video_id": "kite-surf",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "lab-coat",
+          "delta_AJ": -0.011010432376750146,
+          "delta_OA": 0.08695652173912549,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "libby",
+          "delta_AJ": 3.795698257037877,
+          "delta_OA": 7.49414519906324,
+          "delta_AJ_RD": 0.008599999999999997,
+          "delta_AJ_RD_256": 0.00278000000000006
+        },
+        {
+          "video_id": "loading",
+          "delta_AJ": -0.09260687787966049,
+          "delta_OA": 1.200686106346481,
+          "delta_AJ_RD": 0.034557142857142786,
+          "delta_AJ_RD_256": 0.059042857142857175
+        },
+        {
+          "video_id": "mbike-trick",
+          "delta_AJ": 1.1206012603636495,
+          "delta_OA": 2.871794871794876,
+          "delta_AJ_RD": 0.004483333333333311,
+          "delta_AJ_RD_256": 0.009233333333333316
+        },
+        {
+          "video_id": "motocross-jump",
+          "delta_AJ": 0.17095749904267166,
+          "delta_OA": 2.259036144578303,
+          "delta_AJ_RD": 0.06015,
+          "delta_AJ_RD_256": 0.164
+        },
+        {
+          "video_id": "paragliding-launch",
+          "delta_AJ": -0.2843234200609004,
+          "delta_OA": -0.457084814626711,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "delta_AJ": 3.322372122784717,
+          "delta_OA": 7.511737089201873,
+          "delta_AJ_RD": 0.050010526315789484,
+          "delta_AJ_RD_256": 0.10562105263157895
+        },
+        {
+          "video_id": "pigs",
+          "delta_AJ": 0.10210123708710483,
+          "delta_OA": 0.45998160073597205,
+          "delta_AJ_RD": 0.0063,
+          "delta_AJ_RD_256": 0.01046666666666668
+        },
+        {
+          "video_id": "scooter-black",
+          "delta_AJ": 1.7819090133135944,
+          "delta_OA": 2.294056308654845,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "shooting",
+          "delta_AJ": -0.2296723753592218,
+          "delta_OA": -0.3397508493771113,
+          "delta_AJ_RD": -0.0383375,
+          "delta_AJ_RD_256": -0.05333749999999998
+        },
+        {
+          "video_id": "soapbox",
+          "delta_AJ": 0.20321789316699324,
+          "delta_OA": 2.133333333333354,
+          "delta_AJ_RD": -0.000685714285714345,
+          "delta_AJ_RD_256": 0.0049357142857142655
+        }
+      ]
+    },
+    {
+      "variant": "late_fusion_frozen0.25_dino0.75_event_max_oof_f1",
+      "metric": {
+        "AJ": 65.35020286325687,
+        "OA": 91.81987832927808,
+        "delta_avg": 78.3863949553718,
+        "delta_4px": 86.43113494561605,
+        "AJ_RD": 0.3704606177606177,
+        "AJ_RD_256": 0.5622471042471043,
+        "n_records": 30,
+        "n_queries": 650,
+        "n_reentry_queries_total": 259
+      },
+      "delta_vs_native": {
+        "AJ": 0.11361612649888286,
+        "OA": 1.0012943928275604,
+        "delta_avg": 0.4405738898574896,
+        "delta_4px": 0.5641251330931851,
+        "AJ_RD": 0.01705675675675672,
+        "AJ_RD_256": 0.0289332046332047
+      },
+      "apply_stats": {
+        "accepted_frames": 1776,
+        "total_touched_candidates": 2013,
+        "gt_visible_accepted": 1381,
+        "native_err_sum": 12271.722233641893,
+        "candidate_err_sum": 8500.587160188705,
+        "repair4": 227,
+        "damage4": 99,
+        "candidate_safe4": 921,
+        "native_safe4": 793,
+        "repair8": 214,
+        "damage8": 65,
+        "candidate_safe8": 1153,
+        "native_safe8": 1004,
+        "repair16": 131,
+        "damage16": 27,
+        "candidate_safe16": 1292,
+        "native_safe16": 1188,
+        "candidate_better_px": 777,
+        "candidate_worse_px": 604,
+        "gt_invisible_accepted": 395,
+        "false_visible_accepted": 395,
+        "accept_rate": 0.8822652757078987,
+        "false_visible_rate": 0.22240990990990991,
+        "mean_native_err_px": 8.886113130805136,
+        "mean_candidate_err_px": 6.1553853440903,
+        "repair4_rate": 0.16437364228819695,
+        "damage4_rate": 0.07168718320057929,
+        "candidate_safe4_rate": 0.666908037653874,
+        "native_safe4_rate": 0.5742215785662563,
+        "repair8_rate": 0.1549601737871108,
+        "damage8_rate": 0.04706734250543085,
+        "candidate_safe8_rate": 0.834902244750181,
+        "native_safe8_rate": 0.7270094134685011,
+        "repair16_rate": 0.09485879797248371,
+        "damage16_rate": 0.01955104996379435,
+        "candidate_safe16_rate": 0.9355539464156408,
+        "native_safe16_rate": 0.8602461984069515,
+        "candidate_better_px_rate": 0.5626357711803042,
+        "candidate_worse_px_rate": 0.4373642288196959
+      },
+      "extension_stats": {
+        "accepted_extension": 320,
+        "accepted_ext_good": 88,
+        "accepted_ext_bad": 95,
+        "accepted_ext_false_visible": 32,
+        "accepted_ext_worse": 141
+      },
+      "per_video_summary": {
+        "n": 25,
+        "positive": 16,
+        "negative": 4,
+        "zero": 5,
+        "mean": 0.028554149041080956,
+        "median": 0.0033333333333332993,
+        "worst": [
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.6538840247483364,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.009119999999999961,
+            "delta_AJ_RD_256": -0.009839999999999849
+          },
+          {
+            "video_id": "car-shadow",
+            "delta_AJ": -0.07751818676187838,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": -0.010526666666666573,
+            "delta_AJ_RD_256": -0.0013066666666667892
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          }
+        ],
+        "best": [
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.3442673069259286,
+            "delta_OA": 7.459572248304639,
+            "delta_AJ_RD": 0.050010526315789484,
+            "delta_AJ_RD_256": 0.10562105263157895
+          },
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.5616633217781484,
+            "delta_OA": -0.9302325581395223,
+            "delta_AJ_RD": 0.07873333333333332,
+            "delta_AJ_RD_256": 0.08186666666666664
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.34828958049214265,
+            "delta_OA": 0.6831318970047278,
+            "delta_AJ_RD": 0.028999999999999915,
+            "delta_AJ_RD_256": 0.05423749999999988
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.029243749999999957,
+            "delta_AJ_RD_256": 0.04913124999999996
+          }
+        ]
+      },
+      "per_video_rows": [
+        {
+          "video_id": "bike-packing",
+          "delta_AJ": -0.5616633217781484,
+          "delta_OA": -0.9302325581395223,
+          "delta_AJ_RD": 0.07873333333333332,
+          "delta_AJ_RD_256": 0.08186666666666664
+        },
+        {
+          "video_id": "blackswan",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "bmx-trees",
+          "delta_AJ": 0.34828958049214265,
+          "delta_OA": 0.6831318970047278,
+          "delta_AJ_RD": 0.028999999999999915,
+          "delta_AJ_RD_256": 0.05423749999999988
+        },
+        {
+          "video_id": "breakdance",
+          "delta_AJ": -2.6538840247483364,
+          "delta_OA": -2.247191011235941,
+          "delta_AJ_RD": -0.009119999999999961,
+          "delta_AJ_RD_256": -0.009839999999999849
+        },
+        {
+          "video_id": "camel",
+          "delta_AJ": -0.5923479273674843,
+          "delta_OA": -0.39267015706806774,
+          "delta_AJ_RD": -0.07099999999999995,
+          "delta_AJ_RD_256": -0.07099999999999995
+        },
+        {
+          "video_id": "car-roundabout",
+          "delta_AJ": -1.9212701272924733,
+          "delta_OA": 1.243599122165321,
+          "delta_AJ_RD": 0.13713999999999998,
+          "delta_AJ_RD_256": 0.24000000000000005
+        },
+        {
+          "video_id": "car-shadow",
+          "delta_AJ": -0.07751818676187838,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": -0.010526666666666573,
+          "delta_AJ_RD_256": -0.0013066666666667892
+        },
+        {
+          "video_id": "cows",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "delta_AJ": -1.3272691460032036,
+          "delta_OA": -0.5522319374137226,
+          "delta_AJ_RD": -0.0017913043478260948,
+          "delta_AJ_RD_256": 0.003091304347825896
+        },
+        {
+          "video_id": "dog",
+          "delta_AJ": -0.8242984845445491,
+          "delta_OA": 2.2181146025878036,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "dogs-jump",
+          "delta_AJ": 2.0526820917085615,
+          "delta_OA": 4.076086956521735,
+          "delta_AJ_RD": 0.029243749999999957,
+          "delta_AJ_RD_256": 0.04913124999999996
+        },
+        {
+          "video_id": "drift-chicane",
+          "delta_AJ": -0.25333158991227833,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "delta_AJ": 0.23148733199222704,
+          "delta_OA": 0.16764459346187266,
+          "delta_AJ_RD": 0.001383333333333181,
+          "delta_AJ_RD_256": 0.0033333333333332993
+        },
+        {
+          "video_id": "goat",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "gold-fish",
+          "delta_AJ": -0.5429079728613573,
+          "delta_OA": -0.5564830272676744,
+          "delta_AJ_RD": 0.0353,
+          "delta_AJ_RD_256": 0.0037000000000000366
+        },
+        {
+          "video_id": "horsejump-high",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "india",
+          "delta_AJ": -0.046029253777021495,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.005120833333333297,
+          "delta_AJ_RD_256": 0.0013624999999999332
+        },
+        {
+          "video_id": "judo",
+          "delta_AJ": -0.3245945354412001,
+          "delta_OA": 0.86633663366338,
+          "delta_AJ_RD": 0.04637142857142859,
+          "delta_AJ_RD_256": 0.0565357142857143
+        },
+        {
+          "video_id": "kite-surf",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "lab-coat",
+          "delta_AJ": -0.011010432376750146,
+          "delta_OA": 0.08695652173912549,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "libby",
+          "delta_AJ": 3.795698257037877,
+          "delta_OA": 7.49414519906324,
+          "delta_AJ_RD": 0.008599999999999997,
+          "delta_AJ_RD_256": 0.00278000000000006
+        },
+        {
+          "video_id": "loading",
+          "delta_AJ": -0.09260687787966049,
+          "delta_OA": 1.200686106346481,
+          "delta_AJ_RD": 0.034557142857142786,
+          "delta_AJ_RD_256": 0.059042857142857175
+        },
+        {
+          "video_id": "mbike-trick",
+          "delta_AJ": 1.1206012603636495,
+          "delta_OA": 2.871794871794876,
+          "delta_AJ_RD": 0.004483333333333311,
+          "delta_AJ_RD_256": 0.009233333333333316
+        },
+        {
+          "video_id": "motocross-jump",
+          "delta_AJ": 0.17095749904267166,
+          "delta_OA": 2.259036144578303,
+          "delta_AJ_RD": 0.06015,
+          "delta_AJ_RD_256": 0.164
+        },
+        {
+          "video_id": "paragliding-launch",
+          "delta_AJ": -0.2843234200609004,
+          "delta_OA": -0.457084814626711,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "delta_AJ": 3.3442673069259286,
+          "delta_OA": 7.459572248304639,
+          "delta_AJ_RD": 0.050010526315789484,
+          "delta_AJ_RD_256": 0.10562105263157895
+        },
+        {
+          "video_id": "pigs",
+          "delta_AJ": 0.10210123708710483,
+          "delta_OA": 0.45998160073597205,
+          "delta_AJ_RD": 0.0063,
+          "delta_AJ_RD_256": 0.01046666666666668
+        },
+        {
+          "video_id": "scooter-black",
+          "delta_AJ": 1.7819090133135944,
+          "delta_OA": 2.294056308654845,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "shooting",
+          "delta_AJ": -0.2296723753592218,
+          "delta_OA": -0.3397508493771113,
+          "delta_AJ_RD": -0.0383375,
+          "delta_AJ_RD_256": -0.05333749999999998
+        },
+        {
+          "video_id": "soapbox",
+          "delta_AJ": 0.20321789316699324,
+          "delta_OA": 2.133333333333354,
+          "delta_AJ_RD": -0.000685714285714345,
+          "delta_AJ_RD_256": 0.0049357142857142655
+        }
+      ]
+    },
+    {
+      "variant": "late_fusion_frozen0.50_dino0.50_event_max_oof_f1",
+      "metric": {
+        "AJ": 65.32857108420527,
+        "OA": 91.79733411541903,
+        "delta_avg": 78.38488512866348,
+        "delta_4px": 86.43026911309772,
+        "AJ_RD": 0.3702088803088803,
+        "AJ_RD_256": 0.5621513513513513,
+        "n_records": 30,
+        "n_queries": 650,
+        "n_reentry_queries_total": 259
+      },
+      "delta_vs_native": {
+        "AJ": 0.0919843474472799,
+        "OA": 0.9787501789685109,
+        "delta_avg": 0.4390640631491749,
+        "delta_4px": 0.5632593005748561,
+        "AJ_RD": 0.016805019305019264,
+        "AJ_RD_256": 0.02883745173745167
+      },
+      "apply_stats": {
+        "accepted_frames": 1982,
+        "total_touched_candidates": 2013,
+        "gt_visible_accepted": 1557,
+        "native_err_sum": 12755.534867126495,
+        "candidate_err_sum": 9049.160805437714,
+        "repair4": 230,
+        "damage4": 102,
+        "candidate_safe4": 1083,
+        "native_safe4": 955,
+        "repair8": 215,
+        "damage8": 65,
+        "candidate_safe8": 1321,
+        "native_safe8": 1171,
+        "repair16": 132,
+        "damage16": 27,
+        "candidate_safe16": 1460,
+        "native_safe16": 1355,
+        "candidate_better_px": 870,
+        "candidate_worse_px": 687,
+        "gt_invisible_accepted": 425,
+        "false_visible_accepted": 425,
+        "accept_rate": 0.9846000993541977,
+        "false_visible_rate": 0.21442986881937437,
+        "mean_native_err_px": 8.192379490768461,
+        "mean_candidate_err_px": 5.8119208769670605,
+        "repair4_rate": 0.14771997430956968,
+        "damage4_rate": 0.06551059730250482,
+        "candidate_safe4_rate": 0.6955684007707129,
+        "native_safe4_rate": 0.613359023763648,
+        "repair8_rate": 0.13808606294155426,
+        "damage8_rate": 0.04174694926140013,
+        "candidate_safe8_rate": 0.8484264611432242,
+        "native_safe8_rate": 0.75208734746307,
+        "repair16_rate": 0.08477842003853564,
+        "damage16_rate": 0.017341040462427744,
+        "candidate_safe16_rate": 0.9377007064868337,
+        "native_safe16_rate": 0.8702633269107257,
+        "candidate_better_px_rate": 0.558766859344894,
+        "candidate_worse_px_rate": 0.441233140655106
+      },
+      "extension_stats": {
+        "accepted_extension": 526,
+        "accepted_ext_good": 118,
+        "accepted_ext_bad": 157,
+        "accepted_ext_false_visible": 62,
+        "accepted_ext_worse": 224
+      },
+      "per_video_summary": {
+        "n": 25,
+        "positive": 16,
+        "negative": 4,
+        "zero": 5,
+        "mean": 0.02825756910210309,
+        "median": 0.0035391304347824892,
+        "worst": [
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.628618272884154,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.006526666666666625,
+            "delta_AJ_RD_256": -0.009013333333333207
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.032999792209878365,
+            "delta_OA": 0.08382229673092922,
+            "delta_AJ_RD": -0.0057916666666667505,
+            "delta_AJ_RD_256": -0.00708333333333333
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          }
+        ],
+        "best": [
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.377388577481714,
+            "delta_OA": 7.563901930099121,
+            "delta_AJ_RD": 0.05394210526315791,
+            "delta_AJ_RD_256": 0.1108578947368421
+          },
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.86937417558525,
+            "delta_OA": -1.0631229235880397,
+            "delta_AJ_RD": 0.07314166666666666,
+            "delta_AJ_RD_256": 0.07566666666666666
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.29048199057947954,
+            "delta_OA": 0.5254860746190104,
+            "delta_AJ_RD": 0.028783333333333327,
+            "delta_AJ_RD_256": 0.05546666666666672
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.02800625000000001,
+            "delta_AJ_RD_256": 0.04913124999999996
+          }
+        ]
+      },
+      "per_video_rows": [
+        {
+          "video_id": "bike-packing",
+          "delta_AJ": -0.86937417558525,
+          "delta_OA": -1.0631229235880397,
+          "delta_AJ_RD": 0.07314166666666666,
+          "delta_AJ_RD_256": 0.07566666666666666
+        },
+        {
+          "video_id": "blackswan",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "bmx-trees",
+          "delta_AJ": 0.29048199057947954,
+          "delta_OA": 0.5254860746190104,
+          "delta_AJ_RD": 0.028783333333333327,
+          "delta_AJ_RD_256": 0.05546666666666672
+        },
+        {
+          "video_id": "breakdance",
+          "delta_AJ": -2.628618272884154,
+          "delta_OA": -2.247191011235941,
+          "delta_AJ_RD": -0.006526666666666625,
+          "delta_AJ_RD_256": -0.009013333333333207
+        },
+        {
+          "video_id": "camel",
+          "delta_AJ": -0.5923479273674843,
+          "delta_OA": -0.39267015706806774,
+          "delta_AJ_RD": -0.07099999999999995,
+          "delta_AJ_RD_256": -0.07099999999999995
+        },
+        {
+          "video_id": "car-roundabout",
+          "delta_AJ": -1.9212701272924733,
+          "delta_OA": 1.243599122165321,
+          "delta_AJ_RD": 0.13713999999999998,
+          "delta_AJ_RD_256": 0.24000000000000005
+        },
+        {
+          "video_id": "car-shadow",
+          "delta_AJ": 0.038891076672840086,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": -0.007019999999999915,
+          "delta_AJ_RD_256": 4.666666666663932e-05
+        },
+        {
+          "video_id": "cows",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "delta_AJ": -1.288852996294949,
+          "delta_OA": -0.5522319374137226,
+          "delta_AJ_RD": -0.0016913043478261058,
+          "delta_AJ_RD_256": 0.0035391304347824892
+        },
+        {
+          "video_id": "dog",
+          "delta_AJ": -0.8242984845445491,
+          "delta_OA": 2.2181146025878036,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "dogs-jump",
+          "delta_AJ": 2.0526820917085615,
+          "delta_OA": 4.076086956521735,
+          "delta_AJ_RD": 0.02800625000000001,
+          "delta_AJ_RD_256": 0.04913124999999996
+        },
+        {
+          "video_id": "drift-chicane",
+          "delta_AJ": -0.25333158991227833,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "delta_AJ": 0.032999792209878365,
+          "delta_OA": 0.08382229673092922,
+          "delta_AJ_RD": -0.0057916666666667505,
+          "delta_AJ_RD_256": -0.00708333333333333
+        },
+        {
+          "video_id": "goat",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "gold-fish",
+          "delta_AJ": -0.5429079728613573,
+          "delta_OA": -0.5564830272676744,
+          "delta_AJ_RD": 0.0353,
+          "delta_AJ_RD_256": 0.0037000000000000366
+        },
+        {
+          "video_id": "horsejump-high",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "india",
+          "delta_AJ": -0.1161737524626858,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0028083333333333016,
+          "delta_AJ_RD_256": 0.0014708333333333101
+        },
+        {
+          "video_id": "judo",
+          "delta_AJ": -0.3245945354412001,
+          "delta_OA": 0.86633663366338,
+          "delta_AJ_RD": 0.04637142857142859,
+          "delta_AJ_RD_256": 0.0565357142857143
+        },
+        {
+          "video_id": "kite-surf",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "lab-coat",
+          "delta_AJ": -0.011010432376750146,
+          "delta_OA": 0.08695652173912549,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "libby",
+          "delta_AJ": 3.795698257037877,
+          "delta_OA": 7.49414519906324,
+          "delta_AJ_RD": 0.008599999999999997,
+          "delta_AJ_RD_256": 0.00278000000000006
+        },
+        {
+          "video_id": "loading",
+          "delta_AJ": -0.09260687787966049,
+          "delta_OA": 1.200686106346481,
+          "delta_AJ_RD": 0.034557142857142786,
+          "delta_AJ_RD_256": 0.059042857142857175
+        },
+        {
+          "video_id": "mbike-trick",
+          "delta_AJ": 1.1206012603636495,
+          "delta_OA": 2.871794871794876,
+          "delta_AJ_RD": 0.004483333333333311,
+          "delta_AJ_RD_256": 0.009233333333333316
+        },
+        {
+          "video_id": "motocross-jump",
+          "delta_AJ": 0.17095749904267166,
+          "delta_OA": 2.259036144578303,
+          "delta_AJ_RD": 0.06015,
+          "delta_AJ_RD_256": 0.164
+        },
+        {
+          "video_id": "paragliding-launch",
+          "delta_AJ": -0.5123387449840848,
+          "delta_OA": -0.8633824276282382,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "delta_AJ": 3.377388577481714,
+          "delta_OA": 7.563901930099121,
+          "delta_AJ_RD": 0.05394210526315791,
+          "delta_AJ_RD_256": 0.1108578947368421
+        },
+        {
+          "video_id": "pigs",
+          "delta_AJ": 0.10210123708710483,
+          "delta_OA": 0.45998160073597205,
+          "delta_AJ_RD": 0.0063,
+          "delta_AJ_RD_256": 0.01046666666666668
+        },
+        {
+          "video_id": "scooter-black",
+          "delta_AJ": 1.7819090133135944,
+          "delta_OA": 2.294056308654845,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "shooting",
+          "delta_AJ": -0.2296723753592218,
+          "delta_OA": -0.3397508493771113,
+          "delta_AJ_RD": -0.0383375,
+          "delta_AJ_RD_256": -0.05333749999999998
+        },
+        {
+          "video_id": "soapbox",
+          "delta_AJ": 0.20321789316699324,
+          "delta_OA": 2.133333333333354,
+          "delta_AJ_RD": -0.000685714285714345,
+          "delta_AJ_RD_256": 0.0049357142857142655
+        }
+      ]
+    },
+    {
+      "variant": "late_fusion_frozen0.75_dino0.25_event_max_oof_f1",
+      "metric": {
+        "AJ": 65.3229049568491,
+        "OA": 91.7921176313293,
+        "delta_avg": 78.38241246151348,
+        "delta_4px": 86.4263126343638,
+        "AJ_RD": 0.36991428571428564,
+        "AJ_RD_256": 0.5620177606177605,
+        "n_records": 30,
+        "n_queries": 650,
+        "n_reentry_queries_total": 259
+      },
+      "delta_vs_native": {
+        "AJ": 0.08631822009111545,
+        "OA": 0.9735336948787818,
+        "delta_avg": 0.43659139599917296,
+        "delta_4px": 0.5593028218409302,
+        "AJ_RD": 0.01651042471042463,
+        "AJ_RD_256": 0.02870386100386091
+      },
+      "apply_stats": {
+        "accepted_frames": 1999,
+        "total_touched_candidates": 2013,
+        "gt_visible_accepted": 1571,
+        "native_err_sum": 12762.81220601499,
+        "candidate_err_sum": 9066.649147290736,
+        "repair4": 230,
+        "damage4": 104,
+        "candidate_safe4": 1095,
+        "native_safe4": 969,
+        "repair8": 215,
+        "damage8": 65,
+        "candidate_safe8": 1335,
+        "native_safe8": 1185,
+        "repair16": 132,
+        "damage16": 27,
+        "candidate_safe16": 1474,
+        "native_safe16": 1369,
+        "candidate_better_px": 872,
+        "candidate_worse_px": 699,
+        "gt_invisible_accepted": 428,
+        "false_visible_accepted": 428,
+        "accept_rate": 0.9930452061599603,
+        "false_visible_rate": 0.21410705352676337,
+        "mean_native_err_px": 8.124005223434112,
+        "mean_candidate_err_px": 5.77125980094891,
+        "repair4_rate": 0.1464035646085296,
+        "damage4_rate": 0.06619987269255251,
+        "candidate_safe4_rate": 0.6970082749840866,
+        "native_safe4_rate": 0.6168045830681095,
+        "repair8_rate": 0.13685550604710375,
+        "damage8_rate": 0.041374920432845325,
+        "candidate_safe8_rate": 0.8497772119669,
+        "native_safe8_rate": 0.7542966263526416,
+        "repair16_rate": 0.08402291534054743,
+        "damage16_rate": 0.01718650541056652,
+        "candidate_safe16_rate": 0.9382558879694463,
+        "native_safe16_rate": 0.8714194780394653,
+        "candidate_better_px_rate": 0.5550604710375557,
+        "candidate_worse_px_rate": 0.4449395289624443
+      },
+      "extension_stats": {
+        "accepted_extension": 543,
+        "accepted_ext_good": 118,
+        "accepted_ext_bad": 163,
+        "accepted_ext_false_visible": 65,
+        "accepted_ext_worse": 236
+      },
+      "per_video_summary": {
+        "n": 25,
+        "positive": 15,
+        "negative": 5,
+        "zero": 5,
+        "mean": 0.028187343625367775,
+        "median": 0.00278000000000006,
+        "worst": [
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.628618272884154,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.006526666666666625,
+            "delta_AJ_RD_256": -0.009013333333333207
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.032999792209878365,
+            "delta_OA": 0.08382229673092922,
+            "delta_AJ_RD": -0.0057916666666667505,
+            "delta_AJ_RD_256": -0.00708333333333333
+          },
+          {
+            "video_id": "car-shadow",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": -0.010159999999999947,
+            "delta_AJ_RD_256": -0.00046000000000001595
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          }
+        ],
+        "best": [
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.3117806753205556,
+            "delta_OA": 7.407407407407405,
+            "delta_AJ_RD": 0.05385263157894738,
+            "delta_AJ_RD_256": 0.1104263157894737
+          },
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.86937417558525,
+            "delta_OA": -1.0631229235880397,
+            "delta_AJ_RD": 0.07314166666666666,
+            "delta_AJ_RD_256": 0.07566666666666666
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.29048199057947954,
+            "delta_OA": 0.5254860746190104,
+            "delta_AJ_RD": 0.028783333333333327,
+            "delta_AJ_RD_256": 0.05546666666666672
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.02800625000000001,
+            "delta_AJ_RD_256": 0.04913124999999996
+          }
+        ]
+      },
+      "per_video_rows": [
+        {
+          "video_id": "bike-packing",
+          "delta_AJ": -0.86937417558525,
+          "delta_OA": -1.0631229235880397,
+          "delta_AJ_RD": 0.07314166666666666,
+          "delta_AJ_RD_256": 0.07566666666666666
+        },
+        {
+          "video_id": "blackswan",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "bmx-trees",
+          "delta_AJ": 0.29048199057947954,
+          "delta_OA": 0.5254860746190104,
+          "delta_AJ_RD": 0.028783333333333327,
+          "delta_AJ_RD_256": 0.05546666666666672
+        },
+        {
+          "video_id": "breakdance",
+          "delta_AJ": -2.628618272884154,
+          "delta_OA": -2.247191011235941,
+          "delta_AJ_RD": -0.006526666666666625,
+          "delta_AJ_RD_256": -0.009013333333333207
+        },
+        {
+          "video_id": "camel",
+          "delta_AJ": -0.5923479273674843,
+          "delta_OA": -0.39267015706806774,
+          "delta_AJ_RD": -0.07099999999999995,
+          "delta_AJ_RD_256": -0.07099999999999995
+        },
+        {
+          "video_id": "car-roundabout",
+          "delta_AJ": -1.9212701272924733,
+          "delta_OA": 1.243599122165321,
+          "delta_AJ_RD": 0.13713999999999998,
+          "delta_AJ_RD_256": 0.24000000000000005
+        },
+        {
+          "video_id": "car-shadow",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": -0.010159999999999947,
+          "delta_AJ_RD_256": -0.00046000000000001595
+        },
+        {
+          "video_id": "cows",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "delta_AJ": -1.3543378381458098,
+          "delta_OA": -0.5522319374137226,
+          "delta_AJ_RD": -0.002886956521739148,
+          "delta_AJ_RD_256": 0.0027217391304346084
+        },
+        {
+          "video_id": "dog",
+          "delta_AJ": -0.8242984845445491,
+          "delta_OA": 2.2181146025878036,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "dogs-jump",
+          "delta_AJ": 2.0526820917085615,
+          "delta_OA": 4.076086956521735,
+          "delta_AJ_RD": 0.02800625000000001,
+          "delta_AJ_RD_256": 0.04913124999999996
+        },
+        {
+          "video_id": "drift-chicane",
+          "delta_AJ": -0.25333158991227833,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "delta_AJ": 0.032999792209878365,
+          "delta_OA": 0.08382229673092922,
+          "delta_AJ_RD": -0.0057916666666667505,
+          "delta_AJ_RD_256": -0.00708333333333333
+        },
+        {
+          "video_id": "goat",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "gold-fish",
+          "delta_AJ": -0.5429079728613573,
+          "delta_OA": -0.5564830272676744,
+          "delta_AJ_RD": 0.0353,
+          "delta_AJ_RD_256": 0.0037000000000000366
+        },
+        {
+          "video_id": "horsejump-high",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "india",
+          "delta_AJ": -0.1161737524626858,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": 0.0028083333333333016,
+          "delta_AJ_RD_256": 0.0014708333333333101
+        },
+        {
+          "video_id": "judo",
+          "delta_AJ": -0.3245945354412001,
+          "delta_OA": 0.86633663366338,
+          "delta_AJ_RD": 0.04637142857142859,
+          "delta_AJ_RD_256": 0.0565357142857143
+        },
+        {
+          "video_id": "kite-surf",
+          "delta_AJ": 0.0,
+          "delta_OA": 0.0,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "lab-coat",
+          "delta_AJ": -0.011010432376750146,
+          "delta_OA": 0.08695652173912549,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "libby",
+          "delta_AJ": 3.795698257037877,
+          "delta_OA": 7.49414519906324,
+          "delta_AJ_RD": 0.008599999999999997,
+          "delta_AJ_RD_256": 0.00278000000000006
+        },
+        {
+          "video_id": "loading",
+          "delta_AJ": -0.09260687787966049,
+          "delta_OA": 1.200686106346481,
+          "delta_AJ_RD": 0.034557142857142786,
+          "delta_AJ_RD_256": 0.059042857142857175
+        },
+        {
+          "video_id": "mbike-trick",
+          "delta_AJ": 1.1206012603636495,
+          "delta_OA": 2.871794871794876,
+          "delta_AJ_RD": 0.004483333333333311,
+          "delta_AJ_RD_256": 0.009233333333333316
+        },
+        {
+          "video_id": "motocross-jump",
+          "delta_AJ": 0.17095749904267166,
+          "delta_OA": 2.259036144578303,
+          "delta_AJ_RD": 0.06015,
+          "delta_AJ_RD_256": 0.164
+        },
+        {
+          "video_id": "paragliding-launch",
+          "delta_AJ": -0.5123387449840848,
+          "delta_OA": -0.8633824276282382,
+          "delta_AJ_RD": 0.0,
+          "delta_AJ_RD_256": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "delta_AJ": 3.3117806753205556,
+          "delta_OA": 7.407407407407405,
+          "delta_AJ_RD": 0.05385263157894738,
+          "delta_AJ_RD_256": 0.1104263157894737
+        },
+        {
+          "video_id": "pigs",
+          "delta_AJ": 0.10210123708710483,
+          "delta_OA": 0.45998160073597205,
+          "delta_AJ_RD": 0.0063,
+          "delta_AJ_RD_256": 0.01046666666666668
+        },
+        {
+          "video_id": "scooter-black",
+          "delta_AJ": 1.7819090133135944,
+          "delta_OA": 2.294056308654845,
+          "delta_AJ_RD": null,
+          "delta_AJ_RD_256": null
+        },
+        {
+          "video_id": "shooting",
+          "delta_AJ": -0.2296723753592218,
+          "delta_OA": -0.3397508493771113,
+          "delta_AJ_RD": -0.0383375,
+          "delta_AJ_RD_256": -0.05333749999999998
+        },
+        {
+          "video_id": "soapbox",
+          "delta_AJ": 0.20321789316699324,
+          "delta_OA": 2.133333333333354,
+          "delta_AJ_RD": -0.000685714285714345,
+          "delta_AJ_RD_256": 0.0049357142857142655
+        }
+      ]
+    }
+  ],
+  "fusions": [
+    {
+      "variant": "late_fusion_frozen0.25_dino0.75_event_max_oof_f1",
+      "alpha_frozen": 0.25,
+      "alpha_dino": 0.75,
+      "threshold_f1": 0.39103364672172924,
+      "classifier": {
+        "ap": 0.3141792959480561,
+        "brier": 0.19969081012389858,
+        "auc": 0.6028531716922126
+      },
+      "result": {
+        "variant": "late_fusion_frozen0.25_dino0.75_event_max_oof_f1",
+        "metric": {
+          "AJ": 65.35020286325687,
+          "OA": 91.81987832927808,
+          "delta_avg": 78.3863949553718,
+          "delta_4px": 86.43113494561605,
+          "AJ_RD": 0.3704606177606177,
+          "AJ_RD_256": 0.5622471042471043,
+          "n_records": 30,
+          "n_queries": 650,
+          "n_reentry_queries_total": 259
+        },
+        "delta_vs_native": {
+          "AJ": 0.11361612649888286,
+          "OA": 1.0012943928275604,
+          "delta_avg": 0.4405738898574896,
+          "delta_4px": 0.5641251330931851,
+          "AJ_RD": 0.01705675675675672,
+          "AJ_RD_256": 0.0289332046332047
+        },
+        "apply_stats": {
+          "accepted_frames": 1776,
+          "total_touched_candidates": 2013,
+          "gt_visible_accepted": 1381,
+          "native_err_sum": 12271.722233641893,
+          "candidate_err_sum": 8500.587160188705,
+          "repair4": 227,
+          "damage4": 99,
+          "candidate_safe4": 921,
+          "native_safe4": 793,
+          "repair8": 214,
+          "damage8": 65,
+          "candidate_safe8": 1153,
+          "native_safe8": 1004,
+          "repair16": 131,
+          "damage16": 27,
+          "candidate_safe16": 1292,
+          "native_safe16": 1188,
+          "candidate_better_px": 777,
+          "candidate_worse_px": 604,
+          "gt_invisible_accepted": 395,
+          "false_visible_accepted": 395,
+          "accept_rate": 0.8822652757078987,
+          "false_visible_rate": 0.22240990990990991,
+          "mean_native_err_px": 8.886113130805136,
+          "mean_candidate_err_px": 6.1553853440903,
+          "repair4_rate": 0.16437364228819695,
+          "damage4_rate": 0.07168718320057929,
+          "candidate_safe4_rate": 0.666908037653874,
+          "native_safe4_rate": 0.5742215785662563,
+          "repair8_rate": 0.1549601737871108,
+          "damage8_rate": 0.04706734250543085,
+          "candidate_safe8_rate": 0.834902244750181,
+          "native_safe8_rate": 0.7270094134685011,
+          "repair16_rate": 0.09485879797248371,
+          "damage16_rate": 0.01955104996379435,
+          "candidate_safe16_rate": 0.9355539464156408,
+          "native_safe16_rate": 0.8602461984069515,
+          "candidate_better_px_rate": 0.5626357711803042,
+          "candidate_worse_px_rate": 0.4373642288196959
+        },
+        "extension_stats": {
+          "accepted_extension": 320,
+          "accepted_ext_good": 88,
+          "accepted_ext_bad": 95,
+          "accepted_ext_false_visible": 32,
+          "accepted_ext_worse": 141
+        },
+        "per_video_summary": {
+          "n": 25,
+          "positive": 16,
+          "negative": 4,
+          "zero": 5,
+          "mean": 0.028554149041080956,
+          "median": 0.0033333333333332993,
+          "worst": [
+            {
+              "video_id": "camel",
+              "delta_AJ": -0.5923479273674843,
+              "delta_OA": -0.39267015706806774,
+              "delta_AJ_RD": -0.07099999999999995,
+              "delta_AJ_RD_256": -0.07099999999999995
+            },
+            {
+              "video_id": "shooting",
+              "delta_AJ": -0.2296723753592218,
+              "delta_OA": -0.3397508493771113,
+              "delta_AJ_RD": -0.0383375,
+              "delta_AJ_RD_256": -0.05333749999999998
+            },
+            {
+              "video_id": "breakdance",
+              "delta_AJ": -2.6538840247483364,
+              "delta_OA": -2.247191011235941,
+              "delta_AJ_RD": -0.009119999999999961,
+              "delta_AJ_RD_256": -0.009839999999999849
+            },
+            {
+              "video_id": "car-shadow",
+              "delta_AJ": -0.07751818676187838,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": -0.010526666666666573,
+              "delta_AJ_RD_256": -0.0013066666666667892
+            },
+            {
+              "video_id": "cows",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "drift-chicane",
+              "delta_AJ": -0.25333158991227833,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "horsejump-high",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "lab-coat",
+              "delta_AJ": -0.011010432376750146,
+              "delta_OA": 0.08695652173912549,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            }
+          ],
+          "best": [
+            {
+              "video_id": "car-roundabout",
+              "delta_AJ": -1.9212701272924733,
+              "delta_OA": 1.243599122165321,
+              "delta_AJ_RD": 0.13713999999999998,
+              "delta_AJ_RD_256": 0.24000000000000005
+            },
+            {
+              "video_id": "motocross-jump",
+              "delta_AJ": 0.17095749904267166,
+              "delta_OA": 2.259036144578303,
+              "delta_AJ_RD": 0.06015,
+              "delta_AJ_RD_256": 0.164
+            },
+            {
+              "video_id": "parkour",
+              "delta_AJ": 3.3442673069259286,
+              "delta_OA": 7.459572248304639,
+              "delta_AJ_RD": 0.050010526315789484,
+              "delta_AJ_RD_256": 0.10562105263157895
+            },
+            {
+              "video_id": "bike-packing",
+              "delta_AJ": -0.5616633217781484,
+              "delta_OA": -0.9302325581395223,
+              "delta_AJ_RD": 0.07873333333333332,
+              "delta_AJ_RD_256": 0.08186666666666664
+            },
+            {
+              "video_id": "loading",
+              "delta_AJ": -0.09260687787966049,
+              "delta_OA": 1.200686106346481,
+              "delta_AJ_RD": 0.034557142857142786,
+              "delta_AJ_RD_256": 0.059042857142857175
+            },
+            {
+              "video_id": "judo",
+              "delta_AJ": -0.3245945354412001,
+              "delta_OA": 0.86633663366338,
+              "delta_AJ_RD": 0.04637142857142859,
+              "delta_AJ_RD_256": 0.0565357142857143
+            },
+            {
+              "video_id": "bmx-trees",
+              "delta_AJ": 0.34828958049214265,
+              "delta_OA": 0.6831318970047278,
+              "delta_AJ_RD": 0.028999999999999915,
+              "delta_AJ_RD_256": 0.05423749999999988
+            },
+            {
+              "video_id": "dogs-jump",
+              "delta_AJ": 2.0526820917085615,
+              "delta_OA": 4.076086956521735,
+              "delta_AJ_RD": 0.029243749999999957,
+              "delta_AJ_RD_256": 0.04913124999999996
+            }
+          ]
+        },
+        "per_video_rows": [
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.5616633217781484,
+            "delta_OA": -0.9302325581395223,
+            "delta_AJ_RD": 0.07873333333333332,
+            "delta_AJ_RD_256": 0.08186666666666664
+          },
+          {
+            "video_id": "blackswan",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.34828958049214265,
+            "delta_OA": 0.6831318970047278,
+            "delta_AJ_RD": 0.028999999999999915,
+            "delta_AJ_RD_256": 0.05423749999999988
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.6538840247483364,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.009119999999999961,
+            "delta_AJ_RD_256": -0.009839999999999849
+          },
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "car-shadow",
+            "delta_AJ": -0.07751818676187838,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": -0.010526666666666573,
+            "delta_AJ_RD_256": -0.0013066666666667892
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "dance-twirl",
+            "delta_AJ": -1.3272691460032036,
+            "delta_OA": -0.5522319374137226,
+            "delta_AJ_RD": -0.0017913043478260948,
+            "delta_AJ_RD_256": 0.003091304347825896
+          },
+          {
+            "video_id": "dog",
+            "delta_AJ": -0.8242984845445491,
+            "delta_OA": 2.2181146025878036,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.029243749999999957,
+            "delta_AJ_RD_256": 0.04913124999999996
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.23148733199222704,
+            "delta_OA": 0.16764459346187266,
+            "delta_AJ_RD": 0.001383333333333181,
+            "delta_AJ_RD_256": 0.0033333333333332993
+          },
+          {
+            "video_id": "goat",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "gold-fish",
+            "delta_AJ": -0.5429079728613573,
+            "delta_OA": -0.5564830272676744,
+            "delta_AJ_RD": 0.0353,
+            "delta_AJ_RD_256": 0.0037000000000000366
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "india",
+            "delta_AJ": -0.046029253777021495,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.005120833333333297,
+            "delta_AJ_RD_256": 0.0013624999999999332
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "kite-surf",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "libby",
+            "delta_AJ": 3.795698257037877,
+            "delta_OA": 7.49414519906324,
+            "delta_AJ_RD": 0.008599999999999997,
+            "delta_AJ_RD_256": 0.00278000000000006
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "mbike-trick",
+            "delta_AJ": 1.1206012603636495,
+            "delta_OA": 2.871794871794876,
+            "delta_AJ_RD": 0.004483333333333311,
+            "delta_AJ_RD_256": 0.009233333333333316
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "paragliding-launch",
+            "delta_AJ": -0.2843234200609004,
+            "delta_OA": -0.457084814626711,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.3442673069259286,
+            "delta_OA": 7.459572248304639,
+            "delta_AJ_RD": 0.050010526315789484,
+            "delta_AJ_RD_256": 0.10562105263157895
+          },
+          {
+            "video_id": "pigs",
+            "delta_AJ": 0.10210123708710483,
+            "delta_OA": 0.45998160073597205,
+            "delta_AJ_RD": 0.0063,
+            "delta_AJ_RD_256": 0.01046666666666668
+          },
+          {
+            "video_id": "scooter-black",
+            "delta_AJ": 1.7819090133135944,
+            "delta_OA": 2.294056308654845,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "soapbox",
+            "delta_AJ": 0.20321789316699324,
+            "delta_OA": 2.133333333333354,
+            "delta_AJ_RD": -0.000685714285714345,
+            "delta_AJ_RD_256": 0.0049357142857142655
+          }
+        ]
+      }
+    },
+    {
+      "variant": "late_fusion_frozen0.50_dino0.50_event_max_oof_f1",
+      "alpha_frozen": 0.5,
+      "alpha_dino": 0.5,
+      "threshold_f1": 0.090326481211422,
+      "classifier": {
+        "ap": 0.24677272998012303,
+        "brier": 0.22147016575105813,
+        "auc": 0.5407127137948342
+      },
+      "result": {
+        "variant": "late_fusion_frozen0.50_dino0.50_event_max_oof_f1",
+        "metric": {
+          "AJ": 65.32857108420527,
+          "OA": 91.79733411541903,
+          "delta_avg": 78.38488512866348,
+          "delta_4px": 86.43026911309772,
+          "AJ_RD": 0.3702088803088803,
+          "AJ_RD_256": 0.5621513513513513,
+          "n_records": 30,
+          "n_queries": 650,
+          "n_reentry_queries_total": 259
+        },
+        "delta_vs_native": {
+          "AJ": 0.0919843474472799,
+          "OA": 0.9787501789685109,
+          "delta_avg": 0.4390640631491749,
+          "delta_4px": 0.5632593005748561,
+          "AJ_RD": 0.016805019305019264,
+          "AJ_RD_256": 0.02883745173745167
+        },
+        "apply_stats": {
+          "accepted_frames": 1982,
+          "total_touched_candidates": 2013,
+          "gt_visible_accepted": 1557,
+          "native_err_sum": 12755.534867126495,
+          "candidate_err_sum": 9049.160805437714,
+          "repair4": 230,
+          "damage4": 102,
+          "candidate_safe4": 1083,
+          "native_safe4": 955,
+          "repair8": 215,
+          "damage8": 65,
+          "candidate_safe8": 1321,
+          "native_safe8": 1171,
+          "repair16": 132,
+          "damage16": 27,
+          "candidate_safe16": 1460,
+          "native_safe16": 1355,
+          "candidate_better_px": 870,
+          "candidate_worse_px": 687,
+          "gt_invisible_accepted": 425,
+          "false_visible_accepted": 425,
+          "accept_rate": 0.9846000993541977,
+          "false_visible_rate": 0.21442986881937437,
+          "mean_native_err_px": 8.192379490768461,
+          "mean_candidate_err_px": 5.8119208769670605,
+          "repair4_rate": 0.14771997430956968,
+          "damage4_rate": 0.06551059730250482,
+          "candidate_safe4_rate": 0.6955684007707129,
+          "native_safe4_rate": 0.613359023763648,
+          "repair8_rate": 0.13808606294155426,
+          "damage8_rate": 0.04174694926140013,
+          "candidate_safe8_rate": 0.8484264611432242,
+          "native_safe8_rate": 0.75208734746307,
+          "repair16_rate": 0.08477842003853564,
+          "damage16_rate": 0.017341040462427744,
+          "candidate_safe16_rate": 0.9377007064868337,
+          "native_safe16_rate": 0.8702633269107257,
+          "candidate_better_px_rate": 0.558766859344894,
+          "candidate_worse_px_rate": 0.441233140655106
+        },
+        "extension_stats": {
+          "accepted_extension": 526,
+          "accepted_ext_good": 118,
+          "accepted_ext_bad": 157,
+          "accepted_ext_false_visible": 62,
+          "accepted_ext_worse": 224
+        },
+        "per_video_summary": {
+          "n": 25,
+          "positive": 16,
+          "negative": 4,
+          "zero": 5,
+          "mean": 0.02825756910210309,
+          "median": 0.0035391304347824892,
+          "worst": [
+            {
+              "video_id": "camel",
+              "delta_AJ": -0.5923479273674843,
+              "delta_OA": -0.39267015706806774,
+              "delta_AJ_RD": -0.07099999999999995,
+              "delta_AJ_RD_256": -0.07099999999999995
+            },
+            {
+              "video_id": "shooting",
+              "delta_AJ": -0.2296723753592218,
+              "delta_OA": -0.3397508493771113,
+              "delta_AJ_RD": -0.0383375,
+              "delta_AJ_RD_256": -0.05333749999999998
+            },
+            {
+              "video_id": "breakdance",
+              "delta_AJ": -2.628618272884154,
+              "delta_OA": -2.247191011235941,
+              "delta_AJ_RD": -0.006526666666666625,
+              "delta_AJ_RD_256": -0.009013333333333207
+            },
+            {
+              "video_id": "drift-straight",
+              "delta_AJ": 0.032999792209878365,
+              "delta_OA": 0.08382229673092922,
+              "delta_AJ_RD": -0.0057916666666667505,
+              "delta_AJ_RD_256": -0.00708333333333333
+            },
+            {
+              "video_id": "cows",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "drift-chicane",
+              "delta_AJ": -0.25333158991227833,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "horsejump-high",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "lab-coat",
+              "delta_AJ": -0.011010432376750146,
+              "delta_OA": 0.08695652173912549,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            }
+          ],
+          "best": [
+            {
+              "video_id": "car-roundabout",
+              "delta_AJ": -1.9212701272924733,
+              "delta_OA": 1.243599122165321,
+              "delta_AJ_RD": 0.13713999999999998,
+              "delta_AJ_RD_256": 0.24000000000000005
+            },
+            {
+              "video_id": "motocross-jump",
+              "delta_AJ": 0.17095749904267166,
+              "delta_OA": 2.259036144578303,
+              "delta_AJ_RD": 0.06015,
+              "delta_AJ_RD_256": 0.164
+            },
+            {
+              "video_id": "parkour",
+              "delta_AJ": 3.377388577481714,
+              "delta_OA": 7.563901930099121,
+              "delta_AJ_RD": 0.05394210526315791,
+              "delta_AJ_RD_256": 0.1108578947368421
+            },
+            {
+              "video_id": "bike-packing",
+              "delta_AJ": -0.86937417558525,
+              "delta_OA": -1.0631229235880397,
+              "delta_AJ_RD": 0.07314166666666666,
+              "delta_AJ_RD_256": 0.07566666666666666
+            },
+            {
+              "video_id": "loading",
+              "delta_AJ": -0.09260687787966049,
+              "delta_OA": 1.200686106346481,
+              "delta_AJ_RD": 0.034557142857142786,
+              "delta_AJ_RD_256": 0.059042857142857175
+            },
+            {
+              "video_id": "judo",
+              "delta_AJ": -0.3245945354412001,
+              "delta_OA": 0.86633663366338,
+              "delta_AJ_RD": 0.04637142857142859,
+              "delta_AJ_RD_256": 0.0565357142857143
+            },
+            {
+              "video_id": "bmx-trees",
+              "delta_AJ": 0.29048199057947954,
+              "delta_OA": 0.5254860746190104,
+              "delta_AJ_RD": 0.028783333333333327,
+              "delta_AJ_RD_256": 0.05546666666666672
+            },
+            {
+              "video_id": "dogs-jump",
+              "delta_AJ": 2.0526820917085615,
+              "delta_OA": 4.076086956521735,
+              "delta_AJ_RD": 0.02800625000000001,
+              "delta_AJ_RD_256": 0.04913124999999996
+            }
+          ]
+        },
+        "per_video_rows": [
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.86937417558525,
+            "delta_OA": -1.0631229235880397,
+            "delta_AJ_RD": 0.07314166666666666,
+            "delta_AJ_RD_256": 0.07566666666666666
+          },
+          {
+            "video_id": "blackswan",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.29048199057947954,
+            "delta_OA": 0.5254860746190104,
+            "delta_AJ_RD": 0.028783333333333327,
+            "delta_AJ_RD_256": 0.05546666666666672
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.628618272884154,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.006526666666666625,
+            "delta_AJ_RD_256": -0.009013333333333207
+          },
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "car-shadow",
+            "delta_AJ": 0.038891076672840086,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": -0.007019999999999915,
+            "delta_AJ_RD_256": 4.666666666663932e-05
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "dance-twirl",
+            "delta_AJ": -1.288852996294949,
+            "delta_OA": -0.5522319374137226,
+            "delta_AJ_RD": -0.0016913043478261058,
+            "delta_AJ_RD_256": 0.0035391304347824892
+          },
+          {
+            "video_id": "dog",
+            "delta_AJ": -0.8242984845445491,
+            "delta_OA": 2.2181146025878036,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.02800625000000001,
+            "delta_AJ_RD_256": 0.04913124999999996
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.032999792209878365,
+            "delta_OA": 0.08382229673092922,
+            "delta_AJ_RD": -0.0057916666666667505,
+            "delta_AJ_RD_256": -0.00708333333333333
+          },
+          {
+            "video_id": "goat",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "gold-fish",
+            "delta_AJ": -0.5429079728613573,
+            "delta_OA": -0.5564830272676744,
+            "delta_AJ_RD": 0.0353,
+            "delta_AJ_RD_256": 0.0037000000000000366
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "india",
+            "delta_AJ": -0.1161737524626858,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0028083333333333016,
+            "delta_AJ_RD_256": 0.0014708333333333101
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "kite-surf",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "libby",
+            "delta_AJ": 3.795698257037877,
+            "delta_OA": 7.49414519906324,
+            "delta_AJ_RD": 0.008599999999999997,
+            "delta_AJ_RD_256": 0.00278000000000006
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "mbike-trick",
+            "delta_AJ": 1.1206012603636495,
+            "delta_OA": 2.871794871794876,
+            "delta_AJ_RD": 0.004483333333333311,
+            "delta_AJ_RD_256": 0.009233333333333316
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "paragliding-launch",
+            "delta_AJ": -0.5123387449840848,
+            "delta_OA": -0.8633824276282382,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.377388577481714,
+            "delta_OA": 7.563901930099121,
+            "delta_AJ_RD": 0.05394210526315791,
+            "delta_AJ_RD_256": 0.1108578947368421
+          },
+          {
+            "video_id": "pigs",
+            "delta_AJ": 0.10210123708710483,
+            "delta_OA": 0.45998160073597205,
+            "delta_AJ_RD": 0.0063,
+            "delta_AJ_RD_256": 0.01046666666666668
+          },
+          {
+            "video_id": "scooter-black",
+            "delta_AJ": 1.7819090133135944,
+            "delta_OA": 2.294056308654845,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "soapbox",
+            "delta_AJ": 0.20321789316699324,
+            "delta_OA": 2.133333333333354,
+            "delta_AJ_RD": -0.000685714285714345,
+            "delta_AJ_RD_256": 0.0049357142857142655
+          }
+        ]
+      }
+    },
+    {
+      "variant": "late_fusion_frozen0.75_dino0.25_event_max_oof_f1",
+      "alpha_frozen": 0.75,
+      "alpha_dino": 0.25,
+      "threshold_f1": 0.03152926697030095,
+      "classifier": {
+        "ap": 0.2155554798393609,
+        "brier": 0.2643216371545996,
+        "auc": 0.48642909540172197
+      },
+      "result": {
+        "variant": "late_fusion_frozen0.75_dino0.25_event_max_oof_f1",
+        "metric": {
+          "AJ": 65.3229049568491,
+          "OA": 91.7921176313293,
+          "delta_avg": 78.38241246151348,
+          "delta_4px": 86.4263126343638,
+          "AJ_RD": 0.36991428571428564,
+          "AJ_RD_256": 0.5620177606177605,
+          "n_records": 30,
+          "n_queries": 650,
+          "n_reentry_queries_total": 259
+        },
+        "delta_vs_native": {
+          "AJ": 0.08631822009111545,
+          "OA": 0.9735336948787818,
+          "delta_avg": 0.43659139599917296,
+          "delta_4px": 0.5593028218409302,
+          "AJ_RD": 0.01651042471042463,
+          "AJ_RD_256": 0.02870386100386091
+        },
+        "apply_stats": {
+          "accepted_frames": 1999,
+          "total_touched_candidates": 2013,
+          "gt_visible_accepted": 1571,
+          "native_err_sum": 12762.81220601499,
+          "candidate_err_sum": 9066.649147290736,
+          "repair4": 230,
+          "damage4": 104,
+          "candidate_safe4": 1095,
+          "native_safe4": 969,
+          "repair8": 215,
+          "damage8": 65,
+          "candidate_safe8": 1335,
+          "native_safe8": 1185,
+          "repair16": 132,
+          "damage16": 27,
+          "candidate_safe16": 1474,
+          "native_safe16": 1369,
+          "candidate_better_px": 872,
+          "candidate_worse_px": 699,
+          "gt_invisible_accepted": 428,
+          "false_visible_accepted": 428,
+          "accept_rate": 0.9930452061599603,
+          "false_visible_rate": 0.21410705352676337,
+          "mean_native_err_px": 8.124005223434112,
+          "mean_candidate_err_px": 5.77125980094891,
+          "repair4_rate": 0.1464035646085296,
+          "damage4_rate": 0.06619987269255251,
+          "candidate_safe4_rate": 0.6970082749840866,
+          "native_safe4_rate": 0.6168045830681095,
+          "repair8_rate": 0.13685550604710375,
+          "damage8_rate": 0.041374920432845325,
+          "candidate_safe8_rate": 0.8497772119669,
+          "native_safe8_rate": 0.7542966263526416,
+          "repair16_rate": 0.08402291534054743,
+          "damage16_rate": 0.01718650541056652,
+          "candidate_safe16_rate": 0.9382558879694463,
+          "native_safe16_rate": 0.8714194780394653,
+          "candidate_better_px_rate": 0.5550604710375557,
+          "candidate_worse_px_rate": 0.4449395289624443
+        },
+        "extension_stats": {
+          "accepted_extension": 543,
+          "accepted_ext_good": 118,
+          "accepted_ext_bad": 163,
+          "accepted_ext_false_visible": 65,
+          "accepted_ext_worse": 236
+        },
+        "per_video_summary": {
+          "n": 25,
+          "positive": 15,
+          "negative": 5,
+          "zero": 5,
+          "mean": 0.028187343625367775,
+          "median": 0.00278000000000006,
+          "worst": [
+            {
+              "video_id": "camel",
+              "delta_AJ": -0.5923479273674843,
+              "delta_OA": -0.39267015706806774,
+              "delta_AJ_RD": -0.07099999999999995,
+              "delta_AJ_RD_256": -0.07099999999999995
+            },
+            {
+              "video_id": "shooting",
+              "delta_AJ": -0.2296723753592218,
+              "delta_OA": -0.3397508493771113,
+              "delta_AJ_RD": -0.0383375,
+              "delta_AJ_RD_256": -0.05333749999999998
+            },
+            {
+              "video_id": "breakdance",
+              "delta_AJ": -2.628618272884154,
+              "delta_OA": -2.247191011235941,
+              "delta_AJ_RD": -0.006526666666666625,
+              "delta_AJ_RD_256": -0.009013333333333207
+            },
+            {
+              "video_id": "drift-straight",
+              "delta_AJ": 0.032999792209878365,
+              "delta_OA": 0.08382229673092922,
+              "delta_AJ_RD": -0.0057916666666667505,
+              "delta_AJ_RD_256": -0.00708333333333333
+            },
+            {
+              "video_id": "car-shadow",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": -0.010159999999999947,
+              "delta_AJ_RD_256": -0.00046000000000001595
+            },
+            {
+              "video_id": "cows",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "drift-chicane",
+              "delta_AJ": -0.25333158991227833,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            },
+            {
+              "video_id": "horsejump-high",
+              "delta_AJ": 0.0,
+              "delta_OA": 0.0,
+              "delta_AJ_RD": 0.0,
+              "delta_AJ_RD_256": 0.0
+            }
+          ],
+          "best": [
+            {
+              "video_id": "car-roundabout",
+              "delta_AJ": -1.9212701272924733,
+              "delta_OA": 1.243599122165321,
+              "delta_AJ_RD": 0.13713999999999998,
+              "delta_AJ_RD_256": 0.24000000000000005
+            },
+            {
+              "video_id": "motocross-jump",
+              "delta_AJ": 0.17095749904267166,
+              "delta_OA": 2.259036144578303,
+              "delta_AJ_RD": 0.06015,
+              "delta_AJ_RD_256": 0.164
+            },
+            {
+              "video_id": "parkour",
+              "delta_AJ": 3.3117806753205556,
+              "delta_OA": 7.407407407407405,
+              "delta_AJ_RD": 0.05385263157894738,
+              "delta_AJ_RD_256": 0.1104263157894737
+            },
+            {
+              "video_id": "bike-packing",
+              "delta_AJ": -0.86937417558525,
+              "delta_OA": -1.0631229235880397,
+              "delta_AJ_RD": 0.07314166666666666,
+              "delta_AJ_RD_256": 0.07566666666666666
+            },
+            {
+              "video_id": "loading",
+              "delta_AJ": -0.09260687787966049,
+              "delta_OA": 1.200686106346481,
+              "delta_AJ_RD": 0.034557142857142786,
+              "delta_AJ_RD_256": 0.059042857142857175
+            },
+            {
+              "video_id": "judo",
+              "delta_AJ": -0.3245945354412001,
+              "delta_OA": 0.86633663366338,
+              "delta_AJ_RD": 0.04637142857142859,
+              "delta_AJ_RD_256": 0.0565357142857143
+            },
+            {
+              "video_id": "bmx-trees",
+              "delta_AJ": 0.29048199057947954,
+              "delta_OA": 0.5254860746190104,
+              "delta_AJ_RD": 0.028783333333333327,
+              "delta_AJ_RD_256": 0.05546666666666672
+            },
+            {
+              "video_id": "dogs-jump",
+              "delta_AJ": 2.0526820917085615,
+              "delta_OA": 4.076086956521735,
+              "delta_AJ_RD": 0.02800625000000001,
+              "delta_AJ_RD_256": 0.04913124999999996
+            }
+          ]
+        },
+        "per_video_rows": [
+          {
+            "video_id": "bike-packing",
+            "delta_AJ": -0.86937417558525,
+            "delta_OA": -1.0631229235880397,
+            "delta_AJ_RD": 0.07314166666666666,
+            "delta_AJ_RD_256": 0.07566666666666666
+          },
+          {
+            "video_id": "blackswan",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "bmx-trees",
+            "delta_AJ": 0.29048199057947954,
+            "delta_OA": 0.5254860746190104,
+            "delta_AJ_RD": 0.028783333333333327,
+            "delta_AJ_RD_256": 0.05546666666666672
+          },
+          {
+            "video_id": "breakdance",
+            "delta_AJ": -2.628618272884154,
+            "delta_OA": -2.247191011235941,
+            "delta_AJ_RD": -0.006526666666666625,
+            "delta_AJ_RD_256": -0.009013333333333207
+          },
+          {
+            "video_id": "camel",
+            "delta_AJ": -0.5923479273674843,
+            "delta_OA": -0.39267015706806774,
+            "delta_AJ_RD": -0.07099999999999995,
+            "delta_AJ_RD_256": -0.07099999999999995
+          },
+          {
+            "video_id": "car-roundabout",
+            "delta_AJ": -1.9212701272924733,
+            "delta_OA": 1.243599122165321,
+            "delta_AJ_RD": 0.13713999999999998,
+            "delta_AJ_RD_256": 0.24000000000000005
+          },
+          {
+            "video_id": "car-shadow",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": -0.010159999999999947,
+            "delta_AJ_RD_256": -0.00046000000000001595
+          },
+          {
+            "video_id": "cows",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "dance-twirl",
+            "delta_AJ": -1.3543378381458098,
+            "delta_OA": -0.5522319374137226,
+            "delta_AJ_RD": -0.002886956521739148,
+            "delta_AJ_RD_256": 0.0027217391304346084
+          },
+          {
+            "video_id": "dog",
+            "delta_AJ": -0.8242984845445491,
+            "delta_OA": 2.2181146025878036,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "dogs-jump",
+            "delta_AJ": 2.0526820917085615,
+            "delta_OA": 4.076086956521735,
+            "delta_AJ_RD": 0.02800625000000001,
+            "delta_AJ_RD_256": 0.04913124999999996
+          },
+          {
+            "video_id": "drift-chicane",
+            "delta_AJ": -0.25333158991227833,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "drift-straight",
+            "delta_AJ": 0.032999792209878365,
+            "delta_OA": 0.08382229673092922,
+            "delta_AJ_RD": -0.0057916666666667505,
+            "delta_AJ_RD_256": -0.00708333333333333
+          },
+          {
+            "video_id": "goat",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "gold-fish",
+            "delta_AJ": -0.5429079728613573,
+            "delta_OA": -0.5564830272676744,
+            "delta_AJ_RD": 0.0353,
+            "delta_AJ_RD_256": 0.0037000000000000366
+          },
+          {
+            "video_id": "horsejump-high",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "india",
+            "delta_AJ": -0.1161737524626858,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": 0.0028083333333333016,
+            "delta_AJ_RD_256": 0.0014708333333333101
+          },
+          {
+            "video_id": "judo",
+            "delta_AJ": -0.3245945354412001,
+            "delta_OA": 0.86633663366338,
+            "delta_AJ_RD": 0.04637142857142859,
+            "delta_AJ_RD_256": 0.0565357142857143
+          },
+          {
+            "video_id": "kite-surf",
+            "delta_AJ": 0.0,
+            "delta_OA": 0.0,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "lab-coat",
+            "delta_AJ": -0.011010432376750146,
+            "delta_OA": 0.08695652173912549,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "libby",
+            "delta_AJ": 3.795698257037877,
+            "delta_OA": 7.49414519906324,
+            "delta_AJ_RD": 0.008599999999999997,
+            "delta_AJ_RD_256": 0.00278000000000006
+          },
+          {
+            "video_id": "loading",
+            "delta_AJ": -0.09260687787966049,
+            "delta_OA": 1.200686106346481,
+            "delta_AJ_RD": 0.034557142857142786,
+            "delta_AJ_RD_256": 0.059042857142857175
+          },
+          {
+            "video_id": "mbike-trick",
+            "delta_AJ": 1.1206012603636495,
+            "delta_OA": 2.871794871794876,
+            "delta_AJ_RD": 0.004483333333333311,
+            "delta_AJ_RD_256": 0.009233333333333316
+          },
+          {
+            "video_id": "motocross-jump",
+            "delta_AJ": 0.17095749904267166,
+            "delta_OA": 2.259036144578303,
+            "delta_AJ_RD": 0.06015,
+            "delta_AJ_RD_256": 0.164
+          },
+          {
+            "video_id": "paragliding-launch",
+            "delta_AJ": -0.5123387449840848,
+            "delta_OA": -0.8633824276282382,
+            "delta_AJ_RD": 0.0,
+            "delta_AJ_RD_256": 0.0
+          },
+          {
+            "video_id": "parkour",
+            "delta_AJ": 3.3117806753205556,
+            "delta_OA": 7.407407407407405,
+            "delta_AJ_RD": 0.05385263157894738,
+            "delta_AJ_RD_256": 0.1104263157894737
+          },
+          {
+            "video_id": "pigs",
+            "delta_AJ": 0.10210123708710483,
+            "delta_OA": 0.45998160073597205,
+            "delta_AJ_RD": 0.0063,
+            "delta_AJ_RD_256": 0.01046666666666668
+          },
+          {
+            "video_id": "scooter-black",
+            "delta_AJ": 1.7819090133135944,
+            "delta_OA": 2.294056308654845,
+            "delta_AJ_RD": null,
+            "delta_AJ_RD_256": null
+          },
+          {
+            "video_id": "shooting",
+            "delta_AJ": -0.2296723753592218,
+            "delta_OA": -0.3397508493771113,
+            "delta_AJ_RD": -0.0383375,
+            "delta_AJ_RD_256": -0.05333749999999998
+          },
+          {
+            "video_id": "soapbox",
+            "delta_AJ": 0.20321789316699324,
+            "delta_OA": 2.133333333333354,
+            "delta_AJ_RD": -0.000685714285714345,
+            "delta_AJ_RD_256": 0.0049357142857142655
+          }
+        ]
+      }
+    }
+  ],
+  "paired_vs_frozen": {
+    "late_fusion_frozen0.25_dino0.75_event_max_oof_f1": {
+      "n": 25,
+      "mean_diff": -0.0002234250190694176,
+      "median_diff": 0.0,
+      "bootstrap_95_ci_mean": [
+        -0.0006409087719298246,
+        0.0001215333333333346
+      ],
+      "bootstrap_probability_mean_gt_zero": 0.11846,
+      "better": 2,
+      "worse": 5,
+      "equal": 18,
+      "nonzero": 7,
+      "exact_sign_flip_p": 0.296875,
+      "exact_sign_test_p": 0.453125,
+      "per_video": [
+        {
+          "video_id": "bike-packing",
+          "a": 0.08186666666666664,
+          "b": 0.07999166666666657,
+          "diff": 0.001875000000000071
+        },
+        {
+          "video_id": "bmx-trees",
+          "a": 0.05423749999999988,
+          "b": 0.05359583333333323,
+          "diff": 0.0006416666666666515
+        },
+        {
+          "video_id": "breakdance",
+          "a": -0.009839999999999849,
+          "b": -0.009013333333333207,
+          "diff": -0.0008266666666666422
+        },
+        {
+          "video_id": "camel",
+          "a": -0.07099999999999995,
+          "b": -0.07099999999999995,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-roundabout",
+          "a": 0.24000000000000005,
+          "b": 0.24000000000000005,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-shadow",
+          "a": -0.0013066666666667892,
+          "b": 4.666666666663932e-05,
+          "diff": -0.0013533333333334285
+        },
+        {
+          "video_id": "cows",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "a": 0.003091304347825896,
+          "b": 0.004999999999999893,
+          "diff": -0.0019086956521739973
+        },
+        {
+          "video_id": "dogs-jump",
+          "a": 0.04913124999999996,
+          "b": 0.04913124999999996,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-chicane",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "a": 0.0033333333333332993,
+          "b": 0.0033333333333332993,
+          "diff": 0.0
+        },
+        {
+          "video_id": "gold-fish",
+          "a": 0.0037000000000000366,
+          "b": 0.0037000000000000366,
+          "diff": 0.0
+        },
+        {
+          "video_id": "horsejump-high",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "india",
+          "a": 0.0013624999999999332,
+          "b": 0.0014708333333333101,
+          "diff": -0.00010833333333337691
+        },
+        {
+          "video_id": "judo",
+          "a": 0.0565357142857143,
+          "b": 0.0565357142857143,
+          "diff": 0.0
+        },
+        {
+          "video_id": "lab-coat",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "libby",
+          "a": 0.00278000000000006,
+          "b": 0.00278000000000006,
+          "diff": 0.0
+        },
+        {
+          "video_id": "loading",
+          "a": 0.059042857142857175,
+          "b": 0.059042857142857175,
+          "diff": 0.0
+        },
+        {
+          "video_id": "mbike-trick",
+          "a": 0.009233333333333316,
+          "b": 0.009233333333333316,
+          "diff": 0.0
+        },
+        {
+          "video_id": "motocross-jump",
+          "a": 0.164,
+          "b": 0.164,
+          "diff": 0.0
+        },
+        {
+          "video_id": "paragliding-launch",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "a": 0.10562105263157895,
+          "b": 0.10952631578947367,
+          "diff": -0.0039052631578947172
+        },
+        {
+          "video_id": "pigs",
+          "a": 0.01046666666666668,
+          "b": 0.01046666666666668,
+          "diff": 0.0
+        },
+        {
+          "video_id": "shooting",
+          "a": -0.05333749999999998,
+          "b": -0.05333749999999998,
+          "diff": 0.0
+        },
+        {
+          "video_id": "soapbox",
+          "a": 0.0049357142857142655,
+          "b": 0.0049357142857142655,
+          "diff": 0.0
+        }
+      ]
+    },
+    "late_fusion_frozen0.50_dino0.50_event_max_oof_f1": {
+      "n": 25,
+      "mean_diff": -0.000520004958047281,
+      "median_diff": 0.0,
+      "bootstrap_95_ci_mean": [
+        -0.0015427368421052513,
+        0.0001761880244088554
+      ],
+      "bootstrap_probability_mean_gt_zero": 0.117235,
+      "better": 2,
+      "worse": 3,
+      "equal": 20,
+      "nonzero": 5,
+      "exact_sign_flip_p": 0.375,
+      "exact_sign_test_p": 1.0,
+      "per_video": [
+        {
+          "video_id": "bike-packing",
+          "a": 0.07566666666666666,
+          "b": 0.07999166666666657,
+          "diff": -0.004324999999999912
+        },
+        {
+          "video_id": "bmx-trees",
+          "a": 0.05546666666666672,
+          "b": 0.05359583333333323,
+          "diff": 0.0018708333333334881
+        },
+        {
+          "video_id": "breakdance",
+          "a": -0.009013333333333207,
+          "b": -0.009013333333333207,
+          "diff": 0.0
+        },
+        {
+          "video_id": "camel",
+          "a": -0.07099999999999995,
+          "b": -0.07099999999999995,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-roundabout",
+          "a": 0.24000000000000005,
+          "b": 0.24000000000000005,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-shadow",
+          "a": 4.666666666663932e-05,
+          "b": 4.666666666663932e-05,
+          "diff": 0.0
+        },
+        {
+          "video_id": "cows",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "a": 0.0035391304347824892,
+          "b": 0.004999999999999893,
+          "diff": -0.0014608695652174042
+        },
+        {
+          "video_id": "dogs-jump",
+          "a": 0.04913124999999996,
+          "b": 0.04913124999999996,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-chicane",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "a": -0.00708333333333333,
+          "b": 0.0033333333333332993,
+          "diff": -0.01041666666666663
+        },
+        {
+          "video_id": "gold-fish",
+          "a": 0.0037000000000000366,
+          "b": 0.0037000000000000366,
+          "diff": 0.0
+        },
+        {
+          "video_id": "horsejump-high",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "india",
+          "a": 0.0014708333333333101,
+          "b": 0.0014708333333333101,
+          "diff": 0.0
+        },
+        {
+          "video_id": "judo",
+          "a": 0.0565357142857143,
+          "b": 0.0565357142857143,
+          "diff": 0.0
+        },
+        {
+          "video_id": "lab-coat",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "libby",
+          "a": 0.00278000000000006,
+          "b": 0.00278000000000006,
+          "diff": 0.0
+        },
+        {
+          "video_id": "loading",
+          "a": 0.059042857142857175,
+          "b": 0.059042857142857175,
+          "diff": 0.0
+        },
+        {
+          "video_id": "mbike-trick",
+          "a": 0.009233333333333316,
+          "b": 0.009233333333333316,
+          "diff": 0.0
+        },
+        {
+          "video_id": "motocross-jump",
+          "a": 0.164,
+          "b": 0.164,
+          "diff": 0.0
+        },
+        {
+          "video_id": "paragliding-launch",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "a": 0.1108578947368421,
+          "b": 0.10952631578947367,
+          "diff": 0.0013315789473684336
+        },
+        {
+          "video_id": "pigs",
+          "a": 0.01046666666666668,
+          "b": 0.01046666666666668,
+          "diff": 0.0
+        },
+        {
+          "video_id": "shooting",
+          "a": -0.05333749999999998,
+          "b": -0.05333749999999998,
+          "diff": 0.0
+        },
+        {
+          "video_id": "soapbox",
+          "a": 0.0049357142857142655,
+          "b": 0.0049357142857142655,
+          "diff": 0.0
+        }
+      ]
+    },
+    "late_fusion_frozen0.75_dino0.25_event_max_oof_f1": {
+      "n": 25,
+      "mean_diff": -0.0005902304347825981,
+      "median_diff": 0.0,
+      "bootstrap_95_ci_mean": [
+        -0.0016151304347825969,
+        0.00011083333333334111
+      ],
+      "bootstrap_probability_mean_gt_zero": 0.072555,
+      "better": 2,
+      "worse": 4,
+      "equal": 19,
+      "nonzero": 6,
+      "exact_sign_flip_p": 0.25,
+      "exact_sign_test_p": 0.6875,
+      "per_video": [
+        {
+          "video_id": "bike-packing",
+          "a": 0.07566666666666666,
+          "b": 0.07999166666666657,
+          "diff": -0.004324999999999912
+        },
+        {
+          "video_id": "bmx-trees",
+          "a": 0.05546666666666672,
+          "b": 0.05359583333333323,
+          "diff": 0.0018708333333334881
+        },
+        {
+          "video_id": "breakdance",
+          "a": -0.009013333333333207,
+          "b": -0.009013333333333207,
+          "diff": 0.0
+        },
+        {
+          "video_id": "camel",
+          "a": -0.07099999999999995,
+          "b": -0.07099999999999995,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-roundabout",
+          "a": 0.24000000000000005,
+          "b": 0.24000000000000005,
+          "diff": 0.0
+        },
+        {
+          "video_id": "car-shadow",
+          "a": -0.00046000000000001595,
+          "b": 4.666666666663932e-05,
+          "diff": -0.0005066666666666553
+        },
+        {
+          "video_id": "cows",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "dance-twirl",
+          "a": 0.0027217391304346084,
+          "b": 0.004999999999999893,
+          "diff": -0.002278260869565285
+        },
+        {
+          "video_id": "dogs-jump",
+          "a": 0.04913124999999996,
+          "b": 0.04913124999999996,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-chicane",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "drift-straight",
+          "a": -0.00708333333333333,
+          "b": 0.0033333333333332993,
+          "diff": -0.01041666666666663
+        },
+        {
+          "video_id": "gold-fish",
+          "a": 0.0037000000000000366,
+          "b": 0.0037000000000000366,
+          "diff": 0.0
+        },
+        {
+          "video_id": "horsejump-high",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "india",
+          "a": 0.0014708333333333101,
+          "b": 0.0014708333333333101,
+          "diff": 0.0
+        },
+        {
+          "video_id": "judo",
+          "a": 0.0565357142857143,
+          "b": 0.0565357142857143,
+          "diff": 0.0
+        },
+        {
+          "video_id": "lab-coat",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "libby",
+          "a": 0.00278000000000006,
+          "b": 0.00278000000000006,
+          "diff": 0.0
+        },
+        {
+          "video_id": "loading",
+          "a": 0.059042857142857175,
+          "b": 0.059042857142857175,
+          "diff": 0.0
+        },
+        {
+          "video_id": "mbike-trick",
+          "a": 0.009233333333333316,
+          "b": 0.009233333333333316,
+          "diff": 0.0
+        },
+        {
+          "video_id": "motocross-jump",
+          "a": 0.164,
+          "b": 0.164,
+          "diff": 0.0
+        },
+        {
+          "video_id": "paragliding-launch",
+          "a": 0.0,
+          "b": 0.0,
+          "diff": 0.0
+        },
+        {
+          "video_id": "parkour",
+          "a": 0.1104263157894737,
+          "b": 0.10952631578947367,
+          "diff": 0.0009000000000000397
+        },
+        {
+          "video_id": "pigs",
+          "a": 0.01046666666666668,
+          "b": 0.01046666666666668,
+          "diff": 0.0
+        },
+        {
+          "video_id": "shooting",
+          "a": -0.05333749999999998,
+          "b": -0.05333749999999998,
+          "diff": 0.0
+        },
+        {
+          "video_id": "soapbox",
+          "a": 0.0049357142857142655,
+          "b": 0.0049357142857142655,
+          "diff": 0.0
+        }
+      ]
+    }
+  }
+}

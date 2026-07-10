@@ -2365,3 +2365,28 @@ Decision:
 ```text
 V9-A2.4 completes the paper-ready prototype audit. The frozen all-logreg + event_max + fixed0.05 policy reaches aggregate AJ_RD_256 Δ +0.029379 versus W16 +0.028587 and W8 +0.027411, with AJ Δ +0.102542 and Pos/Neg/Zero 17/3/5. A predeclared 3 feature-set x 3 controller-mode x 2 threshold-protocol grid confirms that event_max is the best controller mode and that all features are required at fixed0.05; pre-occ is the strongest single RGB anchor but remains below the all-anchor result. However, paired video-level fixed0.05-vs-W16 mean is +0.000665 with bootstrap 95% CI [-0.000051, +0.001681], exact sign-flip p=0.15625, and 4 better / 2 worse / 19 equal videos. The aggregate gain is positive but not statistically established across DAVIS videos. The independent efficiency audit exactly reproduces the frozen 557 extension-row anchor matrix (max_abs_diff=0), measures 2.425 s total feature extraction, and measures single-thread controller inference at 0.462/0.472 ms p50/p95 for all 557 rows. Retain V9-A2 as a positive paper-ready prototype/diagnostic, not a final method. Next: V9-A2.5 semantic/internal identity feature audit under the same frozen dynamic-horizon protocol.
 ```
+
+## V9-A2.5 DINOv3 semantic identity feature pilot
+
+Artifacts:
+
+```text
+scripts/v9a25_build_dinov3_identity_features.py
+scripts/v9a25_eval_dinov3_identity_features.py
+scripts/v9a25_dinov3_late_fusion_audit.py
+scripts/v9a25_dinov3_feature_family_audit.py
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_identity_features.npz
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_identity_eval.json
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_late_fusion_audit.json
+outputs/paper_discovery_2026-07-05/v9a25_dinov3_identity/v9a25_dinov3_feature_family_audit.json
+docs/v9a25_dinov3_identity_feature_pilot_design_2026-07-10.md
+docs/v9a25_dinov3_identity_feature_pilot_result_2026-07-10.md
+docs/v9a25_dinov3_late_fusion_audit_result_2026-07-10.md
+docs/v9a25_dinov3_feature_family_audit_result_2026-07-10.md
+```
+
+Decision:
+
+```text
+DINOv3 semantic evidence is real but does not become a robust trajectory gain. DINO-only logreg reaches AP/AUC 0.3637/0.6429. The structured feature-family audit shows the signal is not only candidate-native disagreement: history_candidate_identity reaches AP/AUC 0.3703/0.6532 and local_distinctiveness reaches 0.3967/0.6537. Nevertheless, the predeclared primary all+DINO policy changes aggregate AJ_RD_256 Δ only from frozen V9-A2 +0.029379 to +0.029439, with paired mean +0.000035, 95% CI [-0.000227,+0.000277], and exact sign-flip p=0.875. All late-fusion weights fail, and every predeclared feature family has a paired CI crossing zero; even anchor_consistency's aggregate +0.000228 over frozen has video mean -0.000180. Stop DINO concatenation/fusion/family tuning. Next: audit TrackOn2 internal matching/memory features; if unavailable or ineffective, move to V9-A3 internal multi-hypothesis candidate generation.
+```
