@@ -2348,3 +2348,20 @@ Decision:
 ```text
 V9-A2.3c-R passes under conservative, predeclared thresholds. all_logreg event_max fixed 0.05 reaches AJ_RD_256 Δ +0.0294, above W16 +0.0286 and W8 +0.0274, with AJ Δ +0.1025 and Pos/Neg/Zero 17/3/5. On the 25 videos where AJ_RD_256 is defined, learned fixed 0.05 versus W16 is better on 4, worse on 2, equal on 19, with mean difference +0.000665. The gain is real but modest and concentrated; RGB anchor features remain weak. Next: V9-A2.4 paper-ready ablation and/or stronger semantic/internal identity features.
 ```
+
+## V9-A2.4 paper-ready ablation and paired uncertainty audit
+
+Artifacts:
+
+```text
+scripts/v9a2_paper_ready_ablation.py
+outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_paper_ready_ablation.json
+docs/v9a2_paper_ready_ablation_design_2026-07-10.md
+docs/v9a2_paper_ready_ablation_result_2026-07-10.md
+```
+
+Decision:
+
+```text
+V9-A2.4 completes the paper-ready prototype audit. The frozen all-logreg + event_max + fixed0.05 policy reaches aggregate AJ_RD_256 Δ +0.029379 versus W16 +0.028587 and W8 +0.027411, with AJ Δ +0.102542 and Pos/Neg/Zero 17/3/5. Event-max beats frame/event-mean; all features beat base-only and anchor-only at the frozen threshold. However, paired video-level fixed0.05-vs-W16 mean is +0.000665 with bootstrap 95% CI [-0.000051, +0.001681] and exact sign-flip p=0.15625. The aggregate gain is real but not statistically established across DAVIS videos and is concentrated in 4 better / 2 worse / 19 equal videos. Retain V9-A2 as a positive paper-ready prototype/diagnostic, not a final method. Next: V9-A2.5 semantic/internal identity feature audit under the same frozen dynamic-horizon protocol.
+```
