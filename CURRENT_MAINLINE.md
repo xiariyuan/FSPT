@@ -2438,3 +2438,73 @@ Decision:
 ```text
 V9-A3.0 passes strongly. On 490 GT-visible W16-extension rows, the union of old candidate + proxy final + C1 top16 + C2 top16 reduces mean coordinate error from 3.606 px to 1.432 px, improves 365 rows without worsening any visible row, and raises safe16 from 473 to 485. Oracle source attribution is old=125, proxy=60, C1=297, C2=8, showing that C1 top-K contains substantial information discarded by the final single-point decision. Coordinate-only union oracle reaches AJ_RD_256 Δ +0.036312 versus W16 +0.028587 (+0.007725); coordinate+GT-invisible rejection reaches +0.037056 (+0.008469). Naive C1/C2 top1 and existing rerank logits are worse than the old candidate, so the opportunity is candidate ranking, not raw top1 replacement. Next: V9-A3.1 video-heldout trainable multi-hypothesis ranking, with frozen V9-A2 event activation and learned coordinate selection.
 ```
+
+## V9-A3.1 through V9-A4.5 multi-hypothesis ranking route closure
+
+Canonical review:
+
+```text
+docs/v9a4_comprehensive_review_and_next_step_2026-07-10.md
+docs/v9a45_route_closure_and_v9a5_next_step_2026-07-10.md
+```
+
+Decision:
+
+```text
+The TrackOn2 top-K oracle headroom from V9-A3.0 is real, but all tested fixed-topK ranking routes fail to transfer across videos/sequences: exported-summary tree/MLP/listwise models, source/rank factorization, DINO/PointOdyssey pretraining, post-fusion raw latents, pre-fusion small-head adaptation, unconstrained local-decoder adaptation, and conservative residual local-decoder adaptation. Do not repeat these model families or tune them on DAVIS. The remaining allowed direction must change candidate generation/correlation supervision before top-K.
+```
+
+## V9-A4.5 conservative residual end-to-end synthetic gate
+
+Artifacts:
+
+```text
+scripts/v9a45_conservative_residual_end_to_end.py
+docs/v9a45_conservative_residual_end_to_end_design_2026-07-10.md
+docs/v9a45_input_manifest_2026-07-10.json
+docs/v9a45_pointodyssey_frame_manifest_2026-07-10.json
+docs/v9a45_smoke_holdout_ani_e1_seed20260710_result_2026-07-10.md
+docs/v9a45_route_closure_and_v9a5_next_step_2026-07-10.md
+outputs/paper_discovery_2026-07-05/v9a45_conservative_residual/v9a45_smoke_holdout_ani_e1_seed20260710.json
+```
+
+Protocol:
+
+```text
+clean worktree / branch: /gemini/code/FSPT_v9a45_clean / v9a45-conservative-residual-20260710
+base HEAD: 4f3c01d
+train sequences: animal3 + r4_new_f
+heldout sequence: ani
+train/validation rows: 2936 / 1942
+epochs: 1
+DAVIS labels/evaluation: none
+```
+
+Integrity:
+
+```text
+All input hashes pass, including 844 individually verified RGB frames.
+PointOdyssey GT error reproduction max_abs = 4.58e-05.
+Initial student/teacher scores and candidates are identical.
+Two-step gradient audit proves delta-head learning on step 1 and local-decoder/fusion/alpha gradients on step 2.
+Frozen base, teacher, and frozen student parameters remain bit-identical.
+```
+
+Result:
+
+```text
+teacher mean error 14.7458 -> student 15.0387
+better/worse/equal = 35/70/1837
+safe16 = 1563 -> 1544
+oracle regret = 10.2049 -> 10.4979
+teacher-good retention = 0.9768 overall, but 0.8966 on hard rows
+improvement-opportunity success = 0.0324
+alpha = 0.0500 -> 0.0732
+synthetic gate = 1/5 passed
+```
+
+Decision:
+
+```text
+V9-A4.5 fails the predeclared synthetic heldout gate. Do not run the remaining two folds, do not run DAVIS, and do not sweep alpha/learning rate/loss weights on ani. The near-zero-alpha control produces no ranking changes, while alpha=0.05 is independently reproduced and harmful. Close the fixed-topK reranking-adaptation route. Next: V9-A5.0 candidate-recall/correlation-map oracle audit; proceed to a bounded residual correlation adapter only if top-K candidate recall has unsaturated headroom.
+```
