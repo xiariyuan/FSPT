@@ -2551,3 +2551,51 @@ Decision:
 ```text
 V9-A5.0 yields ORACLE_STATE_HEADROOM_ONLY. Temporal information is strongly useful when the prior state is correct, while self-state error propagation prevents robust gains. Do not train another single-state reranker. Next: V9-A5.1 full-stream deterministic multi-hypothesis/beam reachability audit. It must update state on every frame, evaluate GT-visible and re-entry subsets, and separate deterministic beam top1 from GT-only beam-oracle readout. DAVIS remains out of scope until synthetic full-stream gates pass.
 ```
+
+## V9-A5C.0 fused correlation candidate-recall audit
+
+Artifacts:
+
+```text
+scripts/v9a5c0_candidate_recall_correlation_oracle.py
+docs/v9a5c0_input_manifest_2026-07-10.json
+docs/v9a5c0_candidate_recall_correlation_oracle_design_2026-07-10.md
+docs/v9a5c0_pointodyssey_candidate_recall_result_2026-07-10.md
+outputs/paper_discovery_2026-07-05/v9a5c0_candidate_recall/v9a5c0_pointodyssey_candidate_recall.json
+outputs/paper_discovery_2026-07-05/v9a5c0_candidate_recall/v9a5c0_pointodyssey_candidate_recall.npz
+```
+
+Protocol and integrity:
+
+```text
+PointOdyssey full online replay over 9 clips and 4878 canonical rows.
+No training, no DAVIS read, no K/radius/weight tuning.
+Predeclared K = 1/4/8/16/32/64 and radius = 1/2/4/8 px.
+Official TrackOn2 p/v/q tensors, fused correlation map, and canonical C1 top16 set all reproduce exactly.
+Fused top16 oracle error reproduces the frozen pool with max_abs 4.58e-05.
+All 844 used frames and immutable inputs are hash verified.
+```
+
+Result:
+
+```text
+Global fused recall@4: K16 0.7729 -> K64 0.9287.
+Per-sequence fused K16 -> K64 headroom:
+  ani      0.7199 -> 0.9058, +0.1859
+  animal3  0.8555 -> 0.9304, +0.0749
+  r4_new_f 0.7697 -> 0.9545, +0.1849
+All three sequences pass the predeclared >=0.02 gate.
+
+Hard rows: K16 0.5420 -> K64 0.8561, +0.3142.
+Easy rows: K16 1.0000 -> K64 1.0000, +0.0000.
+Therefore candidate expansion should be risk/event activated rather than globally increasing K.
+
+Fused K16/K64 exact boundary tie rate is only 0.0205%; the headroom is not a tie-order artifact.
+Raw c4 has a negative learned ms_corr_proj coefficient and raw-scale unions are diagnostic only, not part of the primary fused gate.
+```
+
+Decision:
+
+```text
+V9-A5C.0 passes strongly. The current fused top16 discards substantial GT-near candidate recall on hard rows, while easy rows are already saturated. Combined with V9-A5.0 ORACLE_STATE_HEADROOM_ONLY, the next step is V9-A5.1 full-stream deterministic dynamic-K multi-hypothesis/beam reachability audit: use K16 as the default, expose up to K64 only under a predeclared risk signal, update multiple hypotheses on every frame, and separately report deployable beam-top1 versus GT-only beam-oracle reachability. Do not read DAVIS or train until the synthetic full-stream gate passes.
+```
