@@ -896,3 +896,31 @@ Decision:
 ```text
 DINO identity is informative for row ranking, including genuine historical-anchor and local-distinctiveness signal, but does not provide a robust trajectory improvement. Stop DINO concatenation/fusion/family tuning. Next: TrackOn2 internal matching/memory feature feasibility audit; then V9-A3 if needed.
 ```
+
+---
+
+## 17. V9-A2.6 TrackOn2 internal-state proxy 已完成
+
+Key results:
+
+```text
+Internal-only logreg OOF: AP 0.3262, AUC 0.5972
+all+internal primary AJ_RD_256 Δ: +0.027958
+frozen V9-A2 AJ_RD_256 Δ: +0.029379
+primary-vs-frozen paired mean: -0.001224
+95% CI: [-0.003855,+0.000207]
+```
+
+Predeclared late fusion also fails; frozen V9-A2 remains best.
+
+Important provenance:
+
+```text
+The proxy uses TrackOn2 256-space M24 support-grid20 inference. Diagnostic forward exactly matches official track_frame on identical inputs, but it is not the exact latent state of the historical old cache.
+```
+
+Decision:
+
+```text
+Selector-only feature augmentation is saturated. Next is V9-A3.0 TrackOn2 internal top-K multi-hypothesis oracle/action-space audit. Do not continue selector threshold/feature fusion tuning.
+```

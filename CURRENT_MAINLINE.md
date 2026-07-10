@@ -2390,3 +2390,24 @@ Decision:
 ```text
 DINOv3 semantic evidence is real but does not become a robust trajectory gain. DINO-only logreg reaches AP/AUC 0.3637/0.6429. The structured feature-family audit shows the signal is not only candidate-native disagreement: history_candidate_identity reaches AP/AUC 0.3703/0.6532 and local_distinctiveness reaches 0.3967/0.6537. Nevertheless, the predeclared primary all+DINO policy changes aggregate AJ_RD_256 Δ only from frozen V9-A2 +0.029379 to +0.029439, with paired mean +0.000035, 95% CI [-0.000227,+0.000277], and exact sign-flip p=0.875. All late-fusion weights fail, and every predeclared feature family has a paired CI crossing zero; even anchor_consistency's aggregate +0.000228 over frozen has video mean -0.000180. Stop DINO concatenation/fusion/family tuning. Next: audit TrackOn2 internal matching/memory features; if unavailable or ineffective, move to V9-A3 internal multi-hypothesis candidate generation.
 ```
+
+## V9-A2.6 TrackOn2 internal-state proxy audit and selector-route closure
+
+Artifacts:
+
+```text
+scripts/v9a26_build_trackon2_internal_proxy_features.py
+scripts/v9a26_eval_trackon2_internal_proxy.py
+scripts/v9a26_trackon2_internal_late_fusion_audit.py
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_proxy_eval.json
+outputs/paper_discovery_2026-07-05/v9a26_trackon2_internal_proxy/v9a26_trackon2_internal_late_fusion_audit.json
+docs/v9a26_trackon2_internal_proxy_design_2026-07-10.md
+docs/v9a26_trackon2_internal_proxy_result_2026-07-10.md
+docs/v9a26_trackon2_internal_late_fusion_audit_result_2026-07-10.md
+```
+
+Decision:
+
+```text
+The diagnostic TrackOn2 forward exactly matches official track_frame for position/logit/query state on identical inputs, and 557 W16-extension rows receive 64 finite C1/C2/rerank/uncertainty/memory proxy features. Internal-only logreg has AP 0.3262 and AUC 0.5972; strong single signals include qinit-qnew L2 and correlation entropy (~0.69 best AUC). However, all+internal OOF-F1 reaches AJ_RD_256 Δ only +0.027958 versus frozen V9-A2 +0.029379. Predeclared late fusion weights also fail; frozen V9-A2 remains best. Together with V9-A2.5 DINO results, this closes the selector-only feature route. Next: V9-A3.0 TrackOn2 internal top-K multi-hypothesis oracle/action-space audit, followed by trainable multi-hypothesis reacquisition if the oracle gap is material.
+```
