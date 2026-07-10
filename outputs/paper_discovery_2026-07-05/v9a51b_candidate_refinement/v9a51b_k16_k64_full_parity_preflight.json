@@ -1,0 +1,83 @@
+{
+  "score_max": 5.245208740234375e-05,
+  "certainty_max": 4.863739013671875e-05,
+  "set_hausdorff_max": 0.0,
+  "ordered_pos_max": 0.1882353127002716,
+  "top1_mismatch": 0,
+  "rows": 27648,
+  "per_clip": {
+    "ani:0": {
+      "score_max": 5.245208740234375e-05,
+      "certainty_max": 3.218650817871094e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.1882353127002716,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "ani:256": {
+      "score_max": 4.863739013671875e-05,
+      "certainty_max": 4.267692565917969e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.0,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "ani:512": {
+      "score_max": 4.673004150390625e-05,
+      "certainty_max": 4.100799560546875e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.039215683937072754,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "animal3:0": {
+      "score_max": 3.528594970703125e-05,
+      "certainty_max": 3.123283386230469e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.023529410362243652,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "animal3:256": {
+      "score_max": 4.57763671875e-05,
+      "certainty_max": 4.76837158203125e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.11503267288208008,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "animal3:512": {
+      "score_max": 4.5299530029296875e-05,
+      "certainty_max": 2.8848648071289062e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.0,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "r4_new_f:0": {
+      "score_max": 3.2901763916015625e-05,
+      "certainty_max": 4.601478576660156e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.020915046334266663,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "r4_new_f:256": {
+      "score_max": 4.3392181396484375e-05,
+      "certainty_max": 4.863739013671875e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.0,
+      "top1_mismatch": 0,
+      "rows": 3072
+    },
+    "r4_new_f:512": {
+      "score_max": 4.1484832763671875e-05,
+      "certainty_max": 3.5762786865234375e-05,
+      "set_hausdorff_max": 0.0,
+      "ordered_pos_max": 0.020915061235427856,
+      "top1_mismatch": 0,
+      "rows": 3072
+    }
+  },
+  "top1_mismatch_rate": 0.0
+}

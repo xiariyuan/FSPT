@@ -2641,3 +2641,68 @@ Decision:
 ```text
 V9-A5.1a is a valid negative baseline for the exact fixed-K16 shared-state beam configuration. It does not close risk-gated K64 proposals, candidate-conditioned C2/offset refinement, history-preserving beams, finite-window costs, official-final fallback, or independent per-hypothesis model states. Do not repeat the fixed-K16/raw-C1/current-candidate-dedup implementation. Next: V9-A5.1b candidate-conditioned downstream refinement audit. No new beam is allowed unless its risk-gated refined candidate oracle improves the official final tracker on all synthetic gates.
 ```
+
+## V9-A5.1b candidate-conditioned downstream refinement
+
+Artifacts:
+
+```text
+scripts/v9a51b_candidate_conditioned_refinement_audit.py
+docs/v9a51b_candidate_conditioned_refinement_design_2026-07-10.md
+docs/v9a51b_candidate_conditioned_refinement_result_2026-07-10.md
+docs/v9a51b_candidate_conditioned_refinement_review_2026-07-10.md
+docs/v9a51b_input_manifest_2026-07-10.json
+docs/v9a51b_pointodyssey_frame_manifest_2026-07-10.json
+outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_k16_k64_full_parity_preflight.json
+outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_candidate_conditioned_refinement.json
+outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_candidate_conditioned_refinement_rows.npz
+```
+
+Integrity:
+
+```text
+27,648 query-frame rows, 9 clips, 864 hash-verified RGB frames.
+Official p/v/q parity max_abs = 0.
+K16/K64 candidate-set Hausdorff max = 0.
+All-row numerical preflight: score max 5.245e-5, certainty max 4.864e-5, official-top1 mismatch 0/27,648.
+Final numerical tolerance fixed at 6e-5 before the formal refinement metrics were run.
+Candidate refinement function receives no GT/error input.
+Saved NPZ independently reproduces risk, re-entry, readouts, bootstrap CIs and gates.
+```
+
+Reachability result:
+
+```text
+official final mean:            9.1418 px
+hybrid refined oracle mean:     7.8185 px
+paired mean difference:        -1.3233 px
+better / worse / equal:         4267 / 0 / 15663
+clip-block 95% CI:             [-2.1037, -0.7501]
+all 9 clip mean differences are negative
+all 3 sequence means and first-reentry means improve
+```
+
+Selection result:
+
+```text
+hybrid refined score-top1 mean: 9.1023 px
+paired mean difference:        -0.0394 px
+better / worse / equal:         2085 / 2210 / 15635
+clip-block 95% CI:             [-0.1990, +0.0713]
+ani and animal3 are slightly worse; r4_new_f is better
+```
+
+Candidate diversity:
+
+```text
+raw K64 oracle:                 2.9606 px
+refined K64 oracle:             7.0763 px
+mean unique refined C2 locations at K64: 3.44
+mean refined 4px clusters at K64:       1.68
+```
+
+Decision:
+
+```text
+V9-A5.1b passes as candidate-conditioned refined-coordinate reachability, not as a deterministic selector. Singleton downstream refinement strongly compresses candidate diversity and must not replace the raw C1 hypothesis state. Proceed to V9-A5.1c only with raw candidate identity/history as state, refined coordinate as readout, native-risk K16/K64, an eight-frame finite cost window, official-final fallback on non-risk rows, and separate deterministic versus GT-only reachability gates. Do not read DAVIS and do not train yet.
+```
