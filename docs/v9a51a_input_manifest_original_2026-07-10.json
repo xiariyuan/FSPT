@@ -1,0 +1,71 @@
+{
+  "created_at": "2026-07-10",
+  "worktree": "/gemini/code/FSPT_v9a51_clean",
+  "branch": "v9a51-fullstream-beam-20260710",
+  "head": "7c24367cf8aeb1467946d2ced3b294299032538e",
+  "source_asset_root": "/gemini/code/FSPT",
+  "files": [
+    {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a38_pointodyssey_pool/v9a38_pointodyssey_hypothesis_pool.npz",
+      "size_bytes": 7727883,
+      "sha256": "137cbec62d7086f53617acc1541b3df146f1664f70f72bfb6b1f2de0176d964f"
+    },
+    {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a43_prefusion_latents/v9a43_pointodyssey_c1_prefusion_latents.npz",
+      "size_bytes": 115703317,
+      "sha256": "307a69ab17c28014b2d15199dd3f84c91b2b8f78d7d18d8b83ad0f4dba54c489"
+    },
+    {
+      "path": "/gemini/code/FSPT_v9a51_clean/outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility.json",
+      "size_bytes": 190553,
+      "sha256": "fb4afc10673337e0389f2e2c92d987af6f637ac84568220b1029e8b856ea43cd"
+    },
+    {
+      "path": "/gemini/code/FSPT/baselines/track_on/checkpoints_trackon2_dinov3.pt",
+      "size_bytes": 93901966,
+      "sha256": "0e319c279cbdf51a5fc761b47dc1969520e8cfccfb57dc5a019a8c56e1039cd4"
+    },
+    {
+      "path": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/model.safetensors",
+      "size_bytes": 114794096,
+      "sha256": "208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2"
+    },
+    {
+      "path": "/gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/config.json",
+      "size_bytes": 742,
+      "sha256": "6f4ac67fea1761fe684d2a7db3139bab2d0dfdf94c05063d5992717c4c1da0ac"
+    },
+    {
+      "path": "/gemini/code/FSPT_v9a51_clean/baselines/track_on/config/test.yaml",
+      "size_bytes": 249,
+      "sha256": "34c08c71be511b2cda6aaafb6e2e3af7e21c6fd5197de98a54fa4b9ac7a78c8e"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/ani/anno.npz",
+      "size_bytes": 214730314,
+      "sha256": "cc20ff10b815d607a09a48895a8d76e9cb8169c108ddb9fdacb2955dc26c2368"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/anno.npz",
+      "size_bytes": 197918569,
+      "sha256": "84110e093f48da96393ddaddeaad15352b11cfa80a298b56ecdaba4365e89dfa"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/anno.npz",
+      "size_bytes": 98527880,
+      "sha256": "382d1edca0d6d88279ed1a61ee63c9ba27b7c5418f2269f4592c1658fd7d8e77"
+    },
+    {
+      "path": "/gemini/code/FSPT_v9a51_clean/docs/v9a51_pointodyssey_frame_manifest_2026-07-10.json",
+      "size_bytes": 152463,
+      "sha256": "b1a92a0c5a627fb9a554cd45201dc172bd2b7edaaf13ce78a40eecaddf7effba"
+    }
+  ],
+  "frame_manifest": {
+    "path": "/gemini/code/FSPT_v9a51_clean/docs/v9a51_pointodyssey_frame_manifest_2026-07-10.json",
+    "file_count": 864,
+    "total_bytes": 136082946,
+    "aggregate_sha256": "64a73640bebb528177cb641ee21bc7e5eeb2bfd6bd7232ba1436788068bc79d7",
+    "verify_each_file": true
+  }
+}

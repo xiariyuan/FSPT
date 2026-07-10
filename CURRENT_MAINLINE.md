@@ -2599,3 +2599,45 @@ Decision:
 ```text
 V9-A5C.0 passes strongly. The current fused top16 discards substantial GT-near candidate recall on hard rows, while easy rows are already saturated. Combined with V9-A5.0 ORACLE_STATE_HEADROOM_ONLY, the next step is V9-A5.1 full-stream deterministic dynamic-K multi-hypothesis/beam reachability audit: use K16 as the default, expose up to K64 only under a predeclared risk signal, update multiple hypotheses on every frame, and separately report deployable beam-top1 versus GT-only beam-oracle reachability. Do not read DAVIS or train until the synthetic full-stream gate passes.
 ```
+
+## V9-A5.1a fixed-K16 shared-state beam baseline
+
+Canonical frozen artifacts:
+
+```text
+scripts/v9a51a_fixed_k16_shared_state_beam.py
+docs/v9a51a_fixed_k16_shared_state_beam_design_2026-07-10.md
+docs/v9a51a_fixed_k16_shared_state_beam_result_2026-07-10.md
+docs/v9a51a_fixed_k16_baseline_freeze_2026-07-10.md
+docs/v9a51_comprehensive_review_and_next_step_2026-07-10.md
+outputs/paper_discovery_2026-07-05/v9a51a_fixed_k16_shared_state_beam/v9a51a_fixed_k16_shared_state_beam.json
+outputs/paper_discovery_2026-07-05/v9a51a_fixed_k16_shared_state_beam/v9a51a_fixed_k16_shared_state_beam.npz
+```
+
+Integrity:
+
+```text
+The V9-A5.1a script/JSON/NPZ are byte-identical copies of the independently completed experiment.
+Script SHA256 = 4c49df7c743ba14229f30786d13e2776348f9bb66f14aa40b0b6215c94bc5ee8.
+The script hash matches the result JSON.
+27,648 query-frame rows and 864 RGB frames were audited.
+Official p/v/q parity max_abs = 0.
+Beam update receives no GT or error input.
+```
+
+Result after excluding frame 0:
+
+```text
+teacher C1 top1 mean 9.4394 px
+beam4 motion+latent top1 9.8841 px, delta +0.4447 px
+teacher top4 oracle 6.3934 px
+beam4 oracle 7.5775 px, delta +1.1841 px
+teacher top8 oracle 5.3604 px
+beam8 oracle 6.2353 px, delta +0.8749 px
+```
+
+Decision:
+
+```text
+V9-A5.1a is a valid negative baseline for the exact fixed-K16 shared-state beam configuration. It does not close risk-gated K64 proposals, candidate-conditioned C2/offset refinement, history-preserving beams, finite-window costs, official-final fallback, or independent per-hypothesis model states. Do not repeat the fixed-K16/raw-C1/current-candidate-dedup implementation. Next: V9-A5.1b candidate-conditioned downstream refinement audit. No new beam is allowed unless its risk-gated refined candidate oracle improves the official final tracker on all synthetic gates.
+```
