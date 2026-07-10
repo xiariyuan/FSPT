@@ -2508,3 +2508,46 @@ Decision:
 ```text
 V9-A4.5 fails the predeclared synthetic heldout gate. Do not run the remaining two folds, do not run DAVIS, and do not sweep alpha/learning rate/loss weights on ani. The near-zero-alpha control produces no ranking changes, while alpha=0.05 is independently reproduced and harmful. Close the fixed-topK reranking-adaptation route. Next: V9-A5.0 candidate-recall/correlation-map oracle audit; proceed to a bounded residual correlation adapter only if top-K candidate recall has unsaturated headroom.
 ```
+
+## V9-A5.0 sampled-causal temporal-state feasibility audit
+
+Artifacts:
+
+```text
+scripts/v9a50_temporal_multihypothesis_feasibility.py
+docs/v9a50_input_manifest_2026-07-10.json
+docs/v9a50_temporal_multihypothesis_feasibility_design_2026-07-10.md
+docs/v9a50_temporal_multihypothesis_feasibility_result_2026-07-10.md
+outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility.json
+outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility_selections.npz
+```
+
+Protocol and integrity:
+
+```text
+PointOdyssey balanced sampled pool only: 4878 rows, 279 query tracks, 9 clips, 3 sequences.
+No training, no DAVIS read, no threshold or weight tuning.
+State is causal with respect to sampled observations; gaps >8 reset all histories.
+Track and conservative clip-block bootstrap use 100,000 resamples.
+Checkpoint score reconstruction from all 4878x16 post-fusion latents has top1 match 1.0 and max_abs 0.001544.
+All saved selections independently reproduce the reported metrics; non-temporal rows exactly fall back to teacher.
+```
+
+Result:
+
+```text
+Teacher mean C1 error: 12.3112 px.
+Best sampled self-state policy: causal_teacher_latent, 12.0118 px globally.
+However it worsens all three r4_new_f clips, its clip 95% CI is [-1.0067,+0.0903], and it fails the three-sequence/safe16 gate.
+No sampled-causal self-state policy passes.
+
+Past-oracle motion+latent: 6.0285 px, better/worse/equal 2278/399/2201.
+Past-GT motion diagnostic: 5.3269 px, better/worse/equal 2703/484/1691.
+Every past-oracle/past-GT diagnostic improves all three sequences and all 9 clips; their clip-block CIs are strictly negative.
+```
+
+Decision:
+
+```text
+V9-A5.0 yields ORACLE_STATE_HEADROOM_ONLY. Temporal information is strongly useful when the prior state is correct, while self-state error propagation prevents robust gains. Do not train another single-state reranker. Next: V9-A5.1 full-stream deterministic multi-hypothesis/beam reachability audit. It must update state on every frame, evaluate GT-visible and re-entry subsets, and separate deterministic beam top1 from GT-only beam-oracle readout. DAVIS remains out of scope until synthetic full-stream gates pass.
+```

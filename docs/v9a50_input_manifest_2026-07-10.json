@@ -1,0 +1,96 @@
+{
+  "created_at": "2026-07-10",
+  "experiment": "V9-A5.0 sampled-causal temporal feasibility audit",
+  "clean_worktree": "/gemini/code/FSPT_v9a45_clean",
+  "clean_branch": "v9a45-conservative-residual-20260710",
+  "clean_head": "8fe78db05fa23a229efb92329e8fe96a247b7989",
+  "source_asset_root": "/gemini/code/FSPT",
+  "files": [
+    {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a38_pointodyssey_pool/v9a38_pointodyssey_hypothesis_pool.npz",
+      "size_bytes": 7727883,
+      "sha256": "137cbec62d7086f53617acc1541b3df146f1664f70f72bfb6b1f2de0176d964f"
+    },
+    {
+      "path": "/gemini/code/FSPT/outputs/paper_discovery_2026-07-05/v9a43_prefusion_latents/v9a43_pointodyssey_c1_prefusion_latents.npz",
+      "size_bytes": 115703317,
+      "sha256": "307a69ab17c28014b2d15199dd3f84c91b2b8f78d7d18d8b83ad0f4dba54c489"
+    },
+    {
+      "path": "/gemini/code/FSPT/baselines/track_on/checkpoints_trackon2_dinov3.pt",
+      "size_bytes": 93901966,
+      "sha256": "0e319c279cbdf51a5fc761b47dc1969520e8cfccfb57dc5a019a8c56e1039cd4"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/ani/anno.npz",
+      "size_bytes": 214730314,
+      "sha256": "cc20ff10b815d607a09a48895a8d76e9cb8169c108ddb9fdacb2955dc26c2368"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/anno.npz",
+      "size_bytes": 197918569,
+      "sha256": "84110e093f48da96393ddaddeaad15352b11cfa80a298b56ecdaba4365e89dfa"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/anno.npz",
+      "size_bytes": 98527880,
+      "sha256": "382d1edca0d6d88279ed1a61ee63c9ba27b7c5418f2269f4592c1658fd7d8e77"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00000.jpg",
+      "size_bytes": 152415,
+      "sha256": "11a448c7717fd60d09ae6637622256547b95375c4f1bccb4b0578f05be614646"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00256.jpg",
+      "size_bytes": 149345,
+      "sha256": "bccdbe0881b424723bd12137a1804e455d9a5c3a23b3c25f214df66662602718"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00512.jpg",
+      "size_bytes": 136506,
+      "sha256": "36c07e88e5b248c20bed9b63aad3963387e2abd6989cee1384949db87e0bc656"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00000.jpg",
+      "size_bytes": 215199,
+      "sha256": "381e86a8a7ef194896e960cdb0c3e86ee96e627d80be1d335d923cf60b3b8b59"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00256.jpg",
+      "size_bytes": 211433,
+      "sha256": "8c8308a7a8973bb345b48f3a02d4b440cc9e43333d13b76e772087090f2718e3"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00512.jpg",
+      "size_bytes": 184398,
+      "sha256": "e880206ed71d4ea51cb7977b6e6ab9ca085a02ae1cd38b2929d438cdffefb1d1"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00000.jpg",
+      "size_bytes": 112699,
+      "sha256": "a9c3450566966515f50f148e0d1057b98eb241923baf569da8762c59e05279d2"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00256.jpg",
+      "size_bytes": 117199,
+      "sha256": "dc98014ca1323e8d5cbc92eae8104aaa85788f5abf10f038ed135b35c1b5f102"
+    },
+    {
+      "path": "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00512.jpg",
+      "size_bytes": 110060,
+      "sha256": "a5230c5ec9b6f46bed3f8496e920edc9b5b602b46f1ee350e80713ae13b6a7c4"
+    }
+  ],
+  "dimension_frames": [
+    "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00000.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00256.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/ani/rgbs/rgb_00512.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00000.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00256.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/animal3/rgbs/rgb_00512.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00000.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00256.jpg",
+    "/gemini/code/FSPT/datasets/pointodyssey/train/r4_new_f/rgbs/rgb_00512.jpg"
+  ]
+}
