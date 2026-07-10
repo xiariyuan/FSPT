@@ -2329,19 +2329,22 @@ Decision:
 V9-A2.3b passes after correction. W8 full features: 1456 rows, dim 143, finite_rate 1.0. W16 full features: 2013 rows, dim 143, finite_rate 1.0, with 557 extensions. Common-row consistency audit found 662 mismatched common rows due to different event context in W16, so canonical joint dataset uses W8 common rows plus W16-only extension rows. Next: V9-A2.3c dynamic horizon controller.
 ```
 
-
-## V9-A2.3c-R robust threshold and stability audit
+## V9-A2.3c-R robust threshold and video stability audit
 
 Artifacts:
 
 ```text
 scripts/v9a2_dynamic_horizon_robust_audit.py
+scripts/v9a2_dynamic_horizon_video_stability_audit.py
 outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_dynamic_horizon_robust_threshold_audit.json
+outputs/paper_discovery_2026-07-05/v9a2_anchor_uncertainty_reacquisition/v9a2_dynamic_horizon_video_stability_audit.json
 docs/v9a2_dynamic_horizon_robust_threshold_audit_result_2026-07-08.md
+docs/v9a2_dynamic_horizon_robust_threshold_audit_result_2026-07-09.md
+docs/v9a2_dynamic_horizon_video_stability_audit_result_2026-07-09.md
 ```
 
 Decision:
 
 ```text
-V9-A2.3c-R passes. Conservative fixed-threshold audit confirms learned dynamic horizon is not merely a broad sweep artifact. all_logreg_event_max_fixed_0.05 reaches AJ_RD_256 Δ +0.0294, above W8 +0.0274 and W16 +0.0286, with Pos/Neg/Zero 17/3/5 versus W16 15/5/5. Controller is high-recall extension with partial risk trimming: accepts 481/557 extension rows, precision 0.227, recall 0.924. Next: V9-A2.4 paper-ready dynamic horizon ablation.
+V9-A2.3c-R passes under conservative, predeclared thresholds. all_logreg event_max fixed 0.05 reaches AJ_RD_256 Δ +0.0294, above W16 +0.0286 and W8 +0.0274, with AJ Δ +0.1025 and Pos/Neg/Zero 17/3/5. On the 25 videos where AJ_RD_256 is defined, learned fixed 0.05 versus W16 is better on 4, worse on 2, equal on 19, with mean difference +0.000665. The gain is real but modest and concentrated; RGB anchor features remain weak. Next: V9-A2.4 paper-ready ablation and/or stronger semantic/internal identity features.
 ```
