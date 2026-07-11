@@ -3104,3 +3104,59 @@ global p90 span/fused_std <= 0.10
 ```
 
 No easy-row safety claim is allowed from the target-directed oracle. No training, epsilon sweep, risk-threshold sweep or DAVIS read is allowed.
+
+## V9-A6.0 fused top129 export
+
+Artifacts:
+
+```text
+scripts/v9a60_export_fused_top129.py
+docs/v9a60_fused_top129_export_result_2026-07-11.md
+docs/v9a60_fused_top129_export_review_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.json
+outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.npz
+```
+
+Formal export:
+
+```text
+4,878 rows / 9 clips / 844 hash-verified RGB frames
+top129 fused indices/scores/coords/errors
+four upsampled component values per candidate
+full fused-map summary statistics
+native-risk / GT-hard / reentry metadata
+```
+
+Integrity:
+
+```text
+fused map / official p/v/q / K16/K64 errors / nearest rank-distance-margin / K16 gap parity = 0
+component-weight reconstruction max_abs = 0
+official top16 set Hausdorff = 0
+pool top16 set Hausdorff = 8.4294e-8
+pool ordered max_abs = 0.18823537, diagnostic tie-order only
+all top129 rows unique, sorted and finite
+```
+
+Frozen hashes:
+
+```text
+script 684e7a6243d7fccddd23bef79355356dd78ef2b40d2257d1483f790ac680ed2c
+JSON   72fb654381eef236c73b54d8d52d5bfbe4a7b3e4cfaf7ebcf850f1cdf8472cbb
+NPZ    0849bb9ab700e8f5224bf751f897aea7a38e0efd6363d6d83297e04ecbfac3ac
+```
+
+Opportunity parity:
+
+```text
+K16 miss / K64 hit at 4px = 760
+ani 361 / animal3 98 / r4_new_f 301
+native-risk opportunity rows = 325
+GT-hard opportunity rows = 760
+```
+
+Decision:
+
+```text
+EXPORT_PASS. Freeze this export. The V9-A6.0 rank-shift audit must consume only the saved JSON/NPZ and must not rerun TrackOn2 or change target ranks, radius, budgets or gates.
+```
