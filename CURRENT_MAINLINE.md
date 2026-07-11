@@ -2795,3 +2795,67 @@ Decision:
 ```text
 HISTORY_INCREMENTAL_VALUE_FAIL. Keep the original system-level beam-oracle pass as a valid reachability statement relative to official final, but do not interpret it as temporal incremental value. Close the shared-official-state external history-beam route and do not train a learned readout on the current beam. Fixed-topK selectors/adapters were already closed in V9-A3.1 through V9-A4.5. Next: V9-A5.2 bounded independent model-state branching feasibility, where each hypothesis owns separate point memory/temporal mask/q_new and must beat a shared-state frame-local same-capacity control. No DAVIS and no training.
 ```
+
+## V9-A5.2 independent model-state branching pre-registration
+
+Pre-registered artifacts:
+
+```text
+scripts/v9a52_build_event_manifest.py
+docs/v9a52_independent_state_event_manifest_2026-07-11.json
+docs/v9a52_independent_state_branching_design_2026-07-11.md
+```
+
+Repository:
+
+```text
+worktree: /gemini/code/FSPT_v9a52_clean
+branch: v9a52-independent-state-branching-20260711
+base HEAD: 53f475a283c70c49b6bc2167458b520d11d6b3d9
+```
+
+Structural correction:
+
+```text
+TrackOn2 query_attention couples all 32 evaluated queries and 400 support-grid queries. A hypothesis is therefore a complete 432-query tracker state, not one target row and not a duplicate query concatenated into the same attention batch. Each A/B branch must separately own q_init, point_memory and temporal_mask and roll all 432 rows independently.
+```
+
+Canonical state:
+
+```text
+N = 432
+M = 24, preserving the V9-A5.1b/c M_i=M execution path
+D = 256
+```
+
+Frozen event protocol:
+
+```text
+source: committed V9-A5.1c NPZ SHA256 05b450fb2031ce1d762ed7436bcef34a47dfaf37c10d1c33bd8fd74c1d0381a0
+selection fields: clip_id/query_idx/frame_tau/risk only
+first native-risk event per query with 1 <= frame_tau <= 87
+stable SHA256 selection of 8 events per clip
+9 clips / 72 events / horizons 1,4,8
+minimum eligible events in any clip = 15
+```
+
+Branch split:
+
+```text
+At the event frame, clone the complete pre-update state. Branch A writes official q_new for all rows. Branch B writes official q_new for all non-target rows and the frozen K64 score-top1 singleton candidate-conditioned q2 for the target row. Both then roll forward independently with unconditional memory updates.
+```
+
+Primary fair comparator:
+
+```text
+independent B2 oracle = min(Branch A final, Branch B final)
+shared-state B2 oracle = min(official final, current official-state score-top1 refined coordinate)
+```
+
+The primary horizon is 8. Clip-block bootstrap uses 100,000 resamples, seed 20260716. First-reentry is descriptive because only 9 frozen horizon-8 rows are first-reentry; pooled early8 is secondary.
+
+Decision boundary:
+
+```text
+Only a sequence-consistent, clip-CI-negative independent B2 improvement over the shared-state capacity-2 control, together with non-degenerate q_new/C1 candidate-set divergence and useful novel rows in every sequence, can authorize a later full-stream independent-state beam. Failure closes the temporal multi-state route. No training, threshold tuning or DAVIS read is allowed.
+```
