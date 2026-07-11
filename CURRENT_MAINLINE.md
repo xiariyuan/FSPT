@@ -2859,3 +2859,68 @@ Decision boundary:
 ```text
 Only a sequence-consistent, clip-CI-negative independent B2 improvement over the shared-state capacity-2 control, together with non-degenerate q_new/C1 candidate-set divergence and useful novel rows in every sequence, can authorize a later full-stream independent-state beam. Failure closes the temporal multi-state route. No training, threshold tuning or DAVIS read is allowed.
 ```
+
+## V9-A5.2 independent-state branching smoke
+
+Artifacts:
+
+```text
+scripts/v9a52_independent_state_branching_smoke.py
+docs/v9a52_independent_state_smoke_result_2026-07-11.md
+docs/v9a52_independent_state_smoke_review_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_smoke.json
+outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_smoke_rows.npz
+```
+
+Frozen smoke event:
+
+```text
+ani:0 / query 20 / frame 2
+horizons 1 / 4 / 8
+432 active queries = 32 evaluated + 400 support
+M = 24 / D = 256
+```
+
+Integrity:
+
+```text
+official diagnostic p/v/q_new parity max_abs = 0
+Branch A p/v/u/q_new/q_pre/C1/C2 parity max_abs = 0
+Branch A q_init/memory/mask parity exact
+A/B/official state storages disjoint
+Branch B mutation leaves Branch A unchanged
+A->B versus B->A call-order max_abs = 0
+online native-risk mismatch = 0
+V9-A5.1b candidate replay max_abs = 1.526e-5
+shared and independent B2 formulas exact
+all values finite
+```
+
+The full numerical smoke was repeated and all NPZ arrays, gates, parity values, candidate replay values, horizon diagnostics and split numerical values reproduced exactly.
+
+Mechanistic result:
+
+```text
+split q2_B versus official q_new_A L2 = 10.2380
+future target q_new L2 at horizons 1/4/8 = 8.9140 / 2.7783 / 2.0466
+top16 C1 overlap at horizons 1/4/8 = 14 / 15 / 15
+top64 C1 overlap = 54 / 59 / 62
+```
+
+The perturbation propagates to non-target evaluated and support-grid queries, confirming that a hypothesis must clone the complete 432-query state.
+
+Compression warning:
+
+```text
+final A/B coordinate divergence at horizons 1/4/8 = 0.0963 / 0.1470 / 0.0529 px
+```
+
+State and candidate-set divergence do not by themselves establish useful output divergence. The formal run must retain both mechanistic and capacity-matched accuracy gates.
+
+All three smoke horizon rows are GT-invisible/invalid, so the saved coordinate-error values verify formulas only and are not scientific evidence.
+
+Decision:
+
+```text
+SMOKE_PASS. The full 72-event audit may be implemented. No training and no DAVIS read are authorized.
+```
