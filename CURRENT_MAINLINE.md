@@ -2924,3 +2924,110 @@ Decision:
 ```text
 SMOKE_PASS. The full 72-event audit may be implemented. No training and no DAVIS read are authorized.
 ```
+
+## V9-A5.2 independent model-state branching formal closure
+
+Formal artifacts:
+
+```text
+scripts/v9a52_independent_state_branching_audit.py
+docs/v9a52_input_manifest_2026-07-11.json
+docs/v9a52_independent_state_branching_result_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_branching.json
+outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_branching_rows.npz
+```
+
+Non-gating candidate-pool review:
+
+```text
+scripts/v9a52_candidate_reachability_postaudit.py
+docs/v9a52_candidate_reachability_postaudit_2026-07-11.md
+docs/v9a52_comprehensive_review_and_route_closure_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_candidate_reachability_postaudit.json
+```
+
+Execution integrity:
+
+```text
+9 clips / 72 frozen events / horizons 1,4,8 / 216 unique event-horizon rows
+864 RGB frames individually hash verified
+288 candidate replay rows = 72 split + 216 horizon
+peak active events = 6
+official diagnostic p/v/q_new parity max_abs = 0
+Branch A p/v/u/q_new/q_pre/C1/C2 parity max_abs = 0
+Branch A q_init/memory/mask parity exact
+online risk and GT-visibility replay mismatch = 0
+candidate score max_abs = 2.0504e-5
+refined candidate error max_abs = 4.5538e-5
+storage/mutation/cross-event-alias/event-key/first-risk failures = 0
+saved NPZ independently reproduces formulas, summaries, bootstraps and gates
+```
+
+Primary horizon-8 capacity-matched result:
+
+```text
+independent-state B2 oracle mean: 5.4788 px
+shared-state capacity-2 oracle:    5.1949 px
+difference:                      +0.2839 px
+better / worse / equal:           14 / 14 / 16
+safe16:                            41 / 42
+95% clip-block CI:               [+0.0159,+0.6744]
+ani / animal3 / r4_new_f:        +0.0684 / +0.5234 / +0.2141 px
+```
+
+Secondary results:
+
+```text
+horizon 1: +0.0054 px
+horizon 4: -0.1311 px, but r4_new_f and multiple clips are worse
+pooled horizons: +0.0734 px, CI [-0.0891,+0.3215]
+early8: +0.3054 px, CI [+0.0351,+0.6420]
+first re-entry: +0.7384 px
+```
+
+Mechanistic result:
+
+```text
+target q_new divergence on 100% of visible rows
+top16 candidate set changes on 51.85% of visible rows
+mean target q_new L2 = 1.6416
+mean final-coordinate divergence = 0.5493 px
+Branch B final improves shared B2 by >1 px on only 3 rows
+useful final novelty by sequence = ani 1 / animal3 2 / r4_new_f 0
+```
+
+Candidate-pool supplement:
+
+```text
+Branch B K64 versus shared K64:
+  mean difference -0.0018 px
+  CI [-0.1819,+0.2219]
+  ani -0.0882 / animal3 +0.1771 / r4_new_f -0.1210
+
+union(shared K64, Branch B K64) oracle:
+  difference -0.1191 px
+  CI [-0.2256,-0.0335]
+  structurally non-worsening GT-only upper bound
+
+Branch B beats shared K64 by >1 px: 4 / 108 visible rows
+by sequence: ani 2 / animal3 0 / r4_new_f 2
+Branch B <=4 px while shared K64 >4 px: 0
+```
+
+Decision:
+
+```text
+INDEPENDENT_STATE_FAIL. True independent full-model state changes future hidden states and candidate sets, but does not beat the shared-state same-capacity final-output control and does not robustly improve the complete K64 candidate pool. Close the tested temporal multi-state route. Do not train a branch selector, sweep alternative branch seeds/widths/horizons/risk thresholds, or read DAVIS.
+```
+
+Route scope:
+
+```text
+Close sampled causal self-state selection, fixed/shared-state beams, history-preserving external beams, and frozen score-top1 singleton independent-state B2 branching. This is a project route closure under the committed protocols, not a mathematical claim about every recurrent tracker.
+```
+
+Remaining distinct direction:
+
+```text
+V9-A5C.0 still shows fused top16-to-top64 recall headroom, especially on hard rows. The only unclosed mechanism is to change the fused correlation map before top-K, not to select/branch over a fixed pool. Next: V9-A6.0 no-training bounded correlation rank-shift feasibility. Only if that gate passes may a frozen-backbone sequence-heldout bounded residual correlation adapter be preregistered. No training or DAVIS in V9-A6.0.
+```
