@@ -2706,3 +2706,92 @@ Decision:
 ```text
 V9-A5.1b passes as candidate-conditioned refined-coordinate reachability, not as a deterministic selector. Singleton downstream refinement strongly compresses candidate diversity and must not replace the raw C1 hypothesis state. Proceed to V9-A5.1c only with raw candidate identity/history as state, refined coordinate as readout, native-risk K16/K64, an eight-frame finite cost window, official-final fallback on non-risk rows, and separate deterministic versus GT-only reachability gates. Do not read DAVIS and do not train yet.
 ```
+
+## V9-A5.1c history-preserving shared-state beam and incremental-value closure
+
+Formal artifacts:
+
+```text
+scripts/v9a51c_history_preserving_beam_audit.py
+docs/v9a51c_history_preserving_beam_design_2026-07-10.md
+docs/v9a51c_smoke_review_2026-07-10.md
+docs/v9a51c_history_preserving_beam_result_2026-07-10.md
+docs/v9a51c_input_manifest_2026-07-10.json
+docs/v9a51c_pointodyssey_frame_manifest_2026-07-10.json
+outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_history_preserving_beam.json
+outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_history_preserving_beam_rows.npz
+```
+
+Supplemental fair-comparator review:
+
+```text
+scripts/v9a51c_same_capacity_incremental_audit.py
+docs/v9a51c_same_capacity_incremental_review_2026-07-10.md
+docs/v9a51c_comprehensive_review_and_v9a52_next_step_2026-07-10.md
+outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_same_capacity_incremental_audit.json
+```
+
+Formal integrity:
+
+```text
+9 clips x 96 frames x 32 queries = 27,648 rows.
+864 RGB frames individually hash verified.
+Official p/v/q parity max_abs = 0.
+V9-A5.1b row/risk/score/raw-error/refined-error/oracle replay max_abs = 0.
+All policy beam widths/shapes are exact.
+All last-three-grid signatures are unique within retained beams.
+Beam update receives no GT/error input.
+Saved NPZ independently reproduces all top1/oracle formulas, bootstrap CIs and gates.
+```
+
+Original predeclared system-level result:
+
+```text
+official final mean:                 9.1418 px
+native_dynamic_B4 top1 mean:         9.1575 px
+native_dynamic_B4 top1 delta:       +0.0157 px
+native_dynamic_B4 top1 CI:          [-0.0573,+0.1110]
+
+native_dynamic_B4 oracle mean:       8.7879 px
+native_dynamic_B4 oracle delta:     -0.3539 px
+native_dynamic_B4 oracle CI:        [-0.5043,-0.2343]
+all 3 sequence means and all 9 clip means improve versus official final
+```
+
+Formal interpretation:
+
+```text
+The deterministic top1 gate fails. The GT-only min(official, surviving beam) gate passes, proving that the beam preserves some useful refined alternatives. It retains only 26.74% of the full V9-A5.1b candidate headroom.
+```
+
+Mandatory same-capacity correction:
+
+```text
+frame-local score-top4 oracle mean:  8.5363 px
+temporal B4 oracle mean:             8.7879 px
+temporal minus frame-local:         +0.2516 px
+95% CI:                              [+0.1280,+0.4307]
+temporal B4 is worse on ani / animal3 / r4_new_f and all 9 clips
+
+frame-local score top1 mean:         9.1023 px
+temporal B4 top1 mean:               9.1575 px
+temporal minus frame-local:         +0.0552 px
+95% CI:                              [-0.1054,+0.2999]
+```
+
+All predeclared diagnostic policies fail the incremental temporal-value gate. B1 has only a weak, inconsistent oracle mean advantage with a CI crossing zero; B4/B8/fixed16/fixed64 are weaker than their frame-local same-capacity oracle controls.
+
+Effective diversity:
+
+```text
+B4 unique history signatures: 4.0 / 4
+B4 unique current raw grids on risk-visible rows: 2.81 / 4
+B4 raw 4px clusters: 1.45
+B4 refined 4px clusters: 1.13
+```
+
+Decision:
+
+```text
+HISTORY_INCREMENTAL_VALUE_FAIL. Keep the original system-level beam-oracle pass as a valid reachability statement relative to official final, but do not interpret it as temporal incremental value. Close the shared-official-state external history-beam route and do not train a learned readout on the current beam. Fixed-topK selectors/adapters were already closed in V9-A3.1 through V9-A4.5. Next: V9-A5.2 bounded independent model-state branching feasibility, where each hypothesis owns separate point memory/temporal mask/q_new and must beat a shared-state frame-local same-capacity control. No DAVIS and no training.
+```
