@@ -3160,3 +3160,80 @@ Decision:
 ```text
 EXPORT_PASS. Freeze this export. The V9-A6.0 rank-shift audit must consume only the saved JSON/NPZ and must not rerun TrackOn2 or change target ranks, radius, budgets or gates.
 ```
+
+## V9-A6.0 bounded correlation rank-shift formal closure
+
+Artifacts:
+
+```text
+scripts/v9a60_bounded_rank_shift_audit.py
+docs/v9a60_bounded_rank_shift_audit_result_2026-07-11.md
+docs/v9a60_comprehensive_review_and_algorithmic_route_closure_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit.json
+outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit_rows.npz
+```
+
+Integrity:
+
+```text
+760 / 760 K16-miss/K64-hit opportunity rows have a valid first <=4px target in ranks 17-64.
+All target ranks/errors, rank16 errors, score spans, positive/signed epsilon formulas and component decompositions independently reproduce from the saved NPZ.
+100,000-resample clip-block conversion/global-gain/hard-gain CIs independently reproduce.
+No TrackOn2 execution, training, threshold tuning or DAVIS read occurs in the rank-shift audit.
+```
+
+Frozen hashes:
+
+```text
+script 61dd1ea369353a698a683212dcb2c45d6ba0eb9b1d7a603e6fdbc270eec538c6
+JSON   a541d4475ca647a798827ac05a5befff588d33ceccfefb1229b85dff3a4f9370
+NPZ    24c3b49d85635aa6879ef084630422ccf63f145951eeae808d72a24d58da30a6
+```
+
+Primary `span <= 2*g_ref` result:
+
+```text
+promoted 67 / 760 opportunities = 8.82%
+ani 8.59% / animal3 22.45% / r4_new_f 4.65%
+0 / 9 clips reach 30% conversion
+conversion 95% CI [0.0549,0.1421]
+implied global recall@4 oracle gain +0.0137
+implied GT-hard recall@4 oracle gain +0.0277
+native-risk-only implied global gain +0.0074
+```
+
+Magnitude:
+
+```text
+score-span median 0.03431 = about 10.92*g_ref
+score-span p90 0.07756
+span/fused-std median 0.1265
+span/fused-std p90 0.2744
+sequence medians 0.1426 / 0.0815 / 0.1235, all above the preregistered 0.02 bound
+```
+
+All 67 primary promotions come from target ranks 17-24. Ranks 25-64 have zero primary conversion.
+
+Even at `8*g_ref`:
+
+```text
+conversion 34.74%
+implied global gain +0.0541
+implied hard gain +0.1091
+only 5 / 9 clips reach 30%
+r4_new_f conversion 27.57%
+```
+
+Component diagnostics do not show one scale that consistently favors the target across all sequences. They are non-gating and may not be used for post-hoc fusion-weight selection.
+
+Decision:
+
+```text
+RANK_SHIFT_MAGNITUDE_FAIL. Even a GT-aware target-only oracle with no easy-row collateral cannot recover a meaningful and sequence/clip-consistent fraction of K16-to-K64 headroom under the committed small bounded score span. Close the bounded correlation residual route. Do not train V9-A6.1, add epsilon budgets, tune fusion weights or read DAVIS.
+```
+
+Project route decision:
+
+```text
+Stop algorithmic expansion on the current rescue tree. Route A diagnostic paper remains active/stable. Consolidate committed evidence, route-closure tables, reproducibility checks, manuscript figures and limitations. Any future model experiment requires a genuinely new written architectural hypothesis, not another selector/state branch/small residual variant.
+```
