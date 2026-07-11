@@ -1,0 +1,546 @@
+{
+  "schema_version": "v9a-evidence-index-v1",
+  "created_at": "2026-07-11",
+  "generated_from": {
+    "head": "bf4aed14c8b3dfa656991392bf27e27dd3982c01",
+    "branch": "v9a60-correlation-rank-shift-20260711",
+    "tracked_status": "",
+    "checkout_descends_from_tooling_head": true,
+    "builder_script": {
+      "path": "scripts/build_v9a_evidence_index.py",
+      "sha256": "5500612e74c86135a9357a3cf0b46b5b4c822573b37aada374f4dfa8f6619a1c"
+    }
+  },
+  "project_decision": {
+    "route_a": "diagnostic paper active/stable",
+    "route_b": "current SOTA-compatible rescue hypothesis tree exhausted",
+    "route_c": "old student/pseudo-label/DINO-local routes closed",
+    "next_work": "evidence consolidation, reproducibility, manuscript tables/figures, discussion and limitations"
+  },
+  "routes": [
+    {
+      "id": "V9-A4.5",
+      "title": "Conservative residual reranking",
+      "commit": "8fe78db",
+      "question": "Can a bounded residual reranker improve the frozen candidate ordering without damaging safe rows?",
+      "dataset": "PointOdyssey synthetic holdout; ani held out after sequence split",
+      "fair_baseline": "Frozen teacher C1 ranking on the same rows/candidates",
+      "primary_gate": "Mean improvement, better>worse, safe16 non-decrease, retention, and oracle-regret improvement",
+      "raw_result": "Heldout student ranking is worse than the frozen teacher.",
+      "final_interpretation": "Fixed-topK residual reranking adaptation is closed.",
+      "status": "closed",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a45_conservative_residual/v9a45_smoke_holdout_ani_e1_seed20260710.json",
+      "commit_full": "8fe78db05fa23a229efb92329e8fe96a247b7989",
+      "metrics": {
+        "teacher_mean_error": 14.745758832552221,
+        "student_mean_error": 15.038686401482162,
+        "student_minus_teacher": 0.2929275689299394,
+        "better_worse_equal": [
+          35,
+          70,
+          1837
+        ],
+        "teacher_safe16": 1563,
+        "student_safe16": 1544,
+        "gate_pass": false,
+        "decision": "Integrity passes, but heldout synthetic ranking collapses materially. Stop before DAVIS and do not scale this objective."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a45_conservative_residual_end_to_end.py",
+          "role": "execution_script",
+          "size_bytes": 49552,
+          "sha256": "28ba42ff99a90158806ffe91b7a3215ebf6748f2a4d05e9ec3c1dd7b4c55b197"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a45_conservative_residual/v9a45_smoke_holdout_ani_e1_seed20260710.json",
+          "role": "result_json",
+          "size_bytes": 18951,
+          "sha256": "a8981bd6b7ee45dabc622f10d96c712b46069ccfad294a5daf1a7d999fdaf91f"
+        },
+        {
+          "path": "docs/v9a45_conservative_residual_end_to_end_design_2026-07-10.md",
+          "role": "design",
+          "size_bytes": 6656,
+          "sha256": "2d99ec36afb18304657da9abe45ad3ae0d497bc7287d0dab8a5742e44b46d1d5"
+        },
+        {
+          "path": "docs/v9a45_route_closure_and_v9a5_next_step_2026-07-10.md",
+          "role": "review",
+          "size_bytes": 6956,
+          "sha256": "04fa4cee28567b5fbc694424b80fe359ca9118ada3a4176aa7ef7e0d7160909d"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5.0",
+      "title": "Sampled-causal temporal-state feasibility",
+      "commit": "7c24367",
+      "question": "Does causal prior state contain useful temporal information, and is self-state error propagation the blocker?",
+      "dataset": "PointOdyssey canonical 4,878-row visible candidate pool",
+      "fair_baseline": "Frozen teacher/current-frame selection",
+      "primary_gate": "Sampled self-state must improve robustly; oracle/past-GT states are diagnostic headroom only",
+      "raw_result": "Sampled self-state fails; causal past-oracle/past-GT state has large sequence-consistent headroom.",
+      "final_interpretation": "Temporal information exists, but single-state error propagation blocks deployable use.",
+      "status": "diagnostic_headroom_only",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility.json",
+      "commit_full": "7c24367cf8aeb1467946d2ced3b294299032538e",
+      "metrics": {
+        "best_sampled_policy": "causal_teacher_latent",
+        "sampled_mean_error": 12.011761665344238,
+        "sampled_difference_vs_teacher": -0.2994817793369293,
+        "best_oracle_policy": "past_gt_motion",
+        "oracle_mean_error": 5.326907634735107,
+        "oracle_difference_vs_teacher": -6.984335899353027,
+        "sampled_gate_pass": [],
+        "oracle_gate_pass": [
+          "past_oracle_motion",
+          "past_oracle_latent",
+          "past_oracle_motion_latent",
+          "past_gt_motion",
+          "past_gt_motion_plus_teacher"
+        ],
+        "decision": "ORACLE_STATE_HEADROOM_ONLY: sampled self-state policies fail, but causal past-oracle or past-GT state improves every sequence by at least 0.25 px. Temporal information has headroom while state-error propagation is the blocker. Next build an explicit multi-hypothesis/beam full-stream audit; do not train another single-state reranker."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a50_temporal_multihypothesis_feasibility.py",
+          "role": "execution_script",
+          "size_bytes": 36235,
+          "sha256": "fe92e0470187b4f5b43ebb72fc452a919ab4ab33d98b60aa12bcb891270723f1"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility.json",
+          "role": "result_json",
+          "size_bytes": 190553,
+          "sha256": "fb4afc10673337e0389f2e2c92d987af6f637ac84568220b1029e8b856ea43cd"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a50_temporal_feasibility/v9a50_temporal_feasibility_selections.npz",
+          "role": "result_npz",
+          "size_bytes": 63737,
+          "sha256": "398381f693a1108e936836c1ab276997aaa44cec4e32ab22d1b82eec43c197a8"
+        },
+        {
+          "path": "docs/v9a50_temporal_multihypothesis_feasibility_design_2026-07-10.md",
+          "role": "design",
+          "size_bytes": 7198,
+          "sha256": "deb4221a0d81a3de72a3151c0115cddb98918a137dbb905297009411e462fd00"
+        },
+        {
+          "path": "docs/v9a50_temporal_multihypothesis_feasibility_result_2026-07-10.md",
+          "role": "result_doc",
+          "size_bytes": 16578,
+          "sha256": "bdcf46f59d60f5f57cce53086c598d2e1d4174ed74bbfc147d7437ed44497f37"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5C.0",
+      "title": "Fused correlation candidate-recall oracle",
+      "commit": "448c095",
+      "question": "Is useful <=4px candidate recall materially higher at fused K64 than at fused K16?",
+      "dataset": "PointOdyssey canonical 4,878-row visible candidate pool",
+      "fair_baseline": "Fused C1 top16 on the same correlation map",
+      "primary_gate": "Every sequence must have fused K64-K16 recall@4 headroom >=0.02",
+      "raw_result": "All three sequences pass; hard-row headroom is large.",
+      "final_interpretation": "Synthetic upstream candidate availability exists, but does not establish deployable selection.",
+      "status": "oracle_headroom_pass",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a5c0_candidate_recall/v9a5c0_pointodyssey_candidate_recall.json",
+      "commit_full": "448c095543bf3904898170660ac9944c76963615",
+      "metrics": {
+        "per_sequence": {
+          "ani": {
+            "fused_top16_recall4": 0.7198764160659115,
+            "fused_top64_recall4": 0.9057672502574665,
+            "union_raw_equal_top64_recall4_diagnostic": 0.84346035015448,
+            "fused_headroom": 0.18589083419155505,
+            "pass_fused_headroom_ge_0.02": true
+          },
+          "animal3": {
+            "fused_top16_recall4": 0.8555045871559633,
+            "fused_top64_recall4": 0.9304281345565749,
+            "union_raw_equal_top64_recall4_diagnostic": 0.9212538226299695,
+            "fused_headroom": 0.07492354740061158,
+            "pass_fused_headroom_ge_0.02": true
+          },
+          "r4_new_f": {
+            "fused_top16_recall4": 0.7696560196560197,
+            "fused_top64_recall4": 0.9545454545454546,
+            "union_raw_equal_top64_recall4_diagnostic": 0.8998771498771498,
+            "fused_headroom": 0.18488943488943488,
+            "pass_fused_headroom_ge_0.02": true
+          }
+        },
+        "gate_pass": true,
+        "hard_fused_k16_recall4": 0.541959487391484,
+        "hard_fused_k64_recall4": 0.8561389003720545,
+        "decision": "POINTODYSSEY_CANDIDATE_RECALL_HEADROOM_PASS: every sequence has at least two percentage points of fused-map recall@4px between top16 and top64. Freeze this as synthetic upstream headroom. Do not automatically read DAVIS or train an adapter; combine this result with the V9-A5.0 temporal-state audit to choose the next full-stream synthetic experiment."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a5c0_candidate_recall_correlation_oracle.py",
+          "role": "execution_script",
+          "size_bytes": 38821,
+          "sha256": "627ba83754456c9895bc96f68c1360a43337c52e865decac824c49288e4e70aa"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a5c0_candidate_recall/v9a5c0_pointodyssey_candidate_recall.json",
+          "role": "result_json",
+          "size_bytes": 152762,
+          "sha256": "3fd782ac678e0854cbbbba7904447d3a9f4c47fb239a0d6f02388867959332cd"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a5c0_candidate_recall/v9a5c0_pointodyssey_candidate_recall.npz",
+          "role": "result_npz",
+          "size_bytes": 1098050,
+          "sha256": "b1df24fd0f8e08dfd52e38a5cca22b9895dd8ed93e5b664157de18d2db9f148b"
+        },
+        {
+          "path": "docs/v9a5c0_candidate_recall_correlation_oracle_design_2026-07-10.md",
+          "role": "design",
+          "size_bytes": 5828,
+          "sha256": "759c4be8347e5a6d5850fb919e99e821c0edc7a6426602558954d5cf2346b72e"
+        },
+        {
+          "path": "docs/v9a5c0_pointodyssey_candidate_recall_result_2026-07-10.md",
+          "role": "result_doc",
+          "size_bytes": 7447,
+          "sha256": "e04e4510f0f1c6d968fe381229e0d84b89665ad675db4205313903e734d53f35"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5.1a",
+      "title": "Fixed-K16 shared-state beam baseline",
+      "commit": "d8e5ca9",
+      "question": "Can fixed-K16 temporal path scoring preserve or improve current-frame candidate reachability?",
+      "dataset": "9 PointOdyssey clips; 27,648 query-frame rows",
+      "fair_baseline": "Current-frame teacher top1/topB at equal capacity",
+      "primary_gate": "Deterministic top1 and same-capacity beam oracle must improve sequence/clip/reentry metrics",
+      "raw_result": "Both deterministic and same-capacity reachability fail.",
+      "final_interpretation": "The exact fixed-K16/raw-C1/shared-state beam configuration is closed.",
+      "status": "closed",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a51a_fixed_k16_shared_state_beam/v9a51a_fixed_k16_shared_state_beam.json",
+      "commit_full": "d8e5ca9fb190ce57a3a35725603447a89a177ce3",
+      "metrics": {
+        "teacher_top1_mean": 9.317731857299805,
+        "beam4_top1_mean": 9.75613021850586,
+        "teacher_top4_oracle_mean": 6.315011501312256,
+        "beam4_oracle_mean": 7.4822211265563965,
+        "deterministic_pass": false,
+        "reachability_pass": false,
+        "decision": "FULLSTREAM_BEAM_FAIL: neither deterministic top1 nor GT-only beam reachability passes. Stop the temporal multi-hypothesis branch and return to candidate-recall/correlation-map analysis."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a51a_fixed_k16_shared_state_beam.py",
+          "role": "execution_script",
+          "size_bytes": 47748,
+          "sha256": "4c49df7c743ba14229f30786d13e2776348f9bb66f14aa40b0b6215c94bc5ee8"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51a_fixed_k16_shared_state_beam/v9a51a_fixed_k16_shared_state_beam.json",
+          "role": "result_json",
+          "size_bytes": 80066,
+          "sha256": "902952433e00ed91f584a4ce74efe6469bd6ee87b23ff1f7a69426e20bf5d0e5"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51a_fixed_k16_shared_state_beam/v9a51a_fixed_k16_shared_state_beam.npz",
+          "role": "result_npz",
+          "size_bytes": 3670148,
+          "sha256": "6606afbebe56b7737bb8b50758cfc206815321b2ae22f958e48ec136f9a519cc"
+        },
+        {
+          "path": "docs/v9a51a_fixed_k16_baseline_freeze_2026-07-10.md",
+          "role": "review",
+          "size_bytes": 3427,
+          "sha256": "1fe2e40a6d6e362de643c843ea89fb27c35415beac2a2ca58c783ff1df1869b4"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5.1b",
+      "title": "Candidate-conditioned downstream refinement",
+      "commit": "29512f0",
+      "question": "Can a frozen fused C1 candidate drive a useful singleton-conditioned C2/head refined coordinate?",
+      "dataset": "9 PointOdyssey clips; 27,648 query-frame rows",
+      "fair_baseline": "Official final TrackOn2 output with risk-gated fallback",
+      "primary_gate": "Risk-gated refined candidate oracle must improve all sequences, clip CI, and reentry summaries",
+      "raw_result": "GT-only refined candidate oracle passes strongly; frozen score-top1 remains unreliable.",
+      "final_interpretation": "Candidate refinement has oracle headroom only; it authorizes a temporal candidate-set audit, not deployment.",
+      "status": "oracle_headroom_pass",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_candidate_conditioned_refinement.json",
+      "commit_full": "29512f0d95d8b4069b73b9130e60b75d1a892b98",
+      "metrics": {
+        "official_mean_error": 9.141794939227056,
+        "hybrid_oracle_mean_error": 7.81845032557433,
+        "oracle_difference_vs_official": -1.3233446136527267,
+        "better_worse_equal": [
+          4267,
+          0,
+          15663
+        ],
+        "gate_pass": true,
+        "decision": "CANDIDATE_REFINEMENT_PASS: risk-gated candidate-conditioned refinement has sequence-consistent system-level oracle headroom. Proceed to V9-A5.1c history-preserving beam; do not read DAVIS or train yet."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a51b_candidate_conditioned_refinement_audit.py",
+          "role": "execution_script",
+          "size_bytes": 57638,
+          "sha256": "1a0e4a75db2f48e75fae1d3cab1b11708f77ef1ea96964a26beba545d6e129f5"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_candidate_conditioned_refinement.json",
+          "role": "result_json",
+          "size_bytes": 157272,
+          "sha256": "34df580628abacf02fbf45c4475f2eb72572c7753e99c295d53ce95e75d18e86"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51b_candidate_refinement/v9a51b_candidate_conditioned_refinement_rows.npz",
+          "role": "result_npz",
+          "size_bytes": 27603376,
+          "sha256": "eb9736cbe7fc1af08e5bfe23248b333e18ae01c826fd26fc65aa40945746d266"
+        },
+        {
+          "path": "docs/v9a51b_candidate_conditioned_refinement_review_2026-07-10.md",
+          "role": "review",
+          "size_bytes": 6018,
+          "sha256": "0a311a983ab844af4aa81a667a297b6317d311c1e0f3c522a6c753660c62a836"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5.1c",
+      "title": "History-preserving shared-state beam",
+      "commit": "53f475a",
+      "question": "Does finite-window history-preserving beam pruning add value beyond a same-frame same-capacity candidate set?",
+      "dataset": "9 PointOdyssey clips; 27,648 query-frame rows",
+      "fair_baseline": "Same-frame frozen-score topB candidate oracle at matched B/K",
+      "primary_gate": "Deterministic top1 and capacity-matched temporal oracle must improve across sequence/clip/reentry",
+      "raw_result": "System-level min(official,beam) oracle passes versus official; deterministic top1 fails.",
+      "final_interpretation": "Capacity-matched review reverses the temporal claim: primary B4 is worse than frame-local top4.",
+      "status": "closed_after_fair_control",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_history_preserving_beam.json",
+      "extra_json": "outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_same_capacity_incremental_audit.json",
+      "commit_full": "53f475a283c70c49b6bc2167458b520d11d6b3d9",
+      "metrics": {
+        "official_mean_error": 9.141794939227056,
+        "temporal_top1_mean_error": 9.15751101826647,
+        "system_oracle_mean_error": 8.787938573795506,
+        "raw_deterministic_pass": false,
+        "raw_oracle_pass": true,
+        "fair_top1_difference": 0.0551646970121804,
+        "fair_top1_ci": [
+          -0.10540510300234451,
+          0.2998721649794963
+        ],
+        "fair_oracle_difference": 0.2515971643002531,
+        "fair_oracle_ci": [
+          0.12796971526112141,
+          0.43066073942616556
+        ],
+        "final_incremental_pass": false,
+        "decision": "HISTORY_INCREMENTAL_VALUE_FAIL: the primary history beam is useful relative to official final, but it is weaker than the same-frame, same-capacity score-top4 candidate oracle. The original V9-A5.1c system-level reachability pass is valid, but it is not evidence that temporal history adds incremental candidate reachability. Do not proceed directly to a learned temporal beam readout; first redesign pruning/state so it beats the frame-local capacity-matched baseline."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a51c_history_preserving_beam_audit.py",
+          "role": "execution_script",
+          "size_bytes": 55210,
+          "sha256": "ee96041ce451c0639c94f7558771e6958907dc5030ea1b429228ec97ce3f4da1"
+        },
+        {
+          "path": "scripts/v9a51c_same_capacity_incremental_audit.py",
+          "role": "fair_control_script",
+          "size_bytes": 13961,
+          "sha256": "7dca4ed2382d667c58875baf695a9ee4ff0008f2dd519f3bb75f6cbe0c7af505"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_history_preserving_beam.json",
+          "role": "result_json",
+          "size_bytes": 216938,
+          "sha256": "ae6bd3eabd36aa8d64014298f48bcc24a31b0611854c8827455a96aa69a6d00b"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_history_preserving_beam_rows.npz",
+          "role": "result_npz",
+          "size_bytes": 7237192,
+          "sha256": "05b450fb2031ce1d762ed7436bcef34a47dfaf37c10d1c33bd8fd74c1d0381a0"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a51c_history_beam/v9a51c_same_capacity_incremental_audit.json",
+          "role": "fair_control_json",
+          "size_bytes": 45475,
+          "sha256": "38e399cc6d74ec16e9cc3e73bbf8a7976b37febe67e5cfe2dab23d7943a8423f"
+        },
+        {
+          "path": "docs/v9a51c_comprehensive_review_and_v9a52_next_step_2026-07-10.md",
+          "role": "review",
+          "size_bytes": 12953,
+          "sha256": "99805ac752eb8b8e01131e56965e1c079a7a18de49a81594b7a34a23c055321c"
+        }
+      ]
+    },
+    {
+      "id": "V9-A5.2",
+      "title": "Independent full-model-state branching",
+      "commit": "bb87918",
+      "question": "Does a complete independent 432-query TrackOn2 state produce useful future outputs beyond a shared-state capacity-2 control?",
+      "dataset": "72 frozen first-risk events across 9 PointOdyssey clips; horizons 1/4/8",
+      "fair_baseline": "Shared-state capacity-2 oracle: official final plus current-state score-top1 refined output",
+      "primary_gate": "Horizon-8 sequence/clip/CI/safe16 plus pooled, early8, and mechanistic novelty gates",
+      "raw_result": "State and C1 sets diverge, but horizon-8, pooled, early8, and useful-novelty gates fail.",
+      "final_interpretation": "The tested independent score-top1 singleton state branch is closed.",
+      "status": "closed",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_branching.json",
+      "extra_json": "outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_candidate_reachability_postaudit.json",
+      "commit_full": "bb879183ffff03129cb652824c286f56f9201804",
+      "metrics": {
+        "horizon8_independent_mean": 5.47883185304024,
+        "horizon8_shared_mean": 5.194916469129649,
+        "horizon8_difference": 0.28391538391059096,
+        "horizon8_better_worse_equal": [
+          14,
+          14,
+          16
+        ],
+        "pooled_difference": 0.07336724552981279,
+        "q_new_divergence_fraction": 1.0,
+        "top16_changed_fraction": 0.5185185185185185,
+        "useful_novel_rows": 3,
+        "gate_pass": false,
+        "decision": "INDEPENDENT_STATE_FAIL: the frozen independent-state branch does not satisfy the capacity-matched statistical and mechanistic gates. Close the temporal multi-state route; do not train or read DAVIS."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a52_independent_state_branching_audit.py",
+          "role": "execution_script",
+          "size_bytes": 76619,
+          "sha256": "d400e8a8b0e713df00620fa113bda1e1bddcf2612821968dd3682811913c7104"
+        },
+        {
+          "path": "scripts/v9a52_candidate_reachability_postaudit.py",
+          "role": "postaudit_script",
+          "size_bytes": 14373,
+          "sha256": "db0f8eab66f85ed1acc84f3136a72d299b9e2c7d246c56524b0daaac50c6ae17"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_branching.json",
+          "role": "result_json",
+          "size_bytes": 70855,
+          "sha256": "929e87feb67795448cfece53d2d6d3c0eb0cc7174d30f211790e4c2eeac12d74"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_independent_state_branching_rows.npz",
+          "role": "result_npz",
+          "size_bytes": 26879,
+          "sha256": "fd84754a5c5bb8192c9ce8251de2f1bd51b567d6ead6147b6d81849d453a19b5"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a52_independent_state/v9a52_candidate_reachability_postaudit.json",
+          "role": "postaudit_json",
+          "size_bytes": 25493,
+          "sha256": "fae42684d9eae2b92e6a4423d3d5b60bd6a13bbd30e28368a19c86ba970c2ec9"
+        },
+        {
+          "path": "docs/v9a52_comprehensive_review_and_route_closure_2026-07-11.md",
+          "role": "review",
+          "size_bytes": 12153,
+          "sha256": "46f668dbd8e22b9df37ec4fb2d4604968276d3da4c3cb11ec1d804e23ed5aea1"
+        }
+      ]
+    },
+    {
+      "id": "V9-A6.0",
+      "title": "Bounded fused-correlation rank shift",
+      "commit": "a1c697d",
+      "question": "Are K16-miss/K64-hit candidates close enough to the K16 score boundary for a small identity-preserving residual?",
+      "dataset": "760 visible K16-miss/K64-hit opportunities from the 4,878-row canonical pool",
+      "fair_baseline": "Original fused top16 boundary; GT-directed target boost is an optimistic magnitude lower bound",
+      "primary_gate": "At span<=2*g_ref: >=50% global conversion, >=40% each sequence, clip/CI/gain and normalized-magnitude gates",
+      "raw_result": "Only 67/760 opportunities convert at 2*g_ref; every gate fails.",
+      "final_interpretation": "Small bounded pre-topK correlation residual promotion is closed; the evaluated pool is visible-only.",
+      "status": "closed",
+      "result_json": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit.json",
+      "extra_json": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_visibility_stratified_postaudit.json",
+      "commit_full": "a1c697de250e1d15f4653cdb77aa85e7e7ce8899",
+      "metrics": {
+        "opportunities": 760,
+        "primary_promoted": 67,
+        "primary_conversion": 0.0881578947368421,
+        "primary_global_gain": 0.013735137351373513,
+        "primary_hard_gain": 0.027697395618023975,
+        "primary_conversion_ci": [
+          0.05486725663716814,
+          0.14207650273224043
+        ],
+        "wide_conversion": 0.3473684210526316,
+        "span_over_std_median": 0.12653189253198444,
+        "span_over_std_p90": 0.2744305452054363,
+        "canonical_visible_rows": 4878,
+        "canonical_invisible_rows": 0,
+        "gate_pass": false,
+        "decision": "RANK_SHIFT_MAGNITUDE_FAIL: even the optimistic target-directed oracle does not satisfy the preregistered small-span, sequence/clip-consistency and implied-recall gates. Close the bounded correlation residual route; do not train or read DAVIS.",
+        "boundary_decision": "VISIBILITY_STRATIFICATION_NOT_APPLICABLE: all 4,878 canonical candidate-audit rows and all 760 rank-shift opportunity rows are GT-visible by construction. The V9-A6.0 negative result already applies to the complete evaluated opportunity set and is not driven by invisible/occluded rows. Preserve the formal gate and route closure. Add an explicit visible-only sampling caveat to the paper; do not claim invisible-frame correlation recall coverage."
+      },
+      "artifacts": [
+        {
+          "path": "scripts/v9a60_export_fused_top129.py",
+          "role": "export_script",
+          "size_bytes": 36607,
+          "sha256": "684e7a6243d7fccddd23bef79355356dd78ef2b40d2257d1483f790ac680ed2c"
+        },
+        {
+          "path": "scripts/v9a60_bounded_rank_shift_audit.py",
+          "role": "execution_script",
+          "size_bytes": 27273,
+          "sha256": "61dd1ea369353a698a683212dcb2c45d6ba0eb9b1d7a603e6fdbc270eec538c6"
+        },
+        {
+          "path": "scripts/v9a60_visibility_stratified_postaudit.py",
+          "role": "boundary_postaudit_script",
+          "size_bytes": 12331,
+          "sha256": "0915dfcaca4e1533508b610f1c17293cb3ffe17f6096912d6e4eeb300682b316"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.json",
+          "role": "export_json",
+          "size_bytes": 8973,
+          "sha256": "72fb654381eef236c73b54d8d52d5bfbe4a7b3e4cfaf7ebcf850f1cdf8472cbb"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.npz",
+          "role": "export_npz",
+          "size_bytes": 15996639,
+          "sha256": "0849bb9ab700e8f5224bf751f897aea7a38e0efd6363d6d83297e04ecbfac3ac"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit.json",
+          "role": "result_json",
+          "size_bytes": 35590,
+          "sha256": "a541d4475ca647a798827ac05a5befff588d33ceccfefb1229b85dff3a4f9370"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit_rows.npz",
+          "role": "result_npz",
+          "size_bytes": 92776,
+          "sha256": "24c3b49d85635aa6879ef084630422ccf63f145951eeae808d72a24d58da30a6"
+        },
+        {
+          "path": "outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_visibility_stratified_postaudit.json",
+          "role": "boundary_postaudit_json",
+          "size_bytes": 8779,
+          "sha256": "f017220b2fcfae00ac01a93391564e7370578aa740c4939ba0f9b70040cb2479"
+        },
+        {
+          "path": "docs/v9a60_comprehensive_review_and_algorithmic_route_closure_2026-07-11.md",
+          "role": "review",
+          "size_bytes": 12968,
+          "sha256": "557633cb07cd7f6ca930a6f56899ad43904a57e0030e833240e2d392be5c7e85"
+        }
+      ]
+    }
+  ]
+}

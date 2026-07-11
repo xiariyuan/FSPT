@@ -3264,3 +3264,74 @@ Decision:
 ```text
 VISIBILITY_STRATIFICATION_NOT_APPLICABLE. Invisible rows do not drive the V9-A6.0 failure because no invisible row is present in the canonical opportunity set. Preserve the formal gate and route closure. Add a visible-only sampling caveat to the paper and do not claim invisible-frame correlation-recall coverage.
 ```
+
+## V9-A evidence consolidation and verification
+
+Tooling commits:
+
+```text
+f777929 Add V9-A evidence index and verifier tooling
+7e8d2f6 Relax evidence verifier float32 mean tolerance
+e390c01 Normalize generated evidence document endings
+bf4aed1 Stabilize evidence tooling provenance
+```
+
+Generated artifacts:
+
+```text
+docs/V9A_EVIDENCE_INDEX_2026-07-11.md
+docs/V9A_ROUTE_CLOSURE_MATRIX_2026-07-11.md
+docs/REPRODUCE_V9A_EVIDENCE.md
+docs/V9A_EVIDENCE_VERIFICATION_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a_evidence/v9a_evidence_index.json
+outputs/paper_discovery_2026-07-05/v9a_evidence/v9a_evidence_verification.json
+```
+
+Evidence index:
+
+```text
+schema: v9a-evidence-index-v1
+routes: 8
+indexed artifacts: 43
+stable tooling head: bf4aed14c8b3dfa656991392bf27e27dd3982c01
+index SHA256: 74f2f04d8a56b3c399636ce3243ac4b336a704ba765a9cf512b460f740516eb1
+```
+
+CPU-side committed-artifact verification:
+
+```text
+PASS
+8 route checks passed
+43 artifact SHA256/size checks passed
+commit ancestry checks passed
+key NPZ formulas independently reproduced
+verification SHA256: 19a2919aebf475dbd1a6b5ce6f737cda3cfb12f7ac29bf4be4e9f70099df7f20
+```
+
+Independent formula coverage includes:
+
+```text
+V9-A4.5 student-minus-teacher arithmetic and failed gate
+V9-A5.0 sampled-state failure / oracle-state headroom
+V9-A5C.0 per-sequence K16/K64 recall and headroom
+V9-A5.1a selected-candidate top1/oracle means
+V9-A5.1b risk-gated hybrid-oracle formula
+V9-A5.1c beam formulas and same-capacity final failure
+V9-A5.2 shared/independent B2 formulas
+V9-A6.0 span/epsilon/component/budget formulas and visible-only boundary
+```
+
+Reproducibility boundary:
+
+```text
+The final checkout can verify committed artifacts and saved-array formulas without GPU inference. Exact full GPU recomputation additionally requires immutable external assets, historical execution code states, and the recorded absolute-path layout or an external path-mapping wrapper. Several formal scripts were executed from a historical HEAD before the execution script/result commit; use the recorded execution HEAD plus script SHA256 rather than assuming direct final-checkout rerun.
+```
+
+Project state:
+
+```text
+Route A diagnostic paper: active/stable
+Route B current rescue hypothesis tree: exhausted
+Route C old student/pseudo-label/DINO-local routes: closed
+Next work: manuscript tables/figures, discussion/limitations, clean-checkout artifact verification, and archival/tagging. No new model experiment without a genuinely new written architectural hypothesis.
+```
