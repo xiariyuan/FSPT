@@ -3031,3 +3031,76 @@ Remaining distinct direction:
 ```text
 V9-A5C.0 still shows fused top16-to-top64 recall headroom, especially on hard rows. The only unclosed mechanism is to change the fused correlation map before top-K, not to select/branch over a fixed pool. Next: V9-A6.0 no-training bounded correlation rank-shift feasibility. Only if that gate passes may a frozen-backbone sequence-heldout bounded residual correlation adapter be preregistered. No training or DAVIS in V9-A6.0.
 ```
+
+## V9-A6.0 bounded correlation rank-shift pre-registration
+
+Artifacts:
+
+```text
+docs/v9a60_bounded_correlation_rank_shift_design_2026-07-11.md
+docs/v9a60_input_manifest_2026-07-11.json
+```
+
+Repository:
+
+```text
+worktree: /gemini/code/FSPT_v9a60_clean
+branch: v9a60-correlation-rank-shift-20260711
+base HEAD: bb879183ffff03129cb652824c286f56f9201804
+```
+
+Scope correction:
+
+```text
+V9-A6.0 is a no-training necessary-condition audit. A GT-directed target boost can measure only the score span required to promote an existing rank-17-to-64 <=4px candidate into top16. It cannot measure target identification, false promotions, easy-row collateral or final TrackOn2 accuracy. A pass authorizes only a separately preregistered V9-A6.1 sequence-heldout bounded residual adapter.
+```
+
+Existing evidence is insufficient for exact rank-shift magnitude because V9-A5C.0 does not save the top16 threshold score or the highest-scoring <=4px candidate in ranks 17-64. V9-A6.0 must first export top129 fused/component scores and errors with full V9-A5C.0 parity.
+
+Frozen opportunity expectations:
+
+```text
+4,878 source rows
+K16 miss / K64 hit at 4px: 760
+ani 361 / animal3 98 / r4_new_f 301
+```
+
+Risk semantics:
+
+```text
+GT-hard = old_error_px > 4 and is reporting-only.
+Native risk remains visibility_conf < 0.8 OR uncertainty_sigmoid >= 0.5.
+Native risk covers only 325/760 opportunity rows and only 27/301 on r4_new_f, so the primary magnitude audit is global. Risk-gated conversion is diagnostic only.
+```
+
+Target and perturbation:
+
+```text
+Target = first/highest-scoring <=4px candidate in original fused ranks 17-64.
+Score span = rank16_score - target_score.
+Positive target-only epsilon = nextafter(rank16_score,+inf) - target_score.
+Signed pairwise per-cell L∞ lower bound = score span / 2.
+```
+
+Frozen natural reference and budgets:
+
+```text
+g_ref = committed all-row fused K16 boundary-gap median = 0.003143310546875
+span budgets = 0.5/1/2/4/8 * g_ref
+primary span budget = 2*g_ref = 0.00628662109375
+```
+
+Primary necessary-condition gate at `span <= 2*g_ref`:
+
+```text
+global opportunity conversion >= 0.50
+each sequence conversion >= 0.40
+at least 7/9 clips conversion >= 0.30
+clip-bootstrap 95% lower bound > 0.35
+implied global recall@4 oracle gain >= 0.075
+implied GT-hard recall@4 oracle gain >= 0.12
+median span/fused_std <= 0.02 on every sequence
+global p90 span/fused_std <= 0.10
+```
+
+No easy-row safety claim is allowed from the target-directed oracle. No training, epsilon sweep, risk-threshold sweep or DAVIS read is allowed.
