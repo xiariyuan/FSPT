@@ -3237,3 +3237,30 @@ Project route decision:
 ```text
 Stop algorithmic expansion on the current rescue tree. Route A diagnostic paper remains active/stable. Consolidate committed evidence, route-closure tables, reproducibility checks, manuscript figures and limitations. Any future model experiment requires a genuinely new written architectural hypothesis, not another selector/state branch/small residual variant.
 ```
+
+## V9-A6.0 visibility-boundary post-audit
+
+Artifacts:
+
+```text
+scripts/v9a60_visibility_stratified_postaudit.py
+docs/v9a60_visibility_stratified_postaudit_2026-07-11.md
+outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_visibility_stratified_postaudit.json
+```
+
+Result:
+
+```text
+canonical V9-A3.8/V9-A5C.0 rows: 4,878 visible / 0 invisible
+V9-A6.0 opportunity rows:       760 visible / 0 invisible
+```
+
+The V9-A3.8 pool builder skips a row before append when the target is not visible or the trajectory coordinate is non-finite. Therefore V9-A5C.0 and V9-A6.0 are visible-frame candidate audits by construction.
+
+Independent checks reproduce the exact source-index mapping and the formal `2*g_ref`/`8*g_ref` promoted counts of 67 and 264.
+
+Decision:
+
+```text
+VISIBILITY_STRATIFICATION_NOT_APPLICABLE. Invisible rows do not drive the V9-A6.0 failure because no invisible row is present in the canonical opportunity set. Preserve the formal gate and route closure. Add a visible-only sampling caveat to the paper and do not claim invisible-frame correlation-recall coverage.
+```

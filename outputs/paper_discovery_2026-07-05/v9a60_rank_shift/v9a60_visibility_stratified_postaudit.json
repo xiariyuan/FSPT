@@ -1,0 +1,284 @@
+{
+  "date": "2026-07-11",
+  "type": "non-gating visibility stratification post-audit",
+  "protocol": {
+    "trackon_execution": false,
+    "training": false,
+    "davis_read": false,
+    "changes_formal_gate": false,
+    "adds_score_budget": false
+  },
+  "sampling_boundary": {
+    "canonical_rows": 4878,
+    "canonical_visible_rows": 4878,
+    "canonical_invisible_rows": 0,
+    "pool_builder_rule": "V9-A3.8 skips a row before append when visible[t,track_id] is false or the trajectory coordinate is non-finite.",
+    "pool_builder_source": "/gemini/code/FSPT/scripts/v9a38_build_pointodyssey_hypothesis_pool.py",
+    "pool_builder_sha256": "ff8aa0639872c2cf39fa43420982a95910bb155e8cad6275d59fd346c3724c30",
+    "implication": "V9-A5C.0 and V9-A6.0 are visible-frame candidate audits by construction. They do not measure invisible-frame candidate recall or rank-shift magnitude."
+  },
+  "opportunity_visibility": {
+    "opportunity_rows": 760,
+    "visible_rows": 760,
+    "invisible_rows": 0,
+    "per_sequence": {
+      "ani": {
+        "visible": 361,
+        "invisible": 0
+      },
+      "animal3": {
+        "visible": 98,
+        "invisible": 0
+      },
+      "r4_new_f": {
+        "visible": 301,
+        "invisible": 0
+      }
+    },
+    "per_clip": {
+      "ani:0": {
+        "visible": 236,
+        "invisible": 0
+      },
+      "ani:256": {
+        "visible": 93,
+        "invisible": 0
+      },
+      "ani:512": {
+        "visible": 32,
+        "invisible": 0
+      },
+      "animal3:0": {
+        "visible": 21,
+        "invisible": 0
+      },
+      "animal3:256": {
+        "visible": 68,
+        "invisible": 0
+      },
+      "animal3:512": {
+        "visible": 9,
+        "invisible": 0
+      },
+      "r4_new_f:0": {
+        "visible": 161,
+        "invisible": 0
+      },
+      "r4_new_f:256": {
+        "visible": 116,
+        "invisible": 0
+      },
+      "r4_new_f:512": {
+        "visible": 24,
+        "invisible": 0
+      }
+    },
+    "visibility_stratification_available": false,
+    "reason": "The canonical pool and every rank-shift opportunity row are GT-visible."
+  },
+  "visible_only_metrics": {
+    "primary_2x_g_ref": {
+      "n": 760,
+      "promoted": 67,
+      "conversion": 0.0881578947368421,
+      "per_sequence": {
+        "ani": {
+          "n": 361,
+          "promoted": 31,
+          "conversion": 0.08587257617728532
+        },
+        "animal3": {
+          "n": 98,
+          "promoted": 22,
+          "conversion": 0.22448979591836735
+        },
+        "r4_new_f": {
+          "n": 301,
+          "promoted": 14,
+          "conversion": 0.046511627906976744
+        }
+      },
+      "per_clip": {
+        "ani:0": {
+          "n": 236,
+          "promoted": 21,
+          "conversion": 0.08898305084745763
+        },
+        "ani:256": {
+          "n": 93,
+          "promoted": 9,
+          "conversion": 0.0967741935483871
+        },
+        "ani:512": {
+          "n": 32,
+          "promoted": 1,
+          "conversion": 0.03125
+        },
+        "animal3:0": {
+          "n": 21,
+          "promoted": 6,
+          "conversion": 0.2857142857142857
+        },
+        "animal3:256": {
+          "n": 68,
+          "promoted": 15,
+          "conversion": 0.22058823529411764
+        },
+        "animal3:512": {
+          "n": 9,
+          "promoted": 1,
+          "conversion": 0.1111111111111111
+        },
+        "r4_new_f:0": {
+          "n": 161,
+          "promoted": 7,
+          "conversion": 0.043478260869565216
+        },
+        "r4_new_f:256": {
+          "n": 116,
+          "promoted": 3,
+          "conversion": 0.02586206896551724
+        },
+        "r4_new_f:512": {
+          "n": 24,
+          "promoted": 4,
+          "conversion": 0.16666666666666666
+        }
+      }
+    },
+    "wide_8x_g_ref": {
+      "n": 760,
+      "promoted": 264,
+      "conversion": 0.3473684210526316,
+      "per_sequence": {
+        "ani": {
+          "n": 361,
+          "promoted": 130,
+          "conversion": 0.3601108033240997
+        },
+        "animal3": {
+          "n": 98,
+          "promoted": 51,
+          "conversion": 0.5204081632653061
+        },
+        "r4_new_f": {
+          "n": 301,
+          "promoted": 83,
+          "conversion": 0.2757475083056478
+        }
+      },
+      "per_clip": {
+        "ani:0": {
+          "n": 236,
+          "promoted": 94,
+          "conversion": 0.3983050847457627
+        },
+        "ani:256": {
+          "n": 93,
+          "promoted": 27,
+          "conversion": 0.2903225806451613
+        },
+        "ani:512": {
+          "n": 32,
+          "promoted": 9,
+          "conversion": 0.28125
+        },
+        "animal3:0": {
+          "n": 21,
+          "promoted": 11,
+          "conversion": 0.5238095238095238
+        },
+        "animal3:256": {
+          "n": 68,
+          "promoted": 37,
+          "conversion": 0.5441176470588235
+        },
+        "animal3:512": {
+          "n": 9,
+          "promoted": 3,
+          "conversion": 0.3333333333333333
+        },
+        "r4_new_f:0": {
+          "n": 161,
+          "promoted": 41,
+          "conversion": 0.2546583850931677
+        },
+        "r4_new_f:256": {
+          "n": 116,
+          "promoted": 27,
+          "conversion": 0.23275862068965517
+        },
+        "r4_new_f:512": {
+          "n": 24,
+          "promoted": 15,
+          "conversion": 0.625
+        }
+      }
+    },
+    "span": {
+      "n": 760,
+      "mean": 0.040254483724895276,
+      "median": 0.03430986404418945,
+      "p90": 0.07755727767944337,
+      "min": 7.724761962890625e-05,
+      "max": 0.19609451293945312
+    },
+    "span_over_fused_std": {
+      "n": 760,
+      "mean": 0.13897879285041378,
+      "median": 0.12653189253198444,
+      "p90": 0.2744305452054363,
+      "min": 0.0004284248406077895,
+      "max": 0.482837315986137
+    },
+    "target_rank": {
+      "n": 760,
+      "mean": 35.16710526315789,
+      "median": 33.0,
+      "p90": 54.10000000000002,
+      "min": 17.0,
+      "max": 64.0
+    },
+    "native_risk": {
+      "opportunities": 325,
+      "primary_promoted": 36,
+      "wide_promoted": 139
+    },
+    "reentry": {
+      "first_opportunities": 28,
+      "first_primary_promoted": 3,
+      "early8_opportunities": 146,
+      "early8_primary_promoted": 15
+    },
+    "matches_formal_primary_count": true,
+    "matches_formal_wide_count": true
+  },
+  "formal_decision": "RANK_SHIFT_MAGNITUDE_FAIL: even the optimistic target-directed oracle does not satisfy the preregistered small-span, sequence/clip-consistency and implied-recall gates. Close the bounded correlation residual route; do not train or read DAVIS.",
+  "decision": "VISIBILITY_STRATIFICATION_NOT_APPLICABLE: all 4,878 canonical candidate-audit rows and all 760 rank-shift opportunity rows are GT-visible by construction. The V9-A6.0 negative result already applies to the complete evaluated opportunity set and is not driven by invisible/occluded rows. Preserve the formal gate and route closure. Add an explicit visible-only sampling caveat to the paper; do not claim invisible-frame correlation recall coverage.",
+  "integrity": {
+    "environment": {
+      "head": "a1c697de250e1d15f4653cdb77aa85e7e7ce8899",
+      "branch": "v9a60-correlation-rank-shift-20260711",
+      "tracked_status": "",
+      "checked_hashes": {
+        "/gemini/code/FSPT/scripts/v9a38_build_pointodyssey_hypothesis_pool.py": "ff8aa0639872c2cf39fa43420982a95910bb155e8cad6275d59fd346c3724c30",
+        "/gemini/code/FSPT_v9a60_clean/outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.json": "72fb654381eef236c73b54d8d52d5bfbe4a7b3e4cfaf7ebcf850f1cdf8472cbb",
+        "/gemini/code/FSPT_v9a60_clean/outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_fused_top129_export.npz": "0849bb9ab700e8f5224bf751f897aea7a38e0efd6363d6d83297e04ecbfac3ac",
+        "/gemini/code/FSPT_v9a60_clean/outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit.json": "a541d4475ca647a798827ac05a5befff588d33ceccfefb1229b85dff3a4f9370",
+        "/gemini/code/FSPT_v9a60_clean/outputs/paper_discovery_2026-07-05/v9a60_rank_shift/v9a60_bounded_rank_shift_audit_rows.npz": "24c3b49d85635aa6879ef084630422ccf63f145951eeae808d72a24d58da30a6"
+      },
+      "script": {
+        "path": "/gemini/code/FSPT_v9a60_clean/scripts/v9a60_visibility_stratified_postaudit.py",
+        "sha256": "0915dfcaca4e1533508b610f1c17293cb3ffe17f6096912d6e4eeb300682b316"
+      }
+    },
+    "source_indices_exact": true,
+    "sequence_keys_exact": true,
+    "clip_keys_exact": true,
+    "all_canonical_rows_visible": true,
+    "all_opportunity_rows_visible": true,
+    "formal_primary_count_reproduced": true,
+    "formal_wide_count_reproduced": true,
+    "script_sha256": "0915dfcaca4e1533508b610f1c17293cb3ffe17f6096912d6e4eeb300682b316"
+  }
+}
