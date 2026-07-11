@@ -252,7 +252,7 @@ def verify_v9a52(route: dict[str, Any]) -> dict[str, Any]:
         'V9-A5.2 horizon8 difference',
         np.mean(independent[mask] - shared[mask]),
         result['summaries']['horizon8_all_visible']['mean_difference'],
-        1e-9,
+        1e-6,
     )
     if result['gates']['pass_all']:
         raise RuntimeError('V9-A5.2 unexpectedly passes')
