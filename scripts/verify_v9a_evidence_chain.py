@@ -340,7 +340,7 @@ def write_doc(result: dict[str, Any]) -> None:
         '',
         'This verification checks committed artifacts and independently recomputes key saved-array formulas. It does not rerun TrackOn2 GPU inference or reproduce external datasets/checkpoints.',
     ]
-    OUT_DOC.write_text('\n'.join(lines) + '\n')
+    OUT_DOC.write_text('\n'.join(lines).rstrip() + '\n')
 
 
 def main() -> None:

@@ -414,7 +414,7 @@ def write_index_doc(index: dict[str, Any]) -> None:
                 f"- `{item['path']}` — {item['role']} — `{item['sha256']}`"
             )
         lines.append('')
-    OUT_INDEX_DOC.write_text('\n'.join(lines) + '\n')
+    OUT_INDEX_DOC.write_text('\n'.join(lines).rstrip() + '\n')
 
 
 def write_matrix_doc(index: dict[str, Any]) -> None:
@@ -443,7 +443,7 @@ def write_matrix_doc(index: dict[str, Any]) -> None:
             'This matrix is a project evidence closure, not a universal impossibility theorem for all tracking architectures.',
         ]
     )
-    OUT_MATRIX_DOC.write_text('\n'.join(lines) + '\n')
+    OUT_MATRIX_DOC.write_text('\n'.join(lines).rstrip() + '\n')
 
 
 def write_reproduce_doc(index: dict[str, Any]) -> None:
@@ -479,7 +479,7 @@ def write_reproduce_doc(index: dict[str, Any]) -> None:
         '',
         f"Evidence index generated from `{index['generated_from']['head']}`.",
     ]
-    OUT_REPRO_DOC.write_text('\n'.join(lines) + '\n')
+    OUT_REPRO_DOC.write_text('\n'.join(lines).rstrip() + '\n')
 
 
 def main() -> None:
