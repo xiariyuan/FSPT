@@ -32,6 +32,11 @@ def git(*args: str) -> str:
     return subprocess.check_output(['git', '-C', str(ROOT), *args], text=True).strip()
 
 
+def last_change_commit(path: Path) -> str:
+    relative = str(path.resolve().relative_to(ROOT))
+    return git('log', '-1', '--format=%H', '--', relative)
+
+
 def load_json(path: str) -> dict[str, Any]:
     return json.loads((ROOT / path).read_text())
 
@@ -337,15 +342,21 @@ def extract_metrics(route: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_index() -> dict[str, Any]:
-    head = git('rev-parse', 'HEAD')
+    checkout_head = git('rev-parse', 'HEAD')
+    builder_path = Path(__file__).resolve()
+    tooling_head = last_change_commit(builder_path)
     branch = git('branch', '--show-current')
     tracked = git('status', '--porcelain', '--untracked-files=no')
     if tracked:
         raise RuntimeError(f'tracked worktree dirty: {tracked}')
+    subprocess.run(
+        ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', tooling_head, checkout_head],
+        check=True,
+    )
     routes = []
     for spec in route_specs():
         subprocess.run(
-            ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', spec['commit'], head],
+            ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', spec['commit'], checkout_head],
             check=True,
         )
         row = {key: value for key, value in spec.items() if key != 'artifacts'}
@@ -357,12 +368,13 @@ def build_index() -> dict[str, Any]:
         'schema_version': SCHEMA_VERSION,
         'created_at': '2026-07-11',
         'generated_from': {
-            'head': head,
+            'head': tooling_head,
             'branch': branch,
             'tracked_status': tracked,
+            'checkout_descends_from_tooling_head': True,
             'builder_script': {
-                'path': str(Path(__file__).resolve().relative_to(ROOT)),
-                'sha256': sha256(Path(__file__).resolve()),
+                'path': str(builder_path.relative_to(ROOT)),
+                'sha256': sha256(builder_path),
             },
         },
         'project_decision': {

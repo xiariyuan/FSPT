@@ -31,6 +31,11 @@ def git(*args: str) -> str:
     return subprocess.check_output(['git', '-C', str(ROOT), *args], text=True).strip()
 
 
+def last_change_commit(path: Path) -> str:
+    relative = str(path.resolve().relative_to(ROOT))
+    return git('log', '-1', '--format=%H', '--', relative)
+
+
 def assert_close(name: str, actual: float, expected: float, tolerance: float = TOL) -> None:
     if abs(float(actual) - float(expected)) > tolerance:
         raise RuntimeError(f'{name}: {actual} != {expected} within {tolerance}')
@@ -43,16 +48,22 @@ def route_map(index: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def verify_index_and_artifacts(index: dict[str, Any]) -> dict[str, Any]:
     if index['schema_version'] != 'v9a-evidence-index-v1':
         raise RuntimeError(f"unexpected schema: {index['schema_version']}")
-    current_head = git('rev-parse', 'HEAD')
+    checkout_head = git('rev-parse', 'HEAD')
+    verifier_path = Path(__file__).resolve()
+    verifier_head = last_change_commit(verifier_path)
     generated_head = index['generated_from']['head']
     subprocess.run(
-        ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', generated_head, current_head],
+        ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', generated_head, checkout_head],
+        check=True,
+    )
+    subprocess.run(
+        ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', verifier_head, checkout_head],
         check=True,
     )
     checked_artifacts = []
     for route in index['routes']:
         subprocess.run(
-            ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', route['commit_full'], current_head],
+            ['git', '-C', str(ROOT), 'merge-base', '--is-ancestor', route['commit_full'], checkout_head],
             check=True,
         )
         for item in route['artifacts']:
@@ -67,8 +78,10 @@ def verify_index_and_artifacts(index: dict[str, Any]) -> dict[str, Any]:
                 )
             checked_artifacts.append(item['path'])
     return {
-        'current_head': current_head,
+        'verification_tool_head': verifier_head,
         'generated_head': generated_head,
+        'checkout_descends_from_generated_head': True,
+        'checkout_descends_from_verification_tool_head': True,
         'routes': len(index['routes']),
         'artifacts_checked': len(checked_artifacts),
         'unique_artifacts_checked': len(set(checked_artifacts)),
@@ -366,7 +379,7 @@ def main() -> None:
             'checks_key_npz_formulas': True,
         },
         'provenance': {
-            'head': git('rev-parse', 'HEAD'),
+            'head': last_change_commit(Path(__file__).resolve()),
             'branch': git('branch', '--show-current'),
             'script_sha256': sha256(Path(__file__).resolve()),
         },
