@@ -461,9 +461,10 @@ def _generate_sparse_tracks_from_kubric(
             active = (t0_arr <= t)
             if not np.any(active):
                 continue
-            delta = _bilinear_sample_flow_batch(forward_flow[t], y_f[active], x_f[active])  # (dx, dy)
-            x_f[active] += delta[:, 0]
-            y_f[active] += delta[:, 1]
+            # Kubric/MOVi stores flow as (delta_row, delta_col).
+            delta = _bilinear_sample_flow_batch(forward_flow[t], y_f[active], x_f[active])
+            y_f[active] += delta[:, 0]
+            x_f[active] += delta[:, 1]
             coords[active, t + 1, 0] = y_f[active]
             coords[active, t + 1, 1] = x_f[active]
 
@@ -474,9 +475,10 @@ def _generate_sparse_tracks_from_kubric(
             active = (t0_arr >= t)
             if not np.any(active):
                 continue
-            delta = _bilinear_sample_flow_batch(backward_flow[t], y_b[active], x_b[active])  # (dx, dy)
-            x_b[active] += delta[:, 0]
-            y_b[active] += delta[:, 1]
+            # Kubric/MOVi stores flow as (delta_row, delta_col).
+            delta = _bilinear_sample_flow_batch(backward_flow[t], y_b[active], x_b[active])
+            y_b[active] += delta[:, 0]
+            x_b[active] += delta[:, 1]
             coords[active, t - 1, 0] = y_b[active]
             coords[active, t - 1, 1] = x_b[active]
 
@@ -501,9 +503,12 @@ def _generate_sparse_tracks_from_kubric(
                     xx = np.clip(np.rint(coords[valid, t, 1]).astype(np.int64), 0, W - 1)
                     occ[valid, t] |= (seg[t, yy, xx].astype(np.int32) != obj_ids[valid])
 
-        # Normalize coordinates to [0, 1].
-        coords[:, :, 0] = np.clip(coords[:, :, 0] / float(H), 0.0, 1.0)
-        coords[:, :, 1] = np.clip(coords[:, :, 1] / float(W), 0.0, 1.0)
+        # Normalize pixel-center coordinates to [0, 1] using the same
+        # convention as the rest of FSPT: last valid pixel maps exactly to 1.
+        denom_y = float(max(H - 1, 1))
+        denom_x = float(max(W - 1, 1))
+        coords[:, :, 0] = np.clip(coords[:, :, 0] / denom_y, 0.0, 1.0)
+        coords[:, :, 1] = np.clip(coords[:, :, 1] / denom_x, 0.0, 1.0)
         # Fill rare NaN/Inf (shouldn't happen in normal cases) to keep tensors finite.
         coords = np.nan_to_num(coords, nan=0.0, posinf=1.0, neginf=0.0)
         return coords.astype(np.float32, copy=False), occ.astype(bool, copy=False)

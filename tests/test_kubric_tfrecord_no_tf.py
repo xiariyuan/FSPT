@@ -38,6 +38,48 @@ class TestKubricNoTensorFlowPreprocess(unittest.TestCase):
         self.assertTrue(np.isfinite(tracks).all())
         self.assertLessEqual(float(tracks.max()), 1.0)
         self.assertGreaterEqual(float(tracks.min()), 0.0)
+        np.testing.assert_allclose(
+            tracks[point_index, query_t],
+            np.ones((tracks.shape[0], 2), dtype=np.float32),
+            atol=1e-6,
+        )
+
+    def test_kubric_flow_uses_delta_row_delta_col_order(self):
+        time, height, width = 4, 20, 30
+        forward = np.zeros((time, height, width, 2), dtype=np.float32)
+        backward = np.zeros_like(forward)
+        forward[..., 0] = 1.0
+        forward[..., 1] = 2.0
+        backward[..., 0] = -1.0
+        backward[..., 1] = -2.0
+
+        query, tracks, occluded = _generate_sparse_tracks_from_kubric(
+            forward_flow=forward,
+            backward_flow=backward,
+            segmentations=None,
+            num_points=512,
+            rng=np.random.RandomState(19),
+        )
+
+        tracks_px = tracks.copy()
+        tracks_px[..., 0] *= float(height - 1)
+        tracks_px[..., 1] *= float(width - 1)
+        query_t = np.rint(query[:, 0]).astype(np.int64)
+        observed = []
+        for point_index, q_t in enumerate(query_t):
+            for t in range(int(q_t), time - 1):
+                if not occluded[point_index, t] and not occluded[point_index, t + 1]:
+                    observed.append(tracks_px[point_index, t + 1] - tracks_px[point_index, t])
+            for t in range(1, int(q_t) + 1):
+                if not occluded[point_index, t] and not occluded[point_index, t - 1]:
+                    observed.append(tracks_px[point_index, t] - tracks_px[point_index, t - 1])
+
+        self.assertGreater(len(observed), 100)
+        np.testing.assert_allclose(
+            np.asarray(observed),
+            np.tile(np.asarray([[1.0, 2.0]], dtype=np.float32), (len(observed), 1)),
+            atol=1e-4,
+        )
 
     def test_dynamic_example_and_tfrecord_reader(self):
         example = MODULE.EXAMPLE_CLASS()
