@@ -11,6 +11,9 @@ import torch
 import yaml
 
 from projects.mmp_tracker.mmp_tracker import MMPTracker
+from projects.mmp_tracker.mmp_tracker.uncertainty_head import (
+    MMP_UNCERTAINTY_VALUE_NAMES,
+)
 from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
     extract_beliefcal_cache_batch,
     load_beliefcal_cache,
@@ -79,6 +82,33 @@ def git_head() -> str:
         return "unknown"
 
 
+def git_dirty() -> bool | None:
+    try:
+        output = subprocess.check_output(
+            ["git", "status", "--porcelain"],
+            text=True,
+            stderr=subprocess.DEVNULL,
+        )
+        return bool(output.strip())
+    except Exception:
+        return None
+
+
+def normalize_dataset_family(name: object) -> str:
+    normalized = str(name or "unknown").lower().replace("-", "_").strip()
+    if normalized.startswith("tapvid_"):
+        normalized = normalized[len("tapvid_") :]
+    aliases = {
+        "rgbstacking": "rgb_stacking",
+        "stacking": "rgb_stacking",
+    }
+    return aliases.get(normalized, normalized or "unknown")
+
+def uncertainty_feature_names() -> list[str]:
+    values = list(MMP_UNCERTAINTY_VALUE_NAMES)
+    return values + [f"{name}_available" for name in values]
+
+
 def _resolve_annotation_path(data_config: Mapping[str, object]) -> Path | None:
     annotation_file = data_config.get("annotation_file")
     if annotation_file is None:
@@ -126,8 +156,10 @@ def dataset_provenance(
                         candidate = root / candidate
                     source_files.append(str(candidate.resolve()))
 
+    dataset_family = normalize_dataset_family(data_config.get("dataset"))
     identity_payload = {
         "dataset": data_config.get("dataset"),
+        "dataset_family": dataset_family,
         "root": str(root),
         "split": data_config.get("split", split_key),
         "annotation_path": str(annotation_path) if annotation_path is not None else None,
@@ -135,6 +167,7 @@ def dataset_provenance(
     }
     return {
         "data_config": data_config,
+        "dataset_family": dataset_family,
         "dataset_identity": sha256_json(identity_payload),
         "dataset_identity_payload": identity_payload,
         "annotation_manifest": str(annotation_path) if annotation_path is not None else None,
@@ -198,6 +231,7 @@ def _legacy_checkpoint_audit(
 def audit_cache_bundle(
     cache_paths: Mapping[str, str | Path],
     require_strict_checkpoint: bool = True,
+    require_distinct_dataset_families: bool = True,
 ) -> Dict[str, object]:
     roles = ("train", "calibration", "validation", "test")
     missing_roles = [role for role in roles if role not in cache_paths]
@@ -233,6 +267,21 @@ def audit_cache_bundle(
                 f"{role}: unique sample_id count={unique_samples}, "
                 f"manifest videos={manifest_videos}"
             )
+        dirty = manifest.get("git_dirty")
+        if dirty is True:
+            errors.append(f"{role}: cache was generated from a dirty git worktree")
+        elif dirty is None:
+            warnings.append(f"{role}: git dirty state was not recorded")
+
+    feature_hashes = {
+        str(manifest.get("feature_order_sha256"))
+        for manifest in manifests.values()
+        if manifest.get("feature_order_sha256")
+    }
+    if not feature_hashes:
+        warnings.append("no feature-order hash recorded in cache manifests")
+    elif len(feature_hashes) != 1:
+        errors.append(f"feature-order hash mismatch: {sorted(feature_hashes)}")
 
     checkpoint_hashes = {
         str(manifest.get("checkpoint_sha256"))
@@ -242,6 +291,16 @@ def audit_cache_bundle(
     if len(checkpoint_hashes) != 1:
         errors.append(
             f"all roles must use one checkpoint hash, got {sorted(checkpoint_hashes)}"
+        )
+
+    config_hashes = {
+        str(manifest.get("config_sha256"))
+        for manifest in manifests.values()
+        if manifest.get("config_sha256")
+    }
+    if len(config_hashes) > 1:
+        warnings.append(
+            f"role caches use different full config hashes: {sorted(config_hashes)}"
         )
 
     model_hashes = {
@@ -255,12 +314,32 @@ def audit_cache_bundle(
         )
 
     identity_owner = {}
+    family_owner = {}
     source_owner = {}
     for role, manifest in manifests.items():
         dataset = manifest.get("dataset")
         if not isinstance(dataset, Mapping):
             warnings.append(f"{role}: no dataset provenance recorded")
             continue
+        family = dataset.get("dataset_family")
+        if family is None:
+            payload = dataset.get("dataset_identity_payload", {})
+            if isinstance(payload, Mapping):
+                family = normalize_dataset_family(payload.get("dataset"))
+            warnings.append(f"{role}: dataset family was inferred from legacy provenance")
+        family = str(family)
+        if family in family_owner:
+            message = (
+                f"dataset-family collision: {family_owner[family]} and {role} "
+                f"both use family={family!r}"
+            )
+            if require_distinct_dataset_families:
+                errors.append(message)
+            else:
+                warnings.append("engineering override: " + message)
+        else:
+            family_owner[family] = role
+
         identity = dataset.get("dataset_identity")
         if identity is None:
             warnings.append(f"{role}: no dataset identity recorded")
@@ -291,6 +370,11 @@ def audit_cache_bundle(
                 "videos": int(torch.unique(caches[role]["sample_id"]).numel()),
                 "checkpoint_load_mode": manifests[role].get(
                     "checkpoint_load_mode"
+                ),
+                "dataset_family": (
+                    manifests[role].get("dataset", {}).get("dataset_family")
+                    if isinstance(manifests[role].get("dataset"), Mapping)
+                    else None
                 ),
                 "dataset_identity": (
                     manifests[role].get("dataset", {}).get("dataset_identity")
@@ -366,8 +450,12 @@ def command_make_cache(args: argparse.Namespace) -> None:
                 )
             )
     cache = merge_beliefcal_cache_batches(batches)
+    feature_names = uncertainty_feature_names()
     manifest = {
         "git_head": git_head(),
+        "git_dirty": git_dirty(),
+        "feature_names": feature_names,
+        "feature_order_sha256": sha256_json(feature_names),
         "role": args.role,
         "checkpoint_load_mode": checkpoint_load_mode,
         "config": str(Path(args.config).resolve()),
@@ -404,7 +492,8 @@ def command_fit_caches(args: argparse.Namespace) -> None:
             "calibration": args.calibration_cache,
             "validation": args.validation_cache,
             "test": args.test_cache,
-        }
+        },
+        require_distinct_dataset_families=not args.allow_shared_dataset_family,
     )
     result = run_beliefcal_mvp1_experiment(
         train_cache,
@@ -439,6 +528,7 @@ def command_audit_caches(args: argparse.Namespace) -> None:
             "test": args.test_cache,
         },
         require_strict_checkpoint=not args.allow_non_strict_checkpoint,
+        require_distinct_dataset_families=not args.allow_shared_dataset_family,
     )
     if args.output:
         output_path = Path(args.output)
@@ -501,6 +591,11 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--test-cache", required=True)
     audit.add_argument("--output", default=None)
     audit.add_argument("--allow-non-strict-checkpoint", action="store_true")
+    audit.add_argument(
+        "--allow-shared-dataset-family",
+        action="store_true",
+        help="Engineering-only override; formal protocol requires distinct families.",
+    )
     audit.set_defaults(func=command_audit_caches)
 
     fit = subparsers.add_parser("fit-caches")
@@ -515,6 +610,11 @@ def build_parser() -> argparse.ArgumentParser:
     fit.add_argument("--batch-size", type=int, default=4096)
     fit.add_argument("--learning-rate", type=float, default=1e-3)
     fit.add_argument("--device", default="cpu")
+    fit.add_argument(
+        "--allow-shared-dataset-family",
+        action="store_true",
+        help="Engineering-only override; formal protocol requires distinct families.",
+    )
     fit.set_defaults(func=command_fit_caches)
 
     smoke = subparsers.add_parser("synthetic-smoke")
