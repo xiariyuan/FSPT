@@ -35,6 +35,26 @@ def load_config(path: str) -> Dict:
         return yaml.safe_load(handle)
 
 
+def iterate_loader_window(loader, start_batch: int = 0, limit: int | None = None):
+    """Yield a deterministic window from any iterable DataLoader.
+
+    DataLoader implements ``__iter__`` but is not itself an iterator, so batch
+    skipping must happen on one shared iterator. Recreating an iterator after
+    skipping would silently restart iterable datasets from batch zero.
+    """
+    start_batch = max(0, int(start_batch))
+    iterator = iter(loader)
+    skipped = 0
+    while skipped < start_batch:
+        try:
+            next(iterator)
+        except StopIteration:
+            return
+        skipped += 1
+    for relative_index, batch in iterate_limited(iterator, limit):
+        yield skipped + relative_index, batch
+
+
 def sha256_file(path: str | Path) -> str:
     digest = hashlib.sha256()
     with Path(path).open("rb") as handle:
@@ -319,13 +339,10 @@ def command_make_cache(args: argparse.Namespace) -> None:
 
     batches = []
     next_sample_id = 0
-    for _ in range(int(args.start_batch)):
-        try:
-            next(loader)
-        except StopIteration:
-            break
     with torch.no_grad():
-        for batch_index, batch in iterate_limited(loader, limit):
+        for batch_index, batch in iterate_loader_window(
+            loader, start_batch=args.start_batch, limit=limit
+        ):
             video = batch["video"].to(device)
             query_points = batch["query_points"].to(device)
             gt_tracks = batch["target_points"].to(device)
