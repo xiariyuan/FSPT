@@ -13,6 +13,7 @@ import torch
 from .calibration_metrics import calibration_report
 from .uncertainty_head import (
     MMP_UNCERTAINTY_FEATURE_DIM,
+    MMP_UNCERTAINTY_VALUE_NAMES,
     DiagonalGaussianUncertaintyHead,
     build_mmp_uncertainty_features,
     diagonal_gaussian_nll,
@@ -339,6 +340,51 @@ def _standardize_features(
     return (features - mean) / std.clamp_min(1e-6)
 
 
+def uncertainty_feature_names() -> Tuple[str, ...]:
+    values = tuple(MMP_UNCERTAINTY_VALUE_NAMES)
+    return values + tuple(f"{name}_available" for name in values)
+
+
+def resolve_uncertainty_feature_selection(
+    profile: str = "full",
+) -> Tuple[Tuple[int, ...], Tuple[str, ...]]:
+    """Return a fixed, auditable feature selection for a diagnostic ablation.
+
+    ``drop_inert_mmp`` removes only the three value channels observed to be
+    constant in the current frozen localglobal+heuristic execution path, plus
+    their matching availability bits. It is an engineering ablation, not a
+    replacement for the preregistered full feature contract.
+    """
+    profile = str(profile).strip().lower()
+    names = uncertainty_feature_names()
+    if profile == "full":
+        indices = tuple(range(len(names)))
+    elif profile == "drop_inert_mmp":
+        dropped_values = {
+            "selected_global",
+            "active",
+            "predicted_occluded_duration",
+        }
+        dropped = dropped_values | {f"{name}_available" for name in dropped_values}
+        indices = tuple(index for index, name in enumerate(names) if name not in dropped)
+    else:
+        raise ValueError(
+            f"Unsupported feature profile {profile!r}; expected full|drop_inert_mmp"
+        )
+    return indices, tuple(names[index] for index in indices)
+
+
+def _select_features(
+    features: torch.Tensor, feature_indices: Sequence[int]
+) -> torch.Tensor:
+    indices = torch.as_tensor(tuple(int(index) for index in feature_indices), dtype=torch.long)
+    if indices.numel() == 0:
+        raise ValueError("At least one uncertainty feature must be selected.")
+    if int(indices.min()) < 0 or int(indices.max()) >= int(features.shape[-1]):
+        raise ValueError("Feature selection index is outside the cache feature dimension.")
+    return features.index_select(-1, indices)
+
+
 def train_uncertainty_head(
     train_cache: Mapping[str, torch.Tensor],
     validation_cache: Mapping[str, torch.Tensor],
@@ -351,15 +397,23 @@ def train_uncertainty_head(
     min_std_px: float = 0.25,
     max_std_px: float = 256.0,
     device: str = "cpu",
+    feature_profile: str = "full",
 ) -> Dict[str, object]:
     validate_beliefcal_cache(train_cache)
     validate_beliefcal_cache(validation_cache)
     set_beliefcal_seed(seed)
     torch_device = torch.device(device)
 
-    train_features = train_cache["features"].float()
+    feature_indices, selected_feature_names = resolve_uncertainty_feature_selection(
+        feature_profile
+    )
+    train_features = _select_features(
+        train_cache["features"].float(), feature_indices
+    )
     train_errors = train_cache["errors_px"].float()
-    val_features = validation_cache["features"].float()
+    val_features = _select_features(
+        validation_cache["features"].float(), feature_indices
+    )
     val_errors = validation_cache["errors_px"].float()
     feature_mean = train_features.mean(dim=0)
     feature_std = train_features.std(dim=0, unbiased=False).clamp_min(1e-6)
@@ -415,6 +469,9 @@ def train_uncertainty_head(
 
     return {
         "seed": int(seed),
+        "feature_profile": str(feature_profile),
+        "feature_indices": tuple(int(index) for index in feature_indices),
+        "selected_feature_names": tuple(selected_feature_names),
         "input_dim": int(train_features.shape[-1]),
         "hidden_dim": int(hidden_dim),
         "min_std_px": float(min_std_px),
@@ -443,8 +500,14 @@ def predict_learned_variance(
     head.load_state_dict(state["model_state"])
     head.eval()
     with torch.no_grad():
+        feature_indices = state.get(
+            "feature_indices", tuple(range(cache["features"].shape[-1]))
+        )
+        selected_features = _select_features(
+            cache["features"].float(), feature_indices
+        )
         x = _standardize_features(
-            cache["features"].float(),
+            selected_features,
             state["feature_mean"].float(),
             state["feature_std"].float(),
         ).to(torch_device)
@@ -559,6 +622,7 @@ def run_beliefcal_mvp1_experiment(
     batch_size: int = 4096,
     learning_rate: float = 1e-3,
     device: str = "cpu",
+    feature_profile: str = "full",
 ) -> Dict[str, object]:
     for cache in (train_cache, calibration_cache, validation_cache, test_cache):
         validate_beliefcal_cache(cache)
@@ -583,6 +647,7 @@ def run_beliefcal_mvp1_experiment(
             batch_size=batch_size,
             learning_rate=learning_rate,
             device=device,
+            feature_profile=feature_profile,
         )
         calibration_variance = predict_learned_variance(
             calibration_cache, state, device=device
@@ -600,6 +665,8 @@ def run_beliefcal_mvp1_experiment(
         learned_runs.append(
             {
                 "seed": int(seed),
+                "feature_profile": state["feature_profile"],
+                "selected_feature_names": state["selected_feature_names"],
                 "best_val_nll": float(state["best_val_nll"]),
                 "raw_metrics": evaluate_variance_method(
                     test_cache, raw_test_variance
@@ -613,7 +680,8 @@ def run_beliefcal_mvp1_experiment(
         )
 
     return {
-        "format_version": 2,
+        "format_version": 3,
+        "feature_profile": str(feature_profile),
         "support_diagnostics": {
             "calibration": baseline_support_diagnostics(calibration_cache),
             "test": baseline_support_diagnostics(test_cache),
@@ -685,6 +753,7 @@ def json_safe_experiment_summary(result: Mapping[str, object]) -> Dict[str, obje
     """Drop tensor-heavy learned states for compact JSON result reporting."""
     summary = {
         "format_version": result.get("format_version", 1),
+        "feature_profile": result.get("feature_profile", "full"),
         "support_diagnostics": result.get("support_diagnostics"),
         "baselines": {},
         "learned_runs": [],
@@ -698,6 +767,8 @@ def json_safe_experiment_summary(result: Mapping[str, object]) -> Dict[str, obje
         summary["learned_runs"].append(
             {
                 "seed": run["seed"],
+                "feature_profile": run.get("feature_profile", "full"),
+                "selected_feature_names": run.get("selected_feature_names"),
                 "best_val_nll": run["best_val_nll"],
                 "raw_metrics": run.get("raw_metrics"),
                 "calibration_state": run.get("calibration_state"),

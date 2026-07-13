@@ -511,6 +511,7 @@ def command_fit_caches(args: argparse.Namespace) -> None:
         batch_size=args.batch_size,
         learning_rate=args.learning_rate,
         device=args.device,
+        feature_profile=args.feature_profile,
     )
     result["cache_manifests"] = {
         "train": train_manifest,
@@ -615,6 +616,12 @@ def build_parser() -> argparse.ArgumentParser:
     fit.add_argument("--batch-size", type=int, default=4096)
     fit.add_argument("--learning-rate", type=float, default=1e-3)
     fit.add_argument("--device", default="cpu")
+    fit.add_argument(
+        "--feature-profile",
+        choices=("full", "drop_inert_mmp"),
+        default="full",
+        help="Engineering feature ablation; full remains the preregistered contract.",
+    )
     fit.add_argument(
         "--allow-shared-dataset-family",
         action="store_true",

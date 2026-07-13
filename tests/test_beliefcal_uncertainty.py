@@ -7,7 +7,10 @@ from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
     apply_scalar_variance_calibration,
     baseline_support_diagnostics,
     fit_scalar_variance_calibration,
+    predict_learned_variance,
+    resolve_uncertainty_feature_selection,
     synthetic_beliefcal_cache,
+    train_uncertainty_head,
 )
 from projects.mmp_tracker.mmp_tracker.uncertainty_head import (
     DiagonalGaussianUncertaintyHead,
@@ -59,6 +62,30 @@ class TestBeliefCalUncertainty(unittest.TestCase):
         self.assertEqual(diagnostics["visibility_group_counts"], {"1": 64})
         self.assertEqual(diagnostics["duration_group_counts"], {"0": 64})
         self.assertEqual(len(diagnostics["warnings"]), 2)
+
+    def test_drop_inert_feature_profile_is_fixed_and_auditable(self):
+        indices, names = resolve_uncertainty_feature_selection("drop_inert_mmp")
+        self.assertEqual(len(indices), 20)
+        self.assertNotIn("selected_global", names)
+        self.assertNotIn("active", names)
+        self.assertNotIn("predicted_occluded_duration", names)
+        self.assertNotIn("selected_global_available", names)
+
+    def test_pruned_state_predicts_from_full_cache(self):
+        train = synthetic_beliefcal_cache(128, seed=11)
+        validation = synthetic_beliefcal_cache(64, seed=12, sample_offset=1000)
+        state = train_uncertainty_head(
+            train,
+            validation,
+            seed=17,
+            hidden_dim=8,
+            epochs=1,
+            batch_size=64,
+            feature_profile="drop_inert_mmp",
+        )
+        variance = predict_learned_variance(validation, state)
+        self.assertEqual(tuple(variance.shape), (64, 2))
+        self.assertEqual(state["input_dim"], 20)
 
     def test_variance_scale_respects_preregistered_bounds(self):
         errors = torch.full((4, 2), 1e6)
