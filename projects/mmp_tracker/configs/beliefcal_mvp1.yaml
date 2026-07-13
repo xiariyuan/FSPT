@@ -1,0 +1,24 @@
+experiment:
+  name: beliefcal_mmp_mvp1
+  description: Strict detached diagonal-Gaussian uncertainty calibration on frozen MMP predictions
+
+beliefcal:
+  feature_dim: 26
+  hidden_dim: 128
+  min_std_px: 0.25
+  max_std_px: 256.0
+  visibility_threshold: 0.5
+  seeds: [17, 29, 43]
+  training:
+    epochs: 30
+    batch_size: 4096
+    learning_rate: 1.0e-3
+    weight_decay: 1.0e-4
+  posthoc_baselines:
+    - global_scalar
+    - visibility_conditioned
+    - pred_occ_duration_binned
+  required_nominal_coverage: [0.50, 0.68, 0.90, 0.95]
+  decision_gates:
+    relative_long_or_reentry_coverage_gap_reduction: 0.20
+    max_absolute_aj_change: 0.10
