@@ -245,6 +245,47 @@ def predicted_occlusion_duration_groups(cache: Mapping[str, torch.Tensor]) -> to
     return groups
 
 
+def baseline_support_diagnostics(
+    cache: Mapping[str, torch.Tensor],
+    visibility_threshold: float = 0.5,
+) -> Dict[str, object]:
+    """Summarize whether the preregistered grouped baselines have support."""
+    validate_beliefcal_cache(cache)
+    visibility = cache["pred_visibility"].reshape(-1).float()
+    duration = cache["predicted_occluded_duration"].reshape(-1).long()
+    visibility_group = visibility_groups(cache, visibility_threshold)
+    duration_group = predicted_occlusion_duration_groups(cache)
+
+    def counts(groups: torch.Tensor) -> Dict[str, int]:
+        values, value_counts = torch.unique(groups.long(), return_counts=True)
+        return {str(int(k)): int(v) for k, v in zip(values.tolist(), value_counts.tolist())}
+
+    visibility_counts = counts(visibility_group)
+    duration_counts = counts(duration_group)
+    warnings: List[str] = []
+    if len(visibility_counts) < 2:
+        warnings.append(
+            "visibility_conditioned baseline is degenerate: calibration rows occupy one group"
+        )
+    if len(duration_counts) < 2:
+        warnings.append(
+            "pred_occ_duration_binned baseline is degenerate: calibration rows occupy one group"
+        )
+    return {
+        "rows": int(visibility.numel()),
+        "visibility_threshold": float(visibility_threshold),
+        "pred_visibility_min": float(visibility.min().item()),
+        "pred_visibility_max": float(visibility.max().item()),
+        "pred_visibility_mean": float(visibility.mean().item()),
+        "visibility_group_counts": visibility_counts,
+        "predicted_occluded_duration_min": int(duration.min().item()),
+        "predicted_occluded_duration_max": int(duration.max().item()),
+        "predicted_occluded_duration_mean": float(duration.float().mean().item()),
+        "duration_group_counts": duration_counts,
+        "warnings": warnings,
+    }
+
+
 def fit_required_posthoc_baselines(
     calibration_cache: Mapping[str, torch.Tensor],
     visibility_threshold: float = 0.5,
@@ -431,18 +472,31 @@ def fit_scalar_variance_calibration(
     max_variance = float(max_std_px) ** 2
     safe_variance = variance.detach().float().clamp(min_variance, max_variance)
     ratio = errors_px.detach().float().square() / safe_variance
-    scale = float(ratio.mean().clamp(1e-6, 1e6).item())
+    candidate_scale = float(ratio.mean().clamp(1e-6, 1e6).item())
     before_log_var = safe_variance.log()
-    after_variance = (safe_variance * scale).clamp(min_variance, max_variance)
-    after_log_var = after_variance.log()
+    candidate_variance = (safe_variance * candidate_scale).clamp(
+        min_variance, max_variance
+    )
     before_nll = float(
         diagonal_gaussian_nll(errors_px.float(), before_log_var, reduction="mean").item()
     )
-    after_nll = float(
-        diagonal_gaussian_nll(errors_px.float(), after_log_var, reduction="mean").item()
+    candidate_nll = float(
+        diagonal_gaussian_nll(
+            errors_px.float(), candidate_variance.log(), reduction="mean"
+        ).item()
     )
+    # Clipping can make the unconstrained closed-form candidate suboptimal.
+    # Never replace the raw head with a calibration transform that worsens NLL
+    # on the calibration split.
+    if candidate_nll <= before_nll:
+        scale = candidate_scale
+        after_nll = candidate_nll
+    else:
+        scale = 1.0
+        after_nll = before_nll
     return {
         "kind": "shared_variance_scale",
+        "candidate_scale": candidate_scale,
         "scale": scale,
         "min_std_px": float(min_std_px),
         "max_std_px": float(max_std_px),
@@ -459,7 +513,8 @@ def apply_scalar_variance_calibration(
         raise ValueError("variance must have shape (M, 2).")
     min_variance = float(state["min_std_px"]) ** 2
     max_variance = float(state["max_std_px"]) ** 2
-    return (variance.float() * float(state["scale"])).clamp(
+    safe_variance = variance.float().clamp(min_variance, max_variance)
+    return (safe_variance * float(state["scale"])).clamp(
         min_variance, max_variance
     )
 
@@ -558,7 +613,11 @@ def run_beliefcal_mvp1_experiment(
         )
 
     return {
-        "format_version": 1,
+        "format_version": 2,
+        "support_diagnostics": {
+            "calibration": baseline_support_diagnostics(calibration_cache),
+            "test": baseline_support_diagnostics(test_cache),
+        },
         "baselines": baseline_reports,
         "learned_runs": learned_runs,
     }
@@ -626,6 +685,7 @@ def json_safe_experiment_summary(result: Mapping[str, object]) -> Dict[str, obje
     """Drop tensor-heavy learned states for compact JSON result reporting."""
     summary = {
         "format_version": result.get("format_version", 1),
+        "support_diagnostics": result.get("support_diagnostics"),
         "baselines": {},
         "learned_runs": [],
     }
