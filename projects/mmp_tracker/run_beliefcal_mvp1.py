@@ -1,10 +1,11 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict
+from typing import Dict, Mapping
 
 import torch
 import yaml
@@ -34,6 +35,21 @@ def load_config(path: str) -> Dict:
         return yaml.safe_load(handle)
 
 
+def sha256_file(path: str | Path) -> str:
+    digest = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(8 * 1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def sha256_json(value: object) -> str:
+    payload = json.dumps(
+        value, sort_keys=True, separators=(",", ":"), ensure_ascii=True
+    ).encode("utf-8")
+    return hashlib.sha256(payload).hexdigest()
+
+
 def git_head() -> str:
     try:
         return subprocess.check_output(
@@ -41,6 +57,233 @@ def git_head() -> str:
         ).strip()
     except Exception:
         return "unknown"
+
+
+def _resolve_annotation_path(data_config: Mapping[str, object]) -> Path | None:
+    annotation_file = data_config.get("annotation_file")
+    if annotation_file is None:
+        return None
+    annotation_path = Path(str(annotation_file))
+    if annotation_path.is_absolute():
+        return annotation_path
+    return Path(str(data_config.get("root", "."))) / annotation_path
+
+
+def dataset_provenance(
+    config: Mapping[str, object], split_key: str
+) -> Dict[str, object]:
+    data_section = config.get("data", {})
+    if not isinstance(data_section, Mapping):
+        raise ValueError("config.data must be a mapping.")
+    raw_data_config = data_section.get(split_key, {})
+    if not isinstance(raw_data_config, Mapping):
+        raise ValueError(f"config.data.{split_key} must be a mapping.")
+    data_config = dict(raw_data_config)
+    root = Path(str(data_config.get("root", "."))).resolve()
+    annotation_path = _resolve_annotation_path(data_config)
+    annotation_sha256 = None
+    annotation_payload = None
+    source_files = []
+
+    if annotation_path is not None and annotation_path.exists():
+        annotation_path = annotation_path.resolve()
+        annotation_sha256 = sha256_file(annotation_path)
+        try:
+            annotation_payload = json.loads(annotation_path.read_text(encoding="utf-8"))
+        except Exception:
+            annotation_payload = None
+
+    if isinstance(annotation_payload, dict):
+        for entry in annotation_payload.get("source_files", []):
+            if isinstance(entry, dict) and entry.get("path"):
+                source_files.append(str(Path(str(entry["path"])).resolve()))
+        if not source_files:
+            for entry in annotation_payload.get("shards", []):
+                rel = entry.get("path") if isinstance(entry, dict) else entry
+                if rel:
+                    candidate = Path(str(rel))
+                    if not candidate.is_absolute():
+                        candidate = root / candidate
+                    source_files.append(str(candidate.resolve()))
+
+    identity_payload = {
+        "dataset": data_config.get("dataset"),
+        "root": str(root),
+        "split": data_config.get("split", split_key),
+        "annotation_path": str(annotation_path) if annotation_path is not None else None,
+        "annotation_sha256": annotation_sha256,
+    }
+    return {
+        "data_config": data_config,
+        "dataset_identity": sha256_json(identity_payload),
+        "dataset_identity_payload": identity_payload,
+        "annotation_manifest": str(annotation_path) if annotation_path is not None else None,
+        "annotation_manifest_sha256": annotation_sha256,
+        "source_files": sorted(set(source_files)),
+    }
+
+
+def _legacy_checkpoint_audit(
+    config: Mapping[str, object],
+    missing_keys: list[str],
+    unexpected_keys: list[str],
+) -> Dict[str, object]:
+    model_config = config.get("model", {})
+    if not isinstance(model_config, Mapping):
+        raise RuntimeError("config.model must be a mapping for legacy checkpoint audit.")
+    tracking = model_config.get("tracking", {})
+    if not isinstance(tracking, Mapping):
+        tracking = {}
+    variant = str(model_config.get("variant", "")).strip().lower()
+    commit_mode = str(tracking.get("commit_mode", "heuristic")).strip().lower()
+    allowed_prefixes = (
+        "candidate_scorer.",
+        "candidate_gate.",
+        "candidate_ranker.",
+        "commit_selector.",
+    )
+
+    errors = []
+    if variant != "localglobal":
+        errors.append(f"legacy audit only supports variant=localglobal, got {variant!r}")
+    if commit_mode != "heuristic":
+        errors.append(
+            f"legacy audit requires commit_mode=heuristic, got {commit_mode!r}"
+        )
+    if unexpected_keys:
+        errors.append(f"unexpected keys: {unexpected_keys}")
+    unsafe_missing = [
+        key
+        for key in missing_keys
+        if not any(key.startswith(prefix) for prefix in allowed_prefixes)
+    ]
+    if unsafe_missing:
+        errors.append(f"non-whitelisted missing keys: {unsafe_missing}")
+
+    audit = {
+        "passed": not errors,
+        "variant": variant,
+        "commit_mode": commit_mode,
+        "missing_keys": list(missing_keys),
+        "unexpected_keys": list(unexpected_keys),
+        "allowed_missing_prefixes": list(allowed_prefixes),
+        "commit_probability_used_as_beliefcal_feature": False,
+        "errors": errors,
+    }
+    if errors:
+        raise RuntimeError("Legacy checkpoint audit failed:\n" + json.dumps(audit, indent=2))
+    return audit
+
+
+def audit_cache_bundle(
+    cache_paths: Mapping[str, str | Path],
+    require_strict_checkpoint: bool = True,
+) -> Dict[str, object]:
+    roles = ("train", "calibration", "validation", "test")
+    missing_roles = [role for role in roles if role not in cache_paths]
+    if missing_roles:
+        raise ValueError(f"Missing cache roles: {missing_roles}")
+
+    caches = {}
+    manifests = {}
+    errors = []
+    warnings = []
+    for role in roles:
+        cache, manifest = load_beliefcal_cache(cache_paths[role])
+        caches[role] = cache
+        manifests[role] = manifest
+        if manifest.get("role") not in (None, role):
+            errors.append(f"{role}: manifest role={manifest.get('role')!r}")
+        load_mode = manifest.get("checkpoint_load_mode")
+        if require_strict_checkpoint and load_mode != "strict":
+            errors.append(
+                f"{role}: checkpoint_load_mode={load_mode!r}, expected 'strict'"
+            )
+        residual = cache["gt_px"] - cache["mu_px"] - cache["errors_px"]
+        max_residual = float(residual.abs().max().item()) if residual.numel() else 0.0
+        if max_residual > 1e-5:
+            errors.append(
+                f"{role}: gt_px != mu_px + errors_px within tolerance "
+                f"(max_abs={max_residual})"
+            )
+        unique_samples = int(torch.unique(cache["sample_id"]).numel())
+        manifest_videos = manifest.get("videos")
+        if manifest_videos is not None and unique_samples != int(manifest_videos):
+            errors.append(
+                f"{role}: unique sample_id count={unique_samples}, "
+                f"manifest videos={manifest_videos}"
+            )
+
+    checkpoint_hashes = {
+        str(manifest.get("checkpoint_sha256"))
+        for manifest in manifests.values()
+        if manifest.get("checkpoint_sha256")
+    }
+    if len(checkpoint_hashes) != 1:
+        errors.append(
+            f"all roles must use one checkpoint hash, got {sorted(checkpoint_hashes)}"
+        )
+
+    model_hashes = {
+        str(manifest.get("model_config_sha256"))
+        for manifest in manifests.values()
+        if manifest.get("model_config_sha256")
+    }
+    if len(model_hashes) != 1:
+        errors.append(
+            f"all roles must use one model config hash, got {sorted(model_hashes)}"
+        )
+
+    identity_owner = {}
+    source_owner = {}
+    for role, manifest in manifests.items():
+        dataset = manifest.get("dataset")
+        if not isinstance(dataset, Mapping):
+            warnings.append(f"{role}: no dataset provenance recorded")
+            continue
+        identity = dataset.get("dataset_identity")
+        if identity is None:
+            warnings.append(f"{role}: no dataset identity recorded")
+        elif identity in identity_owner:
+            errors.append(
+                f"dataset identity collision: {identity_owner[identity]} and {role}"
+            )
+        else:
+            identity_owner[identity] = role
+        for source in dataset.get("source_files", []):
+            source = str(source)
+            if source in source_owner:
+                errors.append(
+                    f"source-file leakage: {source_owner[source]} and {role} use {source}"
+                )
+            else:
+                source_owner[source] = role
+
+    report = {
+        "passed": not errors,
+        "errors": errors,
+        "warnings": warnings,
+        "roles": {
+            role: {
+                "path": str(Path(cache_paths[role]).resolve()),
+                "cache_sha256": sha256_file(cache_paths[role]),
+                "rows": int(caches[role]["features"].shape[0]),
+                "videos": int(torch.unique(caches[role]["sample_id"]).numel()),
+                "checkpoint_load_mode": manifests[role].get(
+                    "checkpoint_load_mode"
+                ),
+                "dataset_identity": (
+                    manifests[role].get("dataset", {}).get("dataset_identity")
+                    if isinstance(manifests[role].get("dataset"), Mapping)
+                    else None
+                ),
+            }
+            for role in roles
+        },
+    }
+    if errors:
+        raise RuntimeError(json.dumps(report, indent=2))
+    return report
 
 
 def command_make_cache(args: argparse.Namespace) -> None:
@@ -56,24 +299,33 @@ def command_make_cache(args: argparse.Namespace) -> None:
         if not args.allow_legacy_checkpoint:
             raise
         incompatible = model.load_state_dict(state, strict=False)
+        legacy_audit = _legacy_checkpoint_audit(
+            config,
+            list(incompatible.missing_keys),
+            list(incompatible.unexpected_keys),
+        )
         checkpoint_load_mode = {
-            "mode": "legacy_strict_false",
-            "missing_keys": list(incompatible.missing_keys),
-            "unexpected_keys": list(incompatible.unexpected_keys),
+            "mode": "legacy_strict_false_audited",
+            "audit": legacy_audit,
             "original_error": str(exc),
         }
         print(json.dumps(checkpoint_load_mode, indent=2))
     model.eval()
 
-    train_flag = args.split_key == "train"
+    train_flag = args.role == "train"
     dataset, configured_limit = resolve_dataset(config, args.split_key, train=train_flag)
     loader = make_loader(dataset, batch_size=int(args.batch_size), train=False)
     limit = args.max_batches if args.max_batches is not None else configured_limit
 
     batches = []
     next_sample_id = 0
+    for _ in range(int(args.start_batch)):
+        try:
+            next(loader)
+        except StopIteration:
+            break
     with torch.no_grad():
-        for _, batch in iterate_limited(loader, limit):
+        for batch_index, batch in iterate_limited(loader, limit):
             video = batch["video"].to(device)
             query_points = batch["query_points"].to(device)
             gt_tracks = batch["target_points"].to(device)
@@ -99,16 +351,29 @@ def command_make_cache(args: argparse.Namespace) -> None:
     cache = merge_beliefcal_cache_batches(batches)
     manifest = {
         "git_head": git_head(),
+        "role": args.role,
         "checkpoint_load_mode": checkpoint_load_mode,
         "config": str(Path(args.config).resolve()),
+        "config_sha256": sha256_file(args.config),
+        "model_config_sha256": sha256_json(config.get("model", {})),
         "checkpoint": str(Path(args.checkpoint).resolve()),
+        "checkpoint_sha256": sha256_file(args.checkpoint),
+        "checkpoint_provenance": (
+            checkpoint.get("provenance", {}) if isinstance(checkpoint, dict) else {}
+        ),
         "split_key": args.split_key,
+        "dataset": dataset_provenance(config, args.split_key),
+        "start_batch": args.start_batch,
         "max_batches": limit,
         "rows": int(cache["features"].shape[0]),
         "videos": int(next_sample_id),
     }
     save_beliefcal_cache(cache, args.output, manifest=manifest)
-    print(json.dumps(manifest, indent=2))
+    cache_sha256 = sha256_file(args.output)
+    Path(str(args.output) + ".sha256").write_text(
+        cache_sha256 + "\n", encoding="utf-8"
+    )
+    print(json.dumps({**manifest, "cache_sha256": cache_sha256}, indent=2))
 
 
 def command_fit_caches(args: argparse.Namespace) -> None:
@@ -116,6 +381,14 @@ def command_fit_caches(args: argparse.Namespace) -> None:
     calibration_cache, calibration_manifest = load_beliefcal_cache(args.calibration_cache)
     validation_cache, validation_manifest = load_beliefcal_cache(args.validation_cache)
     test_cache, test_manifest = load_beliefcal_cache(args.test_cache)
+    cache_audit = audit_cache_bundle(
+        {
+            "train": args.train_cache,
+            "calibration": args.calibration_cache,
+            "validation": args.validation_cache,
+            "test": args.test_cache,
+        }
+    )
     result = run_beliefcal_mvp1_experiment(
         train_cache,
         calibration_cache,
@@ -134,9 +407,27 @@ def command_fit_caches(args: argparse.Namespace) -> None:
         "validation": validation_manifest,
         "test": test_manifest,
     }
+    result["cache_audit"] = cache_audit
     result["git_head"] = git_head()
     save_experiment_result(result, args.output)
     print(Path(args.output) / "beliefcal_metrics.json")
+
+
+def command_audit_caches(args: argparse.Namespace) -> None:
+    report = audit_cache_bundle(
+        {
+            "train": args.train_cache,
+            "calibration": args.calibration_cache,
+            "validation": args.validation_cache,
+            "test": args.test_cache,
+        },
+        require_strict_checkpoint=not args.allow_non_strict_checkpoint,
+    )
+    if args.output:
+        output_path = Path(args.output)
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(json.dumps(report, indent=2))
 
 
 def command_synthetic_smoke(args: argparse.Namespace) -> None:
@@ -172,13 +463,28 @@ def build_parser() -> argparse.ArgumentParser:
     make_cache = subparsers.add_parser("make-cache")
     make_cache.add_argument("--config", required=True)
     make_cache.add_argument("--checkpoint", required=True)
-    make_cache.add_argument("--split-key", choices=("train", "val"), required=True)
+    make_cache.add_argument("--split-key", required=True)
+    make_cache.add_argument(
+        "--role",
+        choices=("train", "calibration", "validation", "test"),
+        required=True,
+    )
     make_cache.add_argument("--output", required=True)
     make_cache.add_argument("--device", default="cuda")
     make_cache.add_argument("--batch-size", type=int, default=1)
     make_cache.add_argument("--max-batches", type=int, default=None)
+    make_cache.add_argument("--start-batch", type=int, default=0)
     make_cache.add_argument("--allow-legacy-checkpoint", action="store_true")
     make_cache.set_defaults(func=command_make_cache)
+
+    audit = subparsers.add_parser("audit-caches")
+    audit.add_argument("--train-cache", required=True)
+    audit.add_argument("--calibration-cache", required=True)
+    audit.add_argument("--validation-cache", required=True)
+    audit.add_argument("--test-cache", required=True)
+    audit.add_argument("--output", default=None)
+    audit.add_argument("--allow-non-strict-checkpoint", action="store_true")
+    audit.set_defaults(func=command_audit_caches)
 
     fit = subparsers.add_parser("fit-caches")
     fit.add_argument("--train-cache", required=True)
