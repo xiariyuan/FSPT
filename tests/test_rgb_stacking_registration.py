@@ -40,6 +40,7 @@ class TestRGBStackingRegistration(unittest.TestCase):
                     str(root),
                     split="validation",
                     backend="sharded_pkl",
+                    annotation_file="tapvid_rgb_stacking.pkl",
                     query_mode="first",
                 )
                 self.assertIsInstance(dataset, TAPVidRGBStackingDataset)

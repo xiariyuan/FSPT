@@ -178,8 +178,11 @@ def get_dataset(name: str, root: str, **kwargs):
     if name in {"rgb_stacking", "rgbstacking", "stacking"}:
         if TAPVidRGBStackingDataset is None:
             raise ImportError("TAPVidRGBStackingDataset not available")
-        # RGB-Stacking is a single map-style pickle dataset. The generic
-        # split/backend arguments are intentionally ignored.
+        # RGB-Stacking is a single map-style pickle dataset. Preserve an
+        # explicit annotation filename for exact cache provenance.
+        annotation_file = kwargs.pop("annotation_file", None)
+        if annotation_file is not None:
+            kwargs.setdefault("pkl_name", str(annotation_file))
         return TAPVidRGBStackingDataset(root, **kwargs)
 
     if name == "kinetics":

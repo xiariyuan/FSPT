@@ -143,6 +143,11 @@ def dataset_provenance(
         except Exception:
             annotation_payload = None
 
+    if annotation_path is not None and annotation_path.exists() and not isinstance(
+        annotation_payload, dict
+    ):
+        source_files.append(str(annotation_path.resolve()))
+
     if isinstance(annotation_payload, dict):
         for entry in annotation_payload.get("source_files", []):
             if isinstance(entry, dict) and entry.get("path"):
