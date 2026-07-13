@@ -49,7 +49,20 @@ def command_make_cache(args: argparse.Namespace) -> None:
     model = MMPTracker(config_from_dict(config)).to(device)
     checkpoint = torch.load(args.checkpoint, map_location="cpu")
     state = checkpoint.get("model", checkpoint)
-    model.load_state_dict(state, strict=True)
+    try:
+        model.load_state_dict(state, strict=True)
+        checkpoint_load_mode = "strict"
+    except RuntimeError as exc:
+        if not args.allow_legacy_checkpoint:
+            raise
+        incompatible = model.load_state_dict(state, strict=False)
+        checkpoint_load_mode = {
+            "mode": "legacy_strict_false",
+            "missing_keys": list(incompatible.missing_keys),
+            "unexpected_keys": list(incompatible.unexpected_keys),
+            "original_error": str(exc),
+        }
+        print(json.dumps(checkpoint_load_mode, indent=2))
     model.eval()
 
     train_flag = args.split_key == "train"
@@ -86,6 +99,7 @@ def command_make_cache(args: argparse.Namespace) -> None:
     cache = merge_beliefcal_cache_batches(batches)
     manifest = {
         "git_head": git_head(),
+        "checkpoint_load_mode": checkpoint_load_mode,
         "config": str(Path(args.config).resolve()),
         "checkpoint": str(Path(args.checkpoint).resolve()),
         "split_key": args.split_key,
@@ -163,6 +177,7 @@ def build_parser() -> argparse.ArgumentParser:
     make_cache.add_argument("--device", default="cuda")
     make_cache.add_argument("--batch-size", type=int, default=1)
     make_cache.add_argument("--max-batches", type=int, default=None)
+    make_cache.add_argument("--allow-legacy-checkpoint", action="store_true")
     make_cache.set_defaults(func=command_make_cache)
 
     fit = subparsers.add_parser("fit-caches")
