@@ -47,6 +47,7 @@ class MMPTrackingLoss(nn.Module):
         candidate_gate_margin = 0.0 if info is None else float(info.get("candidate_gate_margin", 0.0))
         candidate_gate_margin_weight = 0.0 if info is None else float(info.get("candidate_gate_margin_weight", 0.0))
         candidate_rank_soft_temperature = 0.0 if info is None else float(info.get("candidate_rank_soft_temperature", 0.0))
+        candidate_routing_mode = "" if info is None else str(info.get("candidate_routing_mode", "")).strip().lower()
 
         dy = pred_tracks[..., 0] - gt_tracks[..., 0]
         dx = pred_tracks[..., 1] - gt_tracks[..., 1]
@@ -134,9 +135,95 @@ class MMPTrackingLoss(nn.Module):
             candidate_points = info.get("candidate_points", None)
             candidate_gate_probability = info.get("candidate_gate_probability", None)
             candidate_global_rank_logits = info.get("candidate_global_rank_logits", None)
-            if (
+            two_stage_mode = candidate_routing_mode in {
+                "two_stage",
+                "gated_rank",
+                "gate_rank",
+                "gate_then_rank",
+            }
+            flat_mode = candidate_routing_mode in {
+                "flat",
+                "joint",
+                "joint_score",
+                "single_stage",
+            }
+            rank_shape_valid = (
+                isinstance(candidate_global_rank_logits, torch.Tensor)
+                and isinstance(candidate_points, torch.Tensor)
+                and candidate_points.ndim >= 3
+                and candidate_global_rank_logits.ndim == candidate_points.ndim - 1
+                and candidate_global_rank_logits.shape[:-1] == candidate_points.shape[:-2]
+                and candidate_global_rank_logits.shape[-1] == candidate_points.shape[-2] - 1
+                and candidate_global_rank_logits.shape[-1] > 0
+            )
+            gate_shape_valid = (
                 isinstance(candidate_gate_probability, torch.Tensor)
-                and isinstance(candidate_global_rank_logits, torch.Tensor)
+                and isinstance(candidate_points, torch.Tensor)
+                and candidate_gate_probability.shape == candidate_points.shape[:-2]
+            )
+            flat_logits_shape_valid = (
+                isinstance(candidate_logits, torch.Tensor)
+                and isinstance(candidate_points, torch.Tensor)
+                and candidate_logits.shape == candidate_points.shape[:-1]
+            )
+            known_routing_modes = {
+                "",
+                "flat",
+                "joint",
+                "joint_score",
+                "single_stage",
+                "two_stage",
+                "gated_rank",
+                "gate_rank",
+                "gate_then_rank",
+            }
+            if candidate_routing_mode not in known_routing_modes:
+                raise ValueError(
+                    f"Unsupported candidate routing mode in loss info: {candidate_routing_mode!r}."
+                )
+            if two_stage_mode and not (gate_shape_valid and rank_shape_valid):
+                gate_shape = (
+                    None
+                    if not isinstance(candidate_gate_probability, torch.Tensor)
+                    else tuple(candidate_gate_probability.shape)
+                )
+                rank_shape = (
+                    None
+                    if not isinstance(candidate_global_rank_logits, torch.Tensor)
+                    else tuple(candidate_global_rank_logits.shape)
+                )
+                points_shape = (
+                    None
+                    if not isinstance(candidate_points, torch.Tensor)
+                    else tuple(candidate_points.shape)
+                )
+                raise ValueError(
+                    "two-stage candidate routing requires gate shape candidate_points.shape[:-2] "
+                    "and rank-logit shape candidate_points.shape[:-2] + "
+                    "(num_global_candidates,); "
+                    f"got gate={gate_shape}, rank={rank_shape}, points={points_shape}."
+                )
+            if flat_mode and isinstance(candidate_points, torch.Tensor) and not flat_logits_shape_valid:
+                logits_shape = (
+                    None
+                    if not isinstance(candidate_logits, torch.Tensor)
+                    else tuple(candidate_logits.shape)
+                )
+                raise ValueError(
+                    "flat candidate routing requires "
+                    "candidate_logits.shape == candidate_points.shape[:-1]; "
+                    f"got logits={logits_shape}, points={tuple(candidate_points.shape)}."
+                )
+            inferred_two_stage_mode = (
+                not candidate_routing_mode
+                and gate_shape_valid
+                and rank_shape_valid
+            )
+            use_two_stage_loss = two_stage_mode or inferred_two_stage_mode
+            if (
+                use_two_stage_loss
+                and gate_shape_valid
+                and rank_shape_valid
                 and isinstance(candidate_points, torch.Tensor)
                 and candidate_points.shape[-2] > 1
             ):
@@ -208,7 +295,7 @@ class MMPTrackingLoss(nn.Module):
                     losses["selector_rank_raw"] = gate_loss.detach().new_zeros(())
                     selector_loss = gate_loss
                 losses["selector"] = selector_loss * self.weights.selector
-            elif isinstance(candidate_logits, torch.Tensor) and isinstance(candidate_points, torch.Tensor):
+            elif flat_logits_shape_valid and isinstance(candidate_points, torch.Tensor):
                 candidate_err = torch.norm(candidate_points - gt_tracks.unsqueeze(-2), dim=-1)
                 local_err = candidate_err[..., 0]
                 if candidate_err.shape[-1] > 1:

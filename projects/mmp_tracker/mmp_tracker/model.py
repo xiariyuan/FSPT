@@ -21,9 +21,25 @@ from .posterior_fusion import PosteriorFusionHead
 
 
 class MMPTracker(nn.Module):
+    _FLAT_ROUTING_MODES = {"flat", "joint", "joint_score", "single_stage"}
+    _TWO_STAGE_ROUTING_MODES = {"two_stage", "gated_rank", "gate_rank", "gate_then_rank"}
+
     def __init__(self, config: Optional[MMPTrackerConfig] = None):
         super().__init__()
         self.config = config or MMPTrackerConfig()
+        raw_routing_mode = str(
+            getattr(self.config.tracking, "candidate_routing_mode", "flat") or "flat"
+        ).strip().lower()
+        if raw_routing_mode in self._FLAT_ROUTING_MODES:
+            self.candidate_routing_mode = "flat"
+        elif raw_routing_mode in self._TWO_STAGE_ROUTING_MODES:
+            self.candidate_routing_mode = "two_stage"
+        else:
+            allowed = sorted(self._FLAT_ROUTING_MODES | self._TWO_STAGE_ROUTING_MODES)
+            raise ValueError(
+                f"Unsupported candidate routing mode: {raw_routing_mode!r}. "
+                f"Expected one of {allowed}."
+            )
         enc_cfg = self.config.encoder
         encoder_type = str(getattr(enc_cfg, "type", "simple") or "simple").strip().lower()
         if encoder_type == "simple":
@@ -360,10 +376,7 @@ class MMPTracker(nn.Module):
                     )
                     candidate_points = torch.cat([local_out.points.unsqueeze(2), refined_points], dim=2)
                     candidate_quality = torch.cat([local_quality.unsqueeze(2), global_candidate_quality], dim=2)
-                    routing_mode = str(
-                        getattr(self.config.tracking, "candidate_routing_mode", "flat") or "flat"
-                    ).strip().lower()
-                    if routing_mode in {"two_stage", "gated_rank", "gate_rank", "gate_then_rank"}:
+                    if self.candidate_routing_mode == "two_stage":
                         candidate_global_rank_logits = self.candidate_ranker(global_features).squeeze(-1)
                         candidate_global_rank_probabilities = torch.softmax(candidate_global_rank_logits, dim=2)
                         candidate_global_selected_index = candidate_global_rank_probabilities.argmax(dim=2)
@@ -894,6 +907,7 @@ class MMPTracker(nn.Module):
             "candidate_gate_margin": self.config.tracking.candidate_gate_margin,
             "candidate_gate_margin_weight": self.config.tracking.candidate_gate_margin_weight,
             "candidate_rank_soft_temperature": self.config.tracking.candidate_rank_soft_temperature,
+            "candidate_routing_mode": self.candidate_routing_mode,
             "commit_target_margin": self.config.tracking.commit_target_margin,
             "input_height": video.shape[-2],
             "input_width": video.shape[-1],
