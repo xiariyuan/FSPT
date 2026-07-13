@@ -429,8 +429,12 @@ def _generate_sparse_tracks_from_kubric(
                 coords = valid_coords_by_t[t]
                 if coords is not None:
                     yy, xx = coords[int(rng.randint(0, coords.shape[0]))]
-                    ys[i] = float(yy) + float(rng.rand())
-                    xs[i] = float(xx) + float(rng.rand())
+                    # Keep sub-pixel jitter inside the valid image domain.  The
+                    # previous yy+U[0,1) rule could sample beyond H-1/W-1 on
+                    # the final row or column, making a query incorrectly
+                    # occluded at its own query frame.
+                    ys[i] = min(float(yy) + float(rng.rand()), float(H - 1))
+                    xs[i] = min(float(xx) + float(rng.rand()), float(W - 1))
                     continue
             ys[i] = float(rng.rand() * (H - 1))
             xs[i] = float(rng.rand() * (W - 1))
