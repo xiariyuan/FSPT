@@ -1,0 +1,58 @@
+experiment:
+  name: beliefcal_base_mmp_localglobal
+  description: Frozen localglobal MMP backbone for BeliefCal MVP-1 cache generation
+
+model:
+  variant: localglobal
+  encoder:
+    in_channels: 3
+    base_dim: 64
+    out_dim: 128
+  local_matcher:
+    radius: 4
+    temperature: 0.07
+  global_relocator:
+    topk: 5
+    temperature: 0.07
+    memory_size: 8
+  posterior_fusion:
+    hidden_dim: 64
+    type_embed_dim: 8
+    min_visibility: 0.0
+  tracking:
+    feature_stride: 4
+    forward_only: true
+    visibility_update_threshold: 0.5
+    template_momentum: 0.8
+    anchor_mix: 0.35
+    global_use_margin: 0.05
+    global_refine_radius: 2
+    safe_write_agreement_px: 6.0
+    global_commit_consistency_px: 10.0
+    global_commit_min_quality: 0.10
+    selector_threshold: 0.5
+    selector_target_margin: 0.01
+    long_occ_min_frames: 3
+    long_occ_recovery_window: 1
+    commit_mode: heuristic
+
+data:
+  train:
+    dataset: tapvid_kubric
+    root: /gemini/code/datasets/kubric_preprocessed
+    backend: sharded_pkl
+    annotation_file: train.index.json
+    split: train
+  val:
+    dataset: tapvid_davis
+    root: /gemini/code/datasets/tapvid_davis
+    resolution: [256, 256]
+    query_mode: first
+    first_frame_query: false
+
+training:
+  seed: 42
+  epochs: 10
+  batch_size: 1
+  accumulation_steps: 2
+  lr: 1.0e-4
