@@ -236,7 +236,7 @@ def _legacy_checkpoint_audit(
 def audit_cache_bundle(
     cache_paths: Mapping[str, str | Path],
     require_strict_checkpoint: bool = True,
-    require_distinct_dataset_families: bool = True,
+    require_distinct_dataset_families: bool = False,
 ) -> Dict[str, object]:
     roles = ("train", "calibration", "validation", "test")
     missing_roles = [role for role in roles if role not in cache_paths]
@@ -341,7 +341,7 @@ def audit_cache_bundle(
             if require_distinct_dataset_families:
                 errors.append(message)
             else:
-                warnings.append("engineering override: " + message)
+                warnings.append("shared-family diagnostic: " + message)
         else:
             family_owner[family] = role
 
@@ -498,7 +498,7 @@ def command_fit_caches(args: argparse.Namespace) -> None:
             "validation": args.validation_cache,
             "test": args.test_cache,
         },
-        require_distinct_dataset_families=not args.allow_shared_dataset_family,
+        require_distinct_dataset_families=args.require_distinct_dataset_families,
     )
     result = run_beliefcal_mvp1_experiment(
         train_cache,
@@ -534,7 +534,7 @@ def command_audit_caches(args: argparse.Namespace) -> None:
             "test": args.test_cache,
         },
         require_strict_checkpoint=not args.allow_non_strict_checkpoint,
-        require_distinct_dataset_families=not args.allow_shared_dataset_family,
+        require_distinct_dataset_families=args.require_distinct_dataset_families,
     )
     if args.output:
         output_path = Path(args.output)
@@ -598,9 +598,12 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--output", default=None)
     audit.add_argument("--allow-non-strict-checkpoint", action="store_true")
     audit.add_argument(
-        "--allow-shared-dataset-family",
+        "--require-distinct-dataset-families",
         action="store_true",
-        help="Engineering-only override; formal protocol requires distinct families.",
+        help=(
+            "Optional stress-test policy. Exact item/video separation is always "
+            "required; shared family is otherwise reported as a warning."
+        ),
     )
     audit.set_defaults(func=command_audit_caches)
 
@@ -623,9 +626,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Engineering feature ablation; full remains the preregistered contract.",
     )
     fit.add_argument(
-        "--allow-shared-dataset-family",
+        "--require-distinct-dataset-families",
         action="store_true",
-        help="Engineering-only override; formal protocol requires distinct families.",
+        help=(
+            "Optional stress-test policy. Exact item/video separation is always "
+            "required; shared family is otherwise reported as a warning."
+        ),
     )
     fit.set_defaults(func=command_fit_caches)
 

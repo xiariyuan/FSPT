@@ -1,6 +1,15 @@
+import tempfile
 import unittest
+from pathlib import Path
 
-from projects.mmp_tracker.run_beliefcal_mvp1 import iterate_loader_window
+from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
+    save_beliefcal_cache,
+    synthetic_beliefcal_cache,
+)
+from projects.mmp_tracker.run_beliefcal_mvp1 import (
+    audit_cache_bundle,
+    iterate_loader_window,
+)
 
 
 class RestartSensitiveIterable:
@@ -25,6 +34,37 @@ class TestBeliefCalCacheCLI(unittest.TestCase):
         observed = list(iterate_loader_window(loader, start_batch=5, limit=1))
         self.assertEqual(observed, [])
         self.assertEqual(loader.iter_calls, 1)
+
+    def test_shared_dataset_family_is_warning_by_default(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            paths = {}
+            for index, role in enumerate(("train", "calibration", "validation", "test")):
+                path = Path(tmp_dir) / f"{role}.pt"
+                cache = synthetic_beliefcal_cache(32, seed=100 + index, sample_offset=1000 * index)
+                manifest = {
+                    "role": role,
+                    "checkpoint_sha256": "same-checkpoint",
+                    "model_config_sha256": "same-model",
+                    "checkpoint_load_mode": "strict",
+                    "feature_order_sha256": "same-features",
+                    "git_dirty": False,
+                    "rows": 32,
+                    "videos": int(cache["sample_id"].unique().numel()),
+                    "dataset": {
+                        "dataset_family": "shared-family",
+                        "dataset_identity": f"identity-{role}",
+                        "source_files": [str(Path(tmp_dir) / f"{role}.pkl")],
+                    },
+                }
+                save_beliefcal_cache(cache, path, manifest=manifest)
+                paths[role] = path
+            report = audit_cache_bundle(paths)
+            self.assertTrue(report["passed"])
+            self.assertTrue(
+                any("dataset-family collision" in warning for warning in report["warnings"])
+            )
+            with self.assertRaises(RuntimeError):
+                audit_cache_bundle(paths, require_distinct_dataset_families=True)
 
 
 if __name__ == "__main__":
