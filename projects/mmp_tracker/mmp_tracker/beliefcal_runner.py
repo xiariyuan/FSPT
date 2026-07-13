@@ -411,6 +411,59 @@ def predict_learned_variance(
     return variance
 
 
+def fit_scalar_variance_calibration(
+    errors_px: torch.Tensor,
+    variance: torch.Tensor,
+    min_std_px: float = 0.25,
+    max_std_px: float = 256.0,
+) -> Dict[str, float]:
+    """Fit one positive variance scale on the calibration split.
+
+    For an unconstrained diagonal Gaussian, the NLL-optimal shared scale is
+    mean(error^2 / variance) across samples and coordinate dimensions.  The
+    final variance is clipped to the preregistered standard-deviation bounds.
+    """
+    if errors_px.shape != variance.shape or errors_px.ndim != 2 or errors_px.shape[-1] != 2:
+        raise ValueError("errors_px and variance must have identical (M, 2) shapes.")
+    if errors_px.numel() == 0:
+        raise ValueError("Cannot calibrate variance on an empty tensor.")
+    min_variance = float(min_std_px) ** 2
+    max_variance = float(max_std_px) ** 2
+    safe_variance = variance.detach().float().clamp(min_variance, max_variance)
+    ratio = errors_px.detach().float().square() / safe_variance
+    scale = float(ratio.mean().clamp(1e-6, 1e6).item())
+    before_log_var = safe_variance.log()
+    after_variance = (safe_variance * scale).clamp(min_variance, max_variance)
+    after_log_var = after_variance.log()
+    before_nll = float(
+        diagonal_gaussian_nll(errors_px.float(), before_log_var, reduction="mean").item()
+    )
+    after_nll = float(
+        diagonal_gaussian_nll(errors_px.float(), after_log_var, reduction="mean").item()
+    )
+    return {
+        "kind": "shared_variance_scale",
+        "scale": scale,
+        "min_std_px": float(min_std_px),
+        "max_std_px": float(max_std_px),
+        "calibration_nll_before": before_nll,
+        "calibration_nll_after": after_nll,
+    }
+
+
+def apply_scalar_variance_calibration(
+    variance: torch.Tensor,
+    state: Mapping[str, object],
+) -> torch.Tensor:
+    if variance.ndim != 2 or variance.shape[-1] != 2:
+        raise ValueError("variance must have shape (M, 2).")
+    min_variance = float(state["min_std_px"]) ** 2
+    max_variance = float(state["max_std_px"]) ** 2
+    return (variance.float() * float(state["scale"])).clamp(
+        min_variance, max_variance
+    )
+
+
 def evaluation_strata(cache: Mapping[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
     gt_visible = cache["gt_visible"] > 0.5
     reentry = cache["reentry_age"].long()
@@ -476,12 +529,30 @@ def run_beliefcal_mvp1_experiment(
             learning_rate=learning_rate,
             device=device,
         )
-        variance = predict_learned_variance(test_cache, state, device=device)
+        calibration_variance = predict_learned_variance(
+            calibration_cache, state, device=device
+        )
+        calibration_state = fit_scalar_variance_calibration(
+            calibration_cache["errors_px"],
+            calibration_variance,
+            min_std_px=float(state["min_std_px"]),
+            max_std_px=float(state["max_std_px"]),
+        )
+        raw_test_variance = predict_learned_variance(test_cache, state, device=device)
+        calibrated_test_variance = apply_scalar_variance_calibration(
+            raw_test_variance, calibration_state
+        )
         learned_runs.append(
             {
                 "seed": int(seed),
                 "best_val_nll": float(state["best_val_nll"]),
-                "metrics": evaluate_variance_method(test_cache, variance),
+                "raw_metrics": evaluate_variance_method(
+                    test_cache, raw_test_variance
+                ),
+                "calibration_state": calibration_state,
+                "metrics": evaluate_variance_method(
+                    test_cache, calibrated_test_variance
+                ),
                 "state": state,
             }
         )
@@ -568,6 +639,8 @@ def json_safe_experiment_summary(result: Mapping[str, object]) -> Dict[str, obje
             {
                 "seed": run["seed"],
                 "best_val_nll": run["best_val_nll"],
+                "raw_metrics": run.get("raw_metrics"),
+                "calibration_state": run.get("calibration_state"),
                 "metrics": run["metrics"],
             }
         )
