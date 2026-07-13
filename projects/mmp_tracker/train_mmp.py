@@ -98,7 +98,17 @@ def resolve_dataset(cfg: Dict[str, Any], split_key: str, train: bool):
         data_cfg.setdefault("annotation_file", "train.index.json")
         data_cfg.setdefault("query_mode", "first")
     else:
-        if str(dataset_name).lower().endswith("davis") or str(dataset_name).lower() == "davis":
+        normalized_dataset_name = (
+            str(dataset_name).lower().replace("-", "_").strip()
+        )
+        if normalized_dataset_name.startswith("tapvid_"):
+            normalized_dataset_name = normalized_dataset_name[len("tapvid_") :]
+        if normalized_dataset_name in {
+            "davis",
+            "rgb_stacking",
+            "rgbstacking",
+            "stacking",
+        }:
             data_cfg.pop("split", None)
             data_cfg.pop("backend", None)
         else:

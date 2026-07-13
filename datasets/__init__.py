@@ -5,6 +5,7 @@ FSPT Datasets Module
 - TAP-Vid-Kubric: 合成数据，用于训练
 - TAP-Vid-DAVIS: 真实视频，用于测试
 - TAP-Vid-Kinetics: 真实视频，用于测试
+- TAP-Vid-RGB-Stacking: 真实视频，用于验证/测试
 """
 
 from __future__ import annotations
@@ -56,6 +57,11 @@ try:
     from .tapvid_kinetics_sharded import TAPVidKineticsShardedIterableDataset
 except ImportError:
     TAPVidKineticsShardedIterableDataset = None
+
+try:
+    from .tapvid_rgb_stacking import TAPVidRGBStackingDataset
+except ImportError:
+    TAPVidRGBStackingDataset = None
 
 try:
     from .megadepth_pairs import MegaDepthPairDataset
@@ -168,6 +174,13 @@ def get_dataset(name: str, root: str, **kwargs):
 
     if name == "davis":
         return TAPVidDAVISDataset(root, **kwargs)
+
+    if name in {"rgb_stacking", "rgbstacking", "stacking"}:
+        if TAPVidRGBStackingDataset is None:
+            raise ImportError("TAPVidRGBStackingDataset not available")
+        # RGB-Stacking is a single map-style pickle dataset. The generic
+        # split/backend arguments are intentionally ignored.
+        return TAPVidRGBStackingDataset(root, **kwargs)
 
     if name == "kinetics":
         # Avoid OOM: if shards exist, default to streaming dataset in auto mode.
