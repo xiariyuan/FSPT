@@ -20,6 +20,8 @@ def main():
     p.add_argument('--dataset-root',default=None)
     p.add_argument('--annotation-file',default=None)
     p.add_argument('--subset',type=int,default=None)
+    p.add_argument('--dataset-split',default=None)
+    p.add_argument('--cache-role',choices=['train','validation','diagnostic'],default='diagnostic')
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
     p.add_argument('--device',default='cuda')
@@ -39,12 +41,15 @@ def main():
         split_cfg['annotation_file']=args.annotation_file
     if args.subset is not None:
         split_cfg['subset']=int(args.subset)
-    dataset,_=resolve_dataset(cfg,args.split,False)
+    if args.dataset_split:
+        split_cfg['split']=args.dataset_split
+    dataset,resolved_limit=resolve_dataset(cfg,args.split,False)
+    effective_limit = args.limit if args.limit is not None else resolved_limit
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
     caches=[]
     with torch.no_grad():
         for i,batch in enumerate(loader):
-            if args.limit is not None and i>=args.limit: break
+            if effective_limit is not None and i>=effective_limit: break
             video=batch['video'].to(device)
             q=batch['query_points'].to(device)
             _,_,info=model(video,q,return_info=True)
@@ -73,9 +78,12 @@ def main():
         'evidence_tier':'development_diagnostic_only',
         'paper_claim_eligible':False,
         'split_key':args.split,
+        'cache_role':args.cache_role,
+        'dataset_split':split_cfg.get('split'),
         'dataset_root':str(Path(split_cfg.get('root','')).resolve()),
         'annotation_file':str(split_cfg.get('annotation_file','')),
         'configured_subset':split_cfg.get('subset'),
+        'effective_limit':effective_limit,
         'samples_processed':len(caches),
         'rows':int(merged['features'].shape[0]),
         'candidate_count':int(merged['features'].shape[1]),

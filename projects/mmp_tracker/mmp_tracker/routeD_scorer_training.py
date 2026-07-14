@@ -51,6 +51,10 @@ class ScorerTrainingConfig:
     gain_weight_alpha: float = 1.0
     max_gain_weight: float = 6.0
     regret_loss_weight: float = 0.0
+    pairwise_loss_weight: float = 0.0
+    pairwise_margin: float = 0.5
+    hard_positive_min_gain_px: float = 3.0
+    model_selection_metric: str = "auto"
 
 
 @dataclass(frozen=True)
@@ -144,16 +148,35 @@ def routeD_training_loss(
     config: ScorerTrainingConfig,
 ) -> torch.Tensor:
     """Compute CE, gain-weighted CE, or gain-weighted CE plus regret."""
-    if config.loss_mode not in {"cross_entropy", "gain_weighted", "gain_regret"}:
+    if config.loss_mode not in {
+        "cross_entropy",
+        "gain_weighted",
+        "gain_regret",
+        "gain_pairwise",
+    }:
         raise ValueError(f"Unsupported loss_mode: {config.loss_mode}")
     per_row_ce = F.cross_entropy(logits, target, reduction="none")
     weights = torch.ones_like(per_row_ce)
-    if config.loss_mode in {"gain_weighted", "gain_regret"}:
+    if config.loss_mode in {"gain_weighted", "gain_regret", "gain_pairwise"}:
         positive = torch.log1p(oracle_gain_px.clamp_min(0.0))
         normalizer = positive[positive > 0].mean().clamp_min(1.0e-6)
         scaled = (positive / normalizer).clamp(max=float(config.max_gain_weight))
         weights = 1.0 + float(config.gain_weight_alpha) * scaled
     loss = (per_row_ce * weights).sum() / weights.sum().clamp_min(1.0)
+    if config.loss_mode == "gain_pairwise" or config.pairwise_loss_weight > 0:
+        hard_positive = (target > 0) & (
+            oracle_gain_px >= float(config.hard_positive_min_gain_px)
+        )
+        if hard_positive.any():
+            target_score = logits.gather(-1, target.unsqueeze(-1)).squeeze(-1)
+            local_score = logits[..., 0]
+            pairwise = F.relu(
+                float(config.pairwise_margin) - (target_score - local_score)
+            )
+            pairwise_weight = torch.log1p(oracle_gain_px.clamp_min(0.0))
+            pairwise_weight = pairwise_weight * hard_positive.to(pairwise_weight.dtype)
+            pairwise_loss = (pairwise * pairwise_weight).sum() / pairwise_weight.sum().clamp_min(1.0)
+            loss = loss + float(config.pairwise_loss_weight) * pairwise_loss
     if config.loss_mode == "gain_regret" or config.regret_loss_weight > 0:
         probabilities = torch.softmax(logits, dim=-1)
         oracle_error = candidate_error_px.min(dim=-1, keepdim=True).values
@@ -261,6 +284,22 @@ def evaluate_hypothesis_scorer(
     }
 
 
+def scorer_model_selection_value(
+    validation_metrics: Mapping[str, float],
+    config: ScorerTrainingConfig,
+) -> tuple[str, float]:
+    metric = config.model_selection_metric
+    if metric == "auto":
+        metric = (
+            "cross_entropy"
+            if config.loss_mode == "cross_entropy"
+            else "mean_selected_error_px"
+        )
+    if metric not in {"cross_entropy", "mean_selected_error_px"}:
+        raise ValueError(f"Unsupported model_selection_metric: {metric}")
+    return metric, float(validation_metrics[metric])
+
+
 def train_hypothesis_scorer(
     train_cache: Mapping[str, torch.Tensor],
     validation_cache: Mapping[str, torch.Tensor],
@@ -298,7 +337,9 @@ def train_hypothesis_scorer(
 
     history = []
     best_state = copy.deepcopy(model.state_dict())
-    best_validation_loss = float("inf")
+    best_selection_value = float("inf")
+    best_selection_metric = None
+    best_epoch = 0
     epochs_without_improvement = 0
     for epoch in range(int(config.epochs)):
         model.train()
@@ -351,9 +392,13 @@ def train_hypothesis_scorer(
             "validation": validation_metrics,
         }
         history.append(epoch_record)
-        validation_loss = float(validation_metrics["cross_entropy"])
-        if validation_loss < best_validation_loss - 1.0e-8:
-            best_validation_loss = validation_loss
+        selection_metric, selection_value = scorer_model_selection_value(
+            validation_metrics, config
+        )
+        if selection_value < best_selection_value - 1.0e-8:
+            best_selection_value = selection_value
+            best_selection_metric = selection_metric
+            best_epoch = epoch + 1
             best_state = copy.deepcopy(model.state_dict())
             epochs_without_improvement = 0
         else:
@@ -390,6 +435,9 @@ def train_hypothesis_scorer(
         "train_rows": int(train_cache["features"].shape[0]),
         "validation_rows": int(validation_cache["features"].shape[0]),
         "history": history,
+        "best_epoch": best_epoch,
+        "model_selection_metric": best_selection_metric,
+        "model_selection_value": best_selection_value,
         "train_metrics": final_train,
         "validation_metrics": final_validation,
         "evidence_tier": "development_diagnostic_only",

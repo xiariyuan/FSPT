@@ -45,12 +45,20 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
         "--loss-mode",
-        choices=["cross_entropy", "gain_weighted", "gain_regret"],
+        choices=["cross_entropy", "gain_weighted", "gain_regret", "gain_pairwise"],
         default="cross_entropy",
     )
     parser.add_argument("--gain-weight-alpha", type=float, default=1.0)
     parser.add_argument("--max-gain-weight", type=float, default=6.0)
     parser.add_argument("--regret-loss-weight", type=float, default=0.0)
+    parser.add_argument("--pairwise-loss-weight", type=float, default=0.0)
+    parser.add_argument("--pairwise-margin", type=float, default=0.5)
+    parser.add_argument("--hard-positive-min-gain-px", type=float, default=3.0)
+    parser.add_argument(
+        "--model-selection-metric",
+        choices=["auto", "cross_entropy", "mean_selected_error_px"],
+        default="auto",
+    )
     parser.add_argument("--no-normalize-features", action="store_true")
     args = parser.parse_args()
 
@@ -83,6 +91,10 @@ def main() -> None:
         gain_weight_alpha=args.gain_weight_alpha,
         max_gain_weight=args.max_gain_weight,
         regret_loss_weight=args.regret_loss_weight,
+        pairwise_loss_weight=args.pairwise_loss_weight,
+        pairwise_margin=args.pairwise_margin,
+        hard_positive_min_gain_px=args.hard_positive_min_gain_px,
+        model_selection_metric=args.model_selection_metric,
     )
     bundle = train_hypothesis_scorer(train_cache, validation_cache, config)
     bundle["source_train_cache"] = str(Path(args.train_cache).resolve())

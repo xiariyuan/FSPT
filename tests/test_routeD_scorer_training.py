@@ -12,6 +12,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import (
     compute_feature_normalization,
     normalize_hypothesis_features,
     routeD_training_loss,
+    scorer_model_selection_value,
     split_routeD_candidate_cache_by_sample,
     train_hypothesis_scorer,
 )
@@ -100,6 +101,33 @@ class TestRouteDScorerTraining(unittest.TestCase):
         self.assertTrue(torch.isfinite(loss))
         loss.backward()
         self.assertTrue(torch.isfinite(logits.grad).all())
+
+
+    def test_gain_mode_selects_by_exact_error(self):
+        metric, value = scorer_model_selection_value(
+            {"cross_entropy": 1.0, "mean_selected_error_px": 8.0},
+            ScorerTrainingConfig(loss_mode="gain_pairwise"),
+        )
+        self.assertEqual(metric, "mean_selected_error_px")
+        self.assertEqual(value, 8.0)
+
+    def test_pairwise_loss_penalizes_local_over_hard_global(self):
+        target = torch.tensor([1])
+        errors = torch.tensor([[10.0, 1.0]])
+        gain = torch.tensor([9.0])
+        config = ScorerTrainingConfig(
+            loss_mode="gain_pairwise",
+            pairwise_loss_weight=1.0,
+            pairwise_margin=1.0,
+            hard_positive_min_gain_px=3.0,
+        )
+        bad = routeD_training_loss(
+            torch.tensor([[2.0, 0.0]]), target, errors, gain, config
+        )
+        good = routeD_training_loss(
+            torch.tensor([[0.0, 2.0]]), target, errors, gain, config
+        )
+        self.assertGreater(float(bad), float(good))
 
     def test_training_learns_synthetic_oracle_signal(self):
         cache = synthetic_cache(samples=8, rows_per_sample=30)
