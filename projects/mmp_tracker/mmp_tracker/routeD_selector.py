@@ -9,7 +9,10 @@ import torch
 
 from .hypothesis_scorer import HypothesisScorer, MultiThresholdHypothesisScorer
 from .routeD_scorer_training import normalize_hypothesis_features, select_routeD_candidate
-from .routeD_multithreshold_training import select_multithreshold_candidate
+from .routeD_multithreshold_training import (
+    select_multithreshold_candidate,
+    select_multithreshold_profile_candidate,
+)
 
 
 class RouteDRiskSelector:
@@ -53,6 +56,9 @@ class RouteDRiskSelector:
         pixel_scale=None,
         fusion_strength=None,
         fusion_power=1.0,
+        profile_p1_tolerance=None,
+        profile_min_coarse_gain=0.0,
+        profile_min_total_gain=0.0,
     ):
         features = features.to(self.device, dtype=torch.float32)
         if self.mean is not None:
@@ -64,13 +70,26 @@ class RouteDRiskSelector:
             threshold_probabilities = torch.sigmoid(raw_output)
             if valid_mask is None:
                 valid_mask = torch.ones_like(logits, dtype=torch.bool)
-            index, probability, global_index, _ = select_multithreshold_candidate(
-                raw_output,
-                valid_mask.to(self.device),
-                gate_threshold=self.threshold,
-                gate_temperature=self.gate_temperature,
-            )
+            if profile_p1_tolerance is None:
+                index, probability, global_index, _ = select_multithreshold_candidate(
+                    raw_output,
+                    valid_mask.to(self.device),
+                    gate_threshold=self.threshold,
+                    gate_temperature=self.gate_temperature,
+                )
+                profile_diagnostics = None
+            else:
+                index, profile_diagnostics = select_multithreshold_profile_candidate(
+                    raw_output,
+                    valid_mask.to(self.device),
+                    p1_tolerance=float(profile_p1_tolerance),
+                    min_coarse_gain=float(profile_min_coarse_gain),
+                    min_total_gain=float(profile_min_total_gain),
+                )
+                global_index = profile_diagnostics["best_global_index"]
+                probability = profile_diagnostics["eligible"].to(logits.dtype)
         else:
+            profile_diagnostics = None
             logits = raw_output
             if valid_mask is None:
                 valid_mask = torch.ones_like(logits, dtype=torch.bool)
@@ -142,4 +161,5 @@ class RouteDRiskSelector:
             "fusion_alpha": fusion_alpha,
             "logits": logits,
             "threshold_probabilities": threshold_probabilities,
+            "profile_diagnostics": profile_diagnostics,
         }

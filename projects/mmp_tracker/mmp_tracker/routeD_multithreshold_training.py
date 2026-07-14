@@ -95,6 +95,82 @@ def select_multithreshold_candidate(
     return prediction, gate_probability, best_global, utility
 
 
+def select_multithreshold_profile_candidate(
+    threshold_logits: torch.Tensor,
+    candidate_valid_mask: torch.Tensor,
+    *,
+    p1_tolerance: float = 0.0,
+    min_coarse_gain: float = 0.0,
+    min_total_gain: float = 0.0,
+) -> tuple[torch.Tensor, Dict[str, torch.Tensor]]:
+    """Select a global candidate while explicitly protecting the 1-px head.
+
+    The global candidate is ranked by the mean predicted correctness over all
+    thresholds except the first/smallest one. It is accepted only if its
+    predicted small-threshold probability is not worse than local beyond the
+    configured tolerance and its predicted coarse/total utility gains pass the
+    configured margins.
+    """
+    if threshold_logits.ndim < 3:
+        raise ValueError("threshold_logits must have shape (..., K, T)")
+    probabilities = torch.sigmoid(threshold_logits)
+    if probabilities.shape[:-1] != candidate_valid_mask.shape:
+        raise ValueError("candidate_valid_mask must match candidate dimensions")
+    if probabilities.shape[-2] < 2:
+        local = torch.zeros(
+            probabilities.shape[:-2], dtype=torch.long, device=probabilities.device
+        )
+        zeros = torch.zeros_like(local, dtype=probabilities.dtype)
+        return local, {
+            "probabilities": probabilities,
+            "best_global_index": local,
+            "p1_margin": zeros,
+            "coarse_gain": zeros,
+            "total_gain": zeros,
+            "eligible": torch.zeros_like(local, dtype=torch.bool),
+        }
+
+    local_profile = probabilities[..., 0, :]
+    global_profiles = probabilities[..., 1:, :]
+    global_valid = candidate_valid_mask[..., 1:]
+    has_global = global_valid.any(dim=-1)
+    if probabilities.shape[-1] > 1:
+        local_coarse = local_profile[..., 1:].mean(dim=-1)
+        global_coarse = global_profiles[..., 1:].mean(dim=-1)
+    else:
+        local_coarse = local_profile.mean(dim=-1)
+        global_coarse = global_profiles.mean(dim=-1)
+    global_coarse = global_coarse.masked_fill(~global_valid, -1.0)
+    best_global_coarse, best_global_relative = global_coarse.max(dim=-1)
+    best_global_index = best_global_relative + 1
+    gather_index = best_global_relative.unsqueeze(-1).unsqueeze(-1).expand(
+        *best_global_relative.shape, 1, probabilities.shape[-1]
+    )
+    best_global_profile = global_profiles.gather(-2, gather_index).squeeze(-2)
+    p1_margin = best_global_profile[..., 0] - local_profile[..., 0]
+    coarse_gain = best_global_coarse - local_coarse
+    total_gain = best_global_profile.mean(dim=-1) - local_profile.mean(dim=-1)
+    eligible = (
+        has_global
+        & (p1_margin >= -float(p1_tolerance))
+        & (coarse_gain >= float(min_coarse_gain))
+        & (total_gain >= float(min_total_gain))
+    )
+    prediction = torch.where(
+        eligible, best_global_index, torch.zeros_like(best_global_index)
+    )
+    return prediction, {
+        "probabilities": probabilities,
+        "best_global_index": best_global_index,
+        "best_global_profile": best_global_profile,
+        "local_profile": local_profile,
+        "p1_margin": p1_margin,
+        "coarse_gain": coarse_gain,
+        "total_gain": total_gain,
+        "eligible": eligible,
+    }
+
+
 def multithreshold_training_loss(
     threshold_logits: torch.Tensor,
     candidate_error_px: torch.Tensor,

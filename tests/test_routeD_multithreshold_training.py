@@ -10,6 +10,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_multithreshold_training import (
     aggregate_threshold_utility,
     multithreshold_training_loss,
     select_multithreshold_candidate,
+    select_multithreshold_profile_candidate,
     threshold_hit_targets,
 )
 from projects.mmp_tracker.mmp_tracker.routeD_selector import RouteDRiskSelector
@@ -50,6 +51,44 @@ class TestRouteDMultiThresholdTraining(unittest.TestCase):
         self.assertGreater(float(probability.item()), 0.5)
         self.assertGreater(float(utility[0, 1]), float(utility[0, 0]))
 
+
+    def test_profile_gate_blocks_small_threshold_regression(self):
+        logits = torch.logit(torch.tensor([[
+            [0.80, 0.50, 0.50, 0.50, 0.50],
+            [0.60, 0.90, 0.90, 0.90, 0.90],
+        ]]).clamp(1e-4, 1 - 1e-4))
+        valid = torch.ones(1, 2, dtype=torch.bool)
+        blocked, diagnostics = select_multithreshold_profile_candidate(
+            logits,
+            valid,
+            p1_tolerance=0.10,
+            min_coarse_gain=0.10,
+        )
+        allowed, _ = select_multithreshold_profile_candidate(
+            logits,
+            valid,
+            p1_tolerance=0.25,
+            min_coarse_gain=0.10,
+        )
+        self.assertEqual(int(blocked.item()), 0)
+        self.assertEqual(int(allowed.item()), 1)
+        self.assertLess(float(diagnostics["p1_margin"].item()), 0.0)
+
+    def test_profile_gate_requires_coarse_gain(self):
+        logits = torch.logit(torch.tensor([[
+            [0.50, 0.80, 0.80, 0.80, 0.80],
+            [0.60, 0.70, 0.70, 0.70, 0.70],
+        ]]).clamp(1e-4, 1 - 1e-4))
+        valid = torch.ones(1, 2, dtype=torch.bool)
+        prediction, diagnostics = select_multithreshold_profile_candidate(
+            logits,
+            valid,
+            p1_tolerance=0.0,
+            min_coarse_gain=0.0,
+        )
+        self.assertEqual(int(prediction.item()), 0)
+        self.assertLess(float(diagnostics["coarse_gain"].item()), 0.0)
+
     def test_inference_adapter_loads_multithreshold_bundle(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "bundle.pt"
@@ -71,6 +110,35 @@ class TestRouteDMultiThresholdTraining(unittest.TestCase):
             self.assertEqual(output["threshold_probabilities"].shape, (2, 3, 5))
             self.assertEqual(output["points"].shape, (2, 2))
 
+
+
+    def test_inference_adapter_applies_profile_gate(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "bundle.pt"
+            model = MultiThresholdHypothesisScorer(12, 8, 5)
+            with torch.no_grad():
+                for parameter in model.parameters():
+                    parameter.zero_()
+            torch.save({
+                "kind": "routeD_multithreshold_utility_scorer",
+                "feature_dim": 12,
+                "threshold_count": 5,
+                "thresholds_px": [1, 2, 4, 8, 16],
+                "config": {"hidden_dim": 8, "gate_temperature": 0.1},
+                "model_state": model.state_dict(),
+                "feature_mean": torch.zeros(12),
+                "feature_std": torch.ones(12),
+            }, path)
+            selector = RouteDRiskSelector(path, threshold=0.5)
+            candidates = torch.tensor([[[0.0, 0.0], [1.0, 1.0]]])
+            output = selector.select(
+                torch.zeros(1, 2, 12),
+                candidates,
+                profile_p1_tolerance=0.0,
+                profile_min_coarse_gain=0.01,
+            )
+            self.assertEqual(int(output["index"].item()), 0)
+            self.assertIsNotNone(output["profile_diagnostics"])
 
 if __name__ == "__main__":
     unittest.main()
