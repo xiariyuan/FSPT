@@ -26,7 +26,16 @@ class RouteDRiskSelector:
         self.threshold = float(threshold)
 
     @torch.no_grad()
-    def select(self, features, candidate_points, valid_mask=None):
+    def select(
+        self,
+        features,
+        candidate_points,
+        valid_mask=None,
+        *,
+        fallback_points=None,
+        max_switch_distance_px=None,
+        pixel_scale=None,
+    ):
         features = features.to(self.device, dtype=torch.float32)
         if self.mean is not None:
             features = normalize_hypothesis_features(features, self.mean, self.std)
@@ -39,14 +48,44 @@ class RouteDRiskSelector:
             selection_mode="risk_gate",
             gate_threshold=self.threshold,
         )
-        selected = candidate_points.to(self.device).gather(
+        candidate_points = candidate_points.to(self.device)
+        selected = candidate_points.gather(
             -2,
             index.unsqueeze(-1).unsqueeze(-1).expand(*index.shape, 1, 2),
         ).squeeze(-2)
+        raw_index = index
+        switch_distance_px = torch.zeros_like(probability)
+        guard_pass = torch.ones_like(index, dtype=torch.bool)
+        if fallback_points is not None:
+            fallback_points = fallback_points.to(self.device, dtype=selected.dtype)
+            if fallback_points.shape != selected.shape:
+                raise ValueError("fallback_points must match selected point shape")
+            if max_switch_distance_px is not None:
+                if pixel_scale is None:
+                    raise ValueError("pixel_scale is required for a pixel-distance guard")
+                scale = torch.as_tensor(
+                    pixel_scale, device=self.device, dtype=selected.dtype
+                )
+                if tuple(scale.shape) != (2,):
+                    raise ValueError("pixel_scale must contain [height-1, width-1]")
+                switch_distance_px = torch.norm(
+                    (selected - fallback_points) * scale, dim=-1
+                )
+                guard_pass = switch_distance_px <= float(max_switch_distance_px)
+            effective_global = (raw_index > 0) & guard_pass
+            selected = torch.where(
+                effective_global.unsqueeze(-1), selected, fallback_points
+            )
+            index = torch.where(
+                effective_global, raw_index, torch.zeros_like(raw_index)
+            )
         return {
             "points": selected,
             "index": index,
+            "raw_index": raw_index,
             "gate_probability": probability,
             "global_index": global_index,
+            "switch_distance_px": switch_distance_px,
+            "guard_pass": guard_pass,
             "logits": logits,
         }
