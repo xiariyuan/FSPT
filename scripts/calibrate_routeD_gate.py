@@ -14,7 +14,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import normalize_hy
 def main():
  p=argparse.ArgumentParser(); p.add_argument('--bundle',required=True); p.add_argument('--cache',required=True); p.add_argument('--output',required=True); p.add_argument('--device',default='cpu'); args=p.parse_args()
  b=torch.load(args.bundle,map_location='cpu',weights_only=False); c=torch.load(args.cache,map_location='cpu',weights_only=False).get('cache',torch.load(args.cache,map_location='cpu',weights_only=False)); validate_routeD_candidate_cache(c)
- m=HypothesisScorer(feature_dim=int(b['feature_dim']),hidden_dim=128); m.load_state_dict(b['model_state']); m.to(args.device).eval()
+ hidden_dim=int(b.get('config',{}).get('hidden_dim',0)) or int(b['model_state']['network.0.weight'].shape[0]); m=HypothesisScorer(feature_dim=int(b['feature_dim']),hidden_dim=hidden_dim); m.load_state_dict(b['model_state']); m.to(args.device).eval()
  mean=b.get('feature_mean'); std=b.get('feature_std')
  best=None
  thresholds=[i/20 for i in range(0,21)]
