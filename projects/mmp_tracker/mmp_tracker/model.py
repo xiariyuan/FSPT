@@ -18,6 +18,8 @@ from .global_relocator import GlobalRelocator, PairwiseGlobalRelocator
 from .local_matcher import LocalMatcher, LocalMatchOutput, PatchMatcher
 from .memory_bank import append_memory, initialize_memory_bank
 from .posterior_fusion import PosteriorFusionHead
+from .hypothesis_dynamics import generate_local_global_hypotheses, update_temporal_belief
+from .multi_hypothesis_belief import diagnose_belief
 
 
 class MMPTracker(nn.Module):
@@ -205,6 +207,7 @@ class MMPTracker(nn.Module):
         pending_points = init_points.clone()
         pending_confidence = torch.zeros(batch, num_points, device=video.device, dtype=video.dtype)
         pending_valid = torch.zeros(batch, num_points, device=video.device, dtype=torch.bool)
+        previous_belief = None
         debug: Dict[str, list] = {
             "local_confidence": [],
             "global_confidence": [],
@@ -219,6 +222,11 @@ class MMPTracker(nn.Module):
             "candidate_global_rank_probabilities": [],
             "candidate_global_selected_index": [],
             "candidate_points": [],
+            "belief_weights": [],
+            "belief_entropy": [],
+            "belief_effective_hypotheses": [],
+            "belief_top1_margin": [],
+            "belief_collapse_mask": [],
             "global_candidate_points": [],
             "oracle_rematch_candidate_points": [],
             "global_candidate_coarse_points": [],
@@ -822,6 +830,36 @@ class MMPTracker(nn.Module):
             debug["candidate_global_rank_logits"].append(candidate_global_rank_logits)
             debug["candidate_global_rank_probabilities"].append(candidate_global_rank_probabilities)
             debug["candidate_global_selected_index"].append(candidate_global_selected_index)
+            # Route-D diagnostic belief integration: preserve candidate modes without
+            # changing the existing tracker trajectory output.
+            try:
+                hypothesis_candidates = generate_local_global_hypotheses(
+                    local_out.points,
+                    local_quality,
+                    global_candidate_points,
+                    torch.relu(global_candidate_points.new_ones(global_candidate_points.shape[:-1]))
+                    * (global_out.scores if global_out.scores.shape == global_candidate_points.shape[:-1] else torch.ones_like(global_candidate_points[..., 0])),
+                    active_mask=active_mask,
+                )
+                temporal_update = update_temporal_belief(
+                    hypothesis_candidates,
+                    previous_belief,
+                )
+                previous_belief = temporal_update.belief
+                belief_diag = diagnose_belief(temporal_update.belief)
+                debug["belief_weights"].append(temporal_update.belief.weights)
+                debug["belief_entropy"].append(belief_diag.entropy)
+                debug["belief_effective_hypotheses"].append(belief_diag.effective_hypotheses)
+                debug["belief_top1_margin"].append(belief_diag.top1_margin)
+                debug["belief_collapse_mask"].append(belief_diag.top1_weight > 0.65)
+            except Exception:
+                # Diagnostic path must never alter legacy tracker execution.
+                debug["belief_weights"].append(torch.zeros_like(candidate_logits))
+                debug["belief_entropy"].append(torch.zeros_like(active_mask, dtype=video.dtype))
+                debug["belief_effective_hypotheses"].append(torch.zeros_like(active_mask, dtype=video.dtype))
+                debug["belief_top1_margin"].append(torch.zeros_like(active_mask, dtype=video.dtype))
+                debug["belief_collapse_mask"].append(torch.zeros_like(active_mask))
+
             debug["candidate_points"].append(candidate_points)
             debug["global_candidate_points"].append(global_candidate_points)
             debug["oracle_rematch_candidate_points"].append(oracle_rematch_candidate_points)
@@ -881,6 +919,11 @@ class MMPTracker(nn.Module):
             "candidate_global_rank_probabilities": torch.stack(debug["candidate_global_rank_probabilities"], dim=2),
             "candidate_global_selected_index": torch.stack(debug["candidate_global_selected_index"], dim=2),
             "candidate_points": torch.stack(debug["candidate_points"], dim=2),
+            "belief_weights": torch.stack(debug["belief_weights"], dim=2),
+            "belief_entropy": torch.stack(debug["belief_entropy"], dim=2),
+            "belief_effective_hypotheses": torch.stack(debug["belief_effective_hypotheses"], dim=2),
+            "belief_top1_margin": torch.stack(debug["belief_top1_margin"], dim=2),
+            "belief_collapse_mask": torch.stack(debug["belief_collapse_mask"], dim=2),
             "global_candidate_points": torch.stack(debug["global_candidate_points"], dim=2),
             "oracle_rematch_candidate_points": torch.stack(debug["oracle_rematch_candidate_points"], dim=2),
             "global_candidate_coarse_points": torch.stack(debug["global_candidate_coarse_points"], dim=2),
