@@ -77,6 +77,14 @@ class TrackingConfig:
     deferred_commit_confirm_px: float = 12.0
     deferred_commit_reconfirm_px: float = 12.0
     deferred_stage_min_disagreement_px: float = 8.0
+    enable_multi_hypothesis_diagnostics: bool = False
+    belief_transition_sigma: float = 0.08
+    belief_prior_strength: float = 1.0
+    belief_evidence_temperature: float = 1.0
+    belief_birth_mass: float = 0.05
+    belief_collapse_min_top1_weight: float = 0.65
+    belief_collapse_max_normalized_entropy: float = 0.45
+    belief_collapse_min_top1_margin: float = 0.20
 
 
 @dataclass

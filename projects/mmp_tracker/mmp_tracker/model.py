@@ -18,8 +18,13 @@ from .global_relocator import GlobalRelocator, PairwiseGlobalRelocator
 from .local_matcher import LocalMatcher, LocalMatchOutput, PatchMatcher
 from .memory_bank import append_memory, initialize_memory_bank
 from .posterior_fusion import PosteriorFusionHead
-from .hypothesis_dynamics import generate_local_global_hypotheses, update_temporal_belief
-from .multi_hypothesis_belief import diagnose_belief
+from .hypothesis_dynamics import (
+    GLOBAL_SOURCE_ID,
+    LOCAL_SOURCE_ID,
+    HypothesisCandidates,
+    update_temporal_belief,
+)
+from .multi_hypothesis_belief import MultiHypothesisBelief, conservative_collapse
 
 
 class MMPTracker(nn.Module):
@@ -207,6 +212,9 @@ class MMPTracker(nn.Module):
         pending_points = init_points.clone()
         pending_confidence = torch.zeros(batch, num_points, device=video.device, dtype=video.dtype)
         pending_valid = torch.zeros(batch, num_points, device=video.device, dtype=torch.bool)
+        enable_belief_diagnostics = bool(
+            getattr(self.config.tracking, "enable_multi_hypothesis_diagnostics", False)
+        )
         previous_belief = None
         debug: Dict[str, list] = {
             "local_confidence": [],
@@ -227,11 +235,6 @@ class MMPTracker(nn.Module):
             "hypothesis_candidate_entropy": [],
             "hypothesis_previous_points": [],
             "hypothesis_previous_confidence": [],
-            "belief_weights": [],
-            "belief_entropy": [],
-            "belief_effective_hypotheses": [],
-            "belief_top1_margin": [],
-            "belief_collapse_mask": [],
             "global_candidate_points": [],
             "oracle_rematch_candidate_points": [],
             "global_candidate_coarse_points": [],
@@ -263,6 +266,25 @@ class MMPTracker(nn.Module):
             "pending_motion_consistency_px": [],
             "pending_global_reconfirm_px": [],
         }
+        if enable_belief_diagnostics:
+            debug.update(
+                {
+                    "belief_points": [],
+                    "belief_weights": [],
+                    "belief_valid_mask": [],
+                    "belief_source_ids": [],
+                    "belief_evidence_weights": [],
+                    "belief_predicted_prior": [],
+                    "belief_entropy": [],
+                    "belief_normalized_entropy": [],
+                    "belief_effective_hypotheses": [],
+                    "belief_top1_weight": [],
+                    "belief_top1_margin": [],
+                    "belief_map_points": [],
+                    "belief_expected_points": [],
+                    "belief_collapse_mask": [],
+                }
+            )
 
         for t in range(time):
             frame_feat = features[:, t]
@@ -853,35 +875,85 @@ class MMPTracker(nn.Module):
             debug["candidate_global_rank_logits"].append(candidate_global_rank_logits)
             debug["candidate_global_rank_probabilities"].append(candidate_global_rank_probabilities)
             debug["candidate_global_selected_index"].append(candidate_global_selected_index)
-            # Route-D diagnostic belief integration: preserve candidate modes without
-            # changing the existing tracker trajectory output.
-            try:
-                hypothesis_candidates = generate_local_global_hypotheses(
-                    local_out.points,
-                    local_quality,
-                    global_candidate_points,
-                    torch.relu(global_candidate_points.new_ones(global_candidate_points.shape[:-1]))
-                    * (global_out.scores if global_out.scores.shape == global_candidate_points.shape[:-1] else torch.ones_like(global_candidate_points[..., 0])),
-                    active_mask=active_mask,
+            # Route-D diagnostic belief integration. This path is explicitly opt-in,
+            # has no silent fallback, and never changes the legacy trajectory output.
+            if enable_belief_diagnostics:
+                if (
+                    self.variant in {"localglobal_topk", "candidate_topk", "topk_abstain"}
+                    and candidate_points.shape[-2] == candidate_probabilities.shape[-1]
+                ):
+                    belief_points = candidate_points
+                    evidence = candidate_probabilities.clamp_min(0.0)
+                else:
+                    belief_points = hypothesis_candidate_points
+                    evidence = hypothesis_candidate_quality.clamp_min(0.0)
+
+                valid_mask = active_mask.unsqueeze(-1).expand_as(evidence)
+                source_ids = torch.full(
+                    evidence.shape,
+                    GLOBAL_SOURCE_ID,
+                    device=evidence.device,
+                    dtype=torch.long,
+                )
+                source_ids[..., 0] = LOCAL_SOURCE_ID
+                hypothesis_candidates = HypothesisCandidates(
+                    points=belief_points,
+                    evidence_logits=evidence.clamp_min(1.0e-8).log(),
+                    valid_mask=valid_mask,
+                    source_ids=source_ids,
                 )
                 temporal_update = update_temporal_belief(
                     hypothesis_candidates,
                     previous_belief,
+                    transition_sigma=float(self.config.tracking.belief_transition_sigma),
+                    prior_strength=float(self.config.tracking.belief_prior_strength),
+                    evidence_temperature=float(
+                        self.config.tracking.belief_evidence_temperature
+                    ),
+                    birth_mass=float(self.config.tracking.belief_birth_mass),
                 )
-                previous_belief = temporal_update.belief
-                belief_diag = diagnose_belief(temporal_update.belief)
+                collapse = conservative_collapse(
+                    temporal_update.belief,
+                    min_top1_weight=float(
+                        self.config.tracking.belief_collapse_min_top1_weight
+                    ),
+                    max_normalized_entropy=float(
+                        self.config.tracking.belief_collapse_max_normalized_entropy
+                    ),
+                    min_top1_margin=float(
+                        self.config.tracking.belief_collapse_min_top1_margin
+                    ),
+                )
+                belief_diag = collapse.diagnostics
+                previous_belief = MultiHypothesisBelief(
+                    points=temporal_update.belief.points.detach(),
+                    weights=temporal_update.belief.weights.detach(),
+                    valid_mask=temporal_update.belief.valid_mask.detach(),
+                )
+                debug["belief_points"].append(temporal_update.belief.points)
                 debug["belief_weights"].append(temporal_update.belief.weights)
+                debug["belief_valid_mask"].append(temporal_update.belief.valid_mask)
+                debug["belief_source_ids"].append(source_ids)
+                debug["belief_evidence_weights"].append(
+                    temporal_update.evidence_belief.weights
+                )
+                debug["belief_predicted_prior"].append(
+                    temporal_update.predicted_prior
+                )
                 debug["belief_entropy"].append(belief_diag.entropy)
-                debug["belief_effective_hypotheses"].append(belief_diag.effective_hypotheses)
+                debug["belief_normalized_entropy"].append(
+                    belief_diag.normalized_entropy
+                )
+                debug["belief_effective_hypotheses"].append(
+                    belief_diag.effective_hypotheses
+                )
+                debug["belief_top1_weight"].append(belief_diag.top1_weight)
                 debug["belief_top1_margin"].append(belief_diag.top1_margin)
-                debug["belief_collapse_mask"].append(belief_diag.top1_weight > 0.65)
-            except Exception:
-                # Diagnostic path must never alter legacy tracker execution.
-                debug["belief_weights"].append(torch.zeros_like(candidate_logits))
-                debug["belief_entropy"].append(torch.zeros_like(active_mask, dtype=video.dtype))
-                debug["belief_effective_hypotheses"].append(torch.zeros_like(active_mask, dtype=video.dtype))
-                debug["belief_top1_margin"].append(torch.zeros_like(active_mask, dtype=video.dtype))
-                debug["belief_collapse_mask"].append(torch.zeros_like(active_mask))
+                debug["belief_map_points"].append(belief_diag.map_points)
+                debug["belief_expected_points"].append(
+                    belief_diag.expected_points
+                )
+                debug["belief_collapse_mask"].append(collapse.collapse_mask)
 
             debug["candidate_points"].append(candidate_points)
             debug["hypothesis_candidate_points"].append(hypothesis_candidate_points)
@@ -952,11 +1024,6 @@ class MMPTracker(nn.Module):
             "hypothesis_candidate_entropy": torch.stack(debug["hypothesis_candidate_entropy"], dim=2),
             "hypothesis_previous_points": torch.stack(debug["hypothesis_previous_points"], dim=2),
             "hypothesis_previous_confidence": torch.stack(debug["hypothesis_previous_confidence"], dim=2),
-            "belief_weights": torch.stack(debug["belief_weights"], dim=2),
-            "belief_entropy": torch.stack(debug["belief_entropy"], dim=2),
-            "belief_effective_hypotheses": torch.stack(debug["belief_effective_hypotheses"], dim=2),
-            "belief_top1_margin": torch.stack(debug["belief_top1_margin"], dim=2),
-            "belief_collapse_mask": torch.stack(debug["belief_collapse_mask"], dim=2),
             "global_candidate_points": torch.stack(debug["global_candidate_points"], dim=2),
             "oracle_rematch_candidate_points": torch.stack(debug["oracle_rematch_candidate_points"], dim=2),
             "global_candidate_coarse_points": torch.stack(debug["global_candidate_coarse_points"], dim=2),
@@ -991,4 +1058,22 @@ class MMPTracker(nn.Module):
             "feature_width": features.shape[-1],
             "local_radius": self.local_matcher.radius,
         }
+        if enable_belief_diagnostics:
+            for key in (
+                "belief_points",
+                "belief_weights",
+                "belief_valid_mask",
+                "belief_source_ids",
+                "belief_evidence_weights",
+                "belief_predicted_prior",
+                "belief_entropy",
+                "belief_normalized_entropy",
+                "belief_effective_hypotheses",
+                "belief_top1_weight",
+                "belief_top1_margin",
+                "belief_map_points",
+                "belief_expected_points",
+                "belief_collapse_mask",
+            ):
+                info[key] = torch.stack(debug[key], dim=2)
         return tracks, visibility, info

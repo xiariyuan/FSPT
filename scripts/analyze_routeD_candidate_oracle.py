@@ -130,6 +130,9 @@ def main() -> None:
     config_path = Path(args.config)
     checkpoint_path = Path(args.checkpoint)
     cfg = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    cfg.setdefault("model", {}).setdefault("tracking", {})[
+        "enable_multi_hypothesis_diagnostics"
+    ] = True
     model = MMPTracker(config_from_dict(cfg))
     checkpoint = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
     model.load_state_dict(checkpoint["model"], strict=True)
