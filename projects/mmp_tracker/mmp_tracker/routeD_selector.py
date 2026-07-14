@@ -35,6 +35,8 @@ class RouteDRiskSelector:
         fallback_points=None,
         max_switch_distance_px=None,
         pixel_scale=None,
+        fusion_strength=None,
+        fusion_power=1.0,
     ):
         features = features.to(self.device, dtype=torch.float32)
         if self.mean is not None:
@@ -56,6 +58,7 @@ class RouteDRiskSelector:
         raw_index = index
         switch_distance_px = torch.zeros_like(probability)
         guard_pass = torch.ones_like(index, dtype=torch.bool)
+        fusion_alpha = torch.zeros_like(probability)
         if fallback_points is not None:
             fallback_points = fallback_points.to(self.device, dtype=selected.dtype)
             if fallback_points.shape != selected.shape:
@@ -73,11 +76,30 @@ class RouteDRiskSelector:
                 )
                 guard_pass = switch_distance_px <= float(max_switch_distance_px)
             effective_global = (raw_index > 0) & guard_pass
-            selected = torch.where(
-                effective_global.unsqueeze(-1), selected, fallback_points
+            if fusion_strength is None:
+                fusion_alpha = effective_global.to(selected.dtype)
+            else:
+                strength = float(fusion_strength)
+                if not 0.0 <= strength <= 1.0:
+                    raise ValueError("fusion_strength must be in [0, 1]")
+                power = float(fusion_power)
+                if power <= 0.0:
+                    raise ValueError("fusion_power must be positive")
+                denominator = max(1.0 - self.threshold, 1.0e-6)
+                calibrated_probability = (
+                    (probability - self.threshold) / denominator
+                ).clamp(0.0, 1.0)
+                fusion_alpha = (
+                    strength
+                    * calibrated_probability.pow(power)
+                    * effective_global.to(selected.dtype)
+                )
+            selected = (
+                fallback_points
+                + fusion_alpha.unsqueeze(-1) * (selected - fallback_points)
             )
             index = torch.where(
-                effective_global, raw_index, torch.zeros_like(raw_index)
+                fusion_alpha > 0.0, raw_index, torch.zeros_like(raw_index)
             )
         return {
             "points": selected,
@@ -87,5 +109,6 @@ class RouteDRiskSelector:
             "global_index": global_index,
             "switch_distance_px": switch_distance_px,
             "guard_pass": guard_pass,
+            "fusion_alpha": fusion_alpha,
             "logits": logits,
         }
