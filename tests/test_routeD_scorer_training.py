@@ -33,6 +33,11 @@ def synthetic_cache(samples=6, rows_per_sample=24, candidates=3):
         "candidate_quality": candidate_quality,
         "candidate_entropy": candidate_entropy,
         "candidate_valid_mask": valid,
+        "candidate_error_px": torch.where(
+            torch.arange(candidates).view(1, candidates) == target.view(rows, 1),
+            torch.ones(rows, candidates),
+            torch.full((rows, candidates), 10.0),
+        ),
         "gt_points": torch.zeros(rows, 2),
         "oracle_index": target.long(),
         "visible": (torch.arange(rows) % 2 == 0),

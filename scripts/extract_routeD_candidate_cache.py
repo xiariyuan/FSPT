@@ -18,6 +18,7 @@ def main():
     p.add_argument('--checkpoint',required=True)
     p.add_argument('--split',default='train')
     p.add_argument('--dataset-root',default=None)
+    p.add_argument('--annotation-file',default=None)
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
     p.add_argument('--device',default='cuda')
@@ -30,8 +31,11 @@ def main():
     device=torch.device(args.device if torch.cuda.is_available() else 'cpu')
     model.to(device).eval()
     
+    split_cfg = cfg.setdefault('data',{}).setdefault(args.split,{})
     if args.dataset_root:
-        cfg.setdefault('data',{}).setdefault('train',{})['root']=args.dataset_root
+        split_cfg['root']=args.dataset_root
+    if args.annotation_file:
+        split_cfg['annotation_file']=args.annotation_file
     dataset,_=resolve_dataset(cfg,args.split,False)
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
     caches=[]

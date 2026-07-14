@@ -21,6 +21,7 @@ ROUTED_CACHE_REQUIRED_KEYS = (
     "candidate_quality",
     "candidate_entropy",
     "candidate_valid_mask",
+    "candidate_error_px",
     "gt_points",
     "oracle_index",
     "visible",
@@ -137,6 +138,7 @@ def extract_routeD_candidate_cache_batch(
         "candidate_quality": select(candidate_quality),
         "candidate_entropy": select(candidate_entropy),
         "candidate_valid_mask": select(candidate_valid_mask),
+        "candidate_error_px": select(errors_px),
         "gt_points": select(target_points),
         "oracle_index": select(oracle_index).long(),
         "visible": select(~occluded.bool()).bool(),
@@ -168,6 +170,8 @@ def validate_routeD_candidate_cache(cache: Mapping[str, torch.Tensor]) -> None:
         raise ValueError("candidate_points and features candidate dimensions differ")
     if cache["candidate_points"].shape[-1] != 2:
         raise ValueError("candidate_points must end in xy dimension 2")
+    if cache["candidate_error_px"].shape != cache["features"].shape[:2]:
+        raise ValueError("candidate_error_px must have shape (R,K)")
     if cache["candidate_valid_mask"].dtype is not torch.bool:
         raise TypeError("candidate_valid_mask must be boolean")
     if rows:

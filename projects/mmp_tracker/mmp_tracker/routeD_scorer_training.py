@@ -155,20 +155,14 @@ def evaluate_hypothesis_scorer(
 
             candidate_points = batch["candidate_points"].to(device=device, dtype=torch.float32)
             gt_points = batch["gt_points"].to(device=device, dtype=torch.float32)
-            # Candidate caches retain normalized coordinates but also store exact
-            # local/oracle errors in pixels. Selected error is reconstructed by
-            # linear interpolation only for rank evaluation when resolution is
-            # unavailable; therefore primary regret uses cached exact bounds.
+            candidate_error = batch["candidate_error_px"].to(
+                device=device, dtype=torch.float32
+            )
             local_error = batch["local_error_px"].to(device=device, dtype=torch.float32)
             oracle_error = batch["oracle_error_px"].to(device=device, dtype=torch.float32)
-            selected_is_oracle = is_correct.to(torch.float32)
-            selected_error = torch.where(
-                is_correct,
-                oracle_error,
-                local_error,
-            )
-            # candidate_points/gt_points are intentionally touched here to keep
-            # shape validation close to evaluation and detect corrupted caches.
+            selected_error = candidate_error.gather(
+                -1, prediction.unsqueeze(-1)
+            ).squeeze(-1)
             if candidate_points.shape[-1] != 2 or gt_points.shape[-1] != 2:
                 raise ValueError("candidate/GT point coordinates must be 2D")
             selected_error_sum += float(selected_error.sum().item())
@@ -193,11 +187,11 @@ def evaluate_hypothesis_scorer(
         "visible_top1_accuracy": visible_correct / max(visible_rows, 1),
         "occluded_top1_accuracy": occluded_correct / max(occluded_rows, 1),
         "global_selection_rate": global_selected / denominator,
-        "mean_selected_proxy_error_px": mean_selected_error,
+        "mean_selected_error_px": mean_selected_error,
         "mean_local_error_px": mean_local_error,
         "mean_oracle_error_px": mean_oracle_error,
-        "mean_proxy_regret_to_oracle_px": mean_selected_error - mean_oracle_error,
-        "mean_proxy_gain_over_local_px": mean_local_error - mean_selected_error,
+        "mean_regret_to_oracle_px": mean_selected_error - mean_oracle_error,
+        "mean_gain_over_local_px": mean_local_error - mean_selected_error,
     }
 
 
