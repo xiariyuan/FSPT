@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Extract Route-D candidate caches from a frozen MMP checkpoint."""
 from __future__ import annotations
-import argparse, json, sys
+import argparse, hashlib, json, subprocess, sys
 from pathlib import Path
 import torch
 from torch.utils.data import DataLoader
@@ -19,6 +19,7 @@ def main():
     p.add_argument('--split',default='train')
     p.add_argument('--dataset-root',default=None)
     p.add_argument('--annotation-file',default=None)
+    p.add_argument('--subset',type=int,default=None)
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
     p.add_argument('--device',default='cuda')
@@ -36,6 +37,8 @@ def main():
         split_cfg['root']=args.dataset_root
     if args.annotation_file:
         split_cfg['annotation_file']=args.annotation_file
+    if args.subset is not None:
+        split_cfg['subset']=int(args.subset)
     dataset,_=resolve_dataset(cfg,args.split,False)
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
     caches=[]
@@ -51,10 +54,44 @@ def main():
             )
             caches.append(cache)
             print('processed',i,'rows',int(cache['oracle_index'].shape[0]))
+    if not caches:
+        raise RuntimeError('No candidate-cache rows were extracted')
     merged=merge_routeD_candidate_cache_batches(caches)
     out=Path(args.output); out.parent.mkdir(parents=True,exist_ok=True)
-    torch.save({'cache':merged,'metadata':{'split':args.split,'samples':len(caches)}},out)
-    summary={k:(list(v.shape) if hasattr(v,'shape') else str(v)) for k,v in merged.items()}
+    def sha256(path):
+        h=hashlib.sha256()
+        with open(path,'rb') as f:
+            for chunk in iter(lambda:f.read(1024*1024),b''): h.update(chunk)
+        return h.hexdigest()
+    try:
+        git_head=subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()
+    except Exception:
+        git_head=None
+    metadata={
+        'format_version':1,
+        'kind':'routeD_frozen_candidate_cache',
+        'evidence_tier':'development_diagnostic_only',
+        'paper_claim_eligible':False,
+        'split_key':args.split,
+        'dataset_root':str(Path(split_cfg.get('root','')).resolve()),
+        'annotation_file':str(split_cfg.get('annotation_file','')),
+        'configured_subset':split_cfg.get('subset'),
+        'samples_processed':len(caches),
+        'rows':int(merged['features'].shape[0]),
+        'candidate_count':int(merged['features'].shape[1]),
+        'feature_dim':int(merged['features'].shape[2]),
+        'candidate_representation':'local_plus_coarse_global_topk',
+        'coordinate_order':'yx',
+        'coordinate_normalization':'pixel_center_divide_by_size_minus_one',
+        'config_path':str(Path(args.config).resolve()),
+        'config_sha256':sha256(args.config),
+        'checkpoint_path':str(Path(args.checkpoint).resolve()),
+        'checkpoint_sha256':sha256(args.checkpoint),
+        'git_head':git_head,
+        'device':str(device),
+    }
+    torch.save({'cache':merged,'metadata':metadata},out)
+    summary={'metadata':metadata,'tensors':{k:(list(v.shape) if hasattr(v,'shape') else str(v)) for k,v in merged.items()}}
     out.with_suffix('.json').write_text(json.dumps(summary,indent=2))
     print(json.dumps(summary,indent=2))
 if __name__=='__main__': main()
