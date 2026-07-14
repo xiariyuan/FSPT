@@ -5,7 +5,7 @@ import hashlib
 import json
 import subprocess
 from pathlib import Path
-from typing import Dict, Mapping
+from typing import Dict, Mapping, Sequence
 
 import torch
 import yaml
@@ -26,6 +26,7 @@ from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
     save_beliefcal_cache,
     save_experiment_result,
     synthetic_beliefcal_cache,
+    train_uncertainty_head,
 )
 from projects.mmp_tracker.mmp_tracker.conditional_calibration import (
     CONDITIONAL_CALIBRATION_L2,
@@ -257,8 +258,12 @@ def audit_cache_bundle(
     require_strict_checkpoint: bool = True,
     require_distinct_dataset_families: bool = False,
     require_complete_provenance: bool = False,
+    required_roles: Sequence[str] = ("train", "calibration", "validation", "test"),
 ) -> Dict[str, object]:
-    roles = ("train", "calibration", "validation", "test")
+    roles = tuple(str(role) for role in required_roles)
+    allowed_roles = {"train", "calibration", "validation", "test"}
+    if not roles or any(role not in allowed_roles for role in roles):
+        raise ValueError(f"Invalid required_roles={roles!r}")
     missing_roles = [role for role in roles if role not in cache_paths]
     if missing_roles:
         raise ValueError(f"Missing cache roles: {missing_roles}")
@@ -620,6 +625,133 @@ def command_fit_caches(args: argparse.Namespace) -> None:
     print(Path(args.output) / "beliefcal_metrics.json")
 
 
+def command_fit_pretest_heads(args: argparse.Namespace) -> None:
+    """Fit uncertainty heads and scalar calibration without loading a test cache."""
+    if git_dirty() is True:
+        raise RuntimeError(
+            "Refusing pretest fitting from a dirty git worktree"
+        )
+    cache_paths = {
+        "train": args.train_cache,
+        "calibration": args.calibration_cache,
+        "validation": args.validation_cache,
+    }
+    cache_audit = audit_cache_bundle(
+        cache_paths,
+        require_strict_checkpoint=True,
+        require_distinct_dataset_families=args.require_distinct_dataset_families,
+        require_complete_provenance=args.require_complete_provenance,
+        required_roles=("train", "calibration", "validation"),
+    )
+    train_cache, train_manifest = load_beliefcal_cache(args.train_cache)
+    calibration_cache, calibration_manifest = load_beliefcal_cache(
+        args.calibration_cache
+    )
+    validation_cache, validation_manifest = load_beliefcal_cache(
+        args.validation_cache
+    )
+
+    learned_runs = []
+    for seed in args.seeds:
+        state = train_uncertainty_head(
+            train_cache,
+            validation_cache,
+            seed=int(seed),
+            hidden_dim=int(args.hidden_dim),
+            epochs=int(args.epochs),
+            batch_size=int(args.batch_size),
+            learning_rate=float(args.learning_rate),
+            device=args.device,
+            feature_profile=args.feature_profile,
+        )
+        calibration_raw = predict_learned_variance(
+            calibration_cache, state, device=args.device
+        )
+        validation_raw = predict_learned_variance(
+            validation_cache, state, device=args.device
+        )
+        scalar_state = fit_scalar_variance_calibration(
+            calibration_cache["errors_px"],
+            calibration_raw,
+            min_std_px=float(state["min_std_px"]),
+            max_std_px=float(state["max_std_px"]),
+        )
+        scalar_validation = apply_scalar_variance_calibration(
+            validation_raw, scalar_state
+        )
+        learned_runs.append(
+            {
+                "seed": int(seed),
+                "feature_profile": state["feature_profile"],
+                "selected_feature_names": state["selected_feature_names"],
+                "best_val_nll": float(state["best_val_nll"]),
+                "raw_validation_metrics": evaluate_variance_method(
+                    validation_cache, validation_raw
+                ),
+                "calibration_state": scalar_state,
+                "scalar_validation_metrics": evaluate_variance_method(
+                    validation_cache, scalar_validation
+                ),
+                "state": state,
+            }
+        )
+
+    result = {
+        "format_version": 1,
+        "kind": "beliefcal_mvp1_pretest_head_fit",
+        "protocol_amendments": ["A1", "A2"],
+        "test_loaded_during_fit": False,
+        "feature_profile": str(args.feature_profile),
+        "training_hyperparameters": {
+            "hidden_dim": int(args.hidden_dim),
+            "epochs": int(args.epochs),
+            "batch_size": int(args.batch_size),
+            "learning_rate": float(args.learning_rate),
+            "seeds": [int(seed) for seed in args.seeds],
+        },
+        "learned_runs": learned_runs,
+        "cache_manifests": {
+            "train": train_manifest,
+            "calibration": calibration_manifest,
+            "validation": validation_manifest,
+        },
+        "cache_audit": cache_audit,
+        "git_head": git_head(),
+        "git_dirty": git_dirty(),
+    }
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    result_path = output_dir / "beliefcal_pretest_result.pt"
+    torch.save(result, result_path)
+    summary = {
+        "format_version": result["format_version"],
+        "kind": result["kind"],
+        "protocol_amendments": result["protocol_amendments"],
+        "test_loaded_during_fit": result["test_loaded_during_fit"],
+        "feature_profile": result["feature_profile"],
+        "training_hyperparameters": result["training_hyperparameters"],
+        "cache_audit": cache_audit,
+        "git_head": result["git_head"],
+        "git_dirty": result["git_dirty"],
+        "learned_runs": [
+            {
+                "seed": run["seed"],
+                "feature_profile": run["feature_profile"],
+                "selected_feature_names": list(run["selected_feature_names"]),
+                "best_val_nll": run["best_val_nll"],
+                "raw_validation_metrics": run["raw_validation_metrics"],
+                "calibration_state": run["calibration_state"],
+                "scalar_validation_metrics": run["scalar_validation_metrics"],
+            }
+            for run in learned_runs
+        ],
+    }
+    summary_path = output_dir / "beliefcal_pretest_metrics.json"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(result_path)
+    print(summary_path)
+
+
 def command_audit_caches(args: argparse.Namespace) -> None:
     cache_paths = {
         "train": args.train_cache,
@@ -708,6 +840,10 @@ def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
             "Refusing to freeze an A2 calibration bundle from a dirty git worktree"
         )
     result, learned_run = _load_learned_run(args.result, args.run_index)
+    if result.get("test_loaded_during_fit") is not False:
+        raise RuntimeError(
+            "A2 bundle fitting requires a source result that certifies test-free fitting"
+        )
     calibration_cache, calibration_manifest = load_beliefcal_cache(
         args.calibration_cache
     )
@@ -1020,6 +1156,30 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     audit.set_defaults(func=command_audit_caches)
+
+    pretest_fit = subparsers.add_parser("fit-pretest-heads")
+    pretest_fit.add_argument("--train-cache", required=True)
+    pretest_fit.add_argument("--calibration-cache", required=True)
+    pretest_fit.add_argument("--validation-cache", required=True)
+    pretest_fit.add_argument("--output", required=True)
+    pretest_fit.add_argument("--seeds", nargs="+", type=int, default=[17, 29, 43])
+    pretest_fit.add_argument("--hidden-dim", type=int, default=128)
+    pretest_fit.add_argument("--epochs", type=int, default=30)
+    pretest_fit.add_argument("--batch-size", type=int, default=4096)
+    pretest_fit.add_argument("--learning-rate", type=float, default=1e-3)
+    pretest_fit.add_argument("--device", default="cpu")
+    pretest_fit.add_argument(
+        "--feature-profile",
+        choices=("full", "drop_inert_mmp"),
+        default="full",
+    )
+    pretest_fit.add_argument(
+        "--require-complete-provenance", action="store_true"
+    )
+    pretest_fit.add_argument(
+        "--require-distinct-dataset-families", action="store_true"
+    )
+    pretest_fit.set_defaults(func=command_fit_pretest_heads)
 
     fit = subparsers.add_parser("fit-caches")
     fit.add_argument("--train-cache", required=True)
