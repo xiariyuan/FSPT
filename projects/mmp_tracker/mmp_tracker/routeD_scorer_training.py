@@ -66,6 +66,7 @@ class ScorerTrainingConfig:
     utility_loss_weight: float = 1.0
     utility_gate_loss_weight: float = 1.0
     utility_rank_loss_weight: float = 0.5
+    utility_harmful_selection_penalty_weight: float = 1.0
     utility_gate_margin: float = 0.2
     utility_hard_negative_weight: float = 4.0
 
@@ -459,6 +460,7 @@ def evaluate_hypothesis_scorer(
     beneficial_global_selected = 0
     selected_global_beneficial = 0
     selected_global_harmful = 0
+    selected_threshold_utility_harmful = 0.0
     selected_threshold_utility_sum = 0.0
     local_threshold_utility_sum = 0.0
     oracle_threshold_utility_sum = 0.0
@@ -534,10 +536,17 @@ def evaluate_hypothesis_scorer(
             threshold_utility_beneficial_selected += int(
                 (threshold_beneficial & (prediction > 0)).sum().item()
             )
+            harmful_selected_mask = (
+                (prediction > 0)
+                & (selected_threshold_utility < local_threshold_utility)
+            )
             selected_global_threshold_harmful += int(
+                harmful_selected_mask.sum().item()
+            )
+            selected_threshold_utility_harmful += float(
                 (
-                    (prediction > 0)
-                    & (selected_threshold_utility < local_threshold_utility)
+                    local_threshold_utility[harmful_selected_mask]
+                    - selected_threshold_utility[harmful_selected_mask]
                 ).sum().item()
             )
             global_error = candidate_error[..., 1:].masked_fill(
@@ -610,6 +619,9 @@ def evaluate_hypothesis_scorer(
         ),
         "threshold_utility_harmful_global_rate": (
             selected_global_threshold_harmful / max(global_selected, 1)
+        ),
+        "threshold_utility_harmful_loss": (
+            selected_threshold_utility_harmful / denominator
         ),
     }
 

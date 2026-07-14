@@ -75,6 +75,7 @@ def main() -> None:
     parser.add_argument("--utility-rank-loss-weight", type=float, default=0.5)
     parser.add_argument("--utility-gate-margin", type=float, default=0.2)
     parser.add_argument("--utility-hard-negative-weight", type=float, default=4.0)
+    parser.add_argument("--utility-harmful-selection-penalty-weight", type=float, default=1.0)
     args = parser.parse_args()
 
     train_cache = load_cache(args.train_cache)
@@ -128,6 +129,7 @@ def main() -> None:
         utility_rank_loss_weight=args.utility_rank_loss_weight,
         utility_gate_margin=args.utility_gate_margin,
         utility_hard_negative_weight=args.utility_hard_negative_weight,
+        utility_harmful_selection_penalty_weight=args.utility_harmful_selection_penalty_weight,
     )
     bundle = train_hypothesis_scorer(train_cache, validation_cache, config)
     bundle["source_train_cache"] = str(Path(args.train_cache).resolve())
