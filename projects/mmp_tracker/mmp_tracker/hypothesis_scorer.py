@@ -28,6 +28,37 @@ HYPOTHESIS_FEATURE_NAMES = (
 )
 
 
+class MultiThresholdHypothesisScorer(nn.Module):
+    """Predict per-candidate correctness logits for multiple pixel thresholds."""
+
+    def __init__(
+        self,
+        feature_dim: int = HYPOTHESIS_FEATURE_DIM,
+        hidden_dim: int = 128,
+        threshold_count: int = 5,
+    ):
+        super().__init__()
+        self.feature_dim = int(feature_dim)
+        self.hidden_dim = int(hidden_dim)
+        self.threshold_count = int(threshold_count)
+        if self.threshold_count <= 0:
+            raise ValueError("threshold_count must be positive")
+        self.network = nn.Sequential(
+            nn.Linear(self.feature_dim, self.hidden_dim),
+            nn.GELU(),
+            nn.Linear(self.hidden_dim, self.hidden_dim),
+            nn.GELU(),
+            nn.Linear(self.hidden_dim, self.threshold_count),
+        )
+
+    def forward(self, hypothesis_features: torch.Tensor) -> torch.Tensor:
+        if hypothesis_features.shape[-1] != self.feature_dim:
+            raise ValueError(
+                f"Expected feature dim {self.feature_dim}, got {hypothesis_features.shape[-1]}"
+            )
+        return self.network(hypothesis_features)
+
+
 class HypothesisScorer(nn.Module):
     def __init__(self, feature_dim: int = HYPOTHESIS_FEATURE_DIM, hidden_dim: int = 128):
         super().__init__()

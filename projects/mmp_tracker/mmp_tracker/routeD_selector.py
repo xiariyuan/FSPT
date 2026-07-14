@@ -7,8 +7,9 @@ from __future__ import annotations
 
 import torch
 
-from .hypothesis_scorer import HypothesisScorer
+from .hypothesis_scorer import HypothesisScorer, MultiThresholdHypothesisScorer
 from .routeD_scorer_training import normalize_hypothesis_features, select_routeD_candidate
+from .routeD_multithreshold_training import select_multithreshold_candidate
 
 
 class RouteDRiskSelector:
@@ -17,7 +18,22 @@ class RouteDRiskSelector:
         hidden_dim = int(bundle.get("config", {}).get("hidden_dim", 0))
         if hidden_dim <= 0:
             hidden_dim = int(bundle["model_state"]["network.0.weight"].shape[0])
-        self.model = HypothesisScorer(feature_dim=int(bundle["feature_dim"]), hidden_dim=hidden_dim)
+        self.kind = bundle.get("kind", "routeD_hypothesis_scorer")
+        self.thresholds_px = tuple(bundle.get("thresholds_px", ()))
+        self.gate_temperature = float(
+            bundle.get("config", {}).get("gate_temperature", 1.0)
+        )
+        if self.kind == "routeD_multithreshold_utility_scorer":
+            threshold_count = int(bundle.get("threshold_count", len(self.thresholds_px)))
+            self.model = MultiThresholdHypothesisScorer(
+                feature_dim=int(bundle["feature_dim"]),
+                hidden_dim=hidden_dim,
+                threshold_count=threshold_count,
+            )
+        else:
+            self.model = HypothesisScorer(
+                feature_dim=int(bundle["feature_dim"]), hidden_dim=hidden_dim
+            )
         self.model.load_state_dict(bundle["model_state"], strict=True)
         self.model.to(device).eval()
         self.mean = bundle.get("feature_mean")
@@ -41,15 +57,29 @@ class RouteDRiskSelector:
         features = features.to(self.device, dtype=torch.float32)
         if self.mean is not None:
             features = normalize_hypothesis_features(features, self.mean, self.std)
-        logits = self.model(features)
-        if valid_mask is None:
-            valid_mask = torch.ones_like(logits, dtype=torch.bool)
-        index, probability, global_index = select_routeD_candidate(
-            logits,
-            valid_mask.to(self.device),
-            selection_mode="risk_gate",
-            gate_threshold=self.threshold,
-        )
+        raw_output = self.model(features)
+        threshold_probabilities = None
+        if self.kind == "routeD_multithreshold_utility_scorer":
+            logits = torch.sigmoid(raw_output).mean(dim=-1)
+            threshold_probabilities = torch.sigmoid(raw_output)
+            if valid_mask is None:
+                valid_mask = torch.ones_like(logits, dtype=torch.bool)
+            index, probability, global_index, _ = select_multithreshold_candidate(
+                raw_output,
+                valid_mask.to(self.device),
+                gate_threshold=self.threshold,
+                gate_temperature=self.gate_temperature,
+            )
+        else:
+            logits = raw_output
+            if valid_mask is None:
+                valid_mask = torch.ones_like(logits, dtype=torch.bool)
+            index, probability, global_index = select_routeD_candidate(
+                logits,
+                valid_mask.to(self.device),
+                selection_mode="risk_gate",
+                gate_threshold=self.threshold,
+            )
         candidate_points = candidate_points.to(self.device)
         selected = candidate_points.gather(
             -2,
@@ -111,4 +141,5 @@ class RouteDRiskSelector:
             "guard_pass": guard_pass,
             "fusion_alpha": fusion_alpha,
             "logits": logits,
+            "threshold_probabilities": threshold_probabilities,
         }
