@@ -18,4 +18,10 @@ def test_mmp_tracker_forward_shapes():
     assert tracks.shape == (2, 2, 4, 2)
     assert visibility.shape == (2, 2, 4)
     assert info["confidence"].shape == (2, 2, 4)
+    k = 1 + config.global_relocator.topk
+    assert info["hypothesis_candidate_points"].shape == (2, 2, 4, k, 2)
+    assert info["hypothesis_candidate_quality"].shape == (2, 2, 4, k)
+    assert info["hypothesis_candidate_entropy"].shape == (2, 2, 4, k)
+    assert info["hypothesis_previous_points"].shape == (2, 2, 4, 2)
+    assert info["hypothesis_previous_confidence"].shape == (2, 2, 4)
 

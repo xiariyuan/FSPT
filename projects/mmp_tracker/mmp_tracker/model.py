@@ -222,6 +222,11 @@ class MMPTracker(nn.Module):
             "candidate_global_rank_probabilities": [],
             "candidate_global_selected_index": [],
             "candidate_points": [],
+            "hypothesis_candidate_points": [],
+            "hypothesis_candidate_quality": [],
+            "hypothesis_candidate_entropy": [],
+            "hypothesis_previous_points": [],
+            "hypothesis_previous_confidence": [],
             "belief_weights": [],
             "belief_entropy": [],
             "belief_effective_hypotheses": [],
@@ -316,6 +321,19 @@ class MMPTracker(nn.Module):
             candidate_global_selected_index = torch.zeros(batch, num_points, device=video.device, dtype=torch.long)
             candidate_points = local_out.points.unsqueeze(2)
             global_candidate_points = global_out.points
+            hypothesis_candidate_points = torch.cat(
+                [local_out.points.unsqueeze(2), global_out.points], dim=2
+            )
+            hypothesis_candidate_quality = torch.cat(
+                [local_quality.unsqueeze(2), global_out.scores], dim=2
+            )
+            hypothesis_candidate_entropy = torch.cat(
+                [
+                    local_out.entropy.unsqueeze(2),
+                    global_out.entropy.unsqueeze(2).expand_as(global_out.scores),
+                ],
+                dim=2,
+            )
             oracle_rematch_candidate_points = global_candidate_points
             global_candidate_coarse_points = global_out.points
             if self.variant == "local":
@@ -384,6 +402,11 @@ class MMPTracker(nn.Module):
                     )
                     candidate_points = torch.cat([local_out.points.unsqueeze(2), refined_points], dim=2)
                     candidate_quality = torch.cat([local_quality.unsqueeze(2), global_candidate_quality], dim=2)
+                    hypothesis_candidate_points = candidate_points
+                    hypothesis_candidate_quality = candidate_quality
+                    hypothesis_candidate_entropy = torch.cat(
+                        [local_out.entropy.unsqueeze(2), refined_entropy], dim=2
+                    )
                     if self.candidate_routing_mode == "two_stage":
                         candidate_global_rank_logits = self.candidate_ranker(global_features).squeeze(-1)
                         candidate_global_rank_probabilities = torch.softmax(candidate_global_rank_logits, dim=2)
@@ -861,6 +884,11 @@ class MMPTracker(nn.Module):
                 debug["belief_collapse_mask"].append(torch.zeros_like(active_mask))
 
             debug["candidate_points"].append(candidate_points)
+            debug["hypothesis_candidate_points"].append(hypothesis_candidate_points)
+            debug["hypothesis_candidate_quality"].append(hypothesis_candidate_quality)
+            debug["hypothesis_candidate_entropy"].append(hypothesis_candidate_entropy)
+            debug["hypothesis_previous_points"].append(prev_prior_points)
+            debug["hypothesis_previous_confidence"].append(prior_confidence)
             debug["global_candidate_points"].append(global_candidate_points)
             debug["oracle_rematch_candidate_points"].append(oracle_rematch_candidate_points)
             debug["global_candidate_coarse_points"].append(global_candidate_coarse_points)
@@ -919,6 +947,11 @@ class MMPTracker(nn.Module):
             "candidate_global_rank_probabilities": torch.stack(debug["candidate_global_rank_probabilities"], dim=2),
             "candidate_global_selected_index": torch.stack(debug["candidate_global_selected_index"], dim=2),
             "candidate_points": torch.stack(debug["candidate_points"], dim=2),
+            "hypothesis_candidate_points": torch.stack(debug["hypothesis_candidate_points"], dim=2),
+            "hypothesis_candidate_quality": torch.stack(debug["hypothesis_candidate_quality"], dim=2),
+            "hypothesis_candidate_entropy": torch.stack(debug["hypothesis_candidate_entropy"], dim=2),
+            "hypothesis_previous_points": torch.stack(debug["hypothesis_previous_points"], dim=2),
+            "hypothesis_previous_confidence": torch.stack(debug["hypothesis_previous_confidence"], dim=2),
             "belief_weights": torch.stack(debug["belief_weights"], dim=2),
             "belief_entropy": torch.stack(debug["belief_entropy"], dim=2),
             "belief_effective_hypotheses": torch.stack(debug["belief_effective_hypotheses"], dim=2),
