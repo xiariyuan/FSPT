@@ -13,6 +13,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import (
     normalize_hypothesis_features,
     routeD_training_loss,
     scorer_model_selection_value,
+    select_routeD_candidate,
     split_routeD_candidate_cache_by_sample,
     train_hypothesis_scorer,
 )
@@ -126,6 +127,53 @@ class TestRouteDScorerTraining(unittest.TestCase):
         )
         good = routeD_training_loss(
             torch.tensor([[0.0, 2.0]]), target, errors, gain, config
+        )
+        self.assertGreater(float(bad), float(good))
+
+
+    def test_risk_gate_keeps_local_when_global_is_not_confident(self):
+        logits = torch.tensor([[2.0, 1.0, 0.5]])
+        valid = torch.ones_like(logits, dtype=torch.bool)
+        prediction, probability, _ = select_routeD_candidate(
+            logits, valid, selection_mode="risk_gate", gate_threshold=0.5
+        )
+        self.assertEqual(int(prediction.item()), 0)
+        self.assertLess(float(probability.item()), 0.5)
+
+    def test_risk_gate_selects_confident_global(self):
+        logits = torch.tensor([[0.0, 2.0, 1.0]])
+        valid = torch.ones_like(logits, dtype=torch.bool)
+        prediction, probability, _ = select_routeD_candidate(
+            logits, valid, selection_mode="risk_gate", gate_threshold=0.5
+        )
+        self.assertEqual(int(prediction.item()), 1)
+        self.assertGreater(float(probability.item()), 0.5)
+
+    def test_risk_aware_loss_penalizes_harmful_global_preference(self):
+        target = torch.tensor([0, 1])
+        errors = torch.tensor([[1.0, 8.0, 9.0], [10.0, 1.0, 3.0]])
+        gain = torch.tensor([0.0, 9.0])
+        valid = torch.ones_like(errors, dtype=torch.bool)
+        config = ScorerTrainingConfig(
+            loss_mode="risk_aware",
+            gate_min_gain_px=3.0,
+            hard_negative_weight=4.0,
+        )
+        bad = routeD_training_loss(
+            torch.tensor([[0.0, 3.0, 2.0], [0.0, 3.0, 1.0]]),
+            target,
+            errors,
+            gain,
+            config,
+            candidate_valid_mask=valid,
+        )
+        good = routeD_training_loss(
+            torch.tensor([[3.0, 0.0, -1.0], [0.0, 3.0, 1.0]]),
+            target,
+            errors,
+            gain,
+            config,
+            candidate_valid_mask=valid,
         )
         self.assertGreater(float(bad), float(good))
 

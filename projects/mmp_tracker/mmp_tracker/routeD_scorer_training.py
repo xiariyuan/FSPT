@@ -55,6 +55,13 @@ class ScorerTrainingConfig:
     pairwise_margin: float = 0.5
     hard_positive_min_gain_px: float = 3.0
     model_selection_metric: str = "auto"
+    selection_mode: str = "auto"
+    gate_loss_weight: float = 1.0
+    global_rank_loss_weight: float = 1.0
+    gate_min_gain_px: float = 3.0
+    gate_selection_threshold: float = 0.5
+    gate_temperature: float = 1.0
+    hard_negative_weight: float = 3.0
 
 
 @dataclass(frozen=True)
@@ -140,12 +147,117 @@ def normalize_hypothesis_features(
     return (features - mean) / std
 
 
+def resolve_selection_mode(config: ScorerTrainingConfig) -> str:
+    mode = config.selection_mode
+    if mode == "auto":
+        mode = "risk_gate" if config.loss_mode == "risk_aware" else "argmax"
+    if mode not in {"argmax", "risk_gate"}:
+        raise ValueError(f"Unsupported selection_mode: {mode}")
+    return mode
+
+
+def select_routeD_candidate(
+    logits: torch.Tensor,
+    candidate_valid_mask: torch.Tensor,
+    *,
+    selection_mode: str = "argmax",
+    gate_threshold: float = 0.5,
+    gate_temperature: float = 1.0,
+) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    """Select local or best global candidate and return gate probability."""
+    if logits.shape != candidate_valid_mask.shape:
+        raise ValueError("candidate_valid_mask must match logits")
+    if logits.shape[-1] < 2:
+        prediction = torch.zeros(logits.shape[:-1], dtype=torch.long, device=logits.device)
+        probability = torch.zeros_like(prediction, dtype=logits.dtype)
+        return prediction, probability, prediction
+    if selection_mode == "argmax":
+        prediction = logits.argmax(dim=-1)
+        best_global = logits[..., 1:].argmax(dim=-1) + 1
+        probability = (prediction > 0).to(logits.dtype)
+        return prediction, probability, best_global
+    if selection_mode != "risk_gate":
+        raise ValueError(f"Unsupported selection_mode: {selection_mode}")
+    global_logits = logits[..., 1:]
+    global_valid = candidate_valid_mask[..., 1:]
+    has_global = global_valid.any(dim=-1)
+    best_global_score, best_global_relative = global_logits.max(dim=-1)
+    best_global = best_global_relative + 1
+    local_score = logits[..., 0]
+    temperature = max(float(gate_temperature), 1.0e-6)
+    gate_probability = torch.sigmoid((best_global_score - local_score) / temperature)
+    choose_global = has_global & (gate_probability >= float(gate_threshold))
+    prediction = torch.where(choose_global, best_global, torch.zeros_like(best_global))
+    gate_probability = torch.where(has_global, gate_probability, torch.zeros_like(gate_probability))
+    return prediction, gate_probability, best_global
+
+
+def _risk_aware_loss(
+    logits: torch.Tensor,
+    candidate_error_px: torch.Tensor,
+    candidate_valid_mask: torch.Tensor,
+    config: ScorerTrainingConfig,
+) -> torch.Tensor:
+    """Two-stage objective: safe global gate plus ranking among global modes."""
+    if logits.shape != candidate_error_px.shape or logits.shape != candidate_valid_mask.shape:
+        raise ValueError("risk-aware tensors must share shape (B,K)")
+    if logits.shape[-1] < 2:
+        return logits.sum() * 0.0
+    global_valid = candidate_valid_mask[..., 1:]
+    has_global = global_valid.any(dim=-1)
+    global_error = candidate_error_px[..., 1:].masked_fill(~global_valid, float("inf"))
+    best_global_error, best_global_relative = global_error.min(dim=-1)
+    local_error = candidate_error_px[..., 0]
+    global_gain = local_error - best_global_error
+    gate_target = has_global & (global_gain >= float(config.gate_min_gain_px))
+
+    global_logits = logits[..., 1:]
+    best_global_score = global_logits.max(dim=-1).values
+    local_score = logits[..., 0]
+    temperature = max(float(config.gate_temperature), 1.0e-6)
+    gate_logit = (best_global_score - local_score) / temperature
+    gate_loss = F.binary_cross_entropy_with_logits(
+        gate_logit, gate_target.to(logits.dtype), reduction="none"
+    )
+
+    gate_weight = torch.ones_like(gate_loss)
+    positive = gate_target
+    if positive.any():
+        positive_gain = torch.log1p(global_gain.clamp_min(0.0))
+        normalizer = positive_gain[positive].mean().clamp_min(1.0e-6)
+        gate_weight = torch.where(
+            positive,
+            1.0 + positive_gain / normalizer,
+            gate_weight,
+        )
+    harmful_negative = has_global & (global_gain <= 0.0)
+    gate_weight = torch.where(
+        harmful_negative,
+        gate_weight * float(config.hard_negative_weight),
+        gate_weight,
+    )
+    gate_objective = (gate_loss * gate_weight).sum() / gate_weight.sum().clamp_min(1.0)
+
+    rank_objective = logits.sum() * 0.0
+    if positive.any():
+        rank_loss = F.cross_entropy(
+            global_logits[positive], best_global_relative[positive], reduction="none"
+        )
+        rank_weight = torch.log1p(global_gain[positive].clamp_min(0.0))
+        rank_objective = (rank_loss * rank_weight).sum() / rank_weight.sum().clamp_min(1.0)
+    return (
+        float(config.gate_loss_weight) * gate_objective
+        + float(config.global_rank_loss_weight) * rank_objective
+    )
+
+
 def routeD_training_loss(
     logits: torch.Tensor,
     target: torch.Tensor,
     candidate_error_px: torch.Tensor,
     oracle_gain_px: torch.Tensor,
     config: ScorerTrainingConfig,
+    candidate_valid_mask: torch.Tensor | None = None,
 ) -> torch.Tensor:
     """Compute CE, gain-weighted CE, or gain-weighted CE plus regret."""
     if config.loss_mode not in {
@@ -153,8 +265,15 @@ def routeD_training_loss(
         "gain_weighted",
         "gain_regret",
         "gain_pairwise",
+        "risk_aware",
     }:
         raise ValueError(f"Unsupported loss_mode: {config.loss_mode}")
+    if config.loss_mode == "risk_aware":
+        if candidate_valid_mask is None:
+            candidate_valid_mask = torch.ones_like(logits, dtype=torch.bool)
+        return _risk_aware_loss(
+            logits, candidate_error_px, candidate_valid_mask, config
+        )
     per_row_ce = F.cross_entropy(logits, target, reduction="none")
     weights = torch.ones_like(per_row_ce)
     if config.loss_mode in {"gain_weighted", "gain_regret", "gain_pairwise"}:
@@ -205,6 +324,10 @@ def evaluate_hypothesis_scorer(
     device: str = "cpu",
     feature_mean: torch.Tensor | None = None,
     feature_std: torch.Tensor | None = None,
+    selection_mode: str = "argmax",
+    gate_threshold: float = 0.5,
+    gate_temperature: float = 1.0,
+    gate_min_gain_px: float = 3.0,
 ) -> Dict[str, float]:
     validate_routeD_candidate_cache(cache)
     dataset = RouteDCandidateCacheDataset(cache)
@@ -223,6 +346,10 @@ def evaluate_hypothesis_scorer(
     visible_correct = 0
     occluded_rows = 0
     occluded_correct = 0
+    beneficial_global_rows = 0
+    beneficial_global_selected = 0
+    selected_global_beneficial = 0
+    selected_global_harmful = 0
 
     with torch.no_grad():
         for batch in loader:
@@ -234,7 +361,13 @@ def evaluate_hypothesis_scorer(
             target = batch["oracle_index"].to(device=device, dtype=torch.long)
             logits = _masked_logits(model(features), valid)
             loss = F.cross_entropy(logits, target, reduction="sum")
-            prediction = logits.argmax(dim=-1)
+            prediction, gate_probability, best_global = select_routeD_candidate(
+                logits,
+                valid,
+                selection_mode=selection_mode,
+                gate_threshold=gate_threshold,
+                gate_temperature=gate_temperature,
+            )
             rows = int(target.numel())
             total_rows += rows
             total_loss += float(loss.item())
@@ -257,6 +390,24 @@ def evaluate_hypothesis_scorer(
             selected_error_sum += float(selected_error.sum().item())
             local_error_sum += float(local_error.sum().item())
             oracle_error_sum += float(oracle_error.sum().item())
+            global_error = candidate_error[..., 1:].masked_fill(
+                ~valid[..., 1:], float("inf")
+            )
+            best_global_error = global_error.min(dim=-1).values
+            beneficial_global = (
+                best_global_error + float(gate_min_gain_px) <= local_error
+            )
+            selected_global = prediction > 0
+            selected_beneficial = selected_global & (
+                selected_error + float(gate_min_gain_px) <= local_error
+            )
+            selected_harmful = selected_global & (selected_error > local_error)
+            beneficial_global_rows += int(beneficial_global.sum().item())
+            beneficial_global_selected += int(
+                (beneficial_global & selected_global).sum().item()
+            )
+            selected_global_beneficial += int(selected_beneficial.sum().item())
+            selected_global_harmful += int(selected_harmful.sum().item())
 
             visible = batch["visible"].to(device=device, dtype=torch.bool)
             visible_rows += int(visible.sum().item())
@@ -281,6 +432,13 @@ def evaluate_hypothesis_scorer(
         "mean_oracle_error_px": mean_oracle_error,
         "mean_regret_to_oracle_px": mean_selected_error - mean_oracle_error,
         "mean_gain_over_local_px": mean_local_error - mean_selected_error,
+        "beneficial_global_rate": beneficial_global_rows / denominator,
+        "beneficial_global_recall": beneficial_global_selected
+        / max(beneficial_global_rows, 1),
+        "global_selection_precision": selected_global_beneficial
+        / max(global_selected, 1),
+        "harmful_global_selection_rate": selected_global_harmful
+        / max(global_selected, 1),
     }
 
 
@@ -319,6 +477,7 @@ def train_hypothesis_scorer(
     feature_std: torch.Tensor | None = None
     if config.normalize_features:
         feature_mean, feature_std = compute_feature_normalization(train_cache)
+    selection_mode = resolve_selection_mode(config)
     model = HypothesisScorer(
         feature_dim=HYPOTHESIS_FEATURE_DIM,
         hidden_dim=int(config.hidden_dim),
@@ -360,7 +519,12 @@ def train_hypothesis_scorer(
             )
             logits = _masked_logits(model(features), valid)
             loss = routeD_training_loss(
-                logits, target, candidate_error, oracle_gain, config
+                logits,
+                target,
+                candidate_error,
+                oracle_gain,
+                config,
+                candidate_valid_mask=valid,
             )
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
@@ -376,6 +540,10 @@ def train_hypothesis_scorer(
             device=config.device,
             feature_mean=feature_mean,
             feature_std=feature_std,
+            selection_mode=selection_mode,
+            gate_threshold=config.gate_selection_threshold,
+            gate_temperature=config.gate_temperature,
+            gate_min_gain_px=config.gate_min_gain_px,
         )
         validation_metrics = evaluate_hypothesis_scorer(
             model,
@@ -384,6 +552,10 @@ def train_hypothesis_scorer(
             device=config.device,
             feature_mean=feature_mean,
             feature_std=feature_std,
+            selection_mode=selection_mode,
+            gate_threshold=config.gate_selection_threshold,
+            gate_temperature=config.gate_temperature,
+            gate_min_gain_px=config.gate_min_gain_px,
         )
         epoch_record = {
             "epoch": epoch + 1,
@@ -414,6 +586,10 @@ def train_hypothesis_scorer(
         device=config.device,
         feature_mean=feature_mean,
         feature_std=feature_std,
+        selection_mode=selection_mode,
+        gate_threshold=config.gate_selection_threshold,
+        gate_temperature=config.gate_temperature,
+        gate_min_gain_px=config.gate_min_gain_px,
     )
     final_validation = evaluate_hypothesis_scorer(
         model,
@@ -422,6 +598,10 @@ def train_hypothesis_scorer(
         device=config.device,
         feature_mean=feature_mean,
         feature_std=feature_std,
+        selection_mode=selection_mode,
+        gate_threshold=config.gate_selection_threshold,
+        gate_temperature=config.gate_temperature,
+        gate_min_gain_px=config.gate_min_gain_px,
     )
     return {
         "format_version": 1,
@@ -432,6 +612,7 @@ def train_hypothesis_scorer(
         "feature_std": feature_std.detach().cpu() if feature_std is not None else None,
         "feature_dim": HYPOTHESIS_FEATURE_DIM,
         "candidate_count": int(train_cache["features"].shape[1]),
+        "selection_mode": selection_mode,
         "train_rows": int(train_cache["features"].shape[0]),
         "validation_rows": int(validation_cache["features"].shape[0]),
         "history": history,

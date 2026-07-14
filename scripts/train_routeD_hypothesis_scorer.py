@@ -45,7 +45,7 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
         "--loss-mode",
-        choices=["cross_entropy", "gain_weighted", "gain_regret", "gain_pairwise"],
+        choices=["cross_entropy", "gain_weighted", "gain_regret", "gain_pairwise", "risk_aware"],
         default="cross_entropy",
     )
     parser.add_argument("--gain-weight-alpha", type=float, default=1.0)
@@ -60,6 +60,15 @@ def main() -> None:
         default="auto",
     )
     parser.add_argument("--no-normalize-features", action="store_true")
+    parser.add_argument(
+        "--selection-mode", choices=["auto", "argmax", "risk_gate"], default="auto"
+    )
+    parser.add_argument("--gate-loss-weight", type=float, default=1.0)
+    parser.add_argument("--global-rank-loss-weight", type=float, default=1.0)
+    parser.add_argument("--gate-min-gain-px", type=float, default=3.0)
+    parser.add_argument("--gate-selection-threshold", type=float, default=0.5)
+    parser.add_argument("--gate-temperature", type=float, default=1.0)
+    parser.add_argument("--hard-negative-weight", type=float, default=3.0)
     args = parser.parse_args()
 
     train_cache = load_cache(args.train_cache)
@@ -95,6 +104,13 @@ def main() -> None:
         pairwise_margin=args.pairwise_margin,
         hard_positive_min_gain_px=args.hard_positive_min_gain_px,
         model_selection_metric=args.model_selection_metric,
+        selection_mode=args.selection_mode,
+        gate_loss_weight=args.gate_loss_weight,
+        global_rank_loss_weight=args.global_rank_loss_weight,
+        gate_min_gain_px=args.gate_min_gain_px,
+        gate_selection_threshold=args.gate_selection_threshold,
+        gate_temperature=args.gate_temperature,
+        hard_negative_weight=args.hard_negative_weight,
     )
     bundle = train_hypothesis_scorer(train_cache, validation_cache, config)
     bundle["source_train_cache"] = str(Path(args.train_cache).resolve())
