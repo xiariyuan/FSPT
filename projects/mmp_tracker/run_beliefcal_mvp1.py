@@ -800,7 +800,7 @@ def _load_learned_run(result_path: str | Path, run_index: int):
     return payload, learned_run
 
 
-def _formal_manifest_issues(manifest: Mapping[str, object], role: str) -> list[str]:
+def _manifest_contract_issues(manifest: Mapping[str, object], role: str) -> list[str]:
     issues = []
     required = (
         "checkpoint_sha256",
@@ -925,9 +925,9 @@ def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
         required_relative_improvement=CONDITIONAL_SELECTION_RELATIVE_NLL,
     )
 
-    formal_issues = _formal_manifest_issues(
+    manifest_issues = _manifest_contract_issues(
         calibration_manifest, "calibration"
-    ) + _formal_manifest_issues(validation_manifest, "validation")
+    ) + _manifest_contract_issues(validation_manifest, "validation")
     output_dir = Path(args.output).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
     bundle = {
@@ -957,8 +957,17 @@ def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
             "sha256": sha256_file(args.validation_cache),
             "manifest": validation_manifest,
         },
-        "formal_eligible_before_test": not formal_issues,
-        "formal_eligibility_issues": formal_issues,
+        "manifest_contract_passed_before_test": not manifest_issues,
+        "manifest_contract_issues": manifest_issues,
+        "evidence_status": "bounded_protocol_qualification",
+        "paper_claim_eligible": False,
+        "paper_claim_limitations": [
+            "Manifest compliance is not scientific confirmation.",
+            "Paper-level claims require prespecified gates and independent external replication.",
+            "Test creation/audit ordering must be established outside this bundle from immutable run records.",
+        ],
+        "deprecated_formal_eligible_before_test": not manifest_issues,
+        "deprecated_formal_eligibility_issues": manifest_issues,
         "test_loaded_during_fit": False,
     }
     bundle_path = output_dir / "conditional_calibration_bundle.pt"
@@ -1060,8 +1069,23 @@ def command_evaluate_frozen_conditional(args: argparse.Namespace) -> None:
 
     output_dir = Path(args.output).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
+    test_manifest_issues = _manifest_contract_issues(test_manifest, "test")
+    bundle_manifest_passed = bool(
+        bundle.get(
+            "manifest_contract_passed_before_test",
+            bundle.get("formal_eligible_before_test", False),
+        )
+    )
+    bundle_manifest_issues = list(
+        bundle.get(
+            "manifest_contract_issues",
+            bundle.get("formal_eligibility_issues", []),
+        )
+    )
+    manifest_contract_passed = bundle_manifest_passed and not test_manifest_issues
+    manifest_contract_issues = bundle_manifest_issues + test_manifest_issues
     report = {
-        "format_version": 1,
+        "format_version": 2,
         "kind": "beliefcal_mvp1c_frozen_test_evaluation",
         "protocol_amendment": "A2",
         "bundle_path": str(Path(args.bundle).resolve()),
@@ -1071,12 +1095,17 @@ def command_evaluate_frozen_conditional(args: argparse.Namespace) -> None:
         "selected": selected,
         "metrics": evaluate_variance_method(test_cache, variance),
         "test_manifest": test_manifest,
-        "formal_eligible": bool(bundle.get("formal_eligible_before_test"))
-        and not _formal_manifest_issues(test_manifest, "test"),
-        "formal_eligibility_issues": list(
-            bundle.get("formal_eligibility_issues", [])
-        )
-        + _formal_manifest_issues(test_manifest, "test"),
+        "manifest_contract_passed": manifest_contract_passed,
+        "manifest_contract_issues": manifest_contract_issues,
+        "evidence_status": "bounded_protocol_qualification",
+        "paper_claim_eligible": False,
+        "paper_claim_limitations": [
+            "Manifest compliance is not scientific confirmation.",
+            "Paper-level claims require prespecified gates and independent external replication.",
+            "The evaluator cannot infer whether test artifacts were created or audited before bundle freezing.",
+        ],
+        "deprecated_formal_eligible": manifest_contract_passed,
+        "deprecated_formal_eligibility_issues": manifest_contract_issues,
         "git_head": git_head(),
         "git_dirty": git_dirty(),
     }

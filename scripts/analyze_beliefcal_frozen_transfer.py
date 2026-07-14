@@ -386,9 +386,16 @@ def main() -> None:
             "bundle_sha256": sha256_file(bundle_path),
             "seed": seed,
             "selected": bundle["selection"]["selected"],
-            "formal_eligible_before_test": bool(
-                bundle.get("formal_eligible_before_test")
+            "manifest_contract_passed_before_test": bool(
+                bundle.get(
+                    "manifest_contract_passed_before_test",
+                    bundle.get("formal_eligible_before_test", False),
+                )
             ),
+            "evidence_status": bundle.get(
+                "evidence_status", "legacy_status_unspecified"
+            ),
+            "paper_claim_eligible": bool(bundle.get("paper_claim_eligible", False)),
             "splits": split_reports,
             "transfer_summary": transfer_summary(split_reports),
         }
