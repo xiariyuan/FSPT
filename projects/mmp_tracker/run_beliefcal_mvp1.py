@@ -15,13 +15,28 @@ from projects.mmp_tracker.mmp_tracker.uncertainty_head import (
     MMP_UNCERTAINTY_VALUE_NAMES,
 )
 from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
+    apply_scalar_variance_calibration,
+    evaluate_variance_method,
     extract_beliefcal_cache_batch,
+    fit_scalar_variance_calibration,
     load_beliefcal_cache,
     merge_beliefcal_cache_batches,
+    predict_learned_variance,
     run_beliefcal_mvp1_experiment,
     save_beliefcal_cache,
     save_experiment_result,
     synthetic_beliefcal_cache,
+)
+from projects.mmp_tracker.mmp_tracker.conditional_calibration import (
+    CONDITIONAL_CALIBRATION_L2,
+    CONDITIONAL_CALIBRATION_LEARNING_RATE,
+    CONDITIONAL_CALIBRATION_MAX_SCALE,
+    CONDITIONAL_CALIBRATION_MIN_SCALE,
+    CONDITIONAL_CALIBRATION_STEPS,
+    CONDITIONAL_SELECTION_RELATIVE_NLL,
+    apply_conditional_shared_scale_calibration,
+    fit_conditional_shared_scale_calibration,
+    select_conditional_candidate,
 )
 from projects.mmp_tracker.train_mmp import (
     config_from_dict,
@@ -543,6 +558,303 @@ def command_audit_caches(args: argparse.Namespace) -> None:
     print(json.dumps(report, indent=2))
 
 
+def _load_learned_run(result_path: str | Path, run_index: int):
+    payload = torch.load(Path(result_path), map_location="cpu")
+    if not isinstance(payload, Mapping):
+        raise ValueError("Invalid BeliefCal experiment result")
+    learned_runs = payload.get("learned_runs")
+    if not isinstance(learned_runs, list) or not learned_runs:
+        raise ValueError("Experiment result contains no learned runs")
+    run_index = int(run_index)
+    if run_index < 0 or run_index >= len(learned_runs):
+        raise ValueError(f"run_index={run_index} outside [0,{len(learned_runs) - 1}]")
+    learned_run = learned_runs[run_index]
+    if not isinstance(learned_run, Mapping) or "state" not in learned_run:
+        raise ValueError("Selected learned run has no serialized state")
+    return payload, learned_run
+
+
+def _formal_manifest_issues(manifest: Mapping[str, object], role: str) -> list[str]:
+    issues = []
+    required = (
+        "checkpoint_sha256",
+        "model_config_sha256",
+        "feature_order_sha256",
+        "git_head",
+        "git_dirty",
+    )
+    for key in required:
+        if manifest.get(key) is None:
+            issues.append(f"{role}: missing {key}")
+    if manifest.get("git_dirty") is not False:
+        issues.append(f"{role}: git_dirty must be false")
+    dataset = manifest.get("dataset")
+    if not isinstance(dataset, Mapping):
+        issues.append(f"{role}: missing dataset provenance")
+    else:
+        if dataset.get("dataset_identity") is None:
+            issues.append(f"{role}: missing dataset_identity")
+        source_files = dataset.get("source_files")
+        if not isinstance(source_files, list) or not source_files:
+            issues.append(f"{role}: missing source_files")
+    return issues
+
+
+def _overall_nll(metrics: Mapping[str, Mapping[str, float]]) -> float:
+    overall = metrics.get("overall")
+    if not isinstance(overall, Mapping) or "nll" not in overall:
+        raise ValueError("Metrics contain no overall NLL")
+    return float(overall["nll"])
+
+
+def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
+    """Fit A2 calibration candidates without accepting or loading a test cache."""
+    if git_dirty() is True:
+        raise RuntimeError(
+            "Refusing to freeze an A2 calibration bundle from a dirty git worktree"
+        )
+    result, learned_run = _load_learned_run(args.result, args.run_index)
+    calibration_cache, calibration_manifest = load_beliefcal_cache(
+        args.calibration_cache
+    )
+    validation_cache, validation_manifest = load_beliefcal_cache(
+        args.validation_cache
+    )
+    if calibration_manifest.get("role") not in (None, "calibration"):
+        raise ValueError("Calibration cache manifest has the wrong role")
+    if validation_manifest.get("role") not in (None, "validation"):
+        raise ValueError("Validation cache manifest has the wrong role")
+
+    cache_audit = result.get("cache_audit", {})
+    audit_roles = cache_audit.get("roles", {}) if isinstance(cache_audit, Mapping) else {}
+    for role, path in (
+        ("calibration", args.calibration_cache),
+        ("validation", args.validation_cache),
+    ):
+        expected = audit_roles.get(role, {}) if isinstance(audit_roles, Mapping) else {}
+        expected_hash = expected.get("cache_sha256") if isinstance(expected, Mapping) else None
+        if expected_hash and str(expected_hash) != sha256_file(path):
+            raise RuntimeError(f"{role} cache hash differs from the source experiment")
+
+    learned_state = learned_run["state"]
+    seed = int(learned_run["seed"])
+    calibration_raw = predict_learned_variance(
+        calibration_cache, learned_state, device=args.device
+    )
+    validation_raw = predict_learned_variance(
+        validation_cache, learned_state, device=args.device
+    )
+    scalar_state = fit_scalar_variance_calibration(
+        calibration_cache["errors_px"],
+        calibration_raw,
+        min_std_px=float(learned_state["min_std_px"]),
+        max_std_px=float(learned_state["max_std_px"]),
+    )
+    conditional_state = fit_conditional_shared_scale_calibration(
+        calibration_cache,
+        calibration_raw,
+        initial_scale=float(scalar_state["scale"]),
+        seed=seed,
+        device=args.device,
+        min_std_px=float(learned_state["min_std_px"]),
+        max_std_px=float(learned_state["max_std_px"]),
+        steps=CONDITIONAL_CALIBRATION_STEPS,
+        learning_rate=CONDITIONAL_CALIBRATION_LEARNING_RATE,
+        l2_penalty=CONDITIONAL_CALIBRATION_L2,
+        min_scale=CONDITIONAL_CALIBRATION_MIN_SCALE,
+        max_scale=CONDITIONAL_CALIBRATION_MAX_SCALE,
+    )
+
+    scalar_calibration = apply_scalar_variance_calibration(
+        calibration_raw, scalar_state
+    )
+    scalar_validation = apply_scalar_variance_calibration(validation_raw, scalar_state)
+    conditional_calibration = apply_conditional_shared_scale_calibration(
+        calibration_cache, calibration_raw, conditional_state, device=args.device
+    )
+    conditional_validation = apply_conditional_shared_scale_calibration(
+        validation_cache, validation_raw, conditional_state, device=args.device
+    )
+    calibration_metrics = {
+        "shared_scalar": evaluate_variance_method(
+            calibration_cache, scalar_calibration
+        ),
+        "conditional_affine": evaluate_variance_method(
+            calibration_cache, conditional_calibration
+        ),
+    }
+    validation_metrics = {
+        "shared_scalar": evaluate_variance_method(validation_cache, scalar_validation),
+        "conditional_affine": evaluate_variance_method(
+            validation_cache, conditional_validation
+        ),
+    }
+    selection = select_conditional_candidate(
+        _overall_nll(validation_metrics["shared_scalar"]),
+        _overall_nll(validation_metrics["conditional_affine"]),
+        required_relative_improvement=CONDITIONAL_SELECTION_RELATIVE_NLL,
+    )
+
+    formal_issues = _formal_manifest_issues(
+        calibration_manifest, "calibration"
+    ) + _formal_manifest_issues(validation_manifest, "validation")
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    bundle = {
+        "format_version": 1,
+        "kind": "beliefcal_mvp1c_frozen_calibration_bundle",
+        "protocol_amendment": "A2",
+        "git_head": git_head(),
+        "git_dirty": git_dirty(),
+        "source_result_path": str(Path(args.result).resolve()),
+        "source_result_sha256": sha256_file(args.result),
+        "learned_run_index": int(args.run_index),
+        "learned_seed": seed,
+        "feature_profile": learned_run.get("feature_profile", "full"),
+        "learned_state": learned_state,
+        "scalar_state": scalar_state,
+        "conditional_state": conditional_state,
+        "selection": selection,
+        "calibration_metrics": calibration_metrics,
+        "validation_metrics": validation_metrics,
+        "calibration_cache": {
+            "path": str(Path(args.calibration_cache).resolve()),
+            "sha256": sha256_file(args.calibration_cache),
+            "manifest": calibration_manifest,
+        },
+        "validation_cache": {
+            "path": str(Path(args.validation_cache).resolve()),
+            "sha256": sha256_file(args.validation_cache),
+            "manifest": validation_manifest,
+        },
+        "formal_eligible_before_test": not formal_issues,
+        "formal_eligibility_issues": formal_issues,
+        "test_loaded_during_fit": False,
+    }
+    bundle_path = output_dir / "conditional_calibration_bundle.pt"
+    torch.save(bundle, bundle_path)
+    summary = {
+        key: value
+        for key, value in bundle.items()
+        if key
+        not in {
+            "learned_state",
+            "scalar_state",
+            "conditional_state",
+            "calibration_cache",
+            "validation_cache",
+        }
+    }
+    summary["scalar_state"] = scalar_state
+    summary["conditional_state"] = {
+        key: value
+        for key, value in conditional_state.items()
+        if key not in {"input_mean", "input_std", "model_state"}
+    }
+    summary["calibration_cache_sha256"] = bundle["calibration_cache"]["sha256"]
+    summary["validation_cache_sha256"] = bundle["validation_cache"]["sha256"]
+    summary_path = output_dir / "conditional_calibration_selection.json"
+    summary_path.write_text(json.dumps(summary, indent=2), encoding="utf-8")
+    print(bundle_path)
+    print(summary_path)
+
+
+def _dataset_provenance_collisions(
+    frozen_manifests: Sequence[Mapping[str, object]],
+    test_manifest: Mapping[str, object],
+) -> list[str]:
+    issues = []
+    test_dataset = test_manifest.get("dataset")
+    if not isinstance(test_dataset, Mapping):
+        return ["test: missing dataset provenance"]
+    test_identity = test_dataset.get("dataset_identity")
+    test_sources = {str(path) for path in test_dataset.get("source_files", [])}
+    for manifest in frozen_manifests:
+        dataset = manifest.get("dataset")
+        if not isinstance(dataset, Mapping):
+            continue
+        if test_identity is not None and test_identity == dataset.get("dataset_identity"):
+            issues.append("test dataset_identity collides with calibration/validation")
+        overlap = test_sources & {str(path) for path in dataset.get("source_files", [])}
+        for path in sorted(overlap):
+            issues.append(f"test source-file collision: {path}")
+    return issues
+
+
+def command_evaluate_frozen_conditional(args: argparse.Namespace) -> None:
+    """Evaluate a previously frozen A2 selection; this command fits nothing."""
+    bundle = torch.load(Path(args.bundle), map_location="cpu")
+    if not isinstance(bundle, Mapping) or bundle.get("kind") != "beliefcal_mvp1c_frozen_calibration_bundle":
+        raise ValueError("Invalid frozen A2 calibration bundle")
+    if bundle.get("test_loaded_during_fit") is not False:
+        raise RuntimeError("Frozen bundle does not certify test-free fitting")
+    test_cache, test_manifest = load_beliefcal_cache(args.test_cache)
+    if test_manifest.get("role") not in (None, "test"):
+        raise ValueError("Test cache manifest has the wrong role")
+
+    frozen_cache_records = [bundle["calibration_cache"], bundle["validation_cache"]]
+    for record in frozen_cache_records:
+        if sha256_file(args.test_cache) == record["sha256"]:
+            raise RuntimeError("Test cache is identical to a fitting cache")
+    frozen_manifests = [record["manifest"] for record in frozen_cache_records]
+    provenance_issues = _dataset_provenance_collisions(
+        frozen_manifests, test_manifest
+    )
+    if provenance_issues:
+        raise RuntimeError(json.dumps(provenance_issues, indent=2))
+
+    reference_manifest = frozen_manifests[0]
+    for key in ("checkpoint_sha256", "model_config_sha256", "feature_order_sha256"):
+        reference = reference_manifest.get(key)
+        observed = test_manifest.get(key)
+        if reference is not None and observed is not None and reference != observed:
+            raise RuntimeError(f"test {key} differs from frozen calibration bundle")
+
+    raw_variance = predict_learned_variance(
+        test_cache, bundle["learned_state"], device=args.device
+    )
+    selected = bundle["selection"]["selected"]
+    if selected == "conditional_affine":
+        variance = apply_conditional_shared_scale_calibration(
+            test_cache,
+            raw_variance,
+            bundle["conditional_state"],
+            device=args.device,
+        )
+    elif selected == "shared_scalar":
+        variance = apply_scalar_variance_calibration(
+            raw_variance, bundle["scalar_state"]
+        )
+    else:
+        raise ValueError(f"Unsupported frozen selection: {selected!r}")
+
+    output_dir = Path(args.output).resolve()
+    output_dir.mkdir(parents=True, exist_ok=True)
+    report = {
+        "format_version": 1,
+        "kind": "beliefcal_mvp1c_frozen_test_evaluation",
+        "protocol_amendment": "A2",
+        "bundle_path": str(Path(args.bundle).resolve()),
+        "bundle_sha256": sha256_file(args.bundle),
+        "test_cache_path": str(Path(args.test_cache).resolve()),
+        "test_cache_sha256": sha256_file(args.test_cache),
+        "selected": selected,
+        "metrics": evaluate_variance_method(test_cache, variance),
+        "test_manifest": test_manifest,
+        "formal_eligible": bool(bundle.get("formal_eligible_before_test"))
+        and not _formal_manifest_issues(test_manifest, "test"),
+        "formal_eligibility_issues": list(
+            bundle.get("formal_eligibility_issues", [])
+        )
+        + _formal_manifest_issues(test_manifest, "test"),
+        "git_head": git_head(),
+        "git_dirty": git_dirty(),
+    }
+    output_path = output_dir / "conditional_calibration_test_metrics.json"
+    output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+    print(output_path)
+
+
 def command_synthetic_smoke(args: argparse.Namespace) -> None:
     train_cache = synthetic_beliefcal_cache(4096, 101, 0)
     calibration_cache = synthetic_beliefcal_cache(2048, 102, 100000)
@@ -634,6 +946,22 @@ def build_parser() -> argparse.ArgumentParser:
         ),
     )
     fit.set_defaults(func=command_fit_caches)
+
+    conditional_fit = subparsers.add_parser("fit-conditional-calibration")
+    conditional_fit.add_argument("--result", required=True)
+    conditional_fit.add_argument("--run-index", type=int, default=0)
+    conditional_fit.add_argument("--calibration-cache", required=True)
+    conditional_fit.add_argument("--validation-cache", required=True)
+    conditional_fit.add_argument("--output", required=True)
+    conditional_fit.add_argument("--device", default="cpu")
+    conditional_fit.set_defaults(func=command_fit_conditional_calibration)
+
+    conditional_eval = subparsers.add_parser("evaluate-frozen-conditional")
+    conditional_eval.add_argument("--bundle", required=True)
+    conditional_eval.add_argument("--test-cache", required=True)
+    conditional_eval.add_argument("--output", required=True)
+    conditional_eval.add_argument("--device", default="cpu")
+    conditional_eval.set_defaults(func=command_evaluate_frozen_conditional)
 
     smoke = subparsers.add_parser("synthetic-smoke")
     smoke.add_argument("--output", required=True)
