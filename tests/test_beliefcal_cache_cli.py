@@ -8,6 +8,7 @@ from projects.mmp_tracker.mmp_tracker.beliefcal_runner import (
 )
 from projects.mmp_tracker.run_beliefcal_mvp1 import (
     audit_cache_bundle,
+    dataset_provenance,
     iterate_loader_window,
 )
 
@@ -34,6 +35,27 @@ class TestBeliefCalCacheCLI(unittest.TestCase):
         observed = list(iterate_loader_window(loader, start_batch=5, limit=1))
         self.assertEqual(observed, [])
         self.assertEqual(loader.iter_calls, 1)
+
+    def test_davis_default_annotation_is_recorded_for_provenance(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            annotation = Path(tmp_dir) / "tapvid_davis.pkl"
+            annotation.write_bytes(b"synthetic-davis-annotation")
+            config = {
+                "data": {
+                    "test": {
+                        "dataset": "tapvid_davis",
+                        "root": tmp_dir,
+                        "split": "test",
+                    }
+                }
+            }
+            provenance = dataset_provenance(config, "test")
+            self.assertEqual(provenance["dataset_family"], "davis")
+            self.assertEqual(
+                provenance["annotation_manifest"], str(annotation.resolve())
+            )
+            self.assertEqual(provenance["source_files"], [str(annotation.resolve())])
+            self.assertIsNotNone(provenance["annotation_manifest_sha256"])
 
     def test_shared_dataset_family_is_warning_by_default(self):
         with tempfile.TemporaryDirectory() as tmp_dir:

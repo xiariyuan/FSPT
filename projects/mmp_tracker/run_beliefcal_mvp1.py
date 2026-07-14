@@ -145,7 +145,12 @@ def dataset_provenance(
         raise ValueError(f"config.data.{split_key} must be a mapping.")
     data_config = dict(raw_data_config)
     root = Path(str(data_config.get("root", "."))).resolve()
+    dataset_family = normalize_dataset_family(data_config.get("dataset"))
     annotation_path = _resolve_annotation_path(data_config)
+    if annotation_path is None and dataset_family == "davis":
+        default_davis_annotation = root / "tapvid_davis.pkl"
+        if default_davis_annotation.exists():
+            annotation_path = default_davis_annotation
     annotation_sha256 = None
     annotation_payload = None
     source_files = []
@@ -176,7 +181,6 @@ def dataset_provenance(
                         candidate = root / candidate
                     source_files.append(str(candidate.resolve()))
 
-    dataset_family = normalize_dataset_family(data_config.get("dataset"))
     identity_payload = {
         "dataset": data_config.get("dataset"),
         "dataset_family": dataset_family,
