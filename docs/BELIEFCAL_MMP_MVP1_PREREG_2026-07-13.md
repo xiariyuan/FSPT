@@ -1,6 +1,6 @@
 # BeliefCal-MMP MVP-1 preregistration
 
-Status: frozen before learned uncertainty experiments
+Status: frozen; Amendment A1 appended on 2026-07-14 before any new formal experiment
 
 Date: 2026-07-13
 
@@ -165,3 +165,86 @@ Before uncertainty training:
 - `tests/test_beliefcal_calibration_metrics.py`
 
 The training and cache-generation entrypoints will be added only after their data contract and output manifest are specified.
+
+## Amendment A1 - 2026-07-14
+
+This amendment was written after the bounded engineering pilots and before any
+new formal multi-seed, conditional-calibration, or conformal experiment. It
+clarifies ambiguous protocol text; it does not retroactively convert prior
+pilots into confirmatory evidence.
+
+### A1.1 Data-role authority
+
+The four roles have the following non-overlapping purposes:
+
+- the training split fits learned uncertainty-head parameters;
+- the calibration split fits every post-hoc parameter, including global or
+  grouped variance scales and any predeclared empirical quantile;
+- the validation split selects architecture and fixed hyperparameters using the
+  predeclared validation objective; it must not fit post-hoc calibration
+  parameters;
+- the test split is used once for final reporting after all choices are frozen.
+
+Accordingly, Section 6 item 1 is corrected from "fitted by validation NLL" to
+"fitted on the calibration split by calibration NLL." The same rule applies to
+the visibility-conditioned and duration-binned baselines.
+
+### A1.2 Dataset identity, family, and leakage
+
+`dataset_identity` means the exact role-specific dataset realization, including
+its resolved root, split, annotation manifest, and manifest hash when present.
+`dataset_family` is the normalized parent corpus name, such as `kubric`,
+`davis`, or `rgb_stacking`.
+
+The mandatory leakage rule is exact-item separation: a source video, source
+sample, annotation item, or role-specific dataset identity must not cross
+training, calibration, validation, and test. Reusing one dataset family across
+roles is not by itself leakage when exact source items are disjoint. A
+`--require-distinct-dataset-families` audit is an optional cross-family stress
+test, not a default validity requirement.
+
+Formal result bundles must record the checkpoint hash, model-config hash,
+feature-order hash, role-specific dataset identity, source-file provenance, git
+head, and git dirty state. A dirty-worktree cache, an exact identity collision,
+a source-file collision, or a feature-order mismatch fails the formal audit.
+Legacy manifests that lack these fields may be used only for engineering
+diagnostics and cannot satisfy the paper gate.
+
+### A1.3 Feature contract and post-hoc ablations
+
+The 13 value channels plus 13 availability bits remain the preregistered MVP-1
+feature contract. The `drop_inert_mmp` profile was introduced after inspecting
+pilot feature support and is therefore classified as an exploratory engineering
+ablation. It cannot replace the full profile in the preregistered decision gate
+without a later amendment written before a new confirmatory run.
+
+A learned conditional-calibration network, calibration-aware training loss, or
+other feature-conditioned post-hoc model is outside the current frozen MVP-1
+method set. It requires a separate prospective amendment before implementation
+or evaluation.
+
+### A1.4 Conformal terminology and guarantees
+
+An empirical residual or Mahalanobis quantile may be reported descriptively.
+It may be called split conformal with a finite-sample marginal coverage
+guarantee only when calibration and evaluation examples satisfy the required
+exchangeability assumptions and the conformity score and nominal levels were
+fixed before test inspection.
+
+Cross-dataset or cross-family calibration-to-test stress tests do not establish
+exchangeability. Their coverage is empirical only and must not be presented as
+distribution-free or finite-sample guaranteed. No conformal-radius experiment
+will be added to the formal MVP-1 gate without a prospective amendment that
+fixes the score, quantile convention, dependence unit, nominal levels, and
+exchangeability claim.
+
+### A1.5 Status of existing pilots
+
+The corrected-v2 run, the RGB-Stacking cache smoke test, the feature-coverage
+analysis, and the feature-pruning run are engineering diagnostics only. They use
+small role counts, include a one-video DAVIS test pilot, and predate the complete
+manifest schema. A lower AURC observed in one seed and one test video is a
+numerical observation, not general evidence that uncertainty ranking succeeds.
+These pilots cannot pass or fail the scientific MVP-1 gate and cannot be used to
+select a new method while retaining confirmatory status.
+
