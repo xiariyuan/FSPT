@@ -110,6 +110,47 @@ def git_dirty() -> bool | None:
         return None
 
 
+def load_protocol_deviation(path: str | Path | None) -> Dict[str, object] | None:
+    if path is None:
+        return None
+    deviation_path = Path(path).resolve()
+    if not deviation_path.exists():
+        raise FileNotFoundError(f"Protocol deviation record not found: {deviation_path}")
+    payload = json.loads(deviation_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("Protocol deviation record must be a JSON object")
+    required = ("date", "issue", "impact", "allowed_use", "remediation")
+    missing = [key for key in required if not payload.get(key)]
+    if missing:
+        raise ValueError(f"Protocol deviation record missing fields: {missing}")
+    payload = dict(payload)
+    payload["path"] = str(deviation_path)
+    payload["sha256"] = sha256_file(deviation_path)
+    return payload
+
+
+def protocol_claim_status(deviation: Mapping[str, object] | None) -> Dict[str, object]:
+    limitations = [
+        "Manifest compliance and provenance integrity do not establish temporal ordering.",
+        "Paper-level claims require prespecified gates and an independent untouched final test.",
+        "Post-test diagnostics are observational and must not be used for fitting under A2.",
+    ]
+    if deviation is not None:
+        limitations.append(
+            f"Protocol deviation: {deviation.get('issue')} ({deviation.get('impact')})."
+        )
+    return {
+        "evidence_tier": "qualification_only",
+        "evidence_status": "engineering_and_qualification_only",
+        "paper_claim_eligible": False,
+        "formal_eligible_before_test": False,
+        "formal_eligible": False,
+        "protocol_deviation_detected": deviation is not None,
+        "protocol_deviation": dict(deviation) if deviation is not None else None,
+        "paper_claim_limitations": limitations,
+    }
+
+
 def normalize_dataset_family(name: object) -> str:
     normalized = str(name or "unknown").lower().replace("-", "_").strip()
     if normalized.startswith("tapvid_"):
@@ -835,6 +876,7 @@ def _overall_nll(metrics: Mapping[str, Mapping[str, float]]) -> float:
 
 def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
     """Fit A2 calibration candidates without accepting or loading a test cache."""
+    protocol_deviation = load_protocol_deviation(getattr(args, "protocol_deviation", None))
     if git_dirty() is True:
         raise RuntimeError(
             "Refusing to freeze an A2 calibration bundle from a dirty git worktree"
@@ -970,6 +1012,7 @@ def command_fit_conditional_calibration(args: argparse.Namespace) -> None:
         "deprecated_formal_eligibility_issues": manifest_issues,
         "test_loaded_during_fit": False,
     }
+    bundle.update(protocol_claim_status(protocol_deviation))
     bundle_path = output_dir / "conditional_calibration_bundle.pt"
     torch.save(bundle, bundle_path)
     summary = {
@@ -1022,6 +1065,7 @@ def _dataset_provenance_collisions(
 
 def command_evaluate_frozen_conditional(args: argparse.Namespace) -> None:
     """Evaluate a previously frozen A2 selection; this command fits nothing."""
+    protocol_deviation = load_protocol_deviation(getattr(args, "protocol_deviation", None))
     bundle = torch.load(Path(args.bundle), map_location="cpu")
     if not isinstance(bundle, Mapping) or bundle.get("kind") != "beliefcal_mvp1c_frozen_calibration_bundle":
         raise ValueError("Invalid frozen A2 calibration bundle")
@@ -1109,6 +1153,7 @@ def command_evaluate_frozen_conditional(args: argparse.Namespace) -> None:
         "git_head": git_head(),
         "git_dirty": git_dirty(),
     }
+    report.update(protocol_claim_status(protocol_deviation))
     output_path = output_dir / "conditional_calibration_test_metrics.json"
     output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(output_path)
@@ -1250,6 +1295,7 @@ def build_parser() -> argparse.ArgumentParser:
     conditional_fit.add_argument("--validation-cache", required=True)
     conditional_fit.add_argument("--output", required=True)
     conditional_fit.add_argument("--device", default="cpu")
+    conditional_fit.add_argument("--protocol-deviation", default=None)
     conditional_fit.set_defaults(func=command_fit_conditional_calibration)
 
     conditional_eval = subparsers.add_parser("evaluate-frozen-conditional")
@@ -1257,6 +1303,7 @@ def build_parser() -> argparse.ArgumentParser:
     conditional_eval.add_argument("--test-cache", required=True)
     conditional_eval.add_argument("--output", required=True)
     conditional_eval.add_argument("--device", default="cpu")
+    conditional_eval.add_argument("--protocol-deviation", default=None)
     conditional_eval.set_defaults(func=command_evaluate_frozen_conditional)
 
     smoke = subparsers.add_parser("synthetic-smoke")
