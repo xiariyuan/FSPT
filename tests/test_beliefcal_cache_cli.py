@@ -57,6 +57,60 @@ class TestBeliefCalCacheCLI(unittest.TestCase):
             self.assertEqual(provenance["source_files"], [str(annotation.resolve())])
             self.assertIsNotNone(provenance["annotation_manifest_sha256"])
 
+    def test_complete_provenance_policy_accepts_complete_manifest(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            paths = {}
+            for index, role in enumerate(("train", "calibration", "validation", "test")):
+                source = Path(tmp_dir) / f"{role}.source"
+                source.write_bytes(role.encode())
+                path = Path(tmp_dir) / f"{role}.pt"
+                cache = synthetic_beliefcal_cache(16, seed=200 + index, sample_offset=10000 * index)
+                manifest = {
+                    "role": role,
+                    "checkpoint_sha256": "same-checkpoint",
+                    "model_config_sha256": "same-model",
+                    "config_sha256": "same-config",
+                    "feature_order_sha256": "same-feature",
+                    "git_head": "same-head",
+                    "git_dirty": False,
+                    "checkpoint_load_mode": "strict",
+                    "dataset": {
+                        "dataset_family": f"family-{role}",
+                        "dataset_identity": f"identity-{role}",
+                        "annotation_manifest": str(source),
+                        "annotation_manifest_sha256": "annotation-hash",
+                        "source_files": [str(source)],
+                    },
+                }
+                save_beliefcal_cache(cache, path, manifest=manifest)
+                paths[role] = path
+            report = audit_cache_bundle(
+                paths, require_complete_provenance=True
+            )
+            self.assertTrue(report["passed"])
+            self.assertTrue(report["policy"]["require_complete_provenance"])
+
+    def test_complete_provenance_policy_rejects_missing_feature_hash(self):
+        with tempfile.TemporaryDirectory() as tmp_dir:
+            paths = {}
+            for index, role in enumerate(("train", "calibration", "validation", "test")):
+                path = Path(tmp_dir) / f"{role}.pt"
+                cache = synthetic_beliefcal_cache(8, seed=300 + index, sample_offset=100 * index)
+                manifest = {
+                    "role": role,
+                    "checkpoint_sha256": "same-checkpoint",
+                    "model_config_sha256": "same-model",
+                    "config_sha256": "same-config",
+                    "git_head": "same-head",
+                    "git_dirty": False,
+                    "checkpoint_load_mode": "strict",
+                    "dataset": {"dataset_family": role, "dataset_identity": role, "source_files": [str(path)]},
+                }
+                save_beliefcal_cache(cache, path, manifest=manifest)
+                paths[role] = path
+            with self.assertRaises(RuntimeError):
+                audit_cache_bundle(paths, require_complete_provenance=True)
+
     def test_shared_dataset_family_is_warning_by_default(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             paths = {}

@@ -256,6 +256,7 @@ def audit_cache_bundle(
     cache_paths: Mapping[str, str | Path],
     require_strict_checkpoint: bool = True,
     require_distinct_dataset_families: bool = False,
+    require_complete_provenance: bool = False,
 ) -> Dict[str, object]:
     roles = ("train", "calibration", "validation", "test")
     missing_roles = [role for role in roles if role not in cache_paths]
@@ -295,7 +296,26 @@ def audit_cache_bundle(
         if dirty is True:
             errors.append(f"{role}: cache was generated from a dirty git worktree")
         elif dirty is None:
-            warnings.append(f"{role}: git dirty state was not recorded")
+            message = f"{role}: git dirty state was not recorded"
+            if require_complete_provenance:
+                errors.append(message)
+            else:
+                warnings.append(message)
+        elif require_complete_provenance and dirty is not False:
+            errors.append(f"{role}: git_dirty must be exactly false")
+
+        if require_complete_provenance:
+            required_manifest_fields = (
+                "role",
+                "checkpoint_sha256",
+                "model_config_sha256",
+                "feature_order_sha256",
+                "config_sha256",
+                "git_head",
+            )
+            for field in required_manifest_fields:
+                if not manifest.get(field):
+                    errors.append(f"{role}: missing required manifest field {field}")
 
     feature_hashes = {
         str(manifest.get("feature_order_sha256"))
@@ -303,7 +323,11 @@ def audit_cache_bundle(
         if manifest.get("feature_order_sha256")
     }
     if not feature_hashes:
-        warnings.append("no feature-order hash recorded in cache manifests")
+        message = "no feature-order hash recorded in cache manifests"
+        if require_complete_provenance:
+            errors.append(message)
+        else:
+            warnings.append(message)
     elif len(feature_hashes) != 1:
         errors.append(f"feature-order hash mismatch: {sorted(feature_hashes)}")
 
@@ -323,9 +347,25 @@ def audit_cache_bundle(
         if manifest.get("config_sha256")
     }
     if len(config_hashes) > 1:
-        warnings.append(
-            f"role caches use different full config hashes: {sorted(config_hashes)}"
+        message = f"role caches use different full config hashes: {sorted(config_hashes)}"
+        if require_complete_provenance:
+            errors.append(message)
+        else:
+            warnings.append(message)
+    elif require_complete_provenance and len(config_hashes) != 1:
+        errors.append(
+            f"all roles must use one recorded full config hash, got {sorted(config_hashes)}"
         )
+
+    git_heads = {
+        str(manifest.get("git_head"))
+        for manifest in manifests.values()
+        if manifest.get("git_head")
+    }
+    if require_complete_provenance and len(git_heads) != 1:
+        errors.append(f"all roles must use one git head, got {sorted(git_heads)}")
+    elif len(git_heads) > 1:
+        warnings.append(f"role caches use different git heads: {sorted(git_heads)}")
 
     model_hashes = {
         str(manifest.get("model_config_sha256"))
@@ -343,15 +383,23 @@ def audit_cache_bundle(
     for role, manifest in manifests.items():
         dataset = manifest.get("dataset")
         if not isinstance(dataset, Mapping):
-            warnings.append(f"{role}: no dataset provenance recorded")
+            message = f"{role}: no dataset provenance recorded"
+            if require_complete_provenance:
+                errors.append(message)
+            else:
+                warnings.append(message)
             continue
         family = dataset.get("dataset_family")
         if family is None:
             payload = dataset.get("dataset_identity_payload", {})
             if isinstance(payload, Mapping):
                 family = normalize_dataset_family(payload.get("dataset"))
-            warnings.append(f"{role}: dataset family was inferred from legacy provenance")
-        family = str(family)
+            message = f"{role}: dataset family was inferred from legacy provenance"
+            if require_complete_provenance:
+                errors.append(f"{role}: missing explicit dataset_family")
+            else:
+                warnings.append(message)
+        family = str(family) if family is not None else ""
         if family in family_owner:
             message = (
                 f"dataset-family collision: {family_owner[family]} and {role} "
@@ -366,15 +414,35 @@ def audit_cache_bundle(
 
         identity = dataset.get("dataset_identity")
         if identity is None:
-            warnings.append(f"{role}: no dataset identity recorded")
+            message = f"{role}: no dataset identity recorded"
+            if require_complete_provenance:
+                errors.append(message)
+            else:
+                warnings.append(message)
         elif identity in identity_owner:
             errors.append(
                 f"dataset identity collision: {identity_owner[identity]} and {role}"
             )
         else:
             identity_owner[identity] = role
-        for source in dataset.get("source_files", []):
+        source_files = dataset.get("source_files", [])
+        if not isinstance(source_files, (list, tuple)) or not source_files:
+            message = f"{role}: no source files recorded"
+            if require_complete_provenance:
+                errors.append(message)
+            else:
+                warnings.append(message)
+            source_files = []
+        annotation_manifest = dataset.get("annotation_manifest")
+        annotation_hash = dataset.get("annotation_manifest_sha256")
+        if require_complete_provenance and not annotation_manifest:
+            errors.append(f"{role}: missing annotation_manifest")
+        if require_complete_provenance and not annotation_hash:
+            errors.append(f"{role}: missing annotation_manifest_sha256")
+        for source in source_files:
             source = str(source)
+            if require_complete_provenance and not Path(source).exists():
+                errors.append(f"{role}: source file does not exist: {source}")
             if source in source_owner:
                 errors.append(
                     f"source-file leakage: {source_owner[source]} and {role} use {source}"
@@ -386,6 +454,13 @@ def audit_cache_bundle(
         "passed": not errors,
         "errors": errors,
         "warnings": warnings,
+        "policy": {
+            "require_strict_checkpoint": bool(require_strict_checkpoint),
+            "require_distinct_dataset_families": bool(
+                require_distinct_dataset_families
+            ),
+            "require_complete_provenance": bool(require_complete_provenance),
+        },
         "roles": {
             role: {
                 "path": str(Path(cache_paths[role]).resolve()),
@@ -518,6 +593,7 @@ def command_fit_caches(args: argparse.Namespace) -> None:
             "test": args.test_cache,
         },
         require_distinct_dataset_families=args.require_distinct_dataset_families,
+        require_complete_provenance=args.require_complete_provenance,
     )
     result = run_beliefcal_mvp1_experiment(
         train_cache,
@@ -545,16 +621,30 @@ def command_fit_caches(args: argparse.Namespace) -> None:
 
 
 def command_audit_caches(args: argparse.Namespace) -> None:
-    report = audit_cache_bundle(
-        {
-            "train": args.train_cache,
-            "calibration": args.calibration_cache,
-            "validation": args.validation_cache,
-            "test": args.test_cache,
-        },
-        require_strict_checkpoint=not args.allow_non_strict_checkpoint,
-        require_distinct_dataset_families=args.require_distinct_dataset_families,
-    )
+    cache_paths = {
+        "train": args.train_cache,
+        "calibration": args.calibration_cache,
+        "validation": args.validation_cache,
+        "test": args.test_cache,
+    }
+    try:
+        report = audit_cache_bundle(
+            cache_paths,
+            require_strict_checkpoint=not args.allow_non_strict_checkpoint,
+            require_distinct_dataset_families=args.require_distinct_dataset_families,
+            require_complete_provenance=args.require_complete_provenance,
+        )
+    except RuntimeError as exc:
+        try:
+            report = json.loads(str(exc))
+        except json.JSONDecodeError:
+            raise
+        if args.output:
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            output_path.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(json.dumps(report, indent=2))
+        raise
     if args.output:
         output_path = Path(args.output)
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -914,6 +1004,14 @@ def build_parser() -> argparse.ArgumentParser:
     audit.add_argument("--output", default=None)
     audit.add_argument("--allow-non-strict-checkpoint", action="store_true")
     audit.add_argument(
+        "--require-complete-provenance",
+        action="store_true",
+        help=(
+            "Require per-role git state, checkpoint/model/config/feature hashes, "
+            "dataset identity, annotation manifest hash, and source files."
+        ),
+    )
+    audit.add_argument(
         "--require-distinct-dataset-families",
         action="store_true",
         help=(
@@ -935,6 +1033,11 @@ def build_parser() -> argparse.ArgumentParser:
     fit.add_argument("--batch-size", type=int, default=4096)
     fit.add_argument("--learning-rate", type=float, default=1e-3)
     fit.add_argument("--device", default="cpu")
+    fit.add_argument(
+        "--require-complete-provenance",
+        action="store_true",
+        help="Refuse fitting unless all cache manifests satisfy the formal A1 provenance contract.",
+    )
     fit.add_argument(
         "--feature-profile",
         choices=("full", "drop_inert_mmp"),
