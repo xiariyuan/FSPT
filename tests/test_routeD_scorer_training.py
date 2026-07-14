@@ -9,6 +9,9 @@ from projects.mmp_tracker.mmp_tracker.routeD_candidate_cache import (
 from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import (
     RouteDCandidateCacheDataset,
     ScorerTrainingConfig,
+    compute_feature_normalization,
+    normalize_hypothesis_features,
+    routeD_training_loss,
     split_routeD_candidate_cache_by_sample,
     train_hypothesis_scorer,
 )
@@ -72,6 +75,31 @@ class TestRouteDScorerTraining(unittest.TestCase):
             set(train["sample_id"].tolist()) & set(validation["sample_id"].tolist())
         )
         self.assertEqual(train["features"].shape[0] + validation["features"].shape[0], cache["features"].shape[0])
+
+
+    def test_feature_normalization_is_train_only_and_finite(self):
+        cache = synthetic_cache(samples=3)
+        mean, std = compute_feature_normalization(cache)
+        normalized = normalize_hypothesis_features(cache["features"], mean, std)
+        self.assertTrue(torch.isfinite(normalized).all())
+        self.assertEqual(mean.shape, (12,))
+        self.assertEqual(std.shape, (12,))
+
+    def test_gain_weighted_loss_is_finite(self):
+        logits = torch.tensor([[1.0, 0.0], [0.0, 1.0]], requires_grad=True)
+        target = torch.tensor([0, 1])
+        errors = torch.tensor([[1.0, 5.0], [8.0, 1.0]])
+        gain = torch.tensor([0.0, 7.0])
+        loss = routeD_training_loss(
+            logits,
+            target,
+            errors,
+            gain,
+            ScorerTrainingConfig(loss_mode="gain_regret", regret_loss_weight=0.5),
+        )
+        self.assertTrue(torch.isfinite(loss))
+        loss.backward()
+        self.assertTrue(torch.isfinite(logits.grad).all())
 
     def test_training_learns_synthetic_oracle_signal(self):
         cache = synthetic_cache(samples=8, rows_per_sample=30)

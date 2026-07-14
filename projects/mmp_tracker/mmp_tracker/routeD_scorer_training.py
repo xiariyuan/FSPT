@@ -46,6 +46,11 @@ class ScorerTrainingConfig:
     seed: int = 17
     device: str = "cpu"
     patience: int = 5
+    normalize_features: bool = True
+    loss_mode: str = "cross_entropy"
+    gain_weight_alpha: float = 1.0
+    max_gain_weight: float = 6.0
+    regret_loss_weight: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -105,6 +110,62 @@ def split_routeD_candidate_cache_by_sample(
     )
 
 
+def compute_feature_normalization(
+    cache: Mapping[str, torch.Tensor],
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Compute train-only feature statistics over rows and candidates."""
+    validate_routeD_candidate_cache(cache)
+    features = cache["features"].float()
+    mean = features.mean(dim=(0, 1))
+    std = features.std(dim=(0, 1), unbiased=False)
+    std = torch.where(std > 1.0e-6, std, torch.ones_like(std))
+    return mean, std
+
+
+def normalize_hypothesis_features(
+    features: torch.Tensor,
+    mean: torch.Tensor | None,
+    std: torch.Tensor | None,
+) -> torch.Tensor:
+    if mean is None or std is None:
+        return features
+    mean = mean.to(device=features.device, dtype=features.dtype)
+    std = std.to(device=features.device, dtype=features.dtype)
+    if mean.shape != (features.shape[-1],) or std.shape != mean.shape:
+        raise ValueError("Feature normalization statistics have invalid shape")
+    return (features - mean) / std
+
+
+def routeD_training_loss(
+    logits: torch.Tensor,
+    target: torch.Tensor,
+    candidate_error_px: torch.Tensor,
+    oracle_gain_px: torch.Tensor,
+    config: ScorerTrainingConfig,
+) -> torch.Tensor:
+    """Compute CE, gain-weighted CE, or gain-weighted CE plus regret."""
+    if config.loss_mode not in {"cross_entropy", "gain_weighted", "gain_regret"}:
+        raise ValueError(f"Unsupported loss_mode: {config.loss_mode}")
+    per_row_ce = F.cross_entropy(logits, target, reduction="none")
+    weights = torch.ones_like(per_row_ce)
+    if config.loss_mode in {"gain_weighted", "gain_regret"}:
+        positive = torch.log1p(oracle_gain_px.clamp_min(0.0))
+        normalizer = positive[positive > 0].mean().clamp_min(1.0e-6)
+        scaled = (positive / normalizer).clamp(max=float(config.max_gain_weight))
+        weights = 1.0 + float(config.gain_weight_alpha) * scaled
+    loss = (per_row_ce * weights).sum() / weights.sum().clamp_min(1.0)
+    if config.loss_mode == "gain_regret" or config.regret_loss_weight > 0:
+        probabilities = torch.softmax(logits, dim=-1)
+        oracle_error = candidate_error_px.min(dim=-1, keepdim=True).values
+        regret = (candidate_error_px - oracle_error).clamp_min(0.0)
+        row_scale = oracle_gain_px.clamp_min(1.0).unsqueeze(-1)
+        expected_normalized_regret = (probabilities * (regret / row_scale)).sum(dim=-1)
+        loss = loss + float(config.regret_loss_weight) * (
+            expected_normalized_regret * weights
+        ).sum() / weights.sum().clamp_min(1.0)
+    return loss
+
+
 def _masked_logits(logits: torch.Tensor, candidate_valid_mask: torch.Tensor) -> torch.Tensor:
     if logits.shape != candidate_valid_mask.shape:
         raise ValueError("candidate_valid_mask must match logits")
@@ -119,6 +180,8 @@ def evaluate_hypothesis_scorer(
     *,
     batch_size: int = 8192,
     device: str = "cpu",
+    feature_mean: torch.Tensor | None = None,
+    feature_std: torch.Tensor | None = None,
 ) -> Dict[str, float]:
     validate_routeD_candidate_cache(cache)
     dataset = RouteDCandidateCacheDataset(cache)
@@ -141,6 +204,9 @@ def evaluate_hypothesis_scorer(
     with torch.no_grad():
         for batch in loader:
             features = batch["features"].to(device=device, dtype=torch.float32)
+            features = normalize_hypothesis_features(
+                features, feature_mean, feature_std
+            )
             valid = batch["candidate_valid_mask"].to(device=device, dtype=torch.bool)
             target = batch["oracle_index"].to(device=device, dtype=torch.long)
             logits = _masked_logits(model(features), valid)
@@ -210,6 +276,10 @@ def train_hypothesis_scorer(
         raise ValueError("Unexpected validation feature dimension")
 
     torch.manual_seed(int(config.seed))
+    feature_mean: torch.Tensor | None = None
+    feature_std: torch.Tensor | None = None
+    if config.normalize_features:
+        feature_mean, feature_std = compute_feature_normalization(train_cache)
     model = HypothesisScorer(
         feature_dim=HYPOTHESIS_FEATURE_DIM,
         hidden_dim=int(config.hidden_dim),
@@ -236,10 +306,21 @@ def train_hypothesis_scorer(
         row_count = 0
         for batch in train_loader:
             features = batch["features"].to(config.device, dtype=torch.float32)
+            features = normalize_hypothesis_features(
+                features, feature_mean, feature_std
+            )
             valid = batch["candidate_valid_mask"].to(config.device, dtype=torch.bool)
             target = batch["oracle_index"].to(config.device, dtype=torch.long)
+            candidate_error = batch["candidate_error_px"].to(
+                config.device, dtype=torch.float32
+            )
+            oracle_gain = batch["oracle_gain_px"].to(
+                config.device, dtype=torch.float32
+            )
             logits = _masked_logits(model(features), valid)
-            loss = F.cross_entropy(logits, target)
+            loss = routeD_training_loss(
+                logits, target, candidate_error, oracle_gain, config
+            )
             optimizer.zero_grad(set_to_none=True)
             loss.backward()
             optimizer.step()
@@ -248,10 +329,20 @@ def train_hypothesis_scorer(
             row_count += rows
 
         train_metrics = evaluate_hypothesis_scorer(
-            model, train_cache, batch_size=config.batch_size, device=config.device
+            model,
+            train_cache,
+            batch_size=config.batch_size,
+            device=config.device,
+            feature_mean=feature_mean,
+            feature_std=feature_std,
         )
         validation_metrics = evaluate_hypothesis_scorer(
-            model, validation_cache, batch_size=config.batch_size, device=config.device
+            model,
+            validation_cache,
+            batch_size=config.batch_size,
+            device=config.device,
+            feature_mean=feature_mean,
+            feature_std=feature_std,
         )
         epoch_record = {
             "epoch": epoch + 1,
@@ -272,16 +363,28 @@ def train_hypothesis_scorer(
 
     model.load_state_dict(best_state, strict=True)
     final_train = evaluate_hypothesis_scorer(
-        model, train_cache, batch_size=config.batch_size, device=config.device
+        model,
+        train_cache,
+        batch_size=config.batch_size,
+        device=config.device,
+        feature_mean=feature_mean,
+        feature_std=feature_std,
     )
     final_validation = evaluate_hypothesis_scorer(
-        model, validation_cache, batch_size=config.batch_size, device=config.device
+        model,
+        validation_cache,
+        batch_size=config.batch_size,
+        device=config.device,
+        feature_mean=feature_mean,
+        feature_std=feature_std,
     )
     return {
         "format_version": 1,
         "kind": "routeD_hypothesis_scorer",
         "config": asdict(config),
         "model_state": {key: value.detach().cpu() for key, value in best_state.items()},
+        "feature_mean": feature_mean.detach().cpu() if feature_mean is not None else None,
+        "feature_std": feature_std.detach().cpu() if feature_std is not None else None,
         "feature_dim": HYPOTHESIS_FEATURE_DIM,
         "candidate_count": int(train_cache["features"].shape[1]),
         "train_rows": int(train_cache["features"].shape[0]),

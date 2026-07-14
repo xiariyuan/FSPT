@@ -43,6 +43,15 @@ def main() -> None:
     parser.add_argument("--patience", type=int, default=5)
     parser.add_argument("--seed", type=int, default=17)
     parser.add_argument("--device", default="cpu")
+    parser.add_argument(
+        "--loss-mode",
+        choices=["cross_entropy", "gain_weighted", "gain_regret"],
+        default="cross_entropy",
+    )
+    parser.add_argument("--gain-weight-alpha", type=float, default=1.0)
+    parser.add_argument("--max-gain-weight", type=float, default=6.0)
+    parser.add_argument("--regret-loss-weight", type=float, default=0.0)
+    parser.add_argument("--no-normalize-features", action="store_true")
     args = parser.parse_args()
 
     train_cache = load_cache(args.train_cache)
@@ -69,6 +78,11 @@ def main() -> None:
         seed=args.seed,
         device=args.device,
         patience=args.patience,
+        normalize_features=not args.no_normalize_features,
+        loss_mode=args.loss_mode,
+        gain_weight_alpha=args.gain_weight_alpha,
+        max_gain_weight=args.max_gain_weight,
+        regret_loss_weight=args.regret_loss_weight,
     )
     bundle = train_hypothesis_scorer(train_cache, validation_cache, config)
     bundle["source_train_cache"] = str(Path(args.train_cache).resolve())
@@ -80,7 +94,17 @@ def main() -> None:
     output = Path(args.output).resolve()
     output.mkdir(parents=True, exist_ok=True)
     torch.save(bundle, output / "hypothesis_scorer.pt")
-    summary = {key: value for key, value in bundle.items() if key != "model_state"}
+    summary = {
+        key: value
+        for key, value in bundle.items()
+        if key not in {"model_state", "feature_mean", "feature_std"}
+    }
+    summary["feature_mean"] = (
+        bundle["feature_mean"].tolist() if bundle["feature_mean"] is not None else None
+    )
+    summary["feature_std"] = (
+        bundle["feature_std"].tolist() if bundle["feature_std"] is not None else None
+    )
     (output / "metrics.json").write_text(
         json.dumps(summary, indent=2), encoding="utf-8"
     )
