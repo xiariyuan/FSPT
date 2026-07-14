@@ -45,7 +45,7 @@ def main() -> None:
     parser.add_argument("--device", default="cpu")
     parser.add_argument(
         "--loss-mode",
-        choices=["cross_entropy", "gain_weighted", "gain_regret", "gain_pairwise", "risk_aware"],
+        choices=["cross_entropy", "gain_weighted", "gain_regret", "gain_pairwise", "risk_aware", "threshold_utility"],
         default="cross_entropy",
     )
     parser.add_argument("--gain-weight-alpha", type=float, default=1.0)
@@ -56,7 +56,7 @@ def main() -> None:
     parser.add_argument("--hard-positive-min-gain-px", type=float, default=3.0)
     parser.add_argument(
         "--model-selection-metric",
-        choices=["auto", "cross_entropy", "mean_selected_error_px"],
+        choices=["auto", "cross_entropy", "mean_selected_error_px", "mean_regret_to_oracle_threshold_utility"],
         default="auto",
     )
     parser.add_argument("--no-normalize-features", action="store_true")
@@ -69,6 +69,12 @@ def main() -> None:
     parser.add_argument("--gate-selection-threshold", type=float, default=0.5)
     parser.add_argument("--gate-temperature", type=float, default=1.0)
     parser.add_argument("--hard-negative-weight", type=float, default=3.0)
+    parser.add_argument("--utility-thresholds-px", default="1,2,4,8,16")
+    parser.add_argument("--utility-loss-weight", type=float, default=1.0)
+    parser.add_argument("--utility-gate-loss-weight", type=float, default=1.0)
+    parser.add_argument("--utility-rank-loss-weight", type=float, default=0.5)
+    parser.add_argument("--utility-gate-margin", type=float, default=0.2)
+    parser.add_argument("--utility-hard-negative-weight", type=float, default=4.0)
     args = parser.parse_args()
 
     train_cache = load_cache(args.train_cache)
@@ -86,6 +92,11 @@ def main() -> None:
             "validation_sample_ids": list(split.validation_sample_ids),
         }
 
+    utility_thresholds_px = tuple(
+        float(value.strip())
+        for value in args.utility_thresholds_px.split(",")
+        if value.strip()
+    )
     config = ScorerTrainingConfig(
         hidden_dim=args.hidden_dim,
         epochs=args.epochs,
@@ -111,6 +122,12 @@ def main() -> None:
         gate_selection_threshold=args.gate_selection_threshold,
         gate_temperature=args.gate_temperature,
         hard_negative_weight=args.hard_negative_weight,
+        utility_thresholds_px=utility_thresholds_px,
+        utility_loss_weight=args.utility_loss_weight,
+        utility_gate_loss_weight=args.utility_gate_loss_weight,
+        utility_rank_loss_weight=args.utility_rank_loss_weight,
+        utility_gate_margin=args.utility_gate_margin,
+        utility_hard_negative_weight=args.utility_hard_negative_weight,
     )
     bundle = train_hypothesis_scorer(train_cache, validation_cache, config)
     bundle["source_train_cache"] = str(Path(args.train_cache).resolve())

@@ -62,6 +62,12 @@ class ScorerTrainingConfig:
     gate_selection_threshold: float = 0.5
     gate_temperature: float = 1.0
     hard_negative_weight: float = 3.0
+    utility_thresholds_px: tuple[float, ...] = (1.0, 2.0, 4.0, 8.0, 16.0)
+    utility_loss_weight: float = 1.0
+    utility_gate_loss_weight: float = 1.0
+    utility_rank_loss_weight: float = 0.5
+    utility_gate_margin: float = 0.2
+    utility_hard_negative_weight: float = 4.0
 
 
 @dataclass(frozen=True)
@@ -150,7 +156,11 @@ def normalize_hypothesis_features(
 def resolve_selection_mode(config: ScorerTrainingConfig) -> str:
     mode = config.selection_mode
     if mode == "auto":
-        mode = "risk_gate" if config.loss_mode == "risk_aware" else "argmax"
+        mode = (
+            "risk_gate"
+            if config.loss_mode in {"risk_aware", "threshold_utility"}
+            else "argmax"
+        )
     if mode not in {"argmax", "risk_gate"}:
         raise ValueError(f"Unsupported selection_mode: {mode}")
     return mode
@@ -251,6 +261,98 @@ def _risk_aware_loss(
     )
 
 
+def candidate_threshold_utility(
+    candidate_error_px: torch.Tensor,
+    thresholds_px: Sequence[float] = (1.0, 2.0, 4.0, 8.0, 16.0),
+) -> torch.Tensor:
+    """Return TAP-style localization utility averaged over pixel thresholds."""
+    thresholds = tuple(float(value) for value in thresholds_px)
+    if not thresholds or any(value <= 0.0 for value in thresholds):
+        raise ValueError("utility thresholds must be positive and non-empty")
+    threshold_tensor = torch.tensor(
+        thresholds,
+        device=candidate_error_px.device,
+        dtype=candidate_error_px.dtype,
+    )
+    return (
+        candidate_error_px.unsqueeze(-1) <= threshold_tensor
+    ).to(candidate_error_px.dtype).mean(dim=-1)
+
+
+def _threshold_utility_loss(
+    logits: torch.Tensor,
+    candidate_error_px: torch.Tensor,
+    candidate_valid_mask: torch.Tensor,
+    config: ScorerTrainingConfig,
+) -> torch.Tensor:
+    """Learn candidate multi-threshold utility and a safe global-vs-local gate."""
+    if logits.shape != candidate_error_px.shape or logits.shape != candidate_valid_mask.shape:
+        raise ValueError("threshold-utility tensors must share shape (B,K)")
+    utility = candidate_threshold_utility(
+        candidate_error_px, config.utility_thresholds_px
+    )
+    valid_weight = candidate_valid_mask.to(logits.dtype)
+    candidate_loss = F.binary_cross_entropy_with_logits(
+        logits, utility, reduction="none"
+    )
+    candidate_objective = (
+        candidate_loss * valid_weight
+    ).sum() / valid_weight.sum().clamp_min(1.0)
+
+    if logits.shape[-1] < 2:
+        return float(config.utility_loss_weight) * candidate_objective
+
+    global_valid = candidate_valid_mask[..., 1:]
+    has_global = global_valid.any(dim=-1)
+    global_utility = utility[..., 1:].masked_fill(~global_valid, -1.0)
+    best_global_utility, best_global_relative = global_utility.max(dim=-1)
+    local_utility = utility[..., 0]
+    utility_gain = best_global_utility - local_utility
+    gate_target = has_global & (
+        utility_gain >= float(config.utility_gate_margin)
+    )
+
+    best_global_score = logits[..., 1:].masked_fill(
+        ~global_valid, -1.0e9
+    ).max(dim=-1).values
+    gate_logit = best_global_score - logits[..., 0]
+    gate_loss = F.binary_cross_entropy_with_logits(
+        gate_logit, gate_target.to(logits.dtype), reduction="none"
+    )
+    gate_weight = torch.ones_like(gate_loss)
+    harmful = has_global & (utility_gain < 0.0)
+    gate_weight = torch.where(
+        harmful,
+        gate_weight * float(config.utility_hard_negative_weight),
+        gate_weight,
+    )
+    positive_weight = 1.0 + utility_gain.clamp_min(0.0) * len(
+        config.utility_thresholds_px
+    )
+    gate_weight = torch.where(gate_target, gate_weight * positive_weight, gate_weight)
+    gate_objective = (
+        gate_loss * gate_weight
+    ).sum() / gate_weight.sum().clamp_min(1.0)
+
+    rank_objective = logits.sum() * 0.0
+    if gate_target.any():
+        rank_loss = F.cross_entropy(
+            logits[..., 1:][gate_target],
+            best_global_relative[gate_target],
+            reduction="none",
+        )
+        rank_weight = utility_gain[gate_target].clamp_min(1.0e-6)
+        rank_objective = (
+            rank_loss * rank_weight
+        ).sum() / rank_weight.sum().clamp_min(1.0)
+
+    return (
+        float(config.utility_loss_weight) * candidate_objective
+        + float(config.utility_gate_loss_weight) * gate_objective
+        + float(config.utility_rank_loss_weight) * rank_objective
+    )
+
+
 def routeD_training_loss(
     logits: torch.Tensor,
     target: torch.Tensor,
@@ -266,8 +368,15 @@ def routeD_training_loss(
         "gain_regret",
         "gain_pairwise",
         "risk_aware",
+        "threshold_utility",
     }:
         raise ValueError(f"Unsupported loss_mode: {config.loss_mode}")
+    if config.loss_mode == "threshold_utility":
+        if candidate_valid_mask is None:
+            candidate_valid_mask = torch.ones_like(logits, dtype=torch.bool)
+        return _threshold_utility_loss(
+            logits, candidate_error_px, candidate_valid_mask, config
+        )
     if config.loss_mode == "risk_aware":
         if candidate_valid_mask is None:
             candidate_valid_mask = torch.ones_like(logits, dtype=torch.bool)
@@ -350,6 +459,12 @@ def evaluate_hypothesis_scorer(
     beneficial_global_selected = 0
     selected_global_beneficial = 0
     selected_global_harmful = 0
+    selected_threshold_utility_sum = 0.0
+    local_threshold_utility_sum = 0.0
+    oracle_threshold_utility_sum = 0.0
+    threshold_utility_beneficial_rows = 0
+    threshold_utility_beneficial_selected = 0
+    selected_global_threshold_harmful = 0
 
     with torch.no_grad():
         for batch in loader:
@@ -390,6 +505,41 @@ def evaluate_hypothesis_scorer(
             selected_error_sum += float(selected_error.sum().item())
             local_error_sum += float(local_error.sum().item())
             oracle_error_sum += float(oracle_error.sum().item())
+            threshold_utility = candidate_threshold_utility(
+                candidate_error, (1.0, 2.0, 4.0, 8.0, 16.0)
+            )
+            selected_threshold_utility = threshold_utility.gather(
+                -1, prediction.unsqueeze(-1)
+            ).squeeze(-1)
+            local_threshold_utility = threshold_utility[..., 0]
+            oracle_threshold_utility = threshold_utility.max(dim=-1).values
+            selected_threshold_utility_sum += float(
+                selected_threshold_utility.sum().item()
+            )
+            local_threshold_utility_sum += float(
+                local_threshold_utility.sum().item()
+            )
+            oracle_threshold_utility_sum += float(
+                oracle_threshold_utility.sum().item()
+            )
+            best_global_threshold_utility = threshold_utility[..., 1:].masked_fill(
+                ~valid[..., 1:], -1.0
+            ).max(dim=-1).values
+            threshold_beneficial = (
+                best_global_threshold_utility >= local_threshold_utility + 0.2
+            )
+            threshold_utility_beneficial_rows += int(
+                threshold_beneficial.sum().item()
+            )
+            threshold_utility_beneficial_selected += int(
+                (threshold_beneficial & (prediction > 0)).sum().item()
+            )
+            selected_global_threshold_harmful += int(
+                (
+                    (prediction > 0)
+                    & (selected_threshold_utility < local_threshold_utility)
+                ).sum().item()
+            )
             global_error = candidate_error[..., 1:].masked_fill(
                 ~valid[..., 1:], float("inf")
             )
@@ -420,6 +570,9 @@ def evaluate_hypothesis_scorer(
     mean_selected_error = selected_error_sum / denominator
     mean_local_error = local_error_sum / denominator
     mean_oracle_error = oracle_error_sum / denominator
+    mean_selected_threshold_utility = selected_threshold_utility_sum / denominator
+    mean_local_threshold_utility = local_threshold_utility_sum / denominator
+    mean_oracle_threshold_utility = oracle_threshold_utility_sum / denominator
     return {
         "rows": float(total_rows),
         "cross_entropy": total_loss / denominator,
@@ -439,6 +592,25 @@ def evaluate_hypothesis_scorer(
         / max(global_selected, 1),
         "harmful_global_selection_rate": selected_global_harmful
         / max(global_selected, 1),
+        "mean_selected_threshold_utility": mean_selected_threshold_utility,
+        "mean_local_threshold_utility": mean_local_threshold_utility,
+        "mean_oracle_threshold_utility": mean_oracle_threshold_utility,
+        "mean_gain_over_local_threshold_utility": (
+            mean_selected_threshold_utility - mean_local_threshold_utility
+        ),
+        "mean_regret_to_oracle_threshold_utility": (
+            mean_oracle_threshold_utility - mean_selected_threshold_utility
+        ),
+        "threshold_utility_beneficial_global_rate": (
+            threshold_utility_beneficial_rows / denominator
+        ),
+        "threshold_utility_beneficial_recall": (
+            threshold_utility_beneficial_selected
+            / max(threshold_utility_beneficial_rows, 1)
+        ),
+        "threshold_utility_harmful_global_rate": (
+            selected_global_threshold_harmful / max(global_selected, 1)
+        ),
     }
 
 
@@ -451,9 +623,17 @@ def scorer_model_selection_value(
         metric = (
             "cross_entropy"
             if config.loss_mode == "cross_entropy"
-            else "mean_selected_error_px"
+            else (
+                "mean_regret_to_oracle_threshold_utility"
+                if config.loss_mode == "threshold_utility"
+                else "mean_selected_error_px"
+            )
         )
-    if metric not in {"cross_entropy", "mean_selected_error_px"}:
+    if metric not in {
+        "cross_entropy",
+        "mean_selected_error_px",
+        "mean_regret_to_oracle_threshold_utility",
+    }:
         raise ValueError(f"Unsupported model_selection_metric: {metric}")
     return metric, float(validation_metrics[metric])
 

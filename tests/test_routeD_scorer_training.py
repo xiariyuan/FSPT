@@ -9,6 +9,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_candidate_cache import (
 from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import (
     RouteDCandidateCacheDataset,
     ScorerTrainingConfig,
+    candidate_threshold_utility,
     compute_feature_normalization,
     normalize_hypothesis_features,
     routeD_training_loss,
@@ -176,6 +177,37 @@ class TestRouteDScorerTraining(unittest.TestCase):
             candidate_valid_mask=valid,
         )
         self.assertGreater(float(bad), float(good))
+
+
+    def test_threshold_utility_matches_tap_threshold_hits(self):
+        errors = torch.tensor([[0.5, 3.0, 20.0]])
+        utility = candidate_threshold_utility(errors, (1.0, 2.0, 4.0, 8.0, 16.0))
+        expected = torch.tensor([[1.0, 0.6, 0.0]])
+        self.assertTrue(torch.allclose(utility, expected))
+
+    def test_threshold_utility_loss_prefers_safer_candidate(self):
+        errors = torch.tensor([[10.0, 3.0, 20.0]])
+        valid = torch.ones_like(errors, dtype=torch.bool)
+        target = torch.tensor([1])
+        gain = torch.tensor([7.0])
+        config = ScorerTrainingConfig(loss_mode="threshold_utility")
+        bad = routeD_training_loss(
+            torch.tensor([[2.0, -2.0, 1.0]]), target, errors, gain, config,
+            candidate_valid_mask=valid,
+        )
+        good = routeD_training_loss(
+            torch.tensor([[-1.0, 2.0, -2.0]]), target, errors, gain, config,
+            candidate_valid_mask=valid,
+        )
+        self.assertGreater(float(bad), float(good))
+
+    def test_threshold_utility_auto_selection_uses_regret(self):
+        metric, value = scorer_model_selection_value(
+            {"mean_regret_to_oracle_threshold_utility": 0.25},
+            ScorerTrainingConfig(loss_mode="threshold_utility"),
+        )
+        self.assertEqual(metric, "mean_regret_to_oracle_threshold_utility")
+        self.assertEqual(value, 0.25)
 
     def test_training_learns_synthetic_oracle_signal(self):
         cache = synthetic_cache(samples=8, rows_per_sample=30)
