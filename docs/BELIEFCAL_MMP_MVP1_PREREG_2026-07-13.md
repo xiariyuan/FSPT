@@ -248,3 +248,73 @@ numerical observation, not general evidence that uncertainty ranking succeeds.
 These pilots cannot pass or fail the scientific MVP-1 gate and cannot be used to
 select a new method while retaining confirmatory status.
 
+
+## Amendment A2 - 2026-07-14: conditional shared-scale calibration extension
+
+This amendment is prospective relative to the implementation and any new
+conditional-calibration run. It defines an exploratory extension, `MVP-1C`,
+that is evaluated separately from the original MVP-1 decision gate. Existing
+pilot test results are not used as confirmatory evidence for this extension.
+
+### A2.1 Frozen components and data roles
+
+The MMP tracker, cached predictive mean, learned uncertainty head, and learned
+raw diagonal variance remain frozen. The conditional calibrator may only fit on
+the calibration split. The validation split is used once to choose between the
+pre-existing shared scalar calibration and the fixed conditional calibrator.
+The test split is not loaded by the fitting command and is evaluated only after
+the calibration bundle and selection decision have been serialized.
+
+### A2.2 Fixed conditional calibrator
+
+For each cache row, the calibrator input is fixed to:
+
+1. the full preregistered 26-dimensional uncertainty feature vector;
+2. log geometric mean of the raw diagonal variance;
+3. log variance anisotropy, `log(var_y) - log(var_x)`.
+
+The calibrator is one affine layer that predicts one shared row-wise log scale.
+It cannot change the predictive mean or the ratio between `var_y` and `var_x`.
+The log scale is clamped to `[log(1/64), log(64)]`, and the final coordinate
+variances remain clamped to the existing `[0.25^2, 256^2]` pixel-squared bounds.
+
+The affine weights are initialized to zero and the bias is initialized from the
+closed-form shared scalar calibration. Inputs are standardized using
+calibration-split statistics only. Optimization is deterministic full-batch
+AdamW with:
+
+- 500 steps;
+- learning rate `0.01`;
+- weight decay `0`;
+- L2 penalty `1e-3` on non-bias affine weights;
+- the learned-head seed reused as the calibrator seed.
+
+The fitting objective is calibration-split mean diagonal-Gaussian NLL plus the
+fixed L2 penalty. The best calibration-NLL state across the fixed 500 steps is
+serialized. No early stopping or hyperparameter search uses validation or test
+labels.
+
+### A2.3 Predeclared validation selection rule
+
+Both candidates are fitted only on the calibration split:
+
+- shared scalar calibration;
+- the fixed conditional affine calibrator.
+
+The conditional candidate is selected only when its validation NLL improves on
+the shared scalar candidate by at least 1% relative. Otherwise the shared
+scalar candidate remains selected. This selection decision, both validation
+reports, all hyperparameters, cache hashes, and the learned-head result hash
+must be serialized before any test evaluation.
+
+### A2.4 Evaluation and interpretation
+
+The extension uses the same NLL, coverage, sharpness, AURC, strata, three
+learned-head seeds, and video-level bootstrap requirements as MVP-1. A shared
+positive scalar usually preserves uncertainty ranking; the conditional scale
+may change ranking and therefore AURC must be remeasured rather than assumed.
+
+A result from legacy manifests, a one-video test set, or a command that loaded
+test labels before serialization is engineering-only. `MVP-1C` is not a
+conformal method and carries no distribution-free coverage guarantee. No
+conformal quantile or calibration-aware training loss is authorized by A2.
