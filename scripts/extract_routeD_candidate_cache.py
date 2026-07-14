@@ -17,6 +17,7 @@ def main():
     p.add_argument('--config',required=True)
     p.add_argument('--checkpoint',required=True)
     p.add_argument('--split',default='train')
+    p.add_argument('--dataset-root',default=None)
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
     p.add_argument('--device',default='cuda')
@@ -28,6 +29,9 @@ def main():
     model.load_state_dict(ck['model'],strict=True)
     device=torch.device(args.device if torch.cuda.is_available() else 'cpu')
     model.to(device).eval()
+    
+    if args.dataset_root:
+        cfg.setdefault('data',{}).setdefault('train',{})['root']=args.dataset_root
     dataset,_=resolve_dataset(cfg,args.split,False)
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
     caches=[]
