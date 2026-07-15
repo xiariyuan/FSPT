@@ -198,6 +198,11 @@ def build_action_examples(cache, logits, thresholds):
         "errors": errors,
         "valid": valid,
         "logits": logits,
+        "predicted_p1_margin": p1_margin,
+        "predicted_coarse_gain": coarse_gain,
+        "predicted_total_gain": total_gain,
+        "best_global_distance_to_local": best_global_raw[:, 2],
+        "best_global_quality_gap": best_global_raw[:, 4],
     }
 
 
