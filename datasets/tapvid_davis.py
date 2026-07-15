@@ -56,6 +56,9 @@ class TAPVidDAVISDataset(Dataset):
         query_mode: str = "strided",
         query_stride: int = 5,
         points_order: str = "xy",
+        annotation_file: Optional[str] = None,
+        split: Optional[str] = None,
+        **kwargs,
     ):
         self.root = root
         self.resolution = resolution
@@ -101,7 +104,8 @@ class TAPVidDAVISDataset(Dataset):
                 )
         
         # 加载标注
-        anno_path = os.path.join(root, 'tapvid_davis.pkl')
+        anno_name = annotation_file or 'tapvid_davis.pkl'
+        anno_path = anno_name if os.path.isabs(str(anno_name)) else os.path.join(root, anno_name)
         if not os.path.exists(anno_path):
             raise FileNotFoundError(
                 f"Annotation file not found at {anno_path}. "
