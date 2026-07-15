@@ -27,7 +27,7 @@
   "threshold": 0.5,
   "seed": 17,
   "dataset": "tapvid_davis",
-  "dataset_root": "/gemini/code/datasets/tapvid_davis",
+  "dataset_root": "/gemini/code/FSPT/datasets/tapvid_davis",
   "query_mode": "first",
   "limit": 30,
   "external_evaluation_used_for_training_or_calibration": false,
