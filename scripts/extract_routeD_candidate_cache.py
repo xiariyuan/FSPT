@@ -21,6 +21,7 @@ def main():
     p.add_argument('--annotation-file',default=None)
     p.add_argument('--subset',type=int,default=None)
     p.add_argument('--dataset-split',default=None)
+    p.add_argument('--dataset',default=None)
     p.add_argument('--cache-role',choices=['train','validation','diagnostic'],default='diagnostic')
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
@@ -43,6 +44,8 @@ def main():
         split_cfg['subset']=int(args.subset)
     if args.dataset_split:
         split_cfg['split']=args.dataset_split
+    if args.dataset:
+        split_cfg['dataset']=args.dataset
     dataset,resolved_limit=resolve_dataset(cfg,args.split,False)
     effective_limit = args.limit if args.limit is not None else resolved_limit
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
