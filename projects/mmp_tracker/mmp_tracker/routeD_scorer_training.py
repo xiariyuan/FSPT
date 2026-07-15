@@ -77,6 +77,13 @@ class SampleSplit:
     validation_sample_ids: tuple[int, ...]
 
 
+@dataclass(frozen=True)
+class ThreeWaySampleSplit:
+    fit_sample_ids: tuple[int, ...]
+    model_validation_sample_ids: tuple[int, ...]
+    calibration_sample_ids: tuple[int, ...]
+
+
 def subset_routeD_candidate_cache(
     cache: Mapping[str, torch.Tensor], row_mask: torch.Tensor
 ) -> Dict[str, torch.Tensor]:
@@ -125,6 +132,93 @@ def split_routeD_candidate_cache_by_sample(
         subset_routeD_candidate_cache(cache, train_mask),
         subset_routeD_candidate_cache(cache, validation_mask),
         SampleSplit(train_ids, validation_ids),
+    )
+
+
+def split_routeD_candidate_cache_three_way_by_sample(
+    cache: Mapping[str, torch.Tensor],
+    *,
+    model_validation_fraction: float = 10.0 / 64.0,
+    calibration_fraction: float = 13.0 / 64.0,
+    seed: int = 17,
+) -> tuple[
+    Dict[str, torch.Tensor],
+    Dict[str, torch.Tensor],
+    Dict[str, torch.Tensor],
+    ThreeWaySampleSplit,
+]:
+    """Create disjoint fit, model-validation, and calibration partitions.
+
+    Fractions are converted to deterministic sample counts after one seeded
+    shuffle. At least one sample is assigned to each held-out partition and at
+    least one remains for fitting. Rows from a sample never cross partitions.
+    """
+    validate_routeD_candidate_cache(cache)
+    if not 0.0 < model_validation_fraction < 1.0:
+        raise ValueError("model_validation_fraction must be in (0, 1)")
+    if not 0.0 < calibration_fraction < 1.0:
+        raise ValueError("calibration_fraction must be in (0, 1)")
+    if model_validation_fraction + calibration_fraction >= 1.0:
+        raise ValueError(
+            "model-validation and calibration fractions must sum to less than 1"
+        )
+
+    sample_ids = sorted(
+        int(value) for value in torch.unique(cache["sample_id"]).tolist()
+    )
+    if len(sample_ids) < 3:
+        raise ValueError("At least three distinct sample_id values are required")
+    rng = random.Random(int(seed))
+    rng.shuffle(sample_ids)
+
+    model_validation_count = max(
+        1, int(round(len(sample_ids) * float(model_validation_fraction)))
+    )
+    calibration_count = max(
+        1, int(round(len(sample_ids) * float(calibration_fraction)))
+    )
+    max_held_out = len(sample_ids) - 1
+    if model_validation_count + calibration_count > max_held_out:
+        overflow = model_validation_count + calibration_count - max_held_out
+        reduce_calibration = min(overflow, calibration_count - 1)
+        calibration_count -= reduce_calibration
+        overflow -= reduce_calibration
+        if overflow:
+            model_validation_count -= overflow
+    if model_validation_count < 1 or calibration_count < 1:
+        raise RuntimeError("Unable to allocate non-empty held-out partitions")
+
+    model_validation_ids = tuple(
+        sorted(sample_ids[:model_validation_count])
+    )
+    calibration_start = model_validation_count
+    calibration_stop = calibration_start + calibration_count
+    calibration_ids = tuple(sorted(sample_ids[calibration_start:calibration_stop]))
+    fit_ids = tuple(sorted(sample_ids[calibration_stop:]))
+
+    partitions = [set(fit_ids), set(model_validation_ids), set(calibration_ids)]
+    if any(partitions[i] & partitions[j] for i in range(3) for j in range(i + 1, 3)):
+        raise RuntimeError("Three-way sample partitions overlap")
+    if set().union(*partitions) != set(sample_ids):
+        raise RuntimeError("Three-way sample partitions do not cover all samples")
+
+    sample_tensor = cache["sample_id"]
+
+    def subset(sample_id_values: tuple[int, ...]) -> Dict[str, torch.Tensor]:
+        mask = torch.zeros_like(sample_tensor, dtype=torch.bool)
+        for sample_id in sample_id_values:
+            mask |= sample_tensor == sample_id
+        return subset_routeD_candidate_cache(cache, mask)
+
+    return (
+        subset(fit_ids),
+        subset(model_validation_ids),
+        subset(calibration_ids),
+        ThreeWaySampleSplit(
+            fit_sample_ids=fit_ids,
+            model_validation_sample_ids=model_validation_ids,
+            calibration_sample_ids=calibration_ids,
+        ),
     )
 
 

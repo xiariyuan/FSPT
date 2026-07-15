@@ -16,6 +16,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_scorer_training import (
     scorer_model_selection_value,
     select_routeD_candidate,
     split_routeD_candidate_cache_by_sample,
+    split_routeD_candidate_cache_three_way_by_sample,
     train_hypothesis_scorer,
 )
 
@@ -79,6 +80,23 @@ class TestRouteDScorerTraining(unittest.TestCase):
         )
         self.assertEqual(train["features"].shape[0] + validation["features"].shape[0], cache["features"].shape[0])
 
+
+
+    def test_three_way_sample_split_is_disjoint(self):
+        cache = synthetic_cache(samples=10)
+        fit, model_val, calib, split = split_routeD_candidate_cache_three_way_by_sample(
+            cache,
+            model_validation_fraction=0.2,
+            calibration_fraction=0.2,
+            seed=17,
+        )
+        groups = [
+            set(split.fit_sample_ids),
+            set(split.model_validation_sample_ids),
+            set(split.calibration_sample_ids),
+        ]
+        self.assertFalse(any(groups[i] & groups[j] for i in range(3) for j in range(i + 1, 3)))
+        self.assertEqual(len(fit['sample_id']) + len(model_val['sample_id']) + len(calib['sample_id']), len(cache['sample_id']))
 
     def test_feature_normalization_is_train_only_and_finite(self):
         cache = synthetic_cache(samples=3)

@@ -189,16 +189,21 @@ def multithreshold_training_loss(
     bce = F.binary_cross_entropy_with_logits(
         threshold_logits, targets, reduction="none"
     )
-    bce_objective = (bce * valid_weight).sum() / valid_weight.sum().clamp_min(1.0)
+    valid_candidate_count = valid_weight.sum().clamp_min(1.0)
+    threshold_count = threshold_logits.shape[-1]
+    bce_objective = (bce * valid_weight).sum() / (
+        valid_candidate_count * threshold_count
+    )
 
     probabilities = torch.sigmoid(threshold_logits)
     monotonic_violation = F.relu(
         probabilities[..., :-1] - probabilities[..., 1:]
     )
     monotonic_weight = candidate_valid_mask.unsqueeze(-1).to(probabilities.dtype)
+    monotonic_pair_count = max(threshold_count - 1, 1)
     monotonic_objective = (
         monotonic_violation * monotonic_weight
-    ).sum() / monotonic_weight.sum().clamp_min(1.0)
+    ).sum() / (valid_candidate_count * monotonic_pair_count)
 
     true_utility = targets.mean(dim=-1)
     predicted_utility = probabilities.mean(dim=-1)
@@ -283,6 +288,8 @@ def evaluate_multithreshold_scorer(
     threshold_oracle = torch.zeros_like(threshold_selected)
     bce_sum = 0.0
     monotonic_sum = 0.0
+    valid_candidate_count = 0
+    harmful_utility_loss_sum = 0.0
 
     with torch.no_grad():
         for batch in loader:
@@ -333,8 +340,10 @@ def evaluate_multithreshold_scorer(
             threshold_oracle += oracle_hits.sum(dim=0).cpu().double()
             selected_global = prediction > 0
             global_selected += int(selected_global.sum().item())
-            harmful_global += int(
-                (selected_global & (selected_utility < local_utility)).sum().item()
+            harmful_mask = selected_global & (selected_utility < local_utility)
+            harmful_global += int(harmful_mask.sum().item())
+            harmful_utility_loss_sum += float(
+                (local_utility - selected_utility).clamp_min(0.0).sum().item()
             )
             global_true_utility = true_utility[..., 1:].masked_fill(
                 ~valid[..., 1:], -1.0
@@ -344,6 +353,8 @@ def evaluate_multithreshold_scorer(
             )
             beneficial_global += int(beneficial.sum().item())
             beneficial_selected += int((beneficial & selected_global).sum().item())
+            batch_valid_candidates = int(valid.sum().item())
+            valid_candidate_count += batch_valid_candidates
             bce = F.binary_cross_entropy_with_logits(logits, targets, reduction="none")
             bce_sum += float(
                 (bce * valid.unsqueeze(-1)).sum().item()
@@ -366,6 +377,7 @@ def evaluate_multithreshold_scorer(
     local_utility = local_utility_sum / denominator
     oracle_utility = oracle_utility_sum / denominator
     harmful_rate = harmful_global / max(global_selected, 1)
+    mean_harmful_utility_loss = harmful_utility_loss_sum / denominator
     metrics = {
         "rows": float(total_rows),
         "global_selection_rate": global_selected / denominator,
@@ -381,14 +393,17 @@ def evaluate_multithreshold_scorer(
         "threshold_utility_beneficial_global_rate": beneficial_global / denominator,
         "threshold_utility_beneficial_recall": beneficial_selected / max(beneficial_global, 1),
         "threshold_utility_harmful_global_rate": harmful_rate,
-        "threshold_bce": bce_sum / max(denominator * len(config.thresholds_px), 1),
+        "mean_harmful_selection_utility_loss": mean_harmful_utility_loss,
+        "threshold_bce": bce_sum / max(
+            valid_candidate_count * len(config.thresholds_px), 1
+        ),
         "monotonic_violation": monotonic_sum / max(
-            denominator * max(len(config.thresholds_px) - 1, 1), 1
+            valid_candidate_count * max(len(config.thresholds_px) - 1, 1), 1
         ),
     }
     metrics["selection_objective"] = (
         metrics["mean_regret_to_oracle_threshold_utility"]
-        + float(config.selection_harmful_penalty) * harmful_rate
+        + float(config.selection_harmful_penalty) * mean_harmful_utility_loss
     )
     metrics.update(threshold_metrics)
     return metrics

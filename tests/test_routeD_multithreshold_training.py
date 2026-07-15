@@ -38,6 +38,17 @@ class TestRouteDMultiThresholdTraining(unittest.TestCase):
             float(multithreshold_training_loss(bad, errors, valid, config)),
         )
 
+
+    def test_threshold_loss_normalization_handles_threshold_dimension(self):
+        errors = torch.tensor([[0.5, 5.0]])
+        valid = torch.ones_like(errors, dtype=torch.bool)
+        config = MultiThresholdTrainingConfig()
+        loss = multithreshold_training_loss(
+            torch.zeros(1, 2, 5), errors, valid, config
+        )
+        self.assertTrue(torch.isfinite(loss))
+        self.assertLess(float(loss), 2.0)
+
     def test_selector_uses_mean_threshold_utility(self):
         logits = torch.tensor([[
             [-4.0, -4.0, -4.0, -4.0, -4.0],
