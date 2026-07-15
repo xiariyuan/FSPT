@@ -79,6 +79,8 @@ def main():
     parser.add_argument("--dataset-split", default="validation")
     parser.add_argument("--dataset", default=None)
     parser.add_argument("--query-mode", choices=("first", "strided"), default=None)
+    parser.add_argument("--resolution", type=int, nargs=2, default=None, metavar=("H", "W"))
+    parser.add_argument("--metric-resolution", type=int, nargs=2, default=None, metavar=("H", "W"))
     parser.add_argument("--limit", type=int, default=32)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--baseline-device", default="cpu")
@@ -103,6 +105,8 @@ def main():
     data_config["subset"] = args.limit
     if args.query_mode is not None:
         data_config["query_mode"] = args.query_mode
+    if args.resolution is not None:
+        data_config["resolution"] = [int(args.resolution[0]), int(args.resolution[1])]
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
@@ -371,7 +375,11 @@ def main():
                 }
 
             query_mode = resolve_eval_query_mode(batch, dataset)
-            resolution = resolve_eval_resolution(batch, video, 0)
+            resolution = (
+                (int(args.metric_resolution[0]), int(args.metric_resolution[1]))
+                if args.metric_resolution is not None
+                else resolve_eval_resolution(batch, video, 0)
+            )
             row = {"sample": sample_index, **row_diagnostics}
             if args.closed_loop:
                 predictions = (
@@ -448,6 +456,8 @@ def main():
         "dataset": args.dataset or data_config.get("dataset"),
         "dataset_root": str(args.dataset_root),
         "query_mode": getattr(dataset, "query_mode", args.query_mode),
+        "input_resolution": list(video.shape[-2:]) if rows else (list(args.resolution) if args.resolution else None),
+        "metric_resolution": list(args.metric_resolution) if args.metric_resolution is not None else None,
         "fusion_strength": args.fusion_strength,
         "max_switch_distance_px": args.max_switch_distance_px,
         "profile_p1_tolerance": args.profile_p1_tolerance,
