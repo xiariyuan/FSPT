@@ -140,6 +140,82 @@ def regression_metrics(
     }
 
 
+
+def build_utility_targets(
+    examples: Dict[str, torch.Tensor],
+    *,
+    p1_threshold_px: float = 1.0,
+) -> tuple[torch.Tensor, torch.Tensor]:
+    """Return true threshold-utility gain and exact 1px hit gain.
+
+    Targets compare the frozen scorer's selected best global candidate against
+    the local candidate. The p1 target is in ``{-1, 0, 1}``.
+    """
+    required = {"best_global_index", "true_utility", "errors"}
+    missing = required.difference(examples)
+    if missing:
+        raise KeyError(f"Missing utility target inputs: {sorted(missing)}")
+    best_global_index = examples["best_global_index"].long()
+    true_utility = examples["true_utility"].float()
+    errors = examples["errors"].float()
+    if true_utility.ndim != 2 or errors.ndim != 2:
+        raise ValueError("true_utility and errors must be two-dimensional")
+    if true_utility.shape != errors.shape:
+        raise ValueError("true_utility and errors must have the same shape")
+    if best_global_index.shape != true_utility.shape[:1]:
+        raise ValueError("best_global_index row count mismatch")
+    if int(best_global_index.min()) < 1:
+        raise ValueError("best_global_index must refer to a global candidate")
+    if int(best_global_index.max()) >= true_utility.shape[1]:
+        raise ValueError("best_global_index exceeds candidate count")
+    global_utility = true_utility.gather(
+        1, best_global_index[:, None]
+    ).squeeze(1)
+    local_utility = true_utility[:, 0]
+    utility_gain = global_utility - local_utility
+    global_error = errors.gather(1, best_global_index[:, None]).squeeze(1)
+    local_error = errors[:, 0]
+    p1_gain = (global_error <= float(p1_threshold_px)).float() - (
+        local_error <= float(p1_threshold_px)
+    ).float()
+    return utility_gain, p1_gain
+
+
+def conformal_upper_residual_quantile(
+    prediction: torch.Tensor,
+    target: torch.Tensor,
+    *,
+    alpha: float = 0.1,
+) -> float:
+    """One-sided split-conformal quantile for ``prediction - target``.
+
+    A lower confidence bound is then ``prediction - q``. The finite-sample
+    quantile uses the standard ``ceil((n + 1) * (1 - alpha)) / n`` rank and
+    ``higher`` interpolation.
+    """
+    prediction = prediction.detach().float().flatten().cpu()
+    target = target.detach().float().flatten().cpu()
+    if prediction.shape != target.shape:
+        raise ValueError("prediction and target must have identical shape")
+    if prediction.numel() == 0:
+        raise ValueError("conformal calibration requires at least one row")
+    if not 0.0 < float(alpha) < 1.0:
+        raise ValueError("alpha must be in (0, 1)")
+    residual = prediction - target
+    if not torch.isfinite(residual).all():
+        raise ValueError("conformal residuals must be finite")
+    n = int(residual.numel())
+    rank = min(n, int(torch.ceil(torch.tensor((n + 1) * (1.0 - alpha))).item()))
+    level = rank / float(n)
+    return float(torch.quantile(residual, level, interpolation="higher"))
+
+
+def conformal_lower_bound(
+    prediction: torch.Tensor,
+    residual_quantile: float,
+) -> torch.Tensor:
+    return prediction.float() - float(residual_quantile)
+
 def train_utility_regressor(
     fit_features: torch.Tensor,
     fit_utility: torch.Tensor,
