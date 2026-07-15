@@ -80,6 +80,7 @@ def main():
     parser.add_argument("--dataset", default=None)
     parser.add_argument("--limit", type=int, default=32)
     parser.add_argument("--device", default="cuda")
+    parser.add_argument("--baseline-device", default="cpu")
     parser.add_argument("--seed", type=int, default=17)
     parser.add_argument("--output", required=True)
     args = parser.parse_args()
@@ -107,7 +108,10 @@ def main():
     # The baseline model never receives a Route-D selector. The Route-D model is
     # a separate instance with the same checkpoint, so comparisons are causal
     # and do not accidentally compare a model against itself.
-    baseline_model = load_base_model(config, checkpoint_state, device)
+    baseline_device = torch.device(args.baseline_device if args.baseline_device else str(device))
+    if baseline_device.type == "cuda" and not torch.cuda.is_available():
+        baseline_device = device
+    baseline_model = load_base_model(config, checkpoint_state, baseline_device)
     route_model = None
     open_loop_selector = RouteDRiskSelector(
         args.selector_bundle, device=device, threshold=args.threshold
@@ -167,9 +171,21 @@ def main():
             target = batch["target_points"].to(device)
             occluded = batch["occluded"].to(device).bool()
 
-            baseline_tracks, baseline_visibility, baseline_info = baseline_model(
-                video, query, return_info=True
+            if next(baseline_model.parameters()).device != video.device:
+                baseline_video = video.to(next(baseline_model.parameters()).device)
+                baseline_query = query.to(next(baseline_model.parameters()).device)
+            else:
+                baseline_video = video
+                baseline_query = query
+            baseline_tracks_cpu, baseline_visibility_cpu, baseline_info_cpu = baseline_model(
+                baseline_video, baseline_query, return_info=True
             )
+            baseline_tracks = baseline_tracks_cpu.to(device)
+            baseline_visibility = baseline_visibility_cpu.to(device)
+            baseline_info = {key: (value.to(device) if torch.is_tensor(value) else value) for key, value in baseline_info_cpu.items()}
+            del baseline_tracks_cpu, baseline_visibility_cpu, baseline_info_cpu
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
             candidate_points = baseline_info["hypothesis_candidate_points"]
             local_tracks = candidate_points[..., 0, :]
             active = active_after_query(query, baseline_tracks.shape[-2])
