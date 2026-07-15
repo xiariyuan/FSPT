@@ -1,0 +1,35 @@
+{
+  "created_before_davis_evaluation": true,
+  "git_commit": "70a404614548f35f03edcc372b34562689999a2d",
+  "files": {
+    "checkpoint": {
+      "path": "/gemini/code/FSPT/outputs/beliefcal_mmp_rehydrated_20260713/best_strict.pth",
+      "sha256": "6fdda8bdf744d63ac154c10a8d0d6bece3a86a1213e55da9edbad611e0979b28"
+    },
+    "scorer": {
+      "path": "/gemini/code/FSPT/outputs/routeD_causal_v3_protocol_20260715/scorer/multithreshold_scorer.pt",
+      "sha256": "cdfe94f218beee952caf4a3b1423199350ee8e723eb43f226cf555dc6acebf33"
+    },
+    "calibration": {
+      "path": "/gemini/code/FSPT/outputs/routeD_causal_v3_protocol_20260715/profile_gate_calibration.json",
+      "sha256": "637684023f06720dc770a93ac435c9baf64640950fc2fdc44ce661f89328cc18"
+    },
+    "config": {
+      "path": "/gemini/code/FSPT/outputs/mmp_localglobal_protocolcheck_20260307_203947/config_resolved.json",
+      "sha256": "96670cb09a820e2e1c06c599eeb7392a74b143c3a14e6bb9eef6516f8aada3c3"
+    }
+  },
+  "frozen_policy": {
+    "p1_tolerance": 0.0,
+    "min_coarse_gain": 0.05,
+    "min_total_gain": -0.05
+  },
+  "threshold": 0.5,
+  "seed": 17,
+  "dataset": "tapvid_davis",
+  "dataset_root": "/gemini/code/datasets/tapvid_davis",
+  "query_mode": "first",
+  "limit": 30,
+  "external_evaluation_used_for_training_or_calibration": false,
+  "test_policy": "single execution; no tuning from test results"
+}
