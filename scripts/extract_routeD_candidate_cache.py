@@ -22,6 +22,8 @@ def main():
     p.add_argument('--subset',type=int,default=None)
     p.add_argument('--dataset-split',default=None)
     p.add_argument('--dataset',default=None)
+    p.add_argument('--query-mode',choices=['first','strided'],default=None)
+    p.add_argument('--resolution',type=int,nargs=2,default=None,metavar=('H','W'))
     p.add_argument('--cache-role',choices=['train','validation','diagnostic'],default='diagnostic')
     p.add_argument('--output',required=True)
     p.add_argument('--limit',type=int,default=None)
@@ -46,6 +48,10 @@ def main():
         split_cfg['split']=args.dataset_split
     if args.dataset:
         split_cfg['dataset']=args.dataset
+    if args.query_mode:
+        split_cfg['query_mode']=args.query_mode
+    if args.resolution is not None:
+        split_cfg['resolution']=[int(args.resolution[0]),int(args.resolution[1])]
     dataset,resolved_limit=resolve_dataset(cfg,args.split,False)
     effective_limit = args.limit if args.limit is not None else resolved_limit
     loader=DataLoader(dataset,batch_size=1,shuffle=False)
@@ -83,6 +89,8 @@ def main():
         'split_key':args.split,
         'cache_role':args.cache_role,
         'dataset_split':split_cfg.get('split'),
+        'query_mode':getattr(dataset,'query_mode',split_cfg.get('query_mode')),
+        'input_resolution':list(split_cfg.get('resolution')) if split_cfg.get('resolution') is not None else None,
         'dataset_root':str(Path(split_cfg.get('root','')).resolve()),
         'annotation_file':str(split_cfg.get('annotation_file','')),
         'configured_subset':split_cfg.get('subset'),
