@@ -76,8 +76,12 @@ class TestRouteDClosedLoop(unittest.TestCase):
         self.assertFalse(bool(info["routeD_selected_global_mask"][..., 0].item()))
         self.assertTrue(bool(info["routeD_selected_global_mask"][..., 1].item()))
         self.assertTrue(
+            torch.allclose(info["state_points"][..., 1, :], tracks[..., 1, :])
+        )
+        self.assertTrue(
             torch.allclose(info["prior_points"][..., 2, :], tracks[..., 1, :])
         )
+        self.assertEqual(info["memory_write_mask"].shape, info["active_mask"].shape)
         self.assertTrue(info["routeD_closed_loop"])
 
 

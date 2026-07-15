@@ -284,7 +284,9 @@ class MMPTracker(nn.Module):
             "local_centers": [],
             "local_points": [],
             "prior_points": [],
+            "state_points": [],
             "state_confidence": [],
+            "memory_write_mask": [],
             "active_mask": [],
             "write_safe_mask": [],
             "commit_mask": [],
@@ -963,12 +965,13 @@ class MMPTracker(nn.Module):
             state_points = torch.where(commit_mask.unsqueeze(-1), commit_points, local_out.points)
             state_confidence = torch.where(commit_mask, current_confidence, local_quality)
             current_desc = sample_point_features(frame_feat, state_points)
-            update_mask = (
-                (current_visibility > self.config.tracking.visibility_update_threshold)
-                & (state_confidence > self.config.tracking.visibility_update_threshold)
+            memory_write_mask = (
+                active_mask
                 & write_safe_mask
-                & active_mask
-            ).unsqueeze(-1)
+                & (current_visibility > self.config.tracking.visibility_update_threshold)
+                & (state_confidence > self.config.tracking.visibility_update_threshold)
+            )
+            update_mask = memory_write_mask.unsqueeze(-1)
             updated_template = F.normalize(
                 template_feat * self.config.tracking.template_momentum
                 + current_desc * (1.0 - self.config.tracking.template_momentum),
@@ -991,12 +994,7 @@ class MMPTracker(nn.Module):
                     memory,
                     descriptors=current_desc,
                     positions=state_points,
-                    visibility=(
-                        active_mask
-                        & write_safe_mask
-                        & (current_visibility > self.config.tracking.visibility_update_threshold)
-                        & (state_confidence > self.config.tracking.visibility_update_threshold)
-                    ).to(video.dtype),
+                    visibility=memory_write_mask.to(video.dtype),
                     capacity=self.config.global_relocator.memory_size,
                 )
             prior_points = torch.where(active_mask.unsqueeze(-1), state_points, prev_prior_points)
@@ -1131,7 +1129,9 @@ class MMPTracker(nn.Module):
             debug["local_centers"].append(prev_prior_points)
             debug["local_points"].append(local_out.points)
             debug["prior_points"].append(prev_prior_points)
+            debug["state_points"].append(state_points)
             debug["state_confidence"].append(state_confidence)
+            debug["memory_write_mask"].append(memory_write_mask)
             debug["active_mask"].append(active_mask)
             debug["write_safe_mask"].append(write_safe_mask)
             debug["commit_mask"].append(commit_mask)
@@ -1163,7 +1163,9 @@ class MMPTracker(nn.Module):
             "local_centers": torch.stack(debug["local_centers"], dim=2),
             "local_points": torch.stack(debug["local_points"], dim=2),
             "prior_points": torch.stack(debug["prior_points"], dim=2),
+            "state_points": torch.stack(debug["state_points"], dim=2),
             "state_confidence": torch.stack(debug["state_confidence"], dim=2),
+            "memory_write_mask": torch.stack(debug["memory_write_mask"], dim=2),
             "global_heatmap": torch.stack(debug["global_heatmap"], dim=2),
             "global_points": torch.stack(debug["global_points"], dim=2),
             "global_coarse_points": torch.stack(debug["global_coarse_points"], dim=2),
