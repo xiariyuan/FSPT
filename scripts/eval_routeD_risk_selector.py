@@ -78,6 +78,7 @@ def main():
     parser.add_argument("--annotation-file", required=True)
     parser.add_argument("--dataset-split", default="validation")
     parser.add_argument("--dataset", default=None)
+    parser.add_argument("--query-mode", choices=("first", "strided"), default=None)
     parser.add_argument("--limit", type=int, default=32)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--baseline-device", default="cpu")
@@ -100,6 +101,8 @@ def main():
     data_config["annotation_file"] = args.annotation_file
     data_config["split"] = args.dataset_split
     data_config["subset"] = args.limit
+    if args.query_mode is not None:
+        data_config["query_mode"] = args.query_mode
 
     device = torch.device(args.device if torch.cuda.is_available() else "cpu")
     checkpoint = torch.load(args.checkpoint, map_location="cpu", weights_only=False)
@@ -442,6 +445,9 @@ def main():
         "baseline_has_routeD_selector": False,
         "threshold": args.threshold,
         "seed": args.seed,
+        "dataset": args.dataset or data_config.get("dataset"),
+        "dataset_root": str(args.dataset_root),
+        "query_mode": getattr(dataset, "query_mode", args.query_mode),
         "fusion_strength": args.fusion_strength,
         "max_switch_distance_px": args.max_switch_distance_px,
         "profile_p1_tolerance": args.profile_p1_tolerance,
