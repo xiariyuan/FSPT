@@ -15,7 +15,12 @@ from scripts.audit_routeD_nested_posthoc_calibration import (
  make_outer_folds,make_inner_split,mask_for_ids,subset_examples
 )
 from projects.mmp_tracker.mmp_tracker.routeD_utility_regression import (
- UtilityRegressionConfig,train_utility_regressor,infer_utility_regressor
+ UtilityRegressionConfig,train_utility_regressor,infer_utility_regressor,build_utility_targets,
+ conformal_upper_residual_quantile,conformal_lower_bound
+)
+from projects.mmp_tracker.mmp_tracker.routeD_hierarchical_prior import (
+ build_causal_frame_prior_features,aggregate_frame_mean_target,FramePriorConfig,
+ train_frame_prior,infer_frame_prior
 )
 
 def predict_from_utility(ex,prediction,utility_threshold,p1_threshold):
@@ -55,12 +60,9 @@ def main():
         # Targets: true utility gain and exact 1px utility delta.
         train_p1=(train['true_utility']*0.0) # placeholder overwritten below
         # Use threshold-utility gain as the regression target.
-        train_utility=train['true_utility'].gather(1,train['best_global_index'][:,None]).squeeze(1)-train['true_utility'][:,0]
-        val_utility=val['true_utility'].gather(1,val['best_global_index'][:,None]).squeeze(1)-val['true_utility'][:,0]
-        test_utility=test_ex['true_utility'].gather(1,test_ex['best_global_index'][:,None]).squeeze(1)-test_ex['true_utility'][:,0]
-        train_p1=torch.zeros_like(train_utility)
-        val_p1=torch.zeros_like(val_utility)
-        test_p1=torch.zeros_like(test_utility)
+        train_utility,train_p1=build_utility_targets(train)
+        val_utility,val_p1=build_utility_targets(val)
+        test_utility,test_p1=build_utility_targets(test_ex)
         result=train_utility_regressor(
             features_train,train_utility,train_p1,
             features_val,val_utility,val_p1,
@@ -71,16 +73,24 @@ def main():
             result['model'],test_ex['features'],result['feature_mean'],result['feature_std'],device=device
         )
         oof[test]=pred
+        policy_pred=infer_utility_regressor(result['model'],policy['features'],result['feature_mean'],result['feature_std'],device=device)
+        conformal_q=conformal_upper_residual_quantile(policy_pred[:,0],build_utility_targets(policy)[0],alpha=0.1)
         best=None
-        # policy calibration uses utility thresholds only
-        for ut in [-0.02,0.0,0.01,0.02,0.05]:
+        # policy calibration uses conformal lower utility bounds only
+        for ut in [0.0,0.005,0.01,0.02,0.05]:
             for p1 in [-0.1,-0.05,0.0]:
-                pp=infer_utility_regressor(result['model'],policy['features'],result['feature_mean'],result['feature_std'],device=device)
+                pp=conformal_lower_bound(policy_pred,conformal_q)
+                pp[:,1]=policy_pred[:,1]
                 sel=predict_from_utility(policy,pp,ut,p1)
                 m=evaluate_selection(policy,sel,bundle['thresholds_px'],'utility')
                 if m['mean_gain_over_local_threshold_utility']>0 and m['gain_delta_1']>=0:
                     if best is None or m['mean_gain_over_local_threshold_utility']>best[0]: best=(m['mean_gain_over_local_threshold_utility'],ut,p1,m)
-        test_pred=predict_from_utility(test_ex,pred, best[1],best[2]) if best else torch.zeros_like(test_ex['best_global_index'])
+        if best:
+            test_pred_score=conformal_lower_bound(pred,conformal_q)
+            test_pred_score[:,1]=pred[:,1]
+            test_pred=predict_from_utility(test_ex,test_pred_score,best[1],best[2])
+        else:
+            test_pred=torch.zeros_like(test_ex['best_global_index'])
         reports.append({'fold':fold,'test_ids':test_ids,'policy':best,'test':evaluate_selection(test_ex,test_pred,bundle['thresholds_px'],'utility')})
     out={'evidence_tier':'development_diagnostic_only','reports':reports}
     Path(args.output).write_text(json.dumps(out,indent=2))
