@@ -52,8 +52,8 @@ def main():
         predicted_coarse_gain=ex['predicted_coarse_gain'],
         predicted_total_gain=ex['predicted_total_gain'],
         global_distance_to_local=ex['best_global_distance_to_local'],
-        candidate_entropy=cache['features'][:,0].float(),
-        previous_confidence=cache['features'][:,5].float(),
+        candidate_entropy=cache['features'][:,:,1].float().mean(dim=1),
+        previous_confidence=cache['features'][:,:,5].float().mean(dim=1),
     )
     # Add causal context to a tiny offset model. The model sees only context + probability proxy.
     action_target=ex['true_gain']>0
