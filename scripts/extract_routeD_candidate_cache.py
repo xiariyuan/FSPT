@@ -73,7 +73,7 @@ def main():
     except Exception:
         git_head=None
     metadata={
-        'format_version':1,
+        'format_version':2,
         'kind':'routeD_frozen_candidate_cache',
         'evidence_tier':'development_diagnostic_only',
         'paper_claim_eligible':False,
@@ -89,6 +89,8 @@ def main():
         'candidate_count':int(merged['features'].shape[1]),
         'feature_dim':int(merged['features'].shape[2]),
         'candidate_representation':'local_plus_coarse_global_topk',
+        'feature_contract':'causal_pre_frame_state_v2',
+        'previous_confidence_timing':'pre_frame_state',
         'coordinate_order':'yx',
         'coordinate_normalization':'pixel_center_divide_by_size_minus_one',
         'config_path':str(Path(args.config).resolve()),

@@ -14,7 +14,7 @@ import torch
 from .hypothesis_scorer import build_hypothesis_features
 
 
-ROUTED_CACHE_FORMAT_VERSION = 1
+ROUTED_CACHE_FORMAT_VERSION = 2
 ROUTED_CACHE_REQUIRED_KEYS = (
     "features",
     "candidate_points",
@@ -151,6 +151,21 @@ def extract_routeD_candidate_cache_batch(
         "frame_id": select(frame_grid).long(),
         "query_frame": select(query_grid).long(),
     }
+
+
+def require_causal_routeD_candidate_cache(
+    cache: Mapping[str, torch.Tensor],
+) -> None:
+    """Reject legacy caches whose previous confidence was not causal."""
+    validate_routeD_candidate_cache(cache)
+    version = cache.get("format_version")
+    if not isinstance(version, torch.Tensor) or version.ndim != 0:
+        raise ValueError("Route-D cache format_version must be a scalar tensor")
+    if int(version.item()) < 2:
+        raise ValueError(
+            "Route-D cache format version 2+ is required for causal online parity; "
+            "legacy version 1 stored post-update confidence."
+        )
 
 
 def validate_routeD_candidate_cache(cache: Mapping[str, torch.Tensor]) -> None:

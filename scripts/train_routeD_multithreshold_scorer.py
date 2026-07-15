@@ -12,7 +12,10 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from projects.mmp_tracker.mmp_tracker.routeD_candidate_cache import validate_routeD_candidate_cache
+from projects.mmp_tracker.mmp_tracker.routeD_candidate_cache import (
+    require_causal_routeD_candidate_cache,
+    validate_routeD_candidate_cache,
+)
 from projects.mmp_tracker.mmp_tracker.routeD_multithreshold_training import (
     MultiThresholdTrainingConfig,
     evaluate_multithreshold_scorer,
@@ -26,6 +29,7 @@ def load_cache(path):
     payload = torch.load(path, map_location="cpu", weights_only=False)
     cache = payload.get("cache", payload) if isinstance(payload, dict) else payload
     validate_routeD_candidate_cache(cache)
+    require_causal_routeD_candidate_cache(cache)
     return cache
 
 

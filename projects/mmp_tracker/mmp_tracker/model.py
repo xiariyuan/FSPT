@@ -25,6 +25,8 @@ from .hypothesis_dynamics import (
     update_temporal_belief,
 )
 from .multi_hypothesis_belief import MultiHypothesisBelief, conservative_collapse
+from .hypothesis_scorer import build_hypothesis_features
+from .routeD_selector import RouteDRiskSelector
 
 
 class MMPTracker(nn.Module):
@@ -134,6 +136,39 @@ class MMPTracker(nn.Module):
             nn.Linear(hidden_dim, 1),
         )
         self.variant = str(getattr(self.config, "variant", "posterior") or "posterior").strip().lower()
+        self._routeD_selector = None
+        self._routeD_policy = None
+
+    def attach_routeD_selector(
+        self,
+        bundle_path,
+        *,
+        device,
+        p1_tolerance: float,
+        min_coarse_gain: float,
+        min_total_gain: float,
+        threshold: float = 0.5,
+        update_memory: bool = True,
+    ) -> None:
+        """Attach a frozen Route-D selector after loading the base checkpoint.
+
+        Keeping the selector outside the registered module tree preserves strict
+        compatibility with legacy MMP checkpoints. The caller must attach it
+        after moving the base model to the target device.
+        """
+        self._routeD_selector = RouteDRiskSelector(
+            bundle_path, device=device, threshold=threshold
+        )
+        self._routeD_policy = {
+            "p1_tolerance": float(p1_tolerance),
+            "min_coarse_gain": float(min_coarse_gain),
+            "min_total_gain": float(min_total_gain),
+            "update_memory": bool(update_memory),
+        }
+
+    def detach_routeD_selector(self) -> None:
+        self._routeD_selector = None
+        self._routeD_policy = None
 
     @staticmethod
     def _gather_by_index(values: torch.Tensor, index: torch.Tensor) -> torch.Tensor:
@@ -249,6 +284,7 @@ class MMPTracker(nn.Module):
             "local_centers": [],
             "local_points": [],
             "prior_points": [],
+            "state_confidence": [],
             "active_mask": [],
             "write_safe_mask": [],
             "commit_mask": [],
@@ -266,6 +302,19 @@ class MMPTracker(nn.Module):
             "pending_motion_consistency_px": [],
             "pending_global_reconfirm_px": [],
         }
+        routeD_enabled = self._routeD_selector is not None
+        if routeD_enabled:
+            debug.update(
+                {
+                    "routeD_selected_index": [],
+                    "routeD_selected_global_mask": [],
+                    "routeD_gate_probability": [],
+                    "routeD_p1_margin": [],
+                    "routeD_coarse_gain": [],
+                    "routeD_total_gain": [],
+                    "routeD_threshold_probabilities": [],
+                }
+            )
         if enable_belief_diagnostics:
             debug.update(
                 {
@@ -291,6 +340,7 @@ class MMPTracker(nn.Module):
             active_mask = query_t <= t
             just_activated = query_t == t
             prev_prior_points = prior_points
+            prev_prior_confidence = prior_confidence
             prev_pending_points = pending_points
             prev_pending_confidence = pending_confidence
             prev_pending_valid = pending_valid
@@ -765,6 +815,99 @@ class MMPTracker(nn.Module):
                 write_safe_mask = active_mask.clone()
                 oracle_rematch_candidate_points = local_out.points.unsqueeze(2)
 
+            routeD_selected_index = torch.zeros(
+                batch, num_points, device=video.device, dtype=torch.long
+            )
+            routeD_selected_global = torch.zeros_like(active_mask)
+            routeD_gate_probability = torch.zeros_like(local_quality)
+            routeD_p1_margin = torch.zeros_like(local_quality)
+            routeD_coarse_gain = torch.zeros_like(local_quality)
+            routeD_total_gain = torch.zeros_like(local_quality)
+            routeD_threshold_probabilities = torch.zeros(
+                batch,
+                num_points,
+                hypothesis_candidate_points.shape[2],
+                0,
+                device=video.device,
+                dtype=video.dtype,
+            )
+            if routeD_enabled:
+                routeD_features = build_hypothesis_features(
+                    hypothesis_candidate_points,
+                    hypothesis_candidate_quality,
+                    hypothesis_candidate_points[..., 0, :],
+                    prev_prior_points,
+                    prev_prior_confidence,
+                    hypothesis_candidate_entropy,
+                )
+                routeD_valid = torch.isfinite(hypothesis_candidate_points).all(dim=-1)
+                routeD_output = self._routeD_selector.select(
+                    routeD_features,
+                    hypothesis_candidate_points,
+                    routeD_valid,
+                    fallback_points=current_points,
+                    profile_p1_tolerance=self._routeD_policy["p1_tolerance"],
+                    profile_min_coarse_gain=self._routeD_policy["min_coarse_gain"],
+                    profile_min_total_gain=self._routeD_policy["min_total_gain"],
+                )
+                routeD_active = active_mask & (~just_activated)
+                routeD_selected_index = torch.where(
+                    routeD_active,
+                    routeD_output["index"],
+                    torch.zeros_like(routeD_output["index"]),
+                )
+                routeD_selected_global = routeD_selected_index > 0
+                routeD_points = torch.where(
+                    routeD_active.unsqueeze(-1),
+                    routeD_output["points"],
+                    current_points,
+                )
+                selected_quality = hypothesis_candidate_quality.gather(
+                    2, routeD_selected_index.unsqueeze(-1)
+                ).squeeze(-1)
+                current_points = routeD_points
+                current_confidence = torch.where(
+                    routeD_selected_global,
+                    selected_quality,
+                    current_confidence,
+                )
+                selected_global = selected_global | routeD_selected_global
+                routeD_gate_probability = torch.where(
+                    routeD_active,
+                    routeD_output["gate_probability"],
+                    torch.zeros_like(routeD_output["gate_probability"]),
+                )
+                diagnostics = routeD_output.get("profile_diagnostics")
+                if diagnostics is not None:
+                    routeD_p1_margin = torch.where(
+                        routeD_active,
+                        diagnostics["p1_margin"],
+                        torch.zeros_like(diagnostics["p1_margin"]),
+                    )
+                    routeD_coarse_gain = torch.where(
+                        routeD_active,
+                        diagnostics["coarse_gain"],
+                        torch.zeros_like(diagnostics["coarse_gain"]),
+                    )
+                    routeD_total_gain = torch.where(
+                        routeD_active,
+                        diagnostics["total_gain"],
+                        torch.zeros_like(diagnostics["total_gain"]),
+                    )
+                threshold_probabilities = routeD_output.get(
+                    "threshold_probabilities"
+                )
+                if threshold_probabilities is not None:
+                    routeD_threshold_probabilities = threshold_probabilities
+                if self._routeD_policy["update_memory"]:
+                    commit_points = torch.where(
+                        routeD_selected_global.unsqueeze(-1),
+                        current_points,
+                        commit_points,
+                    )
+                    commit_mask = commit_mask | routeD_selected_global
+                    write_safe_mask = write_safe_mask | routeD_selected_global
+
             visibility_features = torch.stack(
                 [
                     prior_confidence,
@@ -955,12 +1098,27 @@ class MMPTracker(nn.Module):
                 )
                 debug["belief_collapse_mask"].append(collapse.collapse_mask)
 
+            if routeD_enabled:
+                debug["routeD_selected_index"].append(routeD_selected_index)
+                debug["routeD_selected_global_mask"].append(
+                    routeD_selected_global
+                )
+                debug["routeD_gate_probability"].append(
+                    routeD_gate_probability
+                )
+                debug["routeD_p1_margin"].append(routeD_p1_margin)
+                debug["routeD_coarse_gain"].append(routeD_coarse_gain)
+                debug["routeD_total_gain"].append(routeD_total_gain)
+                debug["routeD_threshold_probabilities"].append(
+                    routeD_threshold_probabilities
+                )
+
             debug["candidate_points"].append(candidate_points)
             debug["hypothesis_candidate_points"].append(hypothesis_candidate_points)
             debug["hypothesis_candidate_quality"].append(hypothesis_candidate_quality)
             debug["hypothesis_candidate_entropy"].append(hypothesis_candidate_entropy)
             debug["hypothesis_previous_points"].append(prev_prior_points)
-            debug["hypothesis_previous_confidence"].append(prior_confidence)
+            debug["hypothesis_previous_confidence"].append(prev_prior_confidence)
             debug["global_candidate_points"].append(global_candidate_points)
             debug["oracle_rematch_candidate_points"].append(oracle_rematch_candidate_points)
             debug["global_candidate_coarse_points"].append(global_candidate_coarse_points)
@@ -973,6 +1131,7 @@ class MMPTracker(nn.Module):
             debug["local_centers"].append(prev_prior_points)
             debug["local_points"].append(local_out.points)
             debug["prior_points"].append(prev_prior_points)
+            debug["state_confidence"].append(state_confidence)
             debug["active_mask"].append(active_mask)
             debug["write_safe_mask"].append(write_safe_mask)
             debug["commit_mask"].append(commit_mask)
@@ -1004,6 +1163,7 @@ class MMPTracker(nn.Module):
             "local_centers": torch.stack(debug["local_centers"], dim=2),
             "local_points": torch.stack(debug["local_points"], dim=2),
             "prior_points": torch.stack(debug["prior_points"], dim=2),
+            "state_confidence": torch.stack(debug["state_confidence"], dim=2),
             "global_heatmap": torch.stack(debug["global_heatmap"], dim=2),
             "global_points": torch.stack(debug["global_points"], dim=2),
             "global_coarse_points": torch.stack(debug["global_coarse_points"], dim=2),
@@ -1058,6 +1218,21 @@ class MMPTracker(nn.Module):
             "feature_width": features.shape[-1],
             "local_radius": self.local_matcher.radius,
         }
+        if routeD_enabled:
+            for key in (
+                "routeD_selected_index",
+                "routeD_selected_global_mask",
+                "routeD_gate_probability",
+                "routeD_p1_margin",
+                "routeD_coarse_gain",
+                "routeD_total_gain",
+                "routeD_threshold_probabilities",
+            ):
+                info[key] = torch.stack(debug[key], dim=2)
+            info["routeD_closed_loop"] = bool(
+                self._routeD_policy["update_memory"]
+            )
+            info["routeD_policy"] = dict(self._routeD_policy)
         if enable_belief_diagnostics:
             for key in (
                 "belief_points",
