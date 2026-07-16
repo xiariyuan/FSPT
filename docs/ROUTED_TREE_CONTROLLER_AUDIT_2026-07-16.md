@@ -270,8 +270,17 @@ Primary decision rule:
 Claim boundary:
 
 - Kinetics is treated as a predeclared external cross-domain evaluation;
-- paper-claim eligibility remains disabled until a separate data-lineage audit confirms that the exact videos were not used by the checkpoint or any prior experiment;
 - no Kinetics result may be used to retune the scorer, tree, policy, fusion, guard, or subset.
+
+The data-lineage audit found:
+
+- checkpoint training dataset: TAP-Vid-Kubric;
+- checkpoint validation dataset: TAP-Vid-DAVIS, subset size 2;
+- causal scorer training cache: 64 Kubric videos;
+- tree-controller training and calibration cache: the same Kubric-only causal cache family;
+- no prior Kinetics result or tuning record in historical output text outside the current Route-D output directory.
+
+Therefore, the result is paper-claim eligible with a restricted scope: a predeclared deterministic shard-balanced 50-video TAP-Vid-Kinetics subset. It is not eligible to be described as full 1,144-video TAP-Vid-Kinetics benchmark performance.
 
 Artifacts:
 
@@ -285,3 +294,70 @@ kinetics_balanced50_tree_closed_loop_full50.json
 ```
 
 The one-video smoke is restricted to runtime and schema validation. The full run uses the unchanged controller and policy.
+
+Full 50-video result:
+
+| System | AJ | OA | Delta average |
+|---|---:|---:|---:|
+| Independent baseline/local | 0.382284 | 0.958854 | 0.477211 |
+| Frozen tree, open-loop | 0.400033 | 0.958854 | 0.498950 |
+| Frozen tree, closed-loop | 0.406890 | 0.958854 | 0.505953 |
+
+Aggregate differences:
+
+- Open-loop versus baseline:
+  - AJ: +0.017749.
+  - Delta average: +0.021739.
+- Closed-loop versus baseline:
+  - AJ: +0.024607.
+  - Delta average: +0.028742.
+- Closed-loop versus open-loop:
+  - AJ: +0.006857.
+  - Delta average: +0.007003.
+
+Paired 50-video bootstrap:
+
+- Open-loop AJ: +0.017749, 95% CI [0.010496, 0.024992].
+- Open-loop delta average: +0.021739, 95% CI [0.013918, 0.029768].
+- Closed-loop AJ: +0.024607, 95% CI [0.011284, 0.036929].
+- Closed-loop delta average: +0.028742, 95% CI [0.015952, 0.041121].
+- Closed-loop versus open-loop AJ: +0.006857, 95% CI [-0.000952, 0.014531].
+- Closed-loop versus open-loop delta average: +0.007003, 95% CI [-0.000549, 0.014684].
+
+The predeclared primary decision passed because both closed-loop-versus-baseline confidence intervals have lower bounds above zero. Open-loop transfer is also independently positive. The additional mean gain from closed-loop feedback over open-loop is not statistically resolved on this 50-video subset because both intervals cross zero.
+
+Video-level support:
+
+- Closed-loop AJ: 34 positive, 9 negative, and 7 tied videos.
+- Closed-loop delta average: 35 positive, 8 negative, and 7 tied videos.
+- Open-loop AJ and delta average: 37 positive, 6 negative, and 7 tied videos.
+- Actual closed-loop global selection rate: 4.210%.
+- Open-loop global selection rate: 9.460%.
+- Mean closed-loop trajectory difference from local: 2.020 px.
+- Memory-write disagreement rate: 0.
+
+The most severe failure is `kinetics_balanced_s05_p0061_kinetics_source_s005_000061`:
+
+- open-loop AJ change: -0.070572;
+- closed-loop AJ change: -0.164836;
+- closed-loop delta-average change: -0.118301;
+- global selection rate: 19.291%;
+- mean trajectory difference: 9.120 px.
+
+This failure is retained as evidence of a high-selection, high-divergence regime. It must not be used to tune a Kinetics-specific guard.
+
+Final decision:
+
+- preserve the exact Kubric-trained tree controller as the current Route-D MVP;
+- report Kinetics only as the predeclared balanced-50 subset result;
+- do not tune on DAVIS, RGB-Stacking, or Kinetics;
+- the next headline-strength experiment is the complete Kinetics set or another predeclared untouched benchmark, using the same frozen controller;
+- development of any trajectory-stability guard must return to Kubric-only partitions and receive a new external protocol before evaluation.
+
+Final artifacts:
+
+```text
+kinetics_balanced50_tree_closed_loop_full50.json
+kinetics_balanced50_tree_closed_loop_full50_paired.json
+kinetics_balanced50_tree_final_audit.json
+```
