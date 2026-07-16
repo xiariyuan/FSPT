@@ -111,6 +111,15 @@ def resolve_dataset(cfg: Dict[str, Any], split_key: str, train: bool):
         }:
             data_cfg.pop("split", None)
             data_cfg.pop("backend", None)
+            if normalized_dataset_name in {
+                "rgb_stacking",
+                "rgbstacking",
+                "stacking",
+            }:
+                # RGB-Stacking is stored at its evaluation raster and the
+                # adapter does not implement resize-on-load. Evaluation code
+                # may still choose a separate metric resolution.
+                data_cfg.pop("resolution", None)
         else:
             data_cfg.setdefault("split", "validation")
             data_cfg.setdefault("backend", "sharded_pkl")

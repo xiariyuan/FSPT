@@ -5,6 +5,8 @@ and calibrated gate to candidate tensors produced by MMP.
 """
 from __future__ import annotations
 
+from pathlib import Path
+
 import torch
 
 from .hypothesis_scorer import HypothesisScorer, MultiThresholdHypothesisScorer
@@ -163,3 +165,13 @@ class RouteDRiskSelector:
             "threshold_probabilities": threshold_probabilities,
             "profile_diagnostics": profile_diagnostics,
         }
+
+
+def load_routeD_selector(bundle_path, device="cpu", threshold=0.4):
+    """Load either a neural Route-D selector bundle or a tree controller."""
+    suffix = Path(str(bundle_path)).suffix.lower()
+    if suffix in {".pkl", ".pickle"}:
+        from .routeD_tree_selector import RouteDTreeSelector
+
+        return RouteDTreeSelector(bundle_path, device=device, threshold=threshold)
+    return RouteDRiskSelector(bundle_path, device=device, threshold=threshold)

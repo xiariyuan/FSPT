@@ -26,7 +26,7 @@ from .hypothesis_dynamics import (
 )
 from .multi_hypothesis_belief import MultiHypothesisBelief, conservative_collapse
 from .hypothesis_scorer import build_hypothesis_features
-from .routeD_selector import RouteDRiskSelector
+from .routeD_selector import load_routeD_selector
 
 
 class MMPTracker(nn.Module):
@@ -156,7 +156,7 @@ class MMPTracker(nn.Module):
         compatibility with legacy MMP checkpoints. The caller must attach it
         after moving the base model to the target device.
         """
-        self._routeD_selector = RouteDRiskSelector(
+        self._routeD_selector = load_routeD_selector(
             bundle_path, device=device, threshold=threshold
         )
         self._routeD_policy = {

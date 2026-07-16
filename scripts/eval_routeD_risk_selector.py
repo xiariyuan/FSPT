@@ -21,7 +21,7 @@ if str(REPO_ROOT) not in sys.path:
 from datasets import compute_tapvid_metrics
 from projects.mmp_tracker.mmp_tracker import MMPTracker
 from projects.mmp_tracker.mmp_tracker.hypothesis_scorer import build_hypothesis_features
-from projects.mmp_tracker.mmp_tracker.routeD_selector import RouteDRiskSelector
+from projects.mmp_tracker.mmp_tracker.routeD_selector import load_routeD_selector
 from projects.mmp_tracker.train_mmp import (
     config_from_dict,
     resolve_dataset,
@@ -120,7 +120,7 @@ def main():
         baseline_device = device
     baseline_model = load_base_model(config, checkpoint_state, baseline_device)
     route_model = None
-    open_loop_selector = RouteDRiskSelector(
+    open_loop_selector = load_routeD_selector(
         args.selector_bundle, device=device, threshold=args.threshold
     )
     if args.closed_loop:

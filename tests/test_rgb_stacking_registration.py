@@ -67,6 +67,7 @@ class TestRGBStackingRegistration(unittest.TestCase):
                         "split": "validation",
                         "backend": "sharded_pkl",
                         "query_mode": "first",
+                        "resolution": [256, 256],
                         "first_frame_query": False,
                     }
                 }
