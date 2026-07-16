@@ -61,6 +61,15 @@ def masked_mean(values, mask):
     return float((values * mask.to(values.dtype)).sum() / denominator)
 
 
+def resolve_video_name(batch, sample_index):
+    value = batch.get("video_name")
+    if value is None:
+        return str(sample_index)
+    if isinstance(value, (list, tuple)):
+        value = value[0] if value else sample_index
+    return str(value)
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
@@ -380,7 +389,11 @@ def main():
                 if args.metric_resolution is not None
                 else resolve_eval_resolution(batch, video, 0)
             )
-            row = {"sample": sample_index, **row_diagnostics}
+            row = {
+                "sample": sample_index,
+                "video_name": resolve_video_name(batch, sample_index),
+                **row_diagnostics,
+            }
             if args.closed_loop:
                 predictions = (
                     ("baseline", baseline_tracks, baseline_visibility),

@@ -158,7 +158,48 @@ Frozen evaluation:
 
 The first smoke attempt exposed a schema-only interface defect: the shared evaluation configuration passed `resolution=[256,256]` into the RGB-Stacking adapter, which does not implement resize-on-load. The stored data is already 256 x 256. The fix removes this inherited argument only for RGB-Stacking; it does not alter the controller, scorer, gate, or metric resolution. A regression test was added.
 
-A two-video runtime smoke then completed successfully. Its numerical values were not used for tuning. The full 50-video evaluation is the next frozen result.
+A two-video runtime smoke then completed successfully. Its numerical values were not used for tuning.
+
+Full 50-video aggregate TAP metrics:
+
+| System | AJ | OA | Delta average |
+|---|---:|---:|---:|
+| Independent baseline/local | 0.225756 | 0.809503 | 0.378642 |
+| Frozen tree, open-loop | 0.250908 | 0.809503 | 0.417432 |
+| Frozen tree, closed-loop | 0.270719 | 0.809503 | 0.440232 |
+
+Differences:
+
+- Closed-loop versus baseline:
+  - AJ: +0.044964.
+  - Delta average: +0.061589.
+- Open-loop versus baseline:
+  - AJ: +0.025152.
+  - Delta average: +0.038790.
+- Closed-loop versus open-loop:
+  - AJ: +0.019812.
+  - Delta average: +0.022800.
+
+Paired 50-video bootstrap:
+
+- Open-loop versus baseline AJ: +0.025152, 95% CI [0.020779, 0.029776]; 50/50 videos positive.
+- Open-loop versus baseline delta average: +0.038790, 95% CI [0.033018, 0.044790]; 50/50 videos positive.
+- Closed-loop versus baseline AJ: +0.044964, 95% CI [0.037637, 0.052376]; 49 positive and 1 negative video.
+- Closed-loop versus baseline delta average: +0.061589, 95% CI [0.053008, 0.070181]; 49 positive and 1 negative video.
+- Closed-loop versus open-loop AJ: +0.019812, 95% CI [0.013875, 0.025852]; 41 positive and 9 negative videos.
+- Closed-loop versus open-loop delta average: +0.022800, 95% CI [0.015331, 0.030079]; 41 positive and 9 negative videos.
+
+Closed-loop diagnostics:
+
+- Actual global selection rate: 3.312%.
+- Open-loop global selection rate: 13.841%.
+- Mean trajectory difference from local: 7.495 px.
+- Mean closed-versus-open trajectory difference: 7.095 px.
+- Memory-write disagreement rate: 0.
+
+Only RGB-Stacking video 12 declined versus baseline: AJ -0.005683 and delta average -0.012025. The same video improved substantially in open-loop mode, so its failure is specifically a closed-loop feedback instability rather than a candidate-quality failure.
+
+Interpretation: the Kubric-only tree controller transfers strongly across domain without label fitting. The positive result is broad rather than concentrated, and closed-loop state feedback adds significant aggregate value. The controller should now be preserved unchanged as the Route-D MVP; RGB-Stacking must not be used for further tuning.
 
 ## Reproduction artifacts
 
@@ -197,10 +238,50 @@ Important files:
 - `davis_first_query_256_tree_closed_loop_paired.json`
 - `rgb_stacking_tree_protocol_manifest.json`
 - `rgb_stacking_first_tree_closed_loop_smoke2.json`
-- `rgb_stacking_first_tree_closed_loop_full50.json` after completion.
+- `rgb_stacking_first_tree_closed_loop_full50.json`
+- `rgb_stacking_first_tree_closed_loop_full50_paired.json`
 
 ## Decision rule after RGB-Stacking
 
-- If the frozen controller produces positive paired AJ and delta-average intervals, preserve this controller as the current Route-D MVP and move directly to an untouched external evaluation plus ablations.
-- If aggregate transfer is positive but highly concentrated, audit sequence-level failure modes and add a predeclared trajectory-stability guard trained only on Kubric.
-- If transfer collapses, do not tune on RGB-Stacking. Return to Kubric and add candidate-specific appearance, positive-memory, negative-memory, and cycle-consistency features before one new frozen evaluation.
+The first decision condition passed. Preserve the exact controller and proceed to a predeclared Kinetics evaluation without tuning. A deterministic subset must cover all ten Kinetics shards rather than taking only the first sequential videos. The one RGB closed-loop failure remains a diagnostic case; it must not be used to tune a new guard before the Kinetics result is observed.
+
+## 5. Kinetics balanced-50 predeclared evaluation
+
+The available TAP-Vid-Kinetics data is stored in ten source shards with 1,144 total videos. A sequential `limit=50` evaluation would over-represent the first shard, so a deterministic shard-balanced subset was materialized before model inference.
+
+Selection protocol:
+
+- Source: all ten `train.index.json` shards.
+- Five videos per source shard.
+- Each shard is divided into five equal-width source-position bins.
+- One fixed-seed uniform draw is made from each bin.
+- Seed: 17.
+- Total: 50 unique source positions and 50 unique stable video names.
+- No labels, candidate scores, tracker outputs, or metrics are used for selection.
+
+The protocol file was written before loading any source sample. Every source shard, output shard, subset manifest, checkpoint, controller, configuration, and working-tree diff has a SHA-256 record.
+
+Primary decision rule:
+
+- paired 50-video bootstrap for closed-loop AJ versus the independent baseline;
+- paired 50-video bootstrap for closed-loop delta average versus the independent baseline;
+- success requires both 95% confidence intervals to have lower bounds above zero.
+
+Claim boundary:
+
+- Kinetics is treated as a predeclared external cross-domain evaluation;
+- paper-claim eligibility remains disabled until a separate data-lineage audit confirms that the exact videos were not used by the checkpoint or any prior experiment;
+- no Kinetics result may be used to retune the scorer, tree, policy, fusion, guard, or subset.
+
+Artifacts:
+
+```text
+kinetics_balanced50_seed17/balanced50.protocol.json
+kinetics_balanced50_seed17/balanced50.index.json
+kinetics_balanced50_tree_protocol_manifest.json
+kinetics_balanced50_tree_execution_log.json
+kinetics_balanced50_tree_closed_loop_smoke1.json
+kinetics_balanced50_tree_closed_loop_full50.json
+```
+
+The one-video smoke is restricted to runtime and schema validation. The full run uses the unchanged controller and policy.

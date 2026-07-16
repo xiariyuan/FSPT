@@ -66,6 +66,7 @@ def main():
     for row in rows:
         record = {
             "sample": int(row["sample"]),
+            "video_name": str(row.get("video_name", row["sample"])),
             "global_selection_rate": float(row["global_selection_rate"]),
             "open_global_selection_rate": float(row["open_global_selection_rate"]),
             "trajectory_changed_rate": float(row["trajectory_changed_rate"]),
@@ -156,7 +157,10 @@ def main():
         "evidence_tier": payload.get("evidence_tier"),
         "paper_claim_eligible": payload.get("paper_claim_eligible", False),
         "source": str(args.input),
-        "protocol": "paired video bootstrap over the 30 fixed DAVIS videos",
+        "protocol": (
+            f"paired video bootstrap over {len(rows)} fixed "
+            f"{payload.get('dataset', 'evaluation')} videos"
+        ),
         "paired_bootstrap": paired,
         "correlations": correlation,
         "failure_audit": failure_audit,

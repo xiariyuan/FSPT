@@ -908,6 +908,10 @@ class TAPVidKineticsShardedIterableDataset(IterableDataset):
     def __iter__(self):
         import gc
 
+        # Keep a local reference so a partially consumed generator can close
+        # safely during interpreter teardown, when module globals may already
+        # have been cleared.
+        skip_sample_error = _SkipSample
         failures = 0
         global_idx = 0
         for shard_idx, shard_path in self._iter_assigned_shards():
@@ -926,7 +930,7 @@ class TAPVidKineticsShardedIterableDataset(IterableDataset):
                         out = self._prepare_sample(sample, sample_idx=global_idx, shard_idx=shard_idx)
                         failures = 0
                         yield out
-                    except _SkipSample:
+                    except skip_sample_error:
                         pass
                     except Exception:
                         failures += 1
@@ -947,7 +951,7 @@ class TAPVidKineticsShardedIterableDataset(IterableDataset):
                         out = self._prepare_sample(sample, sample_idx=global_idx, shard_idx=shard_idx)
                         failures = 0
                         yield out
-                    except _SkipSample:
+                    except skip_sample_error:
                         pass
                     except Exception:
                         failures += 1

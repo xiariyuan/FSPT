@@ -2,6 +2,8 @@ import unittest
 
 import torch
 
+from scripts.eval_routeD_risk_selector import resolve_video_name
+
 from projects.mmp_tracker.mmp_tracker import MMPTracker, MMPTrackerConfig
 
 
@@ -35,6 +37,13 @@ class _AlwaysGlobalSelector:
 
 
 class TestRouteDClosedLoop(unittest.TestCase):
+    def test_resolve_video_name_preserves_dataloader_string_batch(self):
+        self.assertEqual(
+            resolve_video_name({"video_name": ["kinetics_example"]}, 3),
+            "kinetics_example",
+        )
+        self.assertEqual(resolve_video_name({}, 3), "3")
+
     def _config(self):
         config = MMPTrackerConfig()
         config.variant = "localglobal"
