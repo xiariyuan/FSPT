@@ -2,12 +2,14 @@
 
 ## Claim boundary
 
-All results in this note are development or transfer diagnostics. They are not yet eligible as untouched final-test paper claims.
+The evidence tier differs by dataset and must be reported explicitly.
 
 - DAVIS has already been used during Route-D development.
 - RGB-Stacking has also appeared in prior repository experiments.
 - No DAVIS or RGB-Stacking labels were used to fit or retune the frozen Kubric tree controller described here.
-- The next publication-grade requirement is a predeclared evaluation on a genuinely unused dataset or split.
+- The shard-balanced 50-video Kinetics result is a predeclared external subset result.
+- The complete local 1,144-video Kinetics package result is publication-grade within its frozen local-package scope.
+- Neither Kinetics result may be described as an official benchmark result unless the local package identity and official evaluation protocol are independently verified.
 
 ## Why this branch was opened
 
@@ -360,4 +362,120 @@ Final artifacts:
 kinetics_balanced50_tree_closed_loop_full50.json
 kinetics_balanced50_tree_closed_loop_full50_paired.json
 kinetics_balanced50_tree_final_audit.json
+```
+
+## 6. Complete local 1,144-video Kinetics evaluation
+
+After the balanced-50 decision passed, the exact same controller, scorer,
+checkpoint, policy, query mode, and metric resolution were evaluated on every
+video present in the local `train.index.json` package.
+
+Protocol:
+
+- dataset scope: all 1,144 videos in the local ten-shard package;
+- source shards: nine shards with 115 videos and one shard with 109 videos;
+- query mode: first;
+- input and metric resolution: 256 x 256;
+- independent baseline model;
+- open-loop and true closed-loop Route-D evaluation;
+- no controller, policy, threshold, fusion, or guard changes after protocol freeze;
+- 20,000 paired-video bootstrap resamples;
+- primary success rule: the 95% confidence-interval lower bounds for
+  closed-loop AJ and delta average versus baseline must both exceed zero.
+
+The protocol was written before any full-package inference. It records hashes
+for the checkpoint, controller, configuration, source manifest, all ten source
+shards, and each per-shard evaluation manifest.
+
+Complete aggregate metrics:
+
+| System | AJ | OA | Delta average |
+|---|---:|---:|---:|
+| Independent baseline/local | 0.325730 | 0.939843 | 0.421331 |
+| Frozen tree, open-loop | 0.338171 | 0.939843 | 0.437374 |
+| Frozen tree, closed-loop | 0.348800 | 0.939843 | 0.448897 |
+
+Aggregate differences:
+
+- Open-loop versus baseline:
+  - AJ: +0.012441.
+  - Delta average: +0.016043.
+- Closed-loop versus baseline:
+  - AJ: +0.023070.
+  - Delta average: +0.027565.
+- Closed-loop versus open-loop:
+  - AJ: +0.010629.
+  - Delta average: +0.011522.
+
+Paired-video bootstrap:
+
+- Open-loop AJ: +0.012441, 95% CI [0.011195, 0.013707].
+- Open-loop delta average: +0.016043, 95% CI [0.014674, 0.017425].
+- Closed-loop AJ: +0.023070, 95% CI [0.020586, 0.025608].
+- Closed-loop delta average: +0.027565, 95% CI [0.024833, 0.030293].
+- Closed-loop versus open-loop AJ: +0.010629, 95% CI [0.008829, 0.012439].
+- Closed-loop versus open-loop delta average: +0.011522, 95% CI [0.009520, 0.013508].
+
+The predeclared primary decision passed. Unlike the balanced-50 subset, the
+additional closed-loop benefit over open-loop is also statistically resolved
+on the complete local package.
+
+Finite-pair support:
+
+- AJ: 1,138 paired videos;
+- delta average: 1,137 paired videos;
+- seven videos contain at least one undefined official TAP metric because the
+  relevant denominator is empty; they are retained in the raw result and
+  explicitly excluded only from the affected paired statistic.
+
+Video-level support:
+
+- Closed-loop AJ: 777 positive, 198 negative, and 163 tied finite videos.
+- Closed-loop delta average: 785 positive, 186 negative, and 166 tied finite videos.
+- Open-loop AJ: 770 positive, 189 negative, and 179 tied finite videos.
+- Actual closed-loop global selection rate: 4.024%.
+- Open-loop global selection rate: 7.903%.
+- Mean closed-loop trajectory difference from local: 2.126 px.
+- Mean closed-versus-open trajectory difference: 1.741 px.
+- Memory-write disagreement rate: 0.
+
+The most severe closed-loop AJ failures are:
+
+1. `kinetics_source_s000_p000113_kinetics_s000_000113`: AJ -0.297626,
+   delta average -0.274853, trajectory difference 6.265 px.
+2. `kinetics_source_s009_p000080_kinetics_s000_000080`: AJ -0.252266,
+   delta average -0.264887, trajectory difference 9.613 px.
+3. `kinetics_source_s008_p000034_kinetics_s000_000034`: AJ -0.159537,
+   delta average -0.096077, trajectory difference 5.851 px.
+
+These failures demonstrate that aggregate significance does not imply
+per-video safety. They are preserved for future Kubric-only guard development
+and must not be used to tune the frozen controller on Kinetics.
+
+Final integrity audit:
+
+- expected and merged videos: 1,144 / 1,144;
+- ten result shards verified;
+- canonical video names unique;
+- checkpoint, controller, and configuration hashes match the frozen protocol;
+- source manifest and source-hash protocol match;
+- all result and evaluation-manifest hashes match;
+- primary decision: pass.
+
+Claim boundary:
+
+> Complete local 1,144-video TAP-Vid-Kinetics package evaluation using a
+> predeclared frozen controller.
+
+Do not call this an official TAP-Vid-Kinetics benchmark result until the local
+package identity and official evaluation protocol have been independently
+verified.
+
+Full-package artifacts:
+
+```text
+kinetics_full1144_20260716/full1144.protocol.json
+kinetics_full1144_20260716/full1144.merged.json
+kinetics_full1144_20260716/full1144.paired.json
+kinetics_full1144_20260716/full1144.final_audit.json
 ```

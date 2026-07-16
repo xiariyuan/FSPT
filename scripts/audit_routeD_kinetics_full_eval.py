@@ -123,6 +123,12 @@ def main() -> None:
     primary_pass = float(aj["ci95_low"]) > 0.0 and float(delta["ci95_low"]) > 0.0
 
     invalid_rows = paired.get("failure_audit", {}).get("invalid_metric_rows", [])
+    invalid_videos = sorted(
+        {
+            (int(row["sample"]), str(row["video_name"]))
+            for row in invalid_rows
+        }
+    )
     result = {
         "kind": "routeD_full_local_kinetics_final_audit",
         "paper_claim_eligible": bool(primary_pass),
@@ -140,6 +146,11 @@ def main() -> None:
             "delta_avg": int(delta["videos"]),
         },
         "invalid_metric_entries": len(invalid_rows),
+        "invalid_videos": [
+            {"sample": sample, "video_name": video_name}
+            for sample, video_name in invalid_videos
+        ],
+        "invalid_video_count": len(invalid_videos),
         "closed_vs_baseline": {
             "AJ": aj,
             "delta_avg": delta,
