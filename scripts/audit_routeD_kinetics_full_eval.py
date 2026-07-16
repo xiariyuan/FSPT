@@ -38,10 +38,42 @@ def main() -> None:
     paired = json.loads(paired_path.read_text())
 
     expected_videos = int(protocol["expected_video_count"])
-    require(
-        bool(protocol.get("created_before_any_full_dataset_inference")),
-        "Protocol was not marked as created before full-dataset inference",
+    corrected_protocol = protocol.get("kind") == (
+        "routeD_full_tapvid_kinetics_officialscale_protocol"
     )
+    if corrected_protocol:
+        require(
+            bool(protocol.get("created_before_any_corrected_metric_inference")),
+            "Protocol was not created before corrected-metric inference",
+        )
+        require(
+            not bool(protocol.get("evaluation", {}).get(
+                "controller_or_policy_tuning_after_superseded_run", True
+            )),
+            "Controller or policy was tuned after the superseded run",
+        )
+        require(
+            protocol.get("evaluation", {}).get("normalized_to_raster_contract")
+            == "x * width, y * height",
+            "Official normalized-to-raster contract mismatch",
+        )
+        require(
+            protocol.get("evaluation", {}).get("official_annotation_scope")
+            == "full byte-verified release CSV",
+            "Official annotation scope is not explicit",
+        )
+        require(
+            protocol.get("evaluation", {}).get(
+                "auxiliary_split_files_are_identity_authority"
+            )
+            is False,
+            "Auxiliary split files were incorrectly treated as identity authority",
+        )
+    else:
+        require(
+            bool(protocol.get("created_before_any_full_dataset_inference")),
+            "Protocol was not marked as created before full-dataset inference",
+        )
     require(merged.get("samples") == expected_videos, "Merged sample count mismatch")
     require(len(merged.get("per_sample", [])) == expected_videos, "Merged row count mismatch")
     video_names = [str(row.get("video_name", "")) for row in merged["per_sample"]]
@@ -77,6 +109,62 @@ def main() -> None:
         for row in source_hash_protocol["source_shards"]
     }
 
+    official_protocol_audit = None
+    if corrected_protocol:
+        evidence = protocol.get("official_protocol_evidence", {})
+        official_protocol_audit = {}
+        for name in (
+            "metric_source",
+            "generator_source",
+            "metric_parity_audit",
+            "package_identity_audit",
+            "official_release_audit",
+            "supersession_manifest",
+        ):
+            entry = evidence.get(name, {})
+            path = Path(entry.get("path", ""))
+            require(path.is_file(), f"Missing official protocol evidence: {name}")
+            actual_hash = sha256(path)
+            require(
+                actual_hash == entry.get("sha256"),
+                f"Official protocol evidence hash mismatch: {name}",
+            )
+            official_protocol_audit[name] = {
+                "path": str(path),
+                "expected_sha256": entry.get("sha256"),
+                "actual_sha256": actual_hash,
+                "match": True,
+            }
+        metric_parity = json.loads(
+            Path(evidence["metric_parity_audit"]["path"]).read_text()
+        )
+        package_identity = json.loads(
+            Path(evidence["package_identity_audit"]["path"]).read_text()
+        )
+        official_release = json.loads(
+            Path(evidence["official_release_audit"]["path"]).read_text()
+        )
+        supersession = json.loads(
+            Path(evidence["supersession_manifest"]["path"]).read_text()
+        )
+        require(bool(metric_parity.get("pass")), "Metric parity audit is not passing")
+        require(
+            bool(package_identity.get("pass")),
+            "Package identity audit is not passing",
+        )
+        require(
+            bool(official_release.get("pass")),
+            "Official release package audit is not passing",
+        )
+        require(
+            bool(supersession.get("superseded")),
+            "Prior result is not marked superseded",
+        )
+        require(
+            int(package_identity.get("matched_samples", -1)) == expected_videos,
+            "Identity-audit matched count mismatch",
+        )
+
     shard_audit_by_index = {
         int(row["shard_index"]): row for row in merged.get("shard_audit", [])
     }
@@ -94,6 +182,18 @@ def main() -> None:
             result_hash == shard_audit_by_index[index]["result_sha256"],
             f"Shard {index} result hash mismatch",
         )
+        if corrected_protocol:
+            expected_metric = protocol["frozen_inputs"]["metric_implementation"]
+            require(
+                result_payload.get("metric_implementation_sha256")
+                == expected_metric["sha256"],
+                f"Shard {index} metric implementation hash mismatch",
+            )
+            require(
+                result_payload.get("metric_coordinate_contract")
+                == protocol["evaluation"]["normalized_to_raster_contract"],
+                f"Shard {index} metric coordinate contract mismatch",
+            )
         require(
             source_hashes[index] == shard["source_sha256"],
             f"Shard {index} source hash provenance mismatch",
@@ -129,15 +229,26 @@ def main() -> None:
             for row in invalid_rows
         }
     )
+    protocol_pass = official_protocol_audit is not None if corrected_protocol else True
     result = {
-        "kind": "routeD_full_local_kinetics_final_audit",
-        "paper_claim_eligible": bool(primary_pass),
+        "kind": (
+            "routeD_full_official_annotation_kinetics_final_audit"
+            if corrected_protocol
+            else "routeD_full_local_kinetics_final_audit"
+        ),
+        "paper_claim_eligible": bool(primary_pass and protocol_pass),
         "primary_pass": bool(primary_pass),
+        "official_protocol_pass": bool(protocol_pass),
         "claim_boundary": protocol["claim_boundary"],
         "required_wording": (
-            "Report this as the complete local 1,144-video TAP-Vid-Kinetics package "
-            "evaluation, not as an official benchmark result unless package identity "
-            "and official protocol are independently verified."
+            "Report this as the complete local materialization of 1,144 available "
+            "video segments from the official 1,189-segment TAP-Vid-Kinetics "
+            "annotation CSV, evaluated with the pinned official metric formulas. "
+            "Do not describe it as a universally fixed 1,000-video set."
+            if corrected_protocol
+            else "Report this as the complete local 1,144-video TAP-Vid-Kinetics "
+            "package evaluation, not as an official benchmark result unless package "
+            "identity and official protocol are independently verified."
         ),
         "expected_videos": expected_videos,
         "merged_videos": len(merged["per_sample"]),
@@ -165,6 +276,7 @@ def main() -> None:
         "paired": str(paired_path),
         "paired_sha256": sha256(paired_path),
         "frozen_input_audit": frozen_input_audit,
+        "official_protocol_audit": official_protocol_audit,
         "shard_integrity": shard_integrity,
     }
     output = Path(args.output).resolve()

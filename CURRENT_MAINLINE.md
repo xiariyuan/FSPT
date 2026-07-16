@@ -1,6 +1,43 @@
 # CURRENT_MAINLINE
 
-## Status
+## Active override — 2026-07-16
+
+```text
+Current active research mainline: Route-D frozen tree controller with official-scale TAP-Vid protocol correction.
+Do not quote any pre-correction Route-D closed-loop TAP position metric.
+The earlier ReEntry paper status below is retained as historical project context, not the current execution priority.
+```
+
+Completed P0 audits:
+
+```text
+- official evaluator pinned to google-deepmind/tapnet commit 989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc;
+- 100 randomized direct parity cases: zero difference;
+- 100 randomized wrapper parity cases: zero difference;
+- real Kinetics annotation parity case: zero difference;
+- official GCS release zip verified by length, ETag/MD5, decompression, and member hashes;
+- all 1,144 local materialized samples exactly matched, in order, to 1,144 of 1,147 release-CSV annotation groups;
+- three unavailable CSV segments identified;
+- auxiliary split-file discrepancy documented and excluded from identity authority;
+- 15 pre-correction Route-D result artifacts marked superseded;
+- controller and policy remain unchanged.
+```
+
+Next executable gate:
+
+```text
+Commit the metric correction and audit tooling, create a clean official-scale full-package protocol, then rerun all 1,144 materialized Kinetics segments sequentially with the unchanged primary bootstrap rule.
+```
+
+Read first:
+
+```text
+docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
+docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
+docs/BELIEFCAL_MMP_MVP1_PREREG_2026-07-13.md
+```
+
+## Historical status
 
 Current project status as of 2026-07-05:
 

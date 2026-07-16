@@ -37,8 +37,17 @@ def main() -> None:
     parser.add_argument("--checkpoint", required=True)
     parser.add_argument("--controller", required=True)
     parser.add_argument("--config", required=True)
+    parser.add_argument("--metric-implementation", required=True)
+    parser.add_argument("--metric-parity-audit", required=True)
+    parser.add_argument("--package-identity-audit", required=True)
+    parser.add_argument("--official-release-audit", required=True)
+    parser.add_argument("--official-metric-source", required=True)
+    parser.add_argument("--official-generator-source", required=True)
+    parser.add_argument("--supersession-manifest", required=True)
     parser.add_argument("--output-root", required=True)
-    parser.add_argument("--protocol-output", default="full1144.protocol.json")
+    parser.add_argument(
+        "--protocol-output", default="full1144.officialscale.protocol.json"
+    )
     parser.add_argument("--seed", type=int, default=17)
     args = parser.parse_args()
 
@@ -49,8 +58,45 @@ def main() -> None:
     checkpoint = Path(args.checkpoint).resolve()
     controller = Path(args.controller).resolve()
     config = Path(args.config).resolve()
+    metric_implementation = Path(args.metric_implementation).resolve()
+    metric_parity_path = Path(args.metric_parity_audit).resolve()
+    package_identity_path = Path(args.package_identity_audit).resolve()
+    official_release_path = Path(args.official_release_audit).resolve()
+    official_metric_source = Path(args.official_metric_source).resolve()
+    official_generator_source = Path(args.official_generator_source).resolve()
+    supersession_manifest = Path(args.supersession_manifest).resolve()
     output_root = Path(args.output_root).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
+
+    dirty = git_value(repo, "status", "--porcelain")
+    if dirty:
+        raise ValueError(
+            "Corrected-metric protocol must be created from a clean working tree"
+        )
+
+    metric_parity = json.loads(metric_parity_path.read_text())
+    package_identity = json.loads(package_identity_path.read_text())
+    official_release = json.loads(official_release_path.read_text())
+    supersession = json.loads(supersession_manifest.read_text())
+    if not bool(metric_parity.get("pass")):
+        raise ValueError("Official metric parity audit did not pass")
+    if not bool(package_identity.get("pass")):
+        raise ValueError("Kinetics package identity audit did not pass")
+    if not bool(official_release.get("pass")):
+        raise ValueError("Official release package audit did not pass")
+    if not bool(supersession.get("superseded")):
+        raise ValueError("Supersession manifest is not marked superseded")
+    official_commit = str(metric_parity.get("official_commit", ""))
+    if not official_commit or official_commit != str(
+        package_identity.get("official_commit", "")
+    ):
+        raise ValueError("Official source commit mismatch between protocol audits")
+    if sha256(official_metric_source) != metric_parity["official_source_sha256"]:
+        raise ValueError("Official metric source hash mismatch")
+    if sha256(official_generator_source) != package_identity[
+        "official_generator_sha256"
+    ]:
+        raise ValueError("Official generator source hash mismatch")
 
     manifest = json.loads(source_manifest.read_text())
     hash_protocol = json.loads(hash_protocol_path.read_text())
@@ -120,18 +166,22 @@ def main() -> None:
 
     diff = subprocess.check_output(["git", "diff", "--binary"], cwd=repo)
     protocol = {
-        "kind": "routeD_full_tapvid_kinetics_sharded_protocol",
-        "created_before_any_full_dataset_inference": True,
+        "kind": "routeD_full_tapvid_kinetics_officialscale_protocol",
+        "created_before_any_full_dataset_inference": False,
+        "created_before_any_corrected_metric_inference": True,
+        "protocol_correction": (
+            "The previous full-package run used normalized coordinates multiplied "
+            "by width-1/height-1. The pinned official reader multiplies by full "
+            "width/height. This protocol freezes the independently verified metric "
+            "correction before any corrected-metric inference; tracker, controller, "
+            "policy, data order, query mode, and primary decision rule remain unchanged."
+        ),
         "created_date": "2026-07-16",
         "dataset_scope": (
-            "All 1,144 videos present in the local TAP-Vid-Kinetics "
-            "train.index.json package"
+            "All 1,144 locally materialized video segments matched exactly and in "
+            "order to the official 1,189-segment TAP-Vid-Kinetics annotation CSV"
         ),
-        "claim_boundary": (
-            "This is the complete local 1,144-video package. Do not call it an "
-            "official benchmark result unless the local package identity and "
-            "official evaluation protocol are independently verified."
-        ),
+        "claim_boundary": package_identity["claim_boundary"],
         "source_root": str(source_root),
         "source_manifest": str(source_manifest),
         "source_manifest_sha256": sha256(source_manifest),
@@ -146,17 +196,83 @@ def main() -> None:
             "checkpoint": {"path": str(checkpoint), "sha256": sha256(checkpoint)},
             "controller": {"path": str(controller), "sha256": sha256(controller)},
             "config": {"path": str(config), "sha256": sha256(config)},
+            "metric_implementation": {
+                "path": str(metric_implementation),
+                "sha256": sha256(metric_implementation),
+            },
+        },
+        "official_protocol_evidence": {
+            "official_repository": "google-deepmind/tapnet",
+            "official_commit": official_commit,
+            "metric_source": {
+                "path": str(official_metric_source),
+                "sha256": sha256(official_metric_source),
+            },
+            "generator_source": {
+                "path": str(official_generator_source),
+                "sha256": sha256(official_generator_source),
+            },
+            "metric_parity_audit": {
+                "path": str(metric_parity_path),
+                "sha256": sha256(metric_parity_path),
+                "pass": True,
+                "coordinate_contract": metric_parity["coordinate_contract"],
+            },
+            "package_identity_audit": {
+                "path": str(package_identity_path),
+                "sha256": sha256(package_identity_path),
+                "pass": True,
+                "official_csv_sha256": package_identity["official_csv_sha256"],
+                "matched_samples": package_identity["matched_samples"],
+                "missing_video_segments": package_identity["missing_video_segments"],
+            },
+            "official_release_audit": {
+                "path": str(official_release_path),
+                "sha256": sha256(official_release_path),
+                "pass": True,
+                "official_zip_sha256": official_release["official_zip_sha256"],
+            },
+            "supersession_manifest": {
+                "path": str(supersession_manifest),
+                "sha256": sha256(supersession_manifest),
+            },
         },
         "evaluation": {
             "dataset": "tapvid_kinetics",
             "dataset_split": "train",
+            "dataset_split_semantics": (
+                "The value 'train' is the local sharded-manifest loader label. "
+                "It is not an official TAP-Vid annotation split restriction."
+            ),
+            "official_annotation_scope": "full byte-verified release CSV",
+            "official_annotation_groups": package_identity[
+                "csv_annotation_groups"
+            ],
+            "official_annotation_materialized_groups": package_identity[
+                "matched_samples"
+            ],
+            "official_annotation_missing_groups": package_identity[
+                "missing_video_segments"
+            ],
+            "auxiliary_split_files_are_identity_authority": False,
+            "auxiliary_split_file_counts": package_identity["split_file_counts"],
+            "auxiliary_split_metadata_discrepancy": {
+                "csv_ids_not_in_split_union": len(
+                    package_identity["csv_ids_not_in_split_union"]
+                ),
+                "split_ids_not_in_csv": len(
+                    package_identity["split_ids_not_in_csv"]
+                ),
+            },
             "query_mode": "first",
             "input_resolution": [256, 256],
             "metric_resolution": [256, 256],
+            "normalized_to_raster_contract": "x * width, y * height",
             "closed_loop": True,
             "independent_baseline": True,
             "seed": int(args.seed),
             "controller_or_policy_tuning_after_start": False,
+            "controller_or_policy_tuning_after_superseded_run": False,
             "primary_metrics": ["AJ", "delta_avg"],
             "primary_comparison": "routeD_closed vs independent baseline",
             "primary_success_rule": (

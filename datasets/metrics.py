@@ -173,12 +173,17 @@ def compute_tapvid_metrics(
     else:
         height = float(resolution)
         width = float(resolution)
-    # TAP-Vid official convention (and CoTracker eval code) treats normalized coords
-    # as mapping 1.0 -> (size - 1) in raster space.
-    # This keeps our metrics directly comparable to CoTracker's official TAP-Vid runs
-    # (which operate in a 256x256 raster by default).
-    scale_w = max(width - 1.0, 1.0)
-    scale_h = max(height - 1.0, 1.0)
+    # Exact TAP-Vid reader convention:
+    #
+    # The released DAVIS/RGB/Kinetics annotations are stored in normalized raster
+    # coordinates and the official reader converts them back to raster coordinates
+    # by multiplying by the evaluation width/height (not width-1/height-1). The
+    # Kinetics generator first stores `(pixel - 0.5) / source_size`, and the reader
+    # later multiplies that value by the evaluation raster size. Using size-1 here
+    # therefore changes the effective metric thresholds and can flip samples close
+    # to the strict 1/2/4/8/16-pixel boundaries.
+    scale_w = max(width, 1.0)
+    scale_h = max(height, 1.0)
     xy_scale = torch.tensor([scale_w, scale_h], device=device, dtype=pred_tracks.dtype)
 
     # Convert tracks to raster [x, y] for official evaluation.

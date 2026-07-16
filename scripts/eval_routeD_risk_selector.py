@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import random
@@ -28,6 +29,17 @@ from projects.mmp_tracker.train_mmp import (
     resolve_eval_query_mode,
     resolve_eval_resolution,
 )
+
+
+METRIC_COORDINATE_CONTRACT = "x * width, y * height"
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def finite_mean(values):
@@ -455,6 +467,7 @@ def main():
     aggregate_diagnostics = {
         key: finite_mean(values) for key, values in diagnostic_accumulator.items()
     }
+    metric_implementation_path = (REPO_ROOT / "datasets" / "metrics.py").resolve()
     result = {
         "evidence_tier": "development_diagnostic_only",
         "paper_claim_eligible": False,
@@ -471,6 +484,9 @@ def main():
         "query_mode": getattr(dataset, "query_mode", args.query_mode),
         "input_resolution": list(video.shape[-2:]) if rows else (list(args.resolution) if args.resolution else None),
         "metric_resolution": list(args.metric_resolution) if args.metric_resolution is not None else None,
+        "metric_coordinate_contract": METRIC_COORDINATE_CONTRACT,
+        "metric_implementation": str(metric_implementation_path),
+        "metric_implementation_sha256": sha256(metric_implementation_path),
         "fusion_strength": args.fusion_strength,
         "max_switch_distance_px": args.max_switch_distance_px,
         "profile_p1_tolerance": args.profile_p1_tolerance,

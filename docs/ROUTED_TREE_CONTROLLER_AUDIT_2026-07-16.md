@@ -1,5 +1,15 @@
 # Route D Frozen Tree Controller Audit — 2026-07-16
 
+> **Global metric-correction notice.** All Route-D closed-loop TAP position
+> metrics in this document that were generated before the official coordinate
+> parity correction used `width-1` / `height-1` instead of the official
+> `width` / `height` raster scale. This affects DAVIS, RGB-Stacking,
+> Kinetics balanced-50, and the first full-1,144 run. Those numerical TAP
+> position metrics are retained for historical audit only and must not be cited
+> as corrected official-scale results. Candidate-level and controller-training
+> audits that did not call the TAP metric wrapper are unaffected. See
+> `official_protocol_audit_20260716/routeD_pre_official_scale_results.SUPERSEDED.json`.
+
 ## Claim boundary
 
 The evidence tier differs by dataset and must be reported explicitly.
@@ -7,9 +17,9 @@ The evidence tier differs by dataset and must be reported explicitly.
 - DAVIS has already been used during Route-D development.
 - RGB-Stacking has also appeared in prior repository experiments.
 - No DAVIS or RGB-Stacking labels were used to fit or retune the frozen Kubric tree controller described here.
-- The shard-balanced 50-video Kinetics result is a predeclared external subset result.
-- The complete local 1,144-video Kinetics package result is publication-grade within its frozen local-package scope.
-- Neither Kinetics result may be described as an official benchmark result unless the local package identity and official evaluation protocol are independently verified.
+- The pre-correction shard-balanced 50-video and full-1,144 Kinetics TAP position metrics are superseded pending official-scale reruns.
+- The controller and policy remain frozen; no DAVIS, RGB-Stacking, or Kinetics result may be used for retuning.
+- Publication wording must follow the completed release, package-identity, and official-evaluator audits attached to the corrected rerun.
 
 ## Why this branch was opened
 
@@ -364,7 +374,15 @@ kinetics_balanced50_tree_closed_loop_full50_paired.json
 kinetics_balanced50_tree_final_audit.json
 ```
 
-## 6. Complete local 1,144-video Kinetics evaluation
+## 6. Complete local 1,144-video Kinetics evaluation — superseded metric scale
+
+> **Superseded on 2026-07-16.** The values in this section were computed by
+> converting normalized coordinates to the 256 x 256 metric raster with a
+> `width-1` / `height-1` scale. The pinned official TAP-Vid reader uses full
+> `width` / `height`. All numerical results below are retained only as historical
+> engineering diagnostics and must not be cited as corrected TAP-Vid metrics.
+> The tracker, controller, policy, data order, and decision rule were not changed.
+> See `kinetics_full1144_20260716/full1144.SUPERSEDED_OFFICIAL_SCALE.json`.
 
 After the balanced-50 decision passed, the exact same controller, scorer,
 checkpoint, policy, query mode, and metric resolution were evaluated on every
@@ -479,3 +497,20 @@ kinetics_full1144_20260716/full1144.merged.json
 kinetics_full1144_20260716/full1144.paired.json
 kinetics_full1144_20260716/full1144.final_audit.json
 ```
+
+
+## 7. Official TAP-Vid protocol correction audit
+
+The official evaluator and package identity audits are complete. The local release files match the official GCS archive byte-for-byte. The corrected wrapper has zero numerical difference from the pinned official evaluator over 100 randomized direct cases, 100 randomized wrapper cases, and a deterministic real Kinetics annotation case.
+
+The byte-verified release CSV contains 1,147 unique annotated video segments. All 1,144 local materialized samples match the CSV in official generator order with zero coordinate and occlusion-array difference; three CSV segments were skipped during materialization.
+
+The release's auxiliary `train.txt`, `val.txt`, and `test.txt` files contain 1,189 IDs in total but are not set-equal to the release CSV. They are therefore not used as package-identity authority. The local manifest value `split=train` is a loader label, not an official train-only restriction.
+
+The full audit and corrected publication wording are recorded in:
+
+```text
+docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
+```
+
+A distinct official-scale protocol must be written from a clean Git commit before corrected inference. The frozen controller and original primary decision rule remain unchanged.
