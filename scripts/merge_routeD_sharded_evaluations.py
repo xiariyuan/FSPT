@@ -77,6 +77,12 @@ def main() -> None:
 
         for local_index, row in enumerate(rows):
             copied = dict(row)
+            raw_video_name = str(copied.get("video_name", ""))
+            copied["raw_video_name"] = raw_video_name
+            copied["video_name"] = (
+                f"kinetics_source_s{int(shard['shard_index']):03d}_"
+                f"p{local_index:06d}_{raw_video_name}"
+            )
             copied["source_shard_index"] = int(shard["shard_index"])
             copied["source_shard_local_index"] = local_index
             copied["sample"] = expected_global_index

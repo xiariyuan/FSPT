@@ -7,7 +7,7 @@ from scripts.merge_routeD_sharded_evaluations import main
 
 
 class TestMergeRouteDShardedEvaluations(unittest.TestCase):
-    def test_merge_rejects_duplicate_video_names(self):
+    def test_merge_canonicalizes_duplicate_raw_video_names(self):
         with tempfile.TemporaryDirectory() as tmp_dir:
             root = Path(tmp_dir)
             rows = []
@@ -55,8 +55,12 @@ class TestMergeRouteDShardedEvaluations(unittest.TestCase):
             old_argv = sys.argv
             sys.argv = ["merge", "--protocol", str(protocol), "--output", str(root / "out.json")]
             try:
-                with self.assertRaisesRegex(ValueError, "not unique"):
-                    main()
+                main()
+                merged = json.loads((root / "out.json").read_text())
+                names = [row["video_name"] for row in merged["per_sample"]]
+                raw_names = [row["raw_video_name"] for row in merged["per_sample"]]
+                self.assertEqual(raw_names, ["duplicate", "duplicate"])
+                self.assertEqual(len(set(names)), 2)
             finally:
                 sys.argv = old_argv
 
