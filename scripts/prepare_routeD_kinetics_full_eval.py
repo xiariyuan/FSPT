@@ -178,8 +178,11 @@ def main() -> None:
         ),
         "created_date": "2026-07-16",
         "dataset_scope": (
-            "All 1,144 locally materialized video segments matched exactly and in "
-            "order to the official 1,189-segment TAP-Vid-Kinetics annotation CSV"
+            f"All {package_identity['matched_samples']:,} locally materialized "
+            f"video segments matched exactly and in order to "
+            f"{package_identity['matched_samples']:,} of the "
+            f"{package_identity['csv_annotation_groups']:,} uniquely annotated "
+            "segments in the byte-verified official TAP-Vid-Kinetics release CSV"
         ),
         "claim_boundary": package_identity["claim_boundary"],
         "source_root": str(source_root),
