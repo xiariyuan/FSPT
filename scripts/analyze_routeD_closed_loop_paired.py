@@ -12,6 +12,21 @@ import numpy as np
 
 def paired_bootstrap(values: np.ndarray, seed: int, resamples: int):
     values = np.asarray(values, dtype=np.float64)
+    values = values[np.isfinite(values)]
+    if values.size == 0:
+        return {
+            "videos": 0,
+            "mean": float("nan"),
+            "median": float("nan"),
+            "ci95_low": float("nan"),
+            "ci95_high": float("nan"),
+            "positive_videos": 0,
+            "negative_videos": 0,
+            "tie_videos": 0,
+            "min": float("nan"),
+            "max": float("nan"),
+            "bootstrap_resamples": int(resamples),
+        }
     rng = np.random.default_rng(int(seed))
     indices = rng.integers(0, len(values), size=(int(resamples), len(values)))
     means = values[indices].mean(axis=1)
@@ -33,14 +48,20 @@ def paired_bootstrap(values: np.ndarray, seed: int, resamples: int):
 def safe_correlation(x: np.ndarray, y: np.ndarray):
     x = np.asarray(x, dtype=np.float64)
     y = np.asarray(y, dtype=np.float64)
+    finite = np.isfinite(x) & np.isfinite(y)
+    x = x[finite]
+    y = y[finite]
     if x.size < 2 or np.std(x) <= 1.0e-12 or np.std(y) <= 1.0e-12:
         return float("nan")
     return float(np.corrcoef(x, y)[0, 1])
 
 
 def rank_correlation(x: np.ndarray, y: np.ndarray):
-    x_order = np.argsort(np.argsort(np.asarray(x, dtype=np.float64)))
-    y_order = np.argsort(np.argsort(np.asarray(y, dtype=np.float64)))
+    x = np.asarray(x, dtype=np.float64)
+    y = np.asarray(y, dtype=np.float64)
+    finite = np.isfinite(x) & np.isfinite(y)
+    x_order = np.argsort(np.argsort(x[finite]))
+    y_order = np.argsort(np.argsort(y[finite]))
     return safe_correlation(x_order, y_order)
 
 
@@ -63,6 +84,7 @@ def main():
     metrics = ("AJ", "OA", "delta_avg")
     paired = {}
     per_video = []
+    invalid_metric_rows = []
     for row in rows:
         record = {
             "sample": int(row["sample"]),
@@ -75,9 +97,23 @@ def main():
         }
         for comparison, (left, right) in comparisons.items():
             for metric in metrics:
-                record[f"{comparison}_{metric}"] = float(
-                    row[left][metric] - row[right][metric]
-                )
+                left_value = float(row[left][metric])
+                right_value = float(row[right][metric])
+                difference = left_value - right_value
+                record[f"{comparison}_{metric}"] = float(difference)
+                if not np.isfinite(difference):
+                    invalid_metric_rows.append(
+                        {
+                            "sample": int(row["sample"]),
+                            "video_name": str(
+                                row.get("video_name", row["sample"])
+                            ),
+                            "comparison": comparison,
+                            "metric": metric,
+                            "left_value": left_value,
+                            "right_value": right_value,
+                        }
+                    )
         per_video.append(record)
 
     for comparison, (left, right) in comparisons.items():
@@ -126,7 +162,14 @@ def main():
         ),
     }
 
-    ordered = sorted(per_video, key=lambda row: row["closed_vs_baseline_AJ"])
+    finite_closed_aj = [
+        row
+        for row in per_video
+        if np.isfinite(float(row["closed_vs_baseline_AJ"]))
+    ]
+    ordered = sorted(
+        finite_closed_aj, key=lambda row: row["closed_vs_baseline_AJ"]
+    )
     failure_audit = {
         "worst_closed_AJ_videos": ordered[:8],
         "best_closed_AJ_videos": list(reversed(ordered[-8:])),
@@ -140,6 +183,7 @@ def main():
             for row in per_video
             if row["closed_vs_baseline_delta_avg"] < -1.0e-12
         ],
+        "invalid_metric_rows": invalid_metric_rows,
     }
 
     reference = None

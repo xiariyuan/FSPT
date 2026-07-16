@@ -115,6 +115,26 @@ def main() -> None:
         }
         for name in prediction_names
     }
+    metric_validity = {
+        name: {
+            metric: {
+                "finite_videos": int(
+                    sum(
+                        np.isfinite(float(row[name][metric]))
+                        for row in all_rows
+                    )
+                ),
+                "nonfinite_videos": int(
+                    sum(
+                        not np.isfinite(float(row[name][metric]))
+                        for row in all_rows
+                    )
+                ),
+            }
+            for metric in metrics
+        }
+        for name in prediction_names
+    }
     diagnostic_keys = [
         key
         for key in all_rows[0]
@@ -150,6 +170,7 @@ def main() -> None:
         "dataset_root": protocol["source_root"],
         "samples": len(all_rows),
         "aggregate": aggregate,
+        "metric_validity": metric_validity,
         "aggregate_diagnostics": aggregate_diagnostics,
         "delta_routeD_vs_baseline": delta,
         "per_sample": all_rows,
