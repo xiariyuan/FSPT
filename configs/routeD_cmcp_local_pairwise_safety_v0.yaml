@@ -1,0 +1,48 @@
+experiment:
+  name: routeD_cmcp_local_pairwise_safety_v0
+  description: >-
+    Local candidate-set comparator over the frozen formal CMCP epoch-1 proposal
+    generator. Comparator-only fit training; candidate generation is byte-frozen.
+
+frozen_generator:
+  checkpoint: outputs/routeD_cmcp_training_20260717/seed17/best.pt
+  model_state_sha256: fc3044eb6daa1fb2416164fc0afe58ff5fa4eb4442811ce9c0b4917fbbdb57c0
+  best_epoch: 1
+  proposal_topk: 5
+  nms_radius_cells: 1
+  ema_alpha: 0.90
+  candidate_coordinates_frozen: true
+
+model:
+  class: CMCPLocalPairwiseSafetyComparator
+  token_dim: 88
+  hidden_dim: 128
+  attention_heads: 4
+  attention_layers: 2
+  feedforward_multiplier: 4
+  dropout: 0.10
+  risk_weight: 0.75
+  preference_weight: 1.0
+  initial_abstention_bias: 2.0
+  thresholds_px: [1.0, 2.0, 4.0, 8.0, 16.0]
+  utility_weights: [0.28, 0.24, 0.20, 0.16, 0.12]
+  native_safe_initialization: exact
+
+protocol:
+  fit_gradients_only: true
+  model_validation_checkpoint_selection_only: true
+  calibration_locked: true
+  final_holdout_locked: true
+  tapvid_davis_locked: true
+  tapvid_kinetics_official_1144_locked: true
+
+formal_gates:
+  frozen_candidate_coordinate_hash: exact
+  zero_step_native_parity: exact
+  seed17_exact_replay: true
+  candidate_oracle_AJ_gain_points_min: 3.0
+  direct_top1_AJ_gain_points_min: 0.5
+  paired_AJ_CI_lower_bound_gt: 0.0
+  delta_gain_points_gt: 0.0
+  severe_16px_not_worse: true
+  harmful_non_native_rate_max: 0.01

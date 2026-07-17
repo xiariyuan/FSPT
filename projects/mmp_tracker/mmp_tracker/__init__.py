@@ -23,6 +23,12 @@ from .routeD_multi_memory_proposal import (
     CMCPConfig,
     CausalMultiMemoryProposalGenerator,
 )
+from .routeD_cmcp_pairwise_safety import (
+    CMCP_PAIRWISE_LOCAL_TOKEN_DIM,
+    CMCP_PAIRWISE_SAFETY_SCHEMA_VERSION,
+    CMCPLocalPairwiseSafetyComparator,
+    CMCPLocalSafetyConfig,
+)
 from .routeD_cmcp_training import (
     CMCPLossConfig,
     CMCPVideoBundle,
@@ -48,6 +54,10 @@ __all__ = [
     "CausalMultiMemoryProposalGenerator",
     "CMCPLossConfig",
     "CMCPVideoBundle",
+    "CMCPLocalPairwiseSafetyComparator",
+    "CMCPLocalSafetyConfig",
+    "CMCP_PAIRWISE_LOCAL_TOKEN_DIM",
+    "CMCP_PAIRWISE_SAFETY_SCHEMA_VERSION",
     "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
     "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

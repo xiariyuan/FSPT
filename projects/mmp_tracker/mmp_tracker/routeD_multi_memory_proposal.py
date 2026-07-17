@@ -223,6 +223,10 @@ class CausalMultiMemoryProposalGenerator(nn.Module):
             "risk_logit": risk_logit,
             "proposal_score": proposal_score,
             "native_logit": native_logit,
+            # Read-only local evidence for the frozen P0h comparator. These
+            # additions do not change the CMCP state dict or proposal outputs.
+            "hidden_map": hidden,
+            "recurrent_input": recurrent_input,
         }
         return output, CMCPState(hidden, previous)
 

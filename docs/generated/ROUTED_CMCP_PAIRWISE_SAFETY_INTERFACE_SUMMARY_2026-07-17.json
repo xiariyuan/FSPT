@@ -1,0 +1,86 @@
+{
+  "schema_version": "routeD_cmcp_pairwise_safety_interface_summary_v0",
+  "date": "2026-07-17",
+  "status": "completed_pass",
+  "decision": "ALLOW_FROZEN_CMCP_TOKEN_CACHE_AND_COMPARATOR_ONLY_TRAINING",
+  "claim_boundary": "Zero-step interface result on one authorized fit video; not learned comparator performance.",
+  "frozen_generator": {
+    "checkpoint_sha256": "08df7e01583addb4ed3bf2ddd86e87f04b806a3df0fb2f6e0ed38dbaf821aee3",
+    "model_state_sha256": "fc3044eb6daa1fb2416164fc0afe58ff5fa4eb4442811ce9c0b4917fbbdb57c0",
+    "parameters_frozen": true,
+    "candidate_coordinate_sha256": "c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300"
+  },
+  "comparator": {
+    "schema_version": "routeD_cmcp_local_pairwise_safety_v0",
+    "local_token_dim": 88,
+    "trainable_parameters": 409224,
+    "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_local_pairwise_safety_v0.yaml",
+    "config_sha256": "bf85414cd76cfecac18fb60a3cf1b3f5ded4bc3d41250538520b34836d2199c3",
+    "zero_step_native_safe": true
+  },
+  "sample": {
+    "partition": "fit",
+    "source_index": 0,
+    "video_name": "1680",
+    "points": 64,
+    "frames": 24,
+    "candidate_count": 6
+  },
+  "audit": {
+    "candidate_zero_native_parity": true,
+    "zero_step_selected_native_all_active": true,
+    "in_process_replay_exact": true,
+    "independent_full_video_tensor_replay_exact": true,
+    "tensor_hashes": {
+      "candidate_coords_xy_px": "c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300",
+      "candidate_scores": "90eac478727480d795cfa18154117e4b4bf0607bda00df46c7d358aaf188cffc",
+      "candidate_valid_mask": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c",
+      "selected_candidate_index": "6d300efc860c5175420cc9f9e01583d4f80c297779632cd3274969fd9c4139e6",
+      "selected_coord_xy_px": "416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96",
+      "frame_valid": "ad45d21215a838c5fa55d224f5892134895054e014754b8abd6dcb361abecf9c"
+    },
+    "replay_checks": {
+      "comparator_schema_version": true,
+      "source_partition": true,
+      "source_index": true,
+      "video_name": true,
+      "points": true,
+      "frames": true,
+      "candidate_count": true,
+      "local_token_dim": true,
+      "comparator_trainable_parameters": true,
+      "config_sha256": true,
+      "frozen_generator_checkpoint_sha256": true,
+      "frozen_generator_model_state_sha256": true,
+      "feature_index_sha256": true,
+      "base_sidecar_sha256": true,
+      "candidate_zero_native_parity": true,
+      "zero_step_selected_native_all_active": true,
+      "generator_parameters_frozen": true,
+      "in_process_replay_checks": true,
+      "tensor_hashes": true,
+      "integrity": true
+    }
+  },
+  "artifacts": {
+    "primary_report_sha256": "4599bcdc108ebf037f92c0e8b07838a9ed0eca08260800bca85a58ae481bab83",
+    "primary_sidecar_sha256": "a6e7af4507915f6bb39f9e15d28442d54c67a445b0ec9614ae05af14f2179a41",
+    "replay_report_sha256": "f5396b26307f37b0305ce0bb828ca1aad14043daaacb791ce453e224c5ac8bd3",
+    "replay_sidecar_sha256": "e5c0367326b2596887812fa20a4756d7d532c88de41ae0b1601e14506413ad7b",
+    "sidecar_hash_expected_to_differ_by_embedded_path": true
+  },
+  "next_gate": {
+    "step": "export frozen local candidate tokens for fit and model_validation",
+    "training": "comparator-only on fit",
+    "model_validation": "checkpoint selection and formal gates only",
+    "candidate_generator_updates_authorized": false
+  },
+  "integrity": {
+    "ground_truth_used_for_tokens_or_selection": false,
+    "candidate_coordinates_modified": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false
+  }
+}

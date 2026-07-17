@@ -328,3 +328,20 @@ NMS, EMA, top-K, threshold, backbone, state-write, calibration, final-holdout,
 DAVIS, or Kinetics change is authorized. See
 `docs/ROUTED_CMCP_PROPOSAL_TRAINING_RESULT_2026-07-17.md` and
 `docs/ROUTED_CMCP_LOCAL_PAIRWISE_SAFETY_V0_PLAN_2026-07-17.md`.
+
+
+## 18. P0h local pairwise safety interface
+
+The formal epoch-1 CMCP generator is frozen at model-state SHA-256
+`fc3044eb6daa1fb2416164fc0afe58ff5fa4eb4442811ce9c0b4917fbbdb57c0`.
+A 409,224-parameter local candidate-set comparator consumes 88-D tokens sampled
+at native and five frozen proposal peaks. It has monotonic multi-threshold
+utility, catastrophic risk, pairwise preference, and explicit native
+abstention.
+
+On authorized fit video 0, the complete candidate-coordinate tensor hash is
+`c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`.
+Independent full-video runs reproduce all candidate and selection hashes, and
+zero-step selected coordinates equal native exactly. P0h-b may export frozen
+local tokens and train only the comparator on fit. See
+`docs/ROUTED_CMCP_PAIRWISE_SAFETY_INTERFACE_RESULT_2026-07-17.md`.

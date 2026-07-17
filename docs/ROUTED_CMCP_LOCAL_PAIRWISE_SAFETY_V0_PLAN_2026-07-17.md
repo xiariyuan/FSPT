@@ -102,3 +102,15 @@ harmful non-native selection rate: <= 1%
 If this comparator fails, do not tune a threshold on model-validation. The next
 route is the previously reserved partial joint fine-tuning of late CoTracker
 correlation/query-key layers under the same locked data protocol.
+
+
+## 6. Completed interface milestone
+
+The frozen formal epoch-1 CMCP generator and the 409,224-parameter comparator
+pass the real fit-video interface audit. Candidate 0 and zero-step selected
+coordinates equal native for all active rows. The complete candidate-coordinate
+tensor SHA-256 is
+`c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`,
+and all candidate/selection tensors are bit-identical in independent full-video
+runs. This authorizes frozen local-token cache export and comparator-only fit
+training; it is not learned comparator performance.
