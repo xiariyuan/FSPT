@@ -88,3 +88,15 @@ If this fixed temporal model fails, do not sweep window sizes or thresholds on
 model validation. The next route must change candidate generation or add
 fit-only supervised correspondence between candidate hypotheses, not another
 selector feature expansion.
+
+## 6. Completed result
+
+The formal seed-17 experiment is exactly reproducible but fails the frozen gate.
+Best epoch 2 reaches only `+0.0041` AJ point with paired 95% CI
+`[-0.0045,+0.0106]`. Delta average improves `+0.0823`, severe-16px rate
+improves, and harmful selection is only `0.0798%`, but beneficial-event recall
+is just `1.8443%`. State-write training and calibration remain closed.
+
+The next route changes candidate generation through fit-only dense multi-memory
+correlation supervision. No temporal-window, threshold, or gate sweep is
+allowed. See `docs/ROUTED_MUSR_TEMPORAL_V0_STAGEA_RESULT_2026-07-17.md`.

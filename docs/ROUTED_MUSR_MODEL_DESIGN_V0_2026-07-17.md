@@ -255,3 +255,25 @@ set-evidence accumulator over a fixed six-frame window. Candidate generation,
 raw-v1 features, partitions, optimizer, and gates remain frozen. See
 `docs/ROUTED_MUSR_RAW_V1_STAGEA_RESULT_2026-07-17.md` and
 `docs/ROUTED_MUSR_TEMPORAL_REPRESENTATION_V0_PLAN_2026-07-17.md`.
+
+## 14. Temporal-v0 result and proposal-generation pivot
+
+The fixed six-frame causal rank-invariant set-evidence accumulator passes exact
+zero-step native parity, strict causality, padding isolation, candidate-set
+permutation audits, deterministic monotonic utility construction, and exact
+seed-17 replay. Nevertheless, the best model-validation result is only
+`+0.0041` AJ point with paired 95% CI `[-0.0045,+0.0106]`. Delta average and
+the severe 16px tail improve, and harmful global selection is only `0.0798%`,
+but beneficial-event recall is just `1.8443%`. Only four of sixteen videos are
+positive.
+
+Three post-discretization selector families have now failed despite `+6.8463`
+AJ coordinate-oracle headroom: structured single-frame, raw single-frame, and
+causal temporal. The next allowed route therefore moves learning before top-K
+candidate extraction. A causal multi-memory correlation proposal generator will
+train dense query-anchor, previous-native, and fixed-EMA correlation maps on fit
+only while preserving the frozen CoTracker3 backbone and exact native fallback.
+No selector, state-write, calibration, final-holdout, DAVIS, or Kinetics step is
+authorized until the proposal-only gate passes. See
+`docs/ROUTED_MUSR_TEMPORAL_V0_STAGEA_RESULT_2026-07-17.md` and
+`docs/ROUTED_MUSR_MULTI_MEMORY_PROPOSAL_V0_PLAN_2026-07-17.md`.

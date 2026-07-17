@@ -1,0 +1,59 @@
+experiment:
+  name: routeD_musr_cotracker3_temporal_v0
+  description: >-
+    Causal six-frame rank-invariant set-evidence selector over frozen raw-v1
+    CoTracker candidate/state features. Selector-only Stage A.
+
+model:
+  class: CausalSetEvidenceTemporalSelector
+  candidate_feature_dim: 601
+  state_feature_dim: 160
+  hidden_dim: 128
+  num_attention_heads: 4
+  num_attention_layers: 3
+  feedforward_multiplier: 4
+  num_candidate_sources: 16
+  thresholds_px: [1.0, 2.0, 4.0, 8.0, 16.0]
+  threshold_utility_weights: [0.28, 0.24, 0.20, 0.16, 0.12]
+  catastrophe_risk_weight: 0.75
+  max_contextual_selector_bias: 0.25
+  coordinate_scale_px: 32.0
+  max_coordinate_update_px: 24.0
+  selection_temperature: 0.20
+  dropout: 0.10
+  state_fields: [coordinate, visibility, confidence, memory]
+  native_safe_initialization: true
+  initial_abstention_bias: 2.0
+  initial_coordinate_write_bias: -2.0
+  initial_other_write_bias: -4.0
+
+temporal:
+  window_frames: 6
+  temporal_layers: 2
+  temporal_heads: 4
+  temporal_feedforward_multiplier: 4
+  dropout: 0.10
+  past_candidate_pooling: rank_invariant_attention
+  causal_mask: strict
+
+loss:
+  threshold_bce_weight: 1.0
+  ranking_weight: 0.50
+  catastrophe_weight: 0.50
+  coordinate_weight: 1.0
+  no_harm_weight: 1.0
+  abstention_weight: 0.50
+  tail_weight: 0.25
+  catastrophe_threshold_px: 16.0
+  tail_start_px: 8.0
+  min_candidate_gain_px: 0.50
+  no_harm_margin_px: 0.0
+
+stageA_gates:
+  raw_selector_AJ_gain_points_min: 0.5
+  paired_AJ_CI_lower_bound_gt: 0.0
+  delta_gain_points_gt: 0.0
+  severe_16px_not_worse: true
+  harmful_global_selection_rate_max: 0.01
+  zero_step_native_parity: exact
+  seed17_exact_replay: true

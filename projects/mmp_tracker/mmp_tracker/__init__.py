@@ -15,6 +15,10 @@ from .routeD_recovery_network import (
     RecoveryNetworkConfig,
     recovery_training_loss,
 )
+from .routeD_temporal_selector import (
+    CausalSetEvidenceTemporalSelector,
+    TemporalSelectorConfig,
+)
 
 __all__ = [
     "MMPTracker",
@@ -26,4 +30,6 @@ __all__ = [
     "RecoveryNetworkConfig",
     "RecoveryLossConfig",
     "recovery_training_loss",
+    "CausalSetEvidenceTemporalSelector",
+    "TemporalSelectorConfig",
 ]
