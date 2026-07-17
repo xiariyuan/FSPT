@@ -1,3 +1,10 @@
+from .cotracker3_stage0_adapter import (
+    CANDIDATE_FEATURE_DIM,
+    STATE_FEATURE_DIM,
+    LocalSearchResult,
+    local_correlation_candidates,
+    make_first_visible_queries,
+)
 from .config import MMPTrackerConfig
 from .data import wrap_first_frame_query_dataset
 from .losses import MMPLossWeights, MMPTrackingLoss

@@ -207,3 +207,5 @@ Build the CoTracker3 online stage-0 adapter that exports, for one Kubric video o
 - routing-disabled native parity.
 
 Then compute candidate oracle headroom before training MUSR.
+
+Completed one-video result: exact routing-disabled parity, exact two-pass adapter export replay, and +8.6477 AJ-point coordinate-oracle headroom on frozen Kubric validation video 0. The next allowed step is a preregistered disjoint multi-video Kubric oracle/cache qualification; this one-video oracle does not authorize external evaluation or final training claims.
