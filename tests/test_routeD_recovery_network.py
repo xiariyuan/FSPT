@@ -157,3 +157,38 @@ def test_hard_selection_is_deterministic_in_eval_mode():
     second = model(*batch, use_hard_selection=True)
     assert torch.equal(first["selected_candidate_index"], second["selected_candidate_index"])
     assert torch.equal(first["updated_coord_px"], second["updated_coord_px"])
+
+
+def test_native_safe_initialization_selects_native_with_exact_coordinate_parity():
+    config = _config(native_safe_initialization=True)
+    model = MultiHypothesisStateRecoveryNetwork(config).eval()
+    features, coords, valid, state, sources = _batch(config)
+    outputs = model(features, coords, valid, state, sources, use_hard_selection=True)
+    assert torch.equal(
+        outputs["selected_candidate_index"],
+        torch.zeros_like(outputs["selected_candidate_index"]),
+    )
+    assert torch.equal(outputs["updated_coord_px"], coords[..., 0, :])
+    assert torch.all(outputs["abstention_probability"] > 0.8)
+    assert torch.all(outputs["state_write_strength"][..., 0] < 0.02)
+
+
+def test_straight_through_selection_has_hard_forward_and_scorer_gradient():
+    config = _config(native_safe_initialization=True)
+    model = MultiHypothesisStateRecoveryNetwork(config)
+    features, coords, valid, state, sources = _batch(config)
+    outputs = model(
+        features,
+        coords,
+        valid,
+        state,
+        sources,
+        use_straight_through_selection=True,
+    )
+    assert torch.equal(outputs["selected_coord_px"], coords[..., 0, :])
+    target = coords[..., 1, :].detach()
+    loss = torch.nn.functional.smooth_l1_loss(outputs["updated_coord_px"], target)
+    loss.backward()
+    final = model.threshold_head[-1]
+    assert final.weight.grad is not None
+    assert float(final.weight.grad.abs().sum().item()) > 0.0

@@ -223,3 +223,18 @@ This authorizes fit/model-validation/calibration cache export and MUSR training,
 but the oracle result is not a learned-model claim. The final synthetic holdout,
 DAVIS, and Kinetics remain locked. See
 `docs/ROUTED_MUSR_KUBRIC_QUALIFICATION_RESULT_2026-07-17.md`.
+
+## 12. Stage-A selector feasibility result
+
+The complete fit/model-validation/calibration caches contain 48/16/32 videos.
+Calibration was not read. Native-safe initialization gives exact zero-step
+parity, and utility-aligned selector-only training is exactly reproducible at
+seed 17. Nevertheless, the best model-validation result is only `+0.0173` AJ
+point with paired 95% CI `[-0.0092,+0.0537]`, despite `+6.8463` AJ oracle
+headroom. State-write Stage B is therefore closed.
+
+The active redesign keeps candidate coordinates fixed and replaces the 64-D
+compressed summaries with full query/candidate CoTracker feature interactions,
+a local correlation patch, and full online track state. See
+`docs/ROUTED_MUSR_SELECTOR_STAGEA_RESULT_2026-07-17.md` and
+`docs/ROUTED_MUSR_RAW_REPRESENTATION_V1_PLAN_2026-07-17.md`.

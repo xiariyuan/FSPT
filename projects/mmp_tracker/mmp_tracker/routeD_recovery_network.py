@@ -44,6 +44,10 @@ class RecoveryNetworkConfig:
     selection_temperature: float = 0.20
     dropout: float = 0.0
     state_fields: tuple[str, ...] = DEFAULT_STATE_FIELDS
+    native_safe_initialization: bool = True
+    initial_abstention_bias: float = 2.0
+    initial_coordinate_write_bias: float = -2.0
+    initial_other_write_bias: float = -4.0
 
     def __post_init__(self) -> None:
         if self.candidate_feature_dim <= 0 or self.state_feature_dim <= 0:
@@ -184,6 +188,41 @@ class MultiHypothesisStateRecoveryNetwork(nn.Module):
 
         nn.init.normal_(self.native_role_embedding, std=0.02)
         nn.init.normal_(self.candidate_role_embedding, std=0.02)
+        if config.native_safe_initialization:
+            self._initialize_native_safe_heads()
+
+    @staticmethod
+    def _zero_final_linear(module: nn.Sequential, *, bias: float = 0.0) -> None:
+        final = module[-1]
+        if not isinstance(final, nn.Linear):
+            raise TypeError("expected final Linear layer")
+        nn.init.zeros_(final.weight)
+        nn.init.constant_(final.bias, float(bias))
+
+    def _initialize_native_safe_heads(self) -> None:
+        """Start at native selection with conservative state writes.
+
+        Equal candidate scores make deterministic argmax choose candidate 0.
+        The coordinate write is initially small and abstention is initially high,
+        but exact zero-step parity comes from selecting the native coordinate.
+        """
+        self._zero_final_linear(self.threshold_head, bias=0.0)
+        self._zero_final_linear(self.catastrophe_head, bias=0.0)
+        self._zero_final_linear(self.selector_bias_head, bias=0.0)
+        self._zero_final_linear(
+            self.abstention_head, bias=float(self.config.initial_abstention_bias)
+        )
+        final = self.state_write_head[-1]
+        if not isinstance(final, nn.Linear):
+            raise TypeError("expected final state-write Linear layer")
+        nn.init.zeros_(final.weight)
+        bias = torch.full(
+            (len(self.config.state_fields),),
+            float(self.config.initial_other_write_bias),
+        )
+        bias[0] = float(self.config.initial_coordinate_write_bias)
+        with torch.no_grad():
+            final.bias.copy_(bias)
 
     @staticmethod
     def _validate_inputs(
@@ -227,7 +266,12 @@ class MultiHypothesisStateRecoveryNetwork(nn.Module):
         if raw.shape[-1] == 1:
             return first
         increments = F.softplus(raw[..., 1:])
-        return torch.cat([first, first + torch.cumsum(increments, dim=-1)], dim=-1)
+        outputs = [first]
+        running = first
+        for index in range(increments.shape[-1]):
+            running = running + increments[..., index : index + 1]
+            outputs.append(running)
+        return torch.cat(outputs, dim=-1)
 
     def forward(
         self,
@@ -238,6 +282,7 @@ class MultiHypothesisStateRecoveryNetwork(nn.Module):
         source_ids: torch.Tensor,
         *,
         use_hard_selection: bool = False,
+        use_straight_through_selection: bool = False,
     ) -> Dict[str, torch.Tensor]:
         batch, points, candidates = self._validate_inputs(
             candidate_features,
@@ -307,22 +352,26 @@ class MultiHypothesisStateRecoveryNetwork(nn.Module):
             dim=-1, keepdim=True
         ).clamp_min(1.0e-12)
         selected_candidate_index = candidate_score.argmax(dim=-1)
+        if use_hard_selection and use_straight_through_selection:
+            raise ValueError(
+                "hard selection and straight-through selection are mutually exclusive"
+            )
 
         if use_hard_selection:
-            selected_coord = coords.gather(
-                1, selected_candidate_index[:, None, None].expand(-1, 1, 2)
-            ).squeeze(1)
-            selected_context = encoded_candidates.gather(
-                1,
-                selected_candidate_index[:, None, None].expand(
-                    -1, 1, encoded_candidates.shape[-1]
-                ),
-            ).squeeze(1)
+            selection_weight = F.one_hot(
+                selected_candidate_index, num_classes=candidates
+            ).to(candidate_probability.dtype)
+        elif use_straight_through_selection:
+            hard_weight = F.one_hot(
+                selected_candidate_index, num_classes=candidates
+            ).to(candidate_probability.dtype)
+            selection_weight = hard_weight + candidate_probability - candidate_probability.detach()
         else:
-            selected_coord = (candidate_probability.unsqueeze(-1) * coords).sum(dim=1)
-            selected_context = (
-                candidate_probability.unsqueeze(-1) * encoded_candidates
-            ).sum(dim=1)
+            selection_weight = candidate_probability
+        selected_coord = (selection_weight.unsqueeze(-1) * coords).sum(dim=1)
+        selected_context = (
+            selection_weight.unsqueeze(-1) * encoded_candidates
+        ).sum(dim=1)
 
         decision_context = torch.cat(
             [encoded_state, selected_context, encoded_candidates[:, 0]], dim=-1

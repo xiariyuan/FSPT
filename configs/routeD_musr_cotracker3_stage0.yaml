@@ -45,6 +45,11 @@ model:
   selection_temperature: 0.20
   dropout: 0.10
   state_fields: [coordinate, visibility, confidence, memory]
+  native_safe_initialization: true
+  initial_abstention_bias: 2.0
+  initial_coordinate_write_bias: -2.0
+  initial_other_write_bias: -4.0
+  training_selection_mode: straight_through_hard
 
 candidate_sources:
   - native_online_continuation
