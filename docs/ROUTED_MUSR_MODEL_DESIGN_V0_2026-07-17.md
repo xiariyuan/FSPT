@@ -345,3 +345,16 @@ Independent full-video runs reproduce all candidate and selection hashes, and
 zero-step selected coordinates equal native exactly. P0h-b may export frozen
 local tokens and train only the comparator on fit. See
 `docs/ROUTED_CMCP_PAIRWISE_SAFETY_INTERFACE_RESULT_2026-07-17.md`.
+
+
+## 19. P0h frozen local-token cache
+
+The local pairwise comparator cache is complete at 48 fit and 16
+model-validation videos. Each 88-D token contains 84 frozen GT-free local fields
+and four online causal-summary placeholders. Candidate-coordinate combined
+SHA-256 values are
+`3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2`
+for fit and
+`edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1`
+for model validation. P0h-c may train only the comparator on fit; all generator,
+backbone, state-write, calibration, and external-data locks remain active.

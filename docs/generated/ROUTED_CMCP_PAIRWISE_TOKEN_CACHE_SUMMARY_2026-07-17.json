@@ -1,0 +1,71 @@
+{
+  "schema_version": "routeD_cmcp_pairwise_token_cache_summary_v0",
+  "date": "2026-07-17",
+  "status": "completed_pass",
+  "decision": "ALLOW_PAIRWISE_COMPARATOR_ONLY_TRAINING",
+  "claim_boundary": "Frozen token-cache integrity result; not learned comparator performance.",
+  "contract": {
+    "local_token_dim": 88,
+    "static_token_dim": 84,
+    "dynamic_causal_summary_dim": 4,
+    "dynamic_summary_placeholder_zero": true,
+    "generator_model_state_sha256": "fc3044eb6daa1fb2416164fc0afe58ff5fa4eb4442811ce9c0b4917fbbdb57c0",
+    "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_local_pairwise_safety_v0.yaml",
+    "config_sha256": "bf85414cd76cfecac18fb60a3cf1b3f5ded4bc3d41250538520b34836d2199c3"
+  },
+  "partitions": {
+    "fit": {
+      "videos": 48,
+      "index_sha256": "e67681f3956b60aa30f8f675cc3f690beecf15b7b94d620faa2635247e8cfeb6",
+      "payload_sha256": "ccf998c33c2d818e21a44c642840b8b2e4191871dc11a840523f2163415f0099",
+      "candidate_coordinate_combined_sha256": "3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2"
+    },
+    "model_validation": {
+      "videos": 16,
+      "index_sha256": "aee10bc740d72f88e3e058249983e82b4345ebec28689efe6158f9a66a74cd34",
+      "payload_sha256": "d2ebf0598b06707d2390a4311329fbbc3ea72854b753d3584aebcfd2a59ccf0c",
+      "candidate_coordinate_combined_sha256": "edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1"
+    }
+  },
+  "replay_anchors": [
+    {
+      "partition": "fit",
+      "source_index": 0,
+      "exact": true,
+      "candidate_coordinate_sha256": "c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300"
+    },
+    {
+      "partition": "fit",
+      "source_index": 47,
+      "exact": true,
+      "candidate_coordinate_sha256": "66f85bc9dbeab70232f2c5061d5b2216cf52fe4b24a6a395a900f077ac6feedb"
+    },
+    {
+      "partition": "model_validation",
+      "source_index": 48,
+      "exact": true,
+      "candidate_coordinate_sha256": "1937f928d0d11c69fcd5189a44cc0a1f5e235554dd9f20d75d1b4ea95c7cf82f"
+    },
+    {
+      "partition": "model_validation",
+      "source_index": 63,
+      "exact": true,
+      "candidate_coordinate_sha256": "a4f0eb6bae97c58e7988ffab60504d6c8f9203b558947069e853856522bdea6c"
+    }
+  ],
+  "integrity": {
+    "all_generator_states_frozen": true,
+    "all_candidate_coordinates_unmodified": true,
+    "all_static_tokens_ground_truth_free": true,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false
+  },
+  "next_gate": {
+    "training": "comparator-only on fit",
+    "checkpoint_selection": "complete model_validation only",
+    "candidate_coordinate_hashes_must_remain_exact": true,
+    "generator_updates_authorized": false
+  }
+}

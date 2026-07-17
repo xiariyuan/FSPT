@@ -73,7 +73,8 @@ P0g-a completed and corrected before training: the formal 64-channel CMCP uses t
 P0g-b completed: frozen float16 CoTracker feature-map caches are complete at fit/model-validation 48/16 videos. Native state is exact for every sidecar; float32 replay anchors 0/47/48/63 are bit-identical. Global worst fp16 reconstruction is max-abs 2.36e-4 with minimum cosine 0.99999940; fit-video three-memory correlation error is max 1.24e-4.
 P0g-c completed with a partial mechanism success and formal gate failure. Exact-replay seed-17 CMCP produces a strong learned candidate pool: oracle AJ +20.0375, oracle delta +22.6947, paired oracle AJ CI [+18.0040,+21.7391], and all 16 videos positive. Direct top-1 reaches +1.5843 AJ and +1.8865 delta while reducing the 16px severe rate, but paired AJ CI [-2.5666,+4.5731] crosses zero and harmful non-native selection is 27.9968%, far above the 1% gate. MUSR, state writeback, calibration, and locked datasets remain forbidden.
 P0h-a completed: the exact epoch-1 CMCP proposal generator is frozen and the 409,224-parameter local pairwise comparator passes its real fit-video interface gate. The full 64-point x 24-frame candidate-coordinate SHA-256 is c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300; independent runs reproduce all candidate and selection tensor hashes, and zero-step selection is exactly native.
-P0h-b active: export frozen 88-D local candidate tokens for fit/model-validation and train only the comparator on fit. Candidate generation, NMS, EMA, top-K, backbone, state writeback, calibration, and locked datasets remain unchanged.
+P0h-b completed: frozen 88-D local-token caches are complete at fit/model-validation 48/16 videos. The 84-D static evidence is GT-free and the four dynamic causal-summary fields are zero placeholders. Candidate-coordinate combined SHA-256 values are 3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2 (fit) and edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1 (model-validation); replay anchors 0/47/48/63 are exact.
+P0h-c active: train only the local pairwise comparator on fit and select checkpoints on complete model-validation. The four causal-summary fields are updated online from previous comparator decisions; all candidate coordinates and generator outputs remain frozen.
 ```
 
 Read first:
@@ -95,6 +96,7 @@ docs/ROUTED_CMCP_FEATURE_CACHE_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_PROPOSAL_TRAINING_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_LOCAL_PAIRWISE_SAFETY_V0_PLAN_2026-07-17.md
 docs/ROUTED_CMCP_PAIRWISE_SAFETY_INTERFACE_RESULT_2026-07-17.md
+docs/ROUTED_CMCP_PAIRWISE_TOKEN_CACHE_RESULT_2026-07-17.md
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
 ```

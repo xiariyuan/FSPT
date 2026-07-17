@@ -114,3 +114,14 @@ tensor SHA-256 is
 and all candidate/selection tensors are bit-identical in independent full-video
 runs. This authorizes frozen local-token cache export and comparator-only fit
 training; it is not learned comparator performance.
+
+
+## 7. Completed frozen-token cache milestone
+
+Frozen 88-D token caches are complete for 48 fit and 16 model-validation videos.
+The first 84 dimensions are static GT-free local evidence; the final four are
+zero placeholders replaced online by the preceding comparator decision. The fit
+and model-validation candidate-coordinate combined hashes are
+`3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2`
+and `edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1`.
+Replay anchors 0/47/48/63 are exact. Comparator-only fit training is authorized.
