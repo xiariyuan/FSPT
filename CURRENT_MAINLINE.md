@@ -65,7 +65,8 @@ Current next gate:
 ```text
 P0a completed: the new MUSR core model contract and tested implementation are in-tree. MUSR jointly models causal candidates, monotonic multi-threshold utility, catastrophic risk, abstention, and bounded multi-field state writeback; it is not a tree/threshold micro-tuning route.
 P0b one-video feasibility passed on frozen Kubric validation video 0: the CoTracker3 true-streaming adapter exports native plus five causal query-memory local-correlation candidates, 64-dimensional candidate features, 32-dimensional state features, and the real online_track_feat state. Routing-disabled candidate-0 parity is exact (max_abs 0). With native visibility frozen, the GT-only coordinate oracle improves AJ from 25.59 to 34.24 (+8.65 points) and delta average from 36.22 to 48.79 (+12.57 points), exceeding the +3.0 one-video oracle gate. This is oracle headroom, not a learned result.
-P0c active: the independent adapter-export replay check is complete with exact hashes and zero tensor differences. Now preregister and build disjoint multi-video Kubric candidate caches and require partition-level oracle headroom before MUSR training. CoTracker3 remains the first backbone; TAPNext/TAPNext++ or Track-On2 is the second-backbone validation route. Do not open a new external result until deterministic candidate export, Kubric multi-video qualification, learned Kubric gain, closed-loop safety, and a new preregistration all pass. Preserve the corrected Kinetics result unchanged and do not read it for tuning.
+P0c completed: a hash-pinned identity-disjoint Kubric protocol permanently excludes the observed validation pilot (index 0), reserves validation indices 16--31 as final holdout, and qualifies the frozen candidate generator on validation indices 1--15. All 15 videos passed exact candidate-0/native parity; adapter replays at indices 1, 8, and 15 were bit-identical. With native visibility fixed, pooled coordinate-oracle AJ improves 28.59 -> 35.14 (+6.55 points) and delta average 42.03 -> 50.64 (+8.62 points). Every video is positive (minimum +4.22 AJ, median +6.40), and all 1/2/4/8/16-px hit-rate gains are positive. This is oracle headroom, not learned MUSR performance.
+P0d active: export the frozen fit (48), model-validation (16), and calibration (32) caches; implement the streaming cache dataset and MUSR training harness; train/select/calibrate only on their authorized partitions. Keep final_holdout, TAP-Vid-DAVIS, and the corrected 1,144-sample TAP-Vid-Kinetics result unread. Require learned Kubric AJ gain >= +1.0, positive paired CI, no severe-tail regression, and closed-loop benefit before opening final_holdout.
 ```
 
 Read first:
@@ -74,6 +75,8 @@ Read first:
 docs/ROUTED_PAPER_CORE_DRAFT_V0_2026-07-17.md
 docs/ROUTED_PAPER_READINESS_AND_EXPERIMENT_PLAN_2026-07-17.md
 docs/ROUTED_STRONG_BACKBONE_FEASIBILITY_AUDIT_2026-07-17.md
+docs/ROUTED_MUSR_KUBRIC_CACHE_PROTOCOL_V0_2026-07-17.md
+docs/ROUTED_MUSR_KUBRIC_QUALIFICATION_RESULT_2026-07-17.md
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
 ```

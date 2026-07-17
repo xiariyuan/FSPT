@@ -1,0 +1,100 @@
+{
+  "schema_version": "routeD_musr_kubric_cache_protocol_v0",
+  "created_date": "2026-07-17",
+  "repository_root": "/gemini/code/FSPT_v9a60_clean",
+  "purpose": "Freeze identity-disjoint Kubric partitions and qualify the CoTracker3 causal candidate pool before any MUSR training.",
+  "backbone": {
+    "name": "cotracker3_scaled_online_true_streaming",
+    "checkpoint": "/gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth",
+    "checkpoint_sha256": "205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218",
+    "frozen": true
+  },
+  "candidate_generator": {
+    "adapter_schema": "routeD_musr_cotracker3_stage0_adapter_v1",
+    "query_mode": "first",
+    "input_raster": 256,
+    "metric_raster": 256,
+    "candidate_topk": 5,
+    "candidate_count": 6,
+    "search_radius_px": 64.0,
+    "candidate_zero_is_native": true,
+    "candidate_generation_ground_truth_free": true,
+    "candidate_feature_dim": 64,
+    "state_feature_dim": 32,
+    "support_source": "first-visible query-frame CoTracker fnet feature",
+    "state_source": "real CoTracker3 online_track_feat level 0"
+  },
+  "source_manifests": {
+    "train_source": {
+      "path": "/gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json",
+      "sha256": "bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14",
+      "num_samples": 64
+    },
+    "calibration_source": {
+      "path": "/gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_calibration/validation.index.json",
+      "sha256": "958eed38daabc040932d1496c4bfa61a4c9f3d2be5641e386350725bb9cad4d7",
+      "num_samples": 32
+    },
+    "validation_source": {
+      "path": "/gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_validation/test.index.json",
+      "sha256": "ae31d7a2d6c9c31c487afcb0d15e89f1cc4ee51323f8673abdeabacfb307333e",
+      "num_samples": 32
+    }
+  },
+  "partitions": {
+    "fit": {
+      "source": "train_source",
+      "inclusive_ranges": [[0, 47]],
+      "expected_count": 48,
+      "allowed_use": "gradient updates only"
+    },
+    "model_validation": {
+      "source": "train_source",
+      "inclusive_ranges": [[48, 63]],
+      "expected_count": 16,
+      "allowed_use": "architecture selection and early stopping only"
+    },
+    "calibration": {
+      "source": "calibration_source",
+      "inclusive_ranges": [[0, 31]],
+      "expected_count": 32,
+      "allowed_use": "post-training calibration and abstention operating point only"
+    },
+    "pilot_excluded": {
+      "source": "validation_source",
+      "indices": [0],
+      "expected_count": 1,
+      "allowed_use": "historical one-video interface pilot only; permanently excluded from all learned claims"
+    },
+    "candidate_qualification": {
+      "source": "validation_source",
+      "inclusive_ranges": [[1, 15]],
+      "expected_count": 15,
+      "allowed_use": "candidate-pool oracle qualification before training; no model selection"
+    },
+    "final_holdout": {
+      "source": "validation_source",
+      "inclusive_ranges": [[16, 31]],
+      "expected_count": 16,
+      "allowed_use": "locked until architecture, checkpoint, calibration, and closed-loop policy are frozen"
+    }
+  },
+  "pilot_exclusion_partition": "pilot_excluded",
+  "qualification_partition": "candidate_qualification",
+  "final_holdout_partition": "final_holdout",
+  "deterministic_adapter_replay_indices": [1, 8, 15],
+  "qualification_gates": {
+    "pooled_AJ_gain_points_min": 3.0,
+    "pooled_delta_gain_points_min": 4.0,
+    "median_video_AJ_gain_points_min": 2.0,
+    "video_AJ_gain_at_least_1_fraction_min": 0.6666666667,
+    "each_threshold_gain_points_gt": 0.0,
+    "routing_disabled_native_parity_all": true,
+    "full_partition_required": true
+  },
+  "external_lock": {
+    "tapvid_kinetics_official_scale_1144": "do not read or rerun for MUSR development",
+    "tapvid_davis": "do not read for MUSR development",
+    "training_authorized_before_qualification_pass": false
+  }
+}

@@ -209,3 +209,17 @@ Build the CoTracker3 online stage-0 adapter that exports, for one Kubric video o
 Then compute candidate oracle headroom before training MUSR.
 
 Completed one-video result: exact routing-disabled parity, exact two-pass adapter export replay, and +8.6477 AJ-point coordinate-oracle headroom on frozen Kubric validation video 0. The next allowed step is a preregistered disjoint multi-video Kubric oracle/cache qualification; this one-video oracle does not authorize external evaluation or final training claims.
+
+## 11. Completed multi-video candidate qualification
+
+The frozen identity-disjoint qualification on 15 previously unobserved Kubric
+validation videos passed all preregistered gates. Pooled coordinate-oracle AJ
+headroom is `+6.5497` points and pooled delta-average headroom is `+8.6178`
+points with native visibility fixed. All 15 videos are positive; minimum and
+median per-video AJ gains are `+4.2208` and `+6.4035`. Adapter-export replay at
+source indices `1`, `8`, and `15` is bit-identical.
+
+This authorizes fit/model-validation/calibration cache export and MUSR training,
+but the oracle result is not a learned-model claim. The final synthetic holdout,
+DAVIS, and Kinetics remain locked. See
+`docs/ROUTED_MUSR_KUBRIC_QUALIFICATION_RESULT_2026-07-17.md`.
