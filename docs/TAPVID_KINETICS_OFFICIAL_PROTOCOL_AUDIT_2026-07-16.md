@@ -217,3 +217,145 @@ A passing corrected run supports frozen-controller transfer on the exact byte-ve
 - a first full-package run was superseded after independent metric parity found the raster-scale defect;
 - no Kinetics result was used to retune the frozen controller or policy;
 - the corrected run retained the original primary decision rule.
+
+## 9. Corrected official-scale full evaluation result
+
+The corrected protocol was generated from clean Git commit
+`f65e4af10827101de8b44180ff0d14efc6345a8a` before any corrected inference.
+Its SHA-256 is:
+
+```text
+61f1458ee0e62b865cde85d9f77e765b79da567add8fc277fe10599b0db13155
+```
+
+Execution completed all ten source shards sequentially. Every shard completed on
+attempt 1, and every result passed the frozen metric-implementation SHA and
+coordinate-contract checks.
+
+Protocol scope:
+
+```text
+official release CSV annotation groups: 1,147
+exact local materialization evaluated: 1,144
+CSV segments not materialized: 3
+query mode: first
+input raster: 256 x 256
+metric raster: 256 x 256
+normalized-to-raster contract: x * width, y * height
+controller/policy changes after superseded run: none
+paired bootstrap resamples: 20,000
+bootstrap seed: 17
+```
+
+Aggregate metrics:
+
+| System | AJ | OA | Delta average |
+|---|---:|---:|---:|
+| Independent baseline/local | 0.324945 | 0.939843 | 0.420461 |
+| Frozen tree, open-loop | 0.337390 | 0.939843 | 0.436503 |
+| Frozen tree, closed-loop | 0.347988 | 0.939843 | 0.447991 |
+
+Aggregate gains:
+
+| Comparison | AJ | Delta average |
+|---|---:|---:|
+| Open-loop vs baseline | +0.012445 | +0.016043 |
+| Closed-loop vs baseline | +0.023043 | +0.027530 |
+| Closed-loop vs open-loop | +0.010598 | +0.011488 |
+
+Paired-video bootstrap results:
+
+| Comparison | Metric | Videos | Mean | 95% CI |
+|---|---|---:|---:|---:|
+| Open-loop vs baseline | AJ | 1,138 | +0.012445 | [+0.011200, +0.013715] |
+| Open-loop vs baseline | Delta average | 1,137 | +0.016043 | [+0.014671, +0.017425] |
+| Closed-loop vs baseline | AJ | 1,138 | +0.023043 | [+0.020567, +0.025569] |
+| Closed-loop vs baseline | Delta average | 1,137 | +0.027530 | [+0.024800, +0.030260] |
+| Closed-loop vs open-loop | AJ | 1,138 | +0.010598 | [+0.008805, +0.012395] |
+| Closed-loop vs open-loop | Delta average | 1,137 | +0.011488 | [+0.009494, +0.013465] |
+
+The preregistered primary decision passes because the lower confidence bounds
+for closed-loop AJ and delta average versus the independent baseline are both
+strictly greater than zero. The additional closed-loop benefit over open-loop is
+also statistically resolved.
+
+Finite-pair and failure accounting:
+
+```text
+AJ finite paired videos: 1,138
+Delta-average finite paired videos: 1,137
+videos with at least one undefined official TAP metric: 7
+invalid comparison/metric entries retained in the audit: 57
+closed-loop AJ positive / negative / tied: 775 / 199 / 164
+closed-loop Delta-average positive / negative / tied: 783 / 188 / 166
+```
+
+The seven undefined-metric videos remain in the raw merged data. They are
+excluded only from the affected paired finite-value statistic; no NaN is
+replaced by zero.
+
+Operational diagnostics:
+
+```text
+closed-loop global selection rate: 4.0244%
+open-loop global selection rate: 7.9028%
+mean closed-loop trajectory difference from local: 2.1264 px
+mean closed-versus-open trajectory difference: 1.7413 px
+memory-write disagreement rate: 0
+```
+
+The most severe corrected closed-loop AJ failures remain material limitations:
+
+1. `kinetics_source_s000_p000113_kinetics_s000_000113`: AJ -0.297626,
+   delta average -0.274853.
+2. `kinetics_source_s009_p000080_kinetics_s000_000080`: AJ -0.252266,
+   delta average -0.264887.
+3. `kinetics_source_s008_p000034_kinetics_s000_000034`: AJ -0.159537,
+   delta average -0.096077.
+
+They must not be used to tune a Kinetics-specific guard. Any future stability
+guard must be developed on Kubric-only partitions and evaluated under a new
+external protocol.
+
+Sensitivity to the corrected raster scale:
+
+```text
+baseline AJ change from superseded run: -0.000786
+baseline Delta-average change: -0.000871
+closed-loop AJ change: -0.000812
+closed-loop Delta-average change: -0.000906
+closed-vs-baseline AJ gain change: -0.000027
+closed-vs-baseline Delta-average gain change: -0.000035
+```
+
+Thus the coordinate correction changes the exact numerical values but not the
+primary statistical decision.
+
+Final artifacts:
+
+```text
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.protocol.json
+  SHA-256: 61f1458ee0e62b865cde85d9f77e765b79da567add8fc277fe10599b0db13155
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.merged.json
+  SHA-256: 4b6d796ed017a86773c67c6447fd12827e9dfc185b0198430eef5f9813bf7b7e
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.paired.json
+  SHA-256: f97da99d8e905d765c1f267521e4995b1c940ec2ae59bdcd751159a2b6e38c9a
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.final_audit.json
+  SHA-256: 8cf2af93c6629542b02062a625fc8c54ac3a14c6c65a6a3fb4111228c450408c
+```
+
+Final audit decisions:
+
+```text
+primary_pass: true
+official_protocol_pass: true
+paper_claim_eligible: true
+```
+
+Required wording:
+
+> Report this as the exact order-preserving local materialization of 1,144 of
+> the 1,147 uniquely annotated video segments in the byte-verified official
+> TAP-Vid-Kinetics release CSV (3 CSV segments were not materialized), evaluated
+> with the pinned official metric formulas. Do not describe it as a universally
+> fixed 1,000-video set or an official train-only split.

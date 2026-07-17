@@ -17,9 +17,11 @@ The evidence tier differs by dataset and must be reported explicitly.
 - DAVIS has already been used during Route-D development.
 - RGB-Stacking has also appeared in prior repository experiments.
 - No DAVIS or RGB-Stacking labels were used to fit or retune the frozen Kubric tree controller described here.
-- The pre-correction shard-balanced 50-video and full-1,144 Kinetics TAP position metrics are superseded pending official-scale reruns.
+- The pre-correction shard-balanced 50-video and first full-1,144 Kinetics TAP position metrics are superseded.
+- The corrected full result uses the pinned official metric formulas over an exact order-preserving local materialization of 1,144 of the 1,147 uniquely annotated release-CSV segments; three CSV segments were not materialized.
+- The corrected preregistered primary decision and official protocol integrity audit both pass.
 - The controller and policy remain frozen; no DAVIS, RGB-Stacking, or Kinetics result may be used for retuning.
-- Publication wording must follow the completed release, package-identity, and official-evaluator audits attached to the corrected rerun.
+- Do not describe the corrected scope as a universally fixed 1,000-video set, an official train-only split, or a leaderboard submission.
 
 ## Why this branch was opened
 
@@ -513,4 +515,135 @@ The full audit and corrected publication wording are recorded in:
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 ```
 
-A distinct official-scale protocol must be written from a clean Git commit before corrected inference. The frozen controller and original primary decision rule remain unchanged.
+A distinct official-scale protocol was written from clean Git commit `f65e4af10827101de8b44180ff0d14efc6345a8a` before corrected inference. The frozen controller and original primary decision rule remained unchanged; the completed result is documented in Section 8.
+
+## 8. Corrected official-scale 1,144-video Kinetics result
+
+The corrected rerun was frozen before inference under protocol SHA-256
+`61f1458ee0e62b865cde85d9f77e765b79da567add8fc277fe10599b0db13155`.
+It evaluates the exact order-preserving local materialization of 1,144 of the
+1,147 uniquely annotated video segments in the byte-verified official release
+CSV. Three CSV segments were not materialized. The local loader label `train`
+does not indicate an official train-only split.
+
+All ten shards completed sequentially on attempt 1. The checkpoint, controller,
+configuration, metric implementation, source shards, per-shard manifests, and
+official evidence hashes all match the frozen protocol. The controller, policy,
+threshold, fusion behavior, and guard behavior were not changed after any
+Kinetics observation.
+
+Corrected aggregate metrics:
+
+| System | AJ | OA | Delta average |
+|---|---:|---:|---:|
+| Independent baseline/local | 0.324945 | 0.939843 | 0.420461 |
+| Frozen tree, open-loop | 0.337390 | 0.939843 | 0.436503 |
+| Frozen tree, closed-loop | 0.347988 | 0.939843 | 0.447991 |
+
+Corrected aggregate differences:
+
+- Open-loop versus baseline:
+  - AJ: +0.012445.
+  - Delta average: +0.016043.
+- Closed-loop versus baseline:
+  - AJ: +0.023043.
+  - Delta average: +0.027530.
+- Closed-loop versus open-loop:
+  - AJ: +0.010598.
+  - Delta average: +0.011488.
+
+Corrected paired-video bootstrap:
+
+- Open-loop AJ: +0.012445, 95% CI [+0.011200, +0.013715].
+- Open-loop delta average: +0.016043, 95% CI [+0.014671, +0.017425].
+- Closed-loop AJ: +0.023043, 95% CI [+0.020567, +0.025569].
+- Closed-loop delta average: +0.027530, 95% CI [+0.024800, +0.030260].
+- Closed-loop versus open-loop AJ: +0.010598, 95% CI [+0.008805, +0.012395].
+- Closed-loop versus open-loop delta average: +0.011488, 95% CI [+0.009494, +0.013465].
+
+The preregistered primary decision passes. Both closed-loop-versus-baseline
+confidence intervals have positive lower bounds. The additional closed-loop
+gain over open-loop is also statistically resolved.
+
+Finite-pair support:
+
+- AJ: 1,138 paired videos.
+- Delta average: 1,137 paired videos.
+- Seven videos contain at least one undefined official TAP metric due to an
+  empty relevant denominator.
+- All seven remain in the raw data and are excluded only from the affected
+  finite-pair statistic.
+
+Video-level support:
+
+- Closed-loop AJ: 775 positive, 199 negative, and 164 tied finite videos.
+- Closed-loop delta average: 783 positive, 188 negative, and 166 tied finite videos.
+- Open-loop AJ: 770 positive, 188 negative, and 180 tied finite videos.
+- Open-loop delta average: 784 positive, 169 negative, and 184 tied finite videos.
+- Actual closed-loop global selection rate: 4.0244%.
+- Open-loop global selection rate: 7.9028%.
+- Mean closed-loop trajectory difference from local: 2.1264 px.
+- Mean closed-versus-open trajectory difference: 1.7413 px.
+- Memory-write disagreement rate: 0.
+
+The most severe corrected closed-loop AJ failures are unchanged in identity and
+remain important limitations:
+
+1. `kinetics_source_s000_p000113_kinetics_s000_000113`: AJ -0.297626,
+   delta average -0.274853, trajectory difference 6.265 px.
+2. `kinetics_source_s009_p000080_kinetics_s000_000080`: AJ -0.252266,
+   delta average -0.264887, trajectory difference 9.613 px.
+3. `kinetics_source_s008_p000034_kinetics_s000_000034`: AJ -0.159537,
+   delta average -0.096077, trajectory difference 5.851 px.
+
+These failures must not be used for Kinetics-specific retuning. Future
+trajectory-stability development must return to Kubric-only partitions and use
+a new untouched external protocol.
+
+Metric-correction sensitivity:
+
+- Corrected baseline AJ is 0.000786 lower than the superseded value.
+- Corrected baseline delta average is 0.000871 lower.
+- Corrected closed-loop AJ is 0.000812 lower.
+- Corrected closed-loop delta average is 0.000906 lower.
+- The closed-vs-baseline AJ gain changes by only -0.000027.
+- The closed-vs-baseline delta-average gain changes by only -0.000035.
+
+The metric correction changes exact values but does not change the primary
+statistical conclusion.
+
+Final integrity decisions:
+
+```text
+expected and merged videos: 1,144 / 1,144
+result shards verified: 10 / 10
+canonical video names unique: true
+frozen checkpoint/controller/config hashes: match
+frozen metric implementation hash: match
+metric coordinate contract: x * width, y * height
+official release-package audit: pass
+package identity audit: pass
+official metric parity audit: pass
+primary decision: pass
+official protocol decision: pass
+paper claim eligibility within exact scope: true
+```
+
+Corrected artifacts:
+
+```text
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.protocol.json
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.merged.json
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.paired.json
+kinetics_full1144_officialscale_v2_20260716/full1144.officialscale.final_audit.json
+```
+
+Required claim wording:
+
+> Exact order-preserving local materialization of 1,144 of the 1,147 uniquely
+> annotated video segments in the byte-verified official TAP-Vid-Kinetics
+> release CSV, evaluated with pinned official metric formulas and a frozen
+> controller. Three release-CSV segments were not materialized.
+
+Do not call this a universally fixed 1,000-video set, an official train-only
+split, or a leaderboard submission.

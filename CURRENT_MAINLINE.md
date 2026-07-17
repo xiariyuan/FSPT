@@ -23,10 +23,24 @@ Completed P0 audits:
 - controller and policy remain unchanged.
 ```
 
-Next executable gate:
+Decisive external gate completed:
 
 ```text
-Commit the metric correction and audit tooling, create a clean official-scale full-package protocol, then rerun all 1,144 materialized Kinetics segments sequentially with the unchanged primary bootstrap rule.
+- corrected official-scale protocol SHA-256: 61f1458ee0e62b865cde85d9f77e765b79da567add8fc277fe10599b0db13155;
+- all 10 shards and 1,144 materialized segments completed sequentially on attempt 1;
+- closed-loop vs baseline AJ: +0.023043, paired 95% CI [+0.020567, +0.025569];
+- closed-loop vs baseline delta average: +0.027530, paired 95% CI [+0.024800, +0.030260];
+- closed-loop vs open-loop AJ: +0.010598, paired 95% CI [+0.008805, +0.012395];
+- closed-loop vs open-loop delta average: +0.011488, paired 95% CI [+0.009494, +0.013465];
+- primary preregistered decision: pass;
+- official protocol and final integrity decision: pass;
+- controller, policy, checkpoint, and configuration unchanged.
+```
+
+Current next gate:
+
+```text
+Build the Route-D paper-ready method and experiment narrative around the exact byte-verified scope: 1,144 of 1,147 uniquely annotated release-CSV segments. Preserve the seven undefined-metric videos and severe per-video failures as limitations. Do not tune any guard on Kinetics; any stability guard must be developed on Kubric-only partitions and receive a new external protocol.
 ```
 
 Read first:

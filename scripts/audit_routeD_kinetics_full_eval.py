@@ -22,6 +22,21 @@ def require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def official_required_wording(
+    annotation_groups: int,
+    materialized_groups: int,
+    missing_groups: int,
+) -> str:
+    return (
+        "Report this as the exact order-preserving local materialization of "
+        f"{materialized_groups:,} of the {annotation_groups:,} uniquely annotated "
+        "video segments in the byte-verified official TAP-Vid-Kinetics release "
+        f"CSV ({missing_groups:,} CSV segments were not materialized), evaluated "
+        "with the pinned official metric formulas. Do not describe it as a "
+        "universally fixed 1,000-video set or an official train-only split."
+    )
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--protocol", required=True)
@@ -110,6 +125,7 @@ def main() -> None:
     }
 
     official_protocol_audit = None
+    official_protocol_summary = None
     if corrected_protocol:
         evidence = protocol.get("official_protocol_evidence", {})
         official_protocol_audit = {}
@@ -164,6 +180,48 @@ def main() -> None:
             int(package_identity.get("matched_samples", -1)) == expected_videos,
             "Identity-audit matched count mismatch",
         )
+        annotation_groups = int(
+            protocol["evaluation"]["official_annotation_groups"]
+        )
+        materialized_groups = int(
+            protocol["evaluation"]["official_annotation_materialized_groups"]
+        )
+        missing_groups = int(
+            protocol["evaluation"]["official_annotation_missing_groups"]
+        )
+        require(
+            int(package_identity.get("csv_annotation_groups", -1))
+            == annotation_groups,
+            "Identity-audit official CSV count mismatch",
+        )
+        require(
+            int(package_identity.get("matched_samples", -1))
+            == materialized_groups,
+            "Identity-audit materialized count mismatch",
+        )
+        require(
+            int(package_identity.get("missing_video_segments", -1))
+            == missing_groups,
+            "Identity-audit missing count mismatch",
+        )
+        require(
+            materialized_groups + missing_groups == annotation_groups,
+            "Official annotation accounting mismatch",
+        )
+        official_protocol_summary = {
+            "official_repository": evidence.get("official_repository"),
+            "official_commit": evidence.get("official_commit"),
+            "annotation_groups": annotation_groups,
+            "materialized_groups": materialized_groups,
+            "missing_groups": missing_groups,
+            "metric_coordinate_contract": protocol["evaluation"][
+                "normalized_to_raster_contract"
+            ],
+            "metric_parity_pass": True,
+            "package_identity_pass": True,
+            "official_release_pass": True,
+            "prior_results_superseded": True,
+        }
 
     shard_audit_by_index = {
         int(row["shard_index"]): row for row in merged.get("shard_audit", [])
@@ -241,10 +299,11 @@ def main() -> None:
         "official_protocol_pass": bool(protocol_pass),
         "claim_boundary": protocol["claim_boundary"],
         "required_wording": (
-            "Report this as the complete local materialization of 1,144 available "
-            "video segments from the official 1,189-segment TAP-Vid-Kinetics "
-            "annotation CSV, evaluated with the pinned official metric formulas. "
-            "Do not describe it as a universally fixed 1,000-video set."
+            official_required_wording(
+                official_protocol_summary["annotation_groups"],
+                official_protocol_summary["materialized_groups"],
+                official_protocol_summary["missing_groups"],
+            )
             if corrected_protocol
             else "Report this as the complete local 1,144-video TAP-Vid-Kinetics "
             "package evaluation, not as an official benchmark result unless package "
@@ -277,6 +336,7 @@ def main() -> None:
         "paired_sha256": sha256(paired_path),
         "frozen_input_audit": frozen_input_audit,
         "official_protocol_audit": official_protocol_audit,
+        "official_protocol_summary": official_protocol_summary,
         "shard_integrity": shard_integrity,
     }
     output = Path(args.output).resolve()
