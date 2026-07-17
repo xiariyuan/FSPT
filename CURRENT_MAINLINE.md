@@ -70,7 +70,8 @@ P0d completed with a negative selector gate: fit/model-validation/calibration ca
 P0e completed with a negative raw-representation gate: fit/model-validation raw-v1 caches are complete at 48/16 videos with 601-D candidate and 160-D state tokens. All candidate-coordinate hashes are unchanged and replay anchors 0/47/48/63 are bit-identical. The exact-replay seed-17 selector reaches -0.0149 AJ point with paired 95% CI [-0.0806,+0.0502], delta +0.129, and improved severe-16px rate; only 6/16 videos are positive. It is 0.0322 AJ point worse than structured-64. State-write training and calibration remain forbidden.
 P0f completed with a negative temporal gate: the fixed six-frame causal rank-invariant selector passes padding, causality, permutation, zero-step parity, monotonicity, and exact seed-replay audits. Best epoch 2 reaches only +0.0041 AJ point with paired 95% CI [-0.0045,+0.0106], delta +0.0823, improved severe-16px rate, and 0.0798% harmful selection. Beneficial-event recall is only 1.8443%, and only 4/16 videos are positive. State-write training and calibration remain forbidden.
 P0g-a completed: the 64-channel causal multi-memory correlation proposal generator (CMCP) contains 262,019 trainable parameters and passes the real fit-video interface gate. Frozen native state is exact for 64 points x 24 frames; candidate-0 and zero-step selected coordinates equal native; query/previous/EMA correlation fields, motion priors, proposal maps, candidates, and selections are bit-identical on in-process and independent full-video replay. This is an interface result, not learned performance.
-P0g-b active: export one frozen float16 CoTracker feature-map cache per fit/model-validation video, verify exact float32 reconstruction tolerance and native-state identity, then train CMCP proposal-only on fit. Require candidate oracle >= +3.0 AJ, direct top-1 >= +0.5 AJ with positive paired CI, and no severe-tail regression before any MUSR selector, state writeback, or calibration is reopened.
+P0g-b completed: frozen float16 CoTracker feature-map caches are complete at fit/model-validation 48/16 videos. Native state is exact for every sidecar; float32 replay anchors 0/47/48/63 are bit-identical. Global worst fp16 reconstruction is max-abs 2.36e-4 with minimum cosine 0.99999940; fit-video three-memory correlation error is max 1.24e-4.
+P0g-c active: train CMCP dense proposal generation on fit only and select checkpoints on complete model-validation. Require new candidate oracle >= +3.0 AJ, direct proposal top-1 >= +0.5 AJ with positive paired CI, harmful non-native <=1%, and no severe-tail regression before reopening any MUSR selector, state writeback, or calibration.
 ```
 
 Read first:
@@ -88,6 +89,7 @@ docs/ROUTED_MUSR_TEMPORAL_REPRESENTATION_V0_PLAN_2026-07-17.md
 docs/ROUTED_MUSR_TEMPORAL_V0_STAGEA_RESULT_2026-07-17.md
 docs/ROUTED_MUSR_MULTI_MEMORY_PROPOSAL_V0_PLAN_2026-07-17.md
 docs/ROUTED_CMCP_INTERFACE_RESULT_2026-07-17.md
+docs/ROUTED_CMCP_FEATURE_CACHE_RESULT_2026-07-17.md
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
 ```

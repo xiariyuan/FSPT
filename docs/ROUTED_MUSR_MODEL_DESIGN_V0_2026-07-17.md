@@ -293,3 +293,14 @@ candidates, and selections are bit-identical both within the run and in a
 separate full-video replay. This authorizes feature-map cache export and fit-only
 dense proposal training, but it is not learned performance. See
 `docs/ROUTED_CMCP_INTERFACE_RESULT_2026-07-17.md`.
+
+## 16. CMCP feature-map cache milestone
+
+Frozen float16 CoTracker feature maps are complete for 48 fit and 16
+model-validation videos. Every regenerated native state matches the qualified
+stage-0 sidecar exactly. Float32 feature extraction is bit-identical at indices
+0, 47, 48, and 63. Global worst fp16 reconstruction error is `2.3586e-4` with
+minimum cosine `0.999999404`; the resulting three-memory correlation error on
+the fit smoke is at most `1.2365e-4`. CMCP fit-only dense proposal training is
+therefore authorized, while all selectors, state writes, calibration, final
+holdout, DAVIS, and Kinetics remain locked.

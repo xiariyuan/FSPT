@@ -23,6 +23,10 @@ from .routeD_multi_memory_proposal import (
     CMCPConfig,
     CausalMultiMemoryProposalGenerator,
 )
+from .routeD_cmcp_feature_cache import (
+    CMCP_FEATURE_CACHE_SCHEMA_VERSION,
+    CMCP_FEATURE_INDEX_SCHEMA_VERSION,
+)
 
 __all__ = [
     "MMPTracker",
@@ -38,4 +42,6 @@ __all__ = [
     "TemporalSelectorConfig",
     "CMCPConfig",
     "CausalMultiMemoryProposalGenerator",
+    "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
+    "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

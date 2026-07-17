@@ -1,0 +1,90 @@
+{
+  "schema_version": "routeD_cmcp_feature_cache_summary_v1",
+  "date": "2026-07-17",
+  "status": "completed_pass",
+  "decision": "ALLOW_CMCP_FIT_ONLY_DENSE_PROPOSAL_TRAINING",
+  "claim_boundary": "Frozen feature-map cache integrity result; not learned proposal performance.",
+  "protocol_sha256": "317a9ad2dbf36c1ed9a2c10eaa408967682f6f95a3870dfbaf61329077ed2fb0",
+  "partitions": {
+    "fit": {
+      "videos": 48,
+      "index_sha256": "bfb10726a317b7bdb1a7993ab1e417440dc561dad03c748a2c5e958f2b5bac76",
+      "payload_sha256": "0f696d67cc347948ca807061e84e32d3539ff8df38b0622846f607ec2ebf3de6",
+      "base_index_sha256": "b0df5b7b5228b6c60c7235bc3b9a83cb909132eae26886179a1217cb1b625e27",
+      "quantization": {
+        "max_abs_max": 0.0002358555793762207,
+        "min_cosine_min": 0.9999994039535522
+      }
+    },
+    "model_validation": {
+      "videos": 16,
+      "index_sha256": "e88c057205c767c4a28f7f3df55f45131f969582c2ec128b97d2465cf52fa14c",
+      "payload_sha256": "6f34cf7701ff79833d313debc0e230415b09973dd0831f32753575226625af15",
+      "base_index_sha256": "06c3a6527f99e1af2ce533f16762830670013a519e169c80c92daecf95e06b29",
+      "quantization": {
+        "max_abs_max": 0.00021785497665405273,
+        "min_cosine_min": 0.9999994039535522
+      }
+    }
+  },
+  "feature_contract": {
+    "dtype": "float16",
+    "shape_per_video": [
+      24,
+      128,
+      96,
+      128
+    ],
+    "reconstruction_max_abs_gate": 0.0005,
+    "reconstruction_min_cosine_gate": 0.99999,
+    "observed_global_max_abs": 0.0002358555793762207,
+    "observed_global_min_cosine": 0.9999994039535522
+  },
+  "correlation_quantization_smoke": {
+    "source_partition": "fit",
+    "source_index": 0,
+    "points": 4,
+    "max_abs": 0.00012364983558654785,
+    "mean_abs": 1.6336192857124843e-05,
+    "rms_abs": 2.1369542082538828e-05,
+    "motion_prior_exact": true,
+    "causal_valid_mask_exact": true
+  },
+  "float32_replay_anchors": [
+    {
+      "partition": "fit",
+      "source_index": 0,
+      "exact": true
+    },
+    {
+      "partition": "fit",
+      "source_index": 47,
+      "exact": true
+    },
+    {
+      "partition": "model_validation",
+      "source_index": 48,
+      "exact": true
+    },
+    {
+      "partition": "model_validation",
+      "source_index": 63,
+      "exact": true
+    }
+  ],
+  "integrity": {
+    "native_state_exact_all": true,
+    "ground_truth_used_for_feature_map": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false
+  },
+  "next_gate": {
+    "training_partition": "fit only",
+    "checkpoint_selection_partition": "model_validation only",
+    "proposal_only_before_selector": true,
+    "selector_authorized": false,
+    "state_write_authorized": false
+  }
+}

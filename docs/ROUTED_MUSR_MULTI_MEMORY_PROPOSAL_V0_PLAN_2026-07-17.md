@@ -144,3 +144,16 @@ This authorizes frozen float16 feature-map cache export and fit-only dense
 proposal training. It does not authorize a learned-performance claim, MUSR
 selection, state writeback, calibration, or any locked dataset read. See
 `docs/ROUTED_CMCP_INTERFACE_RESULT_2026-07-17.md`.
+
+## 10. Completed feature-map cache milestone
+
+Frozen float16 CoTracker feature maps are complete for fit/model-validation at
+48/16 videos. All native states remain exact, float32 replay anchors 0/47/48/63
+are bit-identical, and the global worst fp16 reconstruction is max-abs
+`2.3586e-4` with minimum cosine `0.999999404`. A fit-video correlation smoke
+shows max correlation error `1.2365e-4`.
+
+This authorizes fit-only CMCP dense proposal training and model-validation
+checkpoint selection. It does not authorize selector, state-write, calibration,
+final-holdout, DAVIS, or Kinetics access. See
+`docs/ROUTED_CMCP_FEATURE_CACHE_RESULT_2026-07-17.md`.
