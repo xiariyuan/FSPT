@@ -131,3 +131,16 @@ final_holdout: unread
 TAP-Vid-DAVIS: unread
 TAP-Vid-Kinetics official 1,144: unread and not rerun
 ```
+
+## 9. Completed interface milestone
+
+The 64-channel CMCP implementation contains 262,019 trainable parameters and
+passes its real fit-video interface audit. On fit video 0, all 64 points and 24
+frames preserve exact frozen native state and zero-step native selection. The
+first point chunk is bit-identical on in-process replay, and a separate full
+video run reproduces every candidate/selection tensor hash.
+
+This authorizes frozen float16 feature-map cache export and fit-only dense
+proposal training. It does not authorize a learned-performance claim, MUSR
+selection, state writeback, calibration, or any locked dataset read. See
+`docs/ROUTED_CMCP_INTERFACE_RESULT_2026-07-17.md`.

@@ -19,6 +19,10 @@ from .routeD_temporal_selector import (
     CausalSetEvidenceTemporalSelector,
     TemporalSelectorConfig,
 )
+from .routeD_multi_memory_proposal import (
+    CMCPConfig,
+    CausalMultiMemoryProposalGenerator,
+)
 
 __all__ = [
     "MMPTracker",
@@ -32,4 +36,6 @@ __all__ = [
     "recovery_training_loss",
     "CausalSetEvidenceTemporalSelector",
     "TemporalSelectorConfig",
+    "CMCPConfig",
+    "CausalMultiMemoryProposalGenerator",
 ]

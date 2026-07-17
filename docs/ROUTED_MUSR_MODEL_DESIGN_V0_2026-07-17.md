@@ -277,3 +277,19 @@ No selector, state-write, calibration, final-holdout, DAVIS, or Kinetics step is
 authorized until the proposal-only gate passes. See
 `docs/ROUTED_MUSR_TEMPORAL_V0_STAGEA_RESULT_2026-07-17.md` and
 `docs/ROUTED_MUSR_MULTI_MEMORY_PROPOSAL_V0_PLAN_2026-07-17.md`.
+
+## 15. CMCP interface milestone
+
+The causal multi-memory correlation proposal generator moves trainable reasoning
+before top-K discretization. Its 64-channel ConvGRU proposal core has 262,019
+trainable parameters and consumes immutable query-anchor, previous-native, and
+fixed-alpha EMA correlations plus a native motion prior and previous proposal
+evidence. Native candidate 0 remains frozen.
+
+On authorized fit video 0, the real CoTracker3 run reproduces every previously
+qualified native state tensor exactly. All 64 points and 24 frames satisfy exact
+candidate-0 parity and zero-step native selection. Correlations, proposal maps,
+candidates, and selections are bit-identical both within the run and in a
+separate full-video replay. This authorizes feature-map cache export and fit-only
+dense proposal training, but it is not learned performance. See
+`docs/ROUTED_CMCP_INTERFACE_RESULT_2026-07-17.md`.

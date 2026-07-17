@@ -1,0 +1,99 @@
+{
+  "schema_version": "routeD_cmcp_interface_smoke_summary_v1",
+  "date": "2026-07-17",
+  "status": "completed_pass",
+  "decision": "ALLOW_CMCP_FEATURE_MAP_CACHE_AND_FIT_ONLY_PROPOSAL_TRAINING",
+  "claim_boundary": "This is a zero-step interface audit on one authorized fit video; it is not a learned proposal result.",
+  "model": {
+    "proposal_schema_version": "routeD_cmcp_multi_memory_proposal_v0",
+    "trainable_parameters": 262019,
+    "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_cotracker3_stage0.yaml",
+    "config_sha256": "4caaba265913ae785331065971bf52305849b2236e633f61df7b6efb144ef33f",
+    "memory_sources": [
+      "immutable_query_anchor",
+      "previous_native_feature",
+      "causal_fixed_alpha_ema"
+    ],
+    "candidate_count": 6,
+    "native_candidate_index": 0
+  },
+  "sample": {
+    "partition": "fit",
+    "source_index": 0,
+    "video_name": "1680",
+    "points": 64,
+    "frames": 24,
+    "feature_map_shape": [
+      24,
+      128,
+      96,
+      128
+    ]
+  },
+  "audit": {
+    "frozen_native_state_exact": true,
+    "candidate_zero_native_parity": true,
+    "zero_step_selected_native_all_active": true,
+    "first_chunk_replay_exact": true,
+    "independent_full_video_tensor_replay_exact": true,
+    "tensor_hashes": {
+      "candidate_coords_xy_px": "b69c1d39fa94ef6af5367998f7d73b2dc59ee7500e012ee03d7ec643dd04a1c0",
+      "candidate_scores": "2253777306a96296f37f8f85e3a8d356d305f2750cd4921a53b2e7fba2f160ee",
+      "candidate_valid_mask": "5d5b8d588f60f1b99812ff87adddc1e324c522c9cda01d1815c930851624c0f3",
+      "selected_candidate_index": "6d300efc860c5175420cc9f9e01583d4f80c297779632cd3274969fd9c4139e6",
+      "selected_coord_xy_px": "416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96",
+      "frame_valid": "ad45d21215a838c5fa55d224f5892134895054e014754b8abd6dcb361abecf9c"
+    },
+    "native_state_hashes": {
+      "native_coords_xy_px": "416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96",
+      "native_visibility_probability": "06409a741fc468ca609ccb1d6db696d6189184927d59f17a4db0fb39fb4cadbb",
+      "native_confidence_probability": "5e47e98b7e4fd40e4201a1feb4b34a7bdddfe9bcf8ceca6b0d320b7356617a4b",
+      "native_joint_probability": "812c74f3a809d8e94f01794a28d2f3c32416d67852e123ef8d099d62a140430a",
+      "native_visibility": "d54db5cbed59831d994e6af3d3bf2c6b72d8cb2c909462992cacd514cd107946"
+    },
+    "correlation_sha256": "09088c91a0e6387c28c0275588e8e1982849956875bfe10c999996571279a73d",
+    "proposal_score_sha256": "edea98338a940efe0814c0e57b328d7b556ba244354899c72e586200c62b0efe",
+    "replay_checks": {
+      "proposal_schema_version": true,
+      "source_partition": true,
+      "source_index": true,
+      "video_name": true,
+      "points": true,
+      "frames": true,
+      "feature_map_shape": true,
+      "config_sha256": true,
+      "protocol_sha256": true,
+      "base_cache_index_sha256": true,
+      "base_sidecar_sha256": true,
+      "checkpoint_sha256": true,
+      "native_state_hashes": true,
+      "trainable_parameters": true,
+      "candidate_zero_native_parity": true,
+      "zero_step_selected_native_all_active": true,
+      "deterministic_first_chunk_replay": true,
+      "tensor_hashes": true,
+      "integrity": true
+    }
+  },
+  "artifacts": {
+    "primary_report_sha256": "f8099c81067009cf9726b382eb4d58bfa287a551ba5a1f74698d8aacf425ee3c",
+    "primary_sidecar_sha256": "9c49e41311fc40c306900c247433bd9ddc9b4c7b959c857a981fbe5aa2e437c3",
+    "replay_report_sha256": "69f1247493780f9526c492eccf2a8c82a8e53998445587ec413c94386df28579",
+    "replay_sidecar_sha256": "6ad820b1570bac53710c8e865c7398541136cc7ee822bf9210c0e66bde5c1514",
+    "sidecar_file_hash_expected_to_differ_by_embedded_path": true
+  },
+  "next_gate": {
+    "step": "export frozen float16 feature-map caches for fit and model_validation",
+    "training": "fit-only dense CMCP proposal training",
+    "model_validation": "proposal-only checkpoint selection and gates",
+    "selector_training_authorized": false,
+    "state_write_training_authorized": false
+  },
+  "integrity": {
+    "candidate_generation_ground_truth_free": true,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false
+  }
+}
