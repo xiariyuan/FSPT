@@ -47,9 +47,16 @@ Train on fit only:
 - local safety comparator.
 
 The frozen native trajectory branch and all other CoTracker parameters receive
-no gradients. Hard NMS coordinates are detached, while dense proposal losses
-train LMRA/CMCP and local candidate losses train LMRA/CMCP/comparator at the
-selected locations.
+no gradients. Hard NMS coordinates are detached. Dense proposal losses train LMRA and
+CMCP. Local candidate losses train the comparator using stop-gradient local
+samples from the hard candidate set. This preserves strict CUDA determinism:
+`grid_sample` backward is not used after hard discretization. The comparator
+still sees the LMRA/CMCP features produced by the current optimizer step, but
+its local loss does not backpropagate through the discrete sampler. Query,
+previous-native, and EMA support samples are also stop-gradient because CUDA
+bilinear-sampler backward is not strictly deterministic. The full current-frame
+feature map remains differentiable through every dense correlation field, so
+LMRA still receives proposal-supervision gradients.
 
 ## 4. Loss and safety contract
 
@@ -105,3 +112,40 @@ The candidate-coordinate SHA-256 remains
 `c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`.
 Independent full-video runs reproduce every tensor hash. Fit-only joint training
 of LMRA, initialized CMCP, and initialized comparator is authorized.
+
+
+## 7. Frozen joint-training configuration
+
+```text
+seed: 17
+optimizer: AdamW
+LMRA learning rate: 3e-4
+CMCP learning rate: 1e-4
+comparator learning rate: 1e-4
+weight decay: 1e-4
+epochs: 8
+patience: 3
+point batch: 4
+checkpoint rule: safety-feasible, then maximum direct AJ
+```
+
+Joint loss weights are `1.0` dense CMCP, `1.0` local comparator, and `0.1`
+feature distortion. These values are fixed before model-validation training and
+will not be swept.
+
+## 8. Completed formal result
+
+Formal fit-only seed-17 joint training is exactly reproducible. Safety-first
+checkpoint selection retains epoch 2, which improves complete model-validation
+AJ by `+0.5945` and delta average by `+0.8745`. The paired AJ 95% CI is
+`[+0.3910,+0.8171]`; all 16 videos are positive. Harmful non-native selection is
+`0.8229%`, and the severe 16px error rate improves by `1.0870` percentage points.
+The learned candidate oracle remains strong at `+20.2743` AJ.
+
+All preregistered P0i gates pass. The exact-replay combined model-state SHA-256
+is `bff4bb67f7b60538cd818ab0ee5d0c5a41af065f8611d44c53fdc44023066ddb`,
+and the primary/replay checkpoint files share SHA-256
+`ada17585b9ef25272d30e5ae7eb4a6761e1318f7d765f8aa43913331dffdb610`.
+This authorizes a controlled strong-backbone MUSR ablation on fit/model-validation
+only. Calibration, final holdout, DAVIS, and official Kinetics remain locked.
+See `docs/ROUTED_CMCP_LMRA_TRAINING_RESULT_2026-07-17.md`.

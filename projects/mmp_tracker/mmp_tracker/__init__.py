@@ -29,6 +29,9 @@ from .routeD_cmcp_late_metric_adapter import (
     LateMetricResidualAdapter,
     LMRAConfig,
 )
+from .routeD_cmcp_lmra_training import (
+    LMRAJointLossConfig,
+)
 from .routeD_cmcp_pairwise_training import (
     PairwiseSafetyLossConfig,
     StaticTokenNormalization,
@@ -84,6 +87,7 @@ __all__ = [
     "LMRAConfig",
     "LMRA_SCHEMA_VERSION",
     "LMRA_TRAINABLE_PARAMETERS",
+    "LMRAJointLossConfig",
     "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
     "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

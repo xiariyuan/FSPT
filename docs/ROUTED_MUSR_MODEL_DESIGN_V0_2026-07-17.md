@@ -396,3 +396,20 @@ candidate-coordinate hash remains
 `c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`.
 P0i-b joint fit-only training is therefore authorized. See
 `docs/ROUTED_CMCP_LMRA_INTERFACE_RESULT_2026-07-17.md`.
+
+
+## 22. P0i LMRA joint-training result
+
+Formal fit-only seed-17 joint training of the rank-32 LMRA, initialized CMCP,
+and initialized local comparator is exactly reproducible. Safety-first checkpoint
+selection retains epoch 2. Complete model-validation AJ improves by `+0.5945`
+and delta average by `+0.8745`; paired AJ 95% CI is
+`[+0.3910,+0.8171]`, and all 16 videos are positive. Harmful non-native
+selection is `0.8229%`, while the 16px severe rate improves by `1.0870`
+percentage points. Candidate oracle AJ remains `+20.2743`.
+
+All P0i gates pass. This is the first strong-backbone Route-D learned result to
+pass magnitude, paired consistency, tail, safety, and exact-replay gates
+simultaneously. It authorizes a controlled MUSR component ablation on the same
+fit/model-validation protocol, not calibration, final holdout, DAVIS, or
+Kinetics. See `docs/ROUTED_CMCP_LMRA_TRAINING_RESULT_2026-07-17.md`.

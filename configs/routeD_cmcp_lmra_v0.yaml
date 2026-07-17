@@ -58,3 +58,28 @@ formal_gates:
   delta_gain_points_gt: 0.0
   severe_16px_not_worse: true
   harmful_non_native_rate_max: 0.01
+
+training:
+  seed: 17
+  optimizer: AdamW
+  lmra_learning_rate: 0.0003
+  cmcp_learning_rate: 0.0001
+  comparator_learning_rate: 0.0001
+  weight_decay: 0.0001
+  epochs: 8
+  patience: 3
+  point_batch_size: 4
+  eval_point_batch_size: 4
+  bootstrap_samples: 5000
+  grad_clip_norm: 1.0
+  checkpoint_rule: safety_feasible_then_max_direct_AJ
+  optimizer_step: once_per_video_after_point_batch_gradient_accumulation
+
+joint_loss:
+  dense_cmcp_weight: 1.0
+  local_comparator_weight: 1.0
+  feature_distortion_weight: 0.1
+  local_sampler_gradient_to_generator: stop_gradient_for_strict_cuda_determinism
+  memory_sampler_gradient_to_feature_map: stop_gradient_for_strict_cuda_determinism
+  current_dense_feature_map_gradient: enabled
+  hard_nms_coordinate_gradient: detached

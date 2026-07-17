@@ -319,6 +319,7 @@ def build_causal_multi_memory_correlations(
     input_width: int,
     ema_alpha: float = 0.9,
     motion_sigma_cells: float = 2.0,
+    detach_sampled_memories: bool = False,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     """Build query/previous/EMA correlation fields without future information."""
     if fmaps.ndim != 4:
@@ -333,6 +334,7 @@ def build_causal_multi_memory_correlations(
         raise ValueError("ema_alpha must be in [0,1)")
 
     fmaps = F.normalize(fmaps.float(), dim=1, eps=1.0e-12)
+    memory_fmaps = fmaps.detach() if detach_sampled_memories else fmaps
     native = native_coords_xy_px.to(device=fmaps.device, dtype=fmaps.dtype)
     queries = query_points_tyx.to(device=fmaps.device, dtype=fmaps.dtype)
     point_count, frame_count = native.shape[:2]
@@ -345,7 +347,7 @@ def build_causal_multi_memory_correlations(
     query_support = torch.stack(
         [
             sample_feature_at_xy(
-                fmaps[int(query_frames[index].item())],
+                memory_fmaps[int(query_frames[index].item())],
                 query_xy[index],
                 input_height=input_height,
                 input_width=input_width,
@@ -366,8 +368,9 @@ def build_causal_multi_memory_correlations(
     for frame_index in range(frame_count):
         active = frame_index >= query_frames
         current_map = fmaps[frame_index]
+        current_memory_map = memory_fmaps[frame_index]
         current_native = sample_feature_at_xy(
-            current_map,
+            current_memory_map,
             native[:, frame_index],
             input_height=input_height,
             input_width=input_width,
