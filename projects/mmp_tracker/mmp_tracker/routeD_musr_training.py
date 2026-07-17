@@ -15,7 +15,10 @@ from torch import nn
 
 from datasets.metrics import compute_tapvid_metrics
 
-from .routeD_kubric_cache import VIDEO_SIDECAR_SCHEMA_VERSION, file_sha256
+from .routeD_kubric_cache import (
+    SUPPORTED_VIDEO_SIDECAR_SCHEMA_VERSIONS,
+    file_sha256,
+)
 from .routeD_recovery_network import (
     MultiHypothesisStateRecoveryNetwork,
     RecoveryLossConfig,
@@ -91,7 +94,7 @@ def _load_verified_artifact(row: Mapping[str, Any]) -> dict[str, Any]:
     if file_sha256(sidecar) != str(row["sidecar_sha256"]):
         raise ValueError(f"sidecar hash mismatch: {sidecar}")
     artifact = torch.load(sidecar, map_location="cpu", weights_only=False)
-    if artifact.get("schema_version") != VIDEO_SIDECAR_SCHEMA_VERSION:
+    if artifact.get("schema_version") not in SUPPORTED_VIDEO_SIDECAR_SCHEMA_VERSIONS:
         raise ValueError(f"unexpected sidecar schema: {sidecar}")
     tensors = artifact["tensors"]
     if not torch.equal(

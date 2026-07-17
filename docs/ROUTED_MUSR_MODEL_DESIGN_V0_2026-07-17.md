@@ -238,3 +238,20 @@ compressed summaries with full query/candidate CoTracker feature interactions,
 a local correlation patch, and full online track state. See
 `docs/ROUTED_MUSR_SELECTOR_STAGEA_RESULT_2026-07-17.md` and
 `docs/ROUTED_MUSR_RAW_REPRESENTATION_V1_PLAN_2026-07-17.md`.
+
+## 13. Raw-v1 Stage-A result and temporal pivot
+
+The representation-only raw-v1 experiment preserves every candidate coordinate
+and expands candidate/state inputs from 64/32 to 601/160. Complete fit and
+model-validation caches pass all frozen-contract and replay checks. The formal
+seed-17 selector is exactly reproducible, but best model-validation AJ changes
+by only `-0.0149` point with paired 95% CI `[-0.0806,+0.0502]`. It is slightly
+worse than the structured selector and does not authorize state-write training.
+
+Fit-to-validation marginal feature shift is small, while beneficial candidate
+events are temporally persistent and the single-frame selector recalls only
+`8.27%` of them. The active P0f design is therefore a causal, rank-invariant
+set-evidence accumulator over a fixed six-frame window. Candidate generation,
+raw-v1 features, partitions, optimizer, and gates remain frozen. See
+`docs/ROUTED_MUSR_RAW_V1_STAGEA_RESULT_2026-07-17.md` and
+`docs/ROUTED_MUSR_TEMPORAL_REPRESENTATION_V0_PLAN_2026-07-17.md`.

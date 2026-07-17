@@ -67,6 +67,14 @@ def main() -> None:
     _,val_index=load_training_rows(args.validation_index,expected_partition='model_validation')
     if fit_index['protocol_sha256'] != val_index['protocol_sha256'] or fit_index['protocol_sha256'] != qualification['protocol']['sha256']:
         raise RuntimeError('protocol mismatch')
+    for name, index in (('fit', fit_index), ('model_validation', val_index)):
+        if int(index.get('candidate_feature_dim', network_config.candidate_feature_dim)) != network_config.candidate_feature_dim:
+            raise RuntimeError(f'{name} candidate feature dimension mismatch')
+        if int(index.get('state_feature_dim', network_config.state_feature_dim)) != network_config.state_feature_dim:
+            raise RuntimeError(f'{name} state feature dimension mismatch')
+        integrity=index.get('integrity',{})
+        if any(bool(integrity.get(key,False)) for key in ('calibration_read','final_holdout_read','tapvid_davis_read','tapvid_kinetics_read')):
+            raise RuntimeError(f'{name} cache reports locked-data contamination')
     normalization=compute_feature_normalization(rows)
     model=MultiHypothesisStateRecoveryNetwork(network_config).to(args.device)
     # State-write heads are excluded from Stage A by construction.
@@ -97,9 +105,11 @@ def main() -> None:
       'delta_gain_positive': final['gain_points']['delta_average']>0,
       'severe_16px_not_worse': final['severe_16px_rate']['delta']<=0,
       'oracle_utility_match_rate_at_least_0_25': final['behavior']['oracle_utility_match_rate']>=0.25,
+      'harmful_global_selection_rate_at_most_0_01': final['behavior']['harmful_global_selection_rate']<=0.01,
     }; gate['pass']=all(gate.values()); gate['decision']='ALLOW_STAGE_B_STATE_WRITE_TRAINING' if gate['pass'] else 'STOP_STAGE_B_AND_REDESIGN_CANDIDATE_REPRESENTATION'
     out=Path(args.output).resolve(); out.mkdir(parents=True,exist_ok=True)
-    bundle={'schema_version':'routeD_musr_selector_bundle_v1','seed':args.seed,'best_epoch':best_epoch,'network_config':asdict(network_config),'selector_loss_config':asdict(selector_config),'model_state':best,'model_state_sha256':state_dict_sha256(best),'normalization':normalization.to_serializable(),'optimizer':{'type':'AdamW','learning_rate':args.learning_rate,'weight_decay':args.weight_decay,'batch_size':args.batch_size,'epochs_requested':args.epochs,'patience':args.patience},'protocol_sha256':fit_index['protocol_sha256'],'fit_cache_index_sha256':fit_index['_index_sha256'],'validation_cache_index_sha256':val_index['_index_sha256'],'qualification_summary_sha256':file_sha256(qualification_path),'initialization_validation':init_eval,'final_validation':final,'gate':gate,'history':history,'external_data_read':{'calibration':False,'final_holdout':False,'tapvid_davis':False,'tapvid_kinetics':False}}
+    config_path=Path(args.config).resolve()
+    bundle={'schema_version':'routeD_musr_selector_bundle_v1','seed':args.seed,'best_epoch':best_epoch,'network_config':asdict(network_config),'selector_loss_config':asdict(selector_config),'model_state':best,'model_state_sha256':state_dict_sha256(best),'normalization':normalization.to_serializable(),'optimizer':{'type':'AdamW','learning_rate':args.learning_rate,'weight_decay':args.weight_decay,'batch_size':args.batch_size,'epochs_requested':args.epochs,'patience':args.patience},'config_path':str(config_path),'config_sha256':file_sha256(config_path),'representation_schema_version':fit_index.get('representation_schema_version'),'protocol_sha256':fit_index['protocol_sha256'],'fit_cache_index_sha256':fit_index['_index_sha256'],'validation_cache_index_sha256':val_index['_index_sha256'],'qualification_summary_sha256':file_sha256(qualification_path),'initialization_validation':init_eval,'final_validation':final,'gate':gate,'history':history,'external_data_read':{'calibration':False,'final_holdout':False,'tapvid_davis':False,'tapvid_kinetics':False}}
     ckpt=out/'best.pt'; torch.save(bundle,ckpt)
     metrics={k:v for k,v in bundle.items() if k!='model_state'}; metrics['checkpoint_path']=str(ckpt); metrics['checkpoint_sha256']=file_sha256(ckpt)
     (out/'metrics.json').write_text(json.dumps(metrics,indent=2,ensure_ascii=False)+'\n')

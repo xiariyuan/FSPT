@@ -80,3 +80,18 @@ final_holdout: locked
 tapvid_davis: locked
 tapvid_kinetics official 1,144: locked and not rerun
 ```
+
+## 6. Completed result
+
+Raw-v1 caches are complete for fit/model-validation at 48/16 videos. All
+candidate-coordinate hashes remain unchanged and four replay anchors are
+byte-identical. The formal seed-17 selector is exactly reproducible but fails:
+AJ gain is `-0.0149` point with paired 95% CI `[-0.0806,+0.0502]`. Delta improves
+`+0.1290`, severe-16px rate improves, and harmful selection remains below 1%,
+but the AJ and positive-CI gates fail.
+
+Simple marginal feature shift is small. The selector recalls only `8.27%` of
+beneficial non-native events, while those events show strong temporal
+persistence. Therefore raw-v1 is closed without patch-size, threshold, gate, or
+writeback sweeps. The next route is the fixed causal temporal model in
+`docs/ROUTED_MUSR_TEMPORAL_REPRESENTATION_V0_PLAN_2026-07-17.md`.

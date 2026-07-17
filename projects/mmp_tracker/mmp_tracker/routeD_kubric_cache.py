@@ -22,6 +22,11 @@ from datasets.metrics import compute_tapvid_metrics
 PROTOCOL_SCHEMA_VERSION = "routeD_musr_kubric_cache_protocol_v0"
 CACHE_INDEX_SCHEMA_VERSION = "routeD_musr_cotracker3_kubric_cache_index_v1"
 VIDEO_SIDECAR_SCHEMA_VERSION = "routeD_musr_cotracker3_stage0_adapter_v1"
+RAW_V1_VIDEO_SIDECAR_SCHEMA_VERSION = "routeD_musr_cotracker3_raw_v1_sidecar_v2"
+SUPPORTED_VIDEO_SIDECAR_SCHEMA_VERSIONS = (
+    VIDEO_SIDECAR_SCHEMA_VERSION,
+    RAW_V1_VIDEO_SIDECAR_SCHEMA_VERSION,
+)
 
 
 @dataclass(frozen=True)
@@ -276,7 +281,7 @@ def aggregate_partition_sidecars(
     for path_like in sidecar_paths:
         path = Path(path_like)
         artifact = torch.load(path, map_location="cpu", weights_only=False)
-        if artifact.get("schema_version") != VIDEO_SIDECAR_SCHEMA_VERSION:
+        if artifact.get("schema_version") not in SUPPORTED_VIDEO_SIDECAR_SCHEMA_VERSIONS:
             raise ValueError(f"unexpected sidecar schema: {path}")
         tensors = artifact["tensors"]
         candidate_zero = tensors["candidate_coords_xy_px"][..., 0, :]
