@@ -75,7 +75,8 @@ P0g-c completed with a partial mechanism success and formal gate failure. Exact-
 P0h-a completed: the exact epoch-1 CMCP proposal generator is frozen and the 409,224-parameter local pairwise comparator passes its real fit-video interface gate. The full 64-point x 24-frame candidate-coordinate SHA-256 is c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300; independent runs reproduce all candidate and selection tensor hashes, and zero-step selection is exactly native.
 P0h-b completed: frozen 88-D local-token caches are complete at fit/model-validation 48/16 videos. The 84-D static evidence is GT-free and the four dynamic causal-summary fields are zero placeholders. Candidate-coordinate combined SHA-256 values are 3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2 (fit) and edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1 (model-validation); replay anchors 0/47/48/63 are exact.
 P0h-c completed with a safe, statistically positive, exact-replay result that fails only the preregistered magnitude gate. Best epoch 3 reaches +0.2449 AJ and +0.4962 delta with paired AJ CI [+0.1324,+0.3693], 15/16 videos positive, harmful non-native selection 0.3132%, and improved 16px tail. The frozen candidate oracle remains +20.0375 AJ. Beneficial-candidate recall is only 3.3362%, so the +0.5 AJ gate fails and MUSR/state writeback/calibration remain forbidden.
-P0i active: add one zero-initialized rank-32 late feature metric residual adapter after frozen CoTracker fnet.conv3 for the proposal/evidence branch only. The native trajectory branch remains byte-frozen. Initialize from formal P0g/P0h checkpoints and train LMRA + CMCP + comparator on fit only; no layer, rank, threshold, NMS, EMA, or top-K sweep is allowed.
+P0i-a completed: the 8,352-parameter rank-32 LMRA passes exact fit-video zero-step equivalence. Adapted and frozen feature maps are byte-identical; online reconstruction reproduces the formal P0h candidate-coordinate hash c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300, raw token hash, dynamic decisions, and selected coordinates in independent runs. The initialized joint trainable branch has 681,323 parameters while the native tracker remains frozen.
+P0i-b active: jointly train LMRA + initialized CMCP + initialized comparator on fit only and select checkpoints on complete model-validation with the same safety-first rule. No layer, rank, threshold, NMS, EMA, or top-K sweep is allowed.
 ```
 
 Read first:
@@ -100,6 +101,7 @@ docs/ROUTED_CMCP_PAIRWISE_SAFETY_INTERFACE_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_PAIRWISE_TOKEN_CACHE_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_PAIRWISE_SAFETY_TRAINING_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_LATE_METRIC_ADAPTER_V0_PLAN_2026-07-17.md
+docs/ROUTED_CMCP_LMRA_INTERFACE_RESULT_2026-07-17.md
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
 ```

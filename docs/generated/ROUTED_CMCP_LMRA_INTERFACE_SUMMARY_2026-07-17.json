@@ -1,0 +1,99 @@
+{
+  "schema_version": "routeD_cmcp_lmra_interface_summary_v0",
+  "date": "2026-07-17",
+  "status": "completed_pass",
+  "decision": "ALLOW_LMRA_FIT_ONLY_JOINT_TRAINING",
+  "claim_boundary": "Zero-step interface result on one authorized fit video; not learned LMRA performance.",
+  "adapter": {
+    "schema_version": "routeD_cmcp_late_metric_residual_adapter_v0",
+    "rank": 32,
+    "feature_dim": 128,
+    "trainable_parameters": 8352,
+    "state_sha256": "5ea0d8d4937784edcb98089776089eda42ef7010a48d902078f3ff20de28961a",
+    "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_lmra_v0.yaml",
+    "config_sha256": "605367b9489ab8da1718c4b4da7f447e8aa49b3b5519de1dccf87c0078a94300",
+    "frozen_feature_sha256": "c00a882aa360692953fe8a809dae1df9d0feec1e41cadad20bc06bc708b0978b",
+    "adapted_feature_sha256": "c00a882aa360692953fe8a809dae1df9d0feec1e41cadad20bc06bc708b0978b",
+    "byte_exact_identity": true
+  },
+  "initialized_components": {
+    "cmcp_model_state_sha256": "fc3044eb6daa1fb2416164fc0afe58ff5fa4eb4442811ce9c0b4917fbbdb57c0",
+    "cmcp_trainable_parameters": 263747,
+    "comparator_model_state_sha256": "46ba80fbb217fd760e009d3bb5a03d43c55c6e3a8dca58e3fb247a00f51e1bcd",
+    "comparator_trainable_parameters": 409224,
+    "total_joint_trainable_parameters": 681323
+  },
+  "sample": {
+    "partition": "fit",
+    "source_index": 0,
+    "video_name": "1680",
+    "points": 64,
+    "frames": 24,
+    "candidate_count": 6
+  },
+  "audit": {
+    "zero_step_formal_p0h_exact": true,
+    "independent_full_video_replay_exact": true,
+    "replay_checks": {
+      "adapter_schema_version": true,
+      "source_partition": true,
+      "source_index": true,
+      "video_name": true,
+      "points": true,
+      "frames": true,
+      "candidate_count": true,
+      "config_sha256": true,
+      "feature_index_sha256": true,
+      "token_index_sha256": true,
+      "base_sidecar_sha256": true,
+      "cmcp_checkpoint_sha256": true,
+      "cmcp_model_state_sha256": true,
+      "comparator_checkpoint_sha256": true,
+      "comparator_model_state_sha256": true,
+      "adapter_state_sha256": true,
+      "trainable_parameters": true,
+      "total_trainable_parameters": true,
+      "zero_step_formal_p0h_checks": true,
+      "in_process_replay_checks": true,
+      "tensor_hashes": true,
+      "integrity": true
+    },
+    "candidate_coordinate_sha256": "c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300",
+    "candidate_token_sha256": "82dfbabca0d8cede98c82c781e48a61a5017ccfd23d1dd029fbc2109de95064b",
+    "selected_coordinate_sha256": "46d63f0fc9218f54221d075e209bd3fada3a76ad448d7d5fd584a3841716a8e4",
+    "tensor_hashes": {
+      "candidate_tokens": "82dfbabca0d8cede98c82c781e48a61a5017ccfd23d1dd029fbc2109de95064b",
+      "candidate_coords_xy_px": "c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300",
+      "candidate_scores": "90eac478727480d795cfa18154117e4b4bf0607bda00df46c7d358aaf188cffc",
+      "candidate_valid_mask": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c",
+      "frame_valid": "ad45d21215a838c5fa55d224f5892134895054e014754b8abd6dcb361abecf9c",
+      "selected_candidate_index": "a516bb28da7af7b485605ebde705a3ebeabfea4ffc8c208f2a3ce92c9e164b85",
+      "selected_coord_xy_px": "46d63f0fc9218f54221d075e209bd3fada3a76ad448d7d5fd584a3841716a8e4",
+      "frozen_feature_maps": "c00a882aa360692953fe8a809dae1df9d0feec1e41cadad20bc06bc708b0978b",
+      "adapted_feature_maps": "c00a882aa360692953fe8a809dae1df9d0feec1e41cadad20bc06bc708b0978b"
+    }
+  },
+  "artifacts": {
+    "primary_report_sha256": "d142df0320ed2647dcaddfe021e3b9e4b1f7ad8a74d46557627da3678e16d2ac",
+    "primary_sidecar_sha256": "70ccc92db9b6b6e90aede5f31db2db4d92f01e36656f3352d0f8524c33acfc19",
+    "replay_report_sha256": "8c221c11b43aaeb63dbecb9c69dab1c0c069b7aa6db6ffab9f0b784fb22eb4a9",
+    "replay_sidecar_sha256": "97be750d7e7378f87533777dd35dc89466fb4fd9fb103cb21eb30093821a7c86",
+    "sidecar_hash_expected_to_differ_by_embedded_path": true
+  },
+  "next_gate": {
+    "training": "LMRA + initialized CMCP + initialized comparator on fit only",
+    "checkpoint_selection": "complete model_validation only",
+    "native_tracker_gradients_authorized": false,
+    "rank_or_layer_sweep_authorized": false
+  },
+  "integrity": {
+    "native_trajectory_modified": false,
+    "candidate_zero_modified": false,
+    "ground_truth_used_for_adapter_or_selection": false,
+    "validation_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false
+  }
+}

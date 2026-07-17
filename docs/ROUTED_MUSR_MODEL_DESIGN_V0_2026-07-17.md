@@ -379,3 +379,20 @@ CoTracker `fnet.conv3`, affecting only proposal correlations and local evidence.
 The native trajectory branch stays byte-frozen. See
 `docs/ROUTED_CMCP_PAIRWISE_SAFETY_TRAINING_RESULT_2026-07-17.md` and
 `docs/ROUTED_CMCP_LATE_METRIC_ADAPTER_V0_PLAN_2026-07-17.md`.
+
+
+## 21. P0i LMRA interface
+
+A zero-initialized rank-32 late feature metric residual adapter is inserted after
+frozen CoTracker `fnet.conv3` for the proposal/evidence branch only. It contains
+8,352 parameters. Together with the initialized formal CMCP and P0h comparator,
+the trainable branch contains 681,323 parameters; the native trajectory branch
+remains frozen.
+
+On fit video 0, adapted and frozen feature maps are byte-identical, and online
+reconstruction reproduces the formal P0h candidate coordinates, raw tokens,
+causal decisions, and selected coordinates exactly in independent runs. The
+candidate-coordinate hash remains
+`c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`.
+P0i-b joint fit-only training is therefore authorized. See
+`docs/ROUTED_CMCP_LMRA_INTERFACE_RESULT_2026-07-17.md`.

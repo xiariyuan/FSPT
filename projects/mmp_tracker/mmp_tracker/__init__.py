@@ -23,6 +23,12 @@ from .routeD_multi_memory_proposal import (
     CMCPConfig,
     CausalMultiMemoryProposalGenerator,
 )
+from .routeD_cmcp_late_metric_adapter import (
+    LMRA_SCHEMA_VERSION,
+    LMRA_TRAINABLE_PARAMETERS,
+    LateMetricResidualAdapter,
+    LMRAConfig,
+)
 from .routeD_cmcp_pairwise_training import (
     PairwiseSafetyLossConfig,
     StaticTokenNormalization,
@@ -74,6 +80,10 @@ __all__ = [
     "CMCP_PAIRWISE_DYNAMIC_SUMMARY_DIM",
     "PairwiseSafetyLossConfig",
     "StaticTokenNormalization",
+    "LateMetricResidualAdapter",
+    "LMRAConfig",
+    "LMRA_SCHEMA_VERSION",
+    "LMRA_TRAINABLE_PARAMETERS",
     "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
     "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

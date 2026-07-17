@@ -93,3 +93,15 @@ If LMRA fails, do not unfreeze earlier encoder layers or sweep adapter rank on
 model validation. The strong-backbone rescue route is then closed for the
 current data scale, and the paper should retain the verified mechanism and
 negative-gate narrative rather than claim competitive full-system performance.
+
+
+## 6. Completed interface milestone
+
+The 8,352-parameter rank-32 LMRA passes exact zero-step reconstruction on
+Kubric fit video 0. The adapted feature map is byte-identical to the frozen map,
+and the online LMRA -> CMCP -> comparator path reproduces the formal P0h
+candidate coordinates, 88-D tokens, causal decisions, and selected coordinates.
+The candidate-coordinate SHA-256 remains
+`c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300`.
+Independent full-video runs reproduce every tensor hash. Fit-only joint training
+of LMRA, initialized CMCP, and initialized comparator is authorized.
