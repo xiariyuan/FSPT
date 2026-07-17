@@ -281,10 +281,10 @@ authorized until the proposal-only gate passes. See
 ## 15. CMCP interface milestone
 
 The causal multi-memory correlation proposal generator moves trainable reasoning
-before top-K discretization. Its 64-channel ConvGRU proposal core has 262,019
+before top-K discretization. Its formal 64-channel ConvGRU proposal core has 263,747
 trainable parameters and consumes immutable query-anchor, previous-native, and
-fixed-alpha EMA correlations plus a native motion prior and previous proposal
-evidence. Native candidate 0 remains frozen.
+fixed-alpha EMA correlations, all three pairwise correlation differences, a
+native motion prior, and previous proposal evidence. Native candidate 0 remains frozen.
 
 On authorized fit video 0, the real CoTracker3 run reproduces every previously
 qualified native state tensor exactly. All 64 points and 24 frames satisfy exact
@@ -358,3 +358,24 @@ for fit and
 `edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1`
 for model validation. P0h-c may train only the comparator on fit; all generator,
 backbone, state-write, calibration, and external-data locks remain active.
+
+
+## 20. P0h comparator result and P0i metric-adapter pivot
+
+The frozen-candidate local pairwise comparator is exactly reproducible at seed
+17. Best epoch 3 improves complete model-validation AJ by `+0.2449` and delta
+average by `+0.4962`, with paired AJ CI `[+0.1324,+0.3693]`. Fifteen of sixteen
+videos are positive, harmful non-native selection is `0.3132%`, and the severe
+16px rate improves. Candidate coordinates and the `+20.0375` AJ oracle remain
+exactly equal to P0g.
+
+The comparator passes every safety and consistency gate but fails the
+preregistered `+0.5` AJ magnitude gate. Its beneficial-candidate recall is only
+`3.3362%`, so no MUSR, state-write, calibration, final-holdout, DAVIS, or
+Kinetics step is authorized.
+
+P0i adds a single zero-initialized rank-32 residual metric adapter after frozen
+CoTracker `fnet.conv3`, affecting only proposal correlations and local evidence.
+The native trajectory branch stays byte-frozen. See
+`docs/ROUTED_CMCP_PAIRWISE_SAFETY_TRAINING_RESULT_2026-07-17.md` and
+`docs/ROUTED_CMCP_LATE_METRIC_ADAPTER_V0_PLAN_2026-07-17.md`.

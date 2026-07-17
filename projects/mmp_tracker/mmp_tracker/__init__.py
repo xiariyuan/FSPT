@@ -23,6 +23,10 @@ from .routeD_multi_memory_proposal import (
     CMCPConfig,
     CausalMultiMemoryProposalGenerator,
 )
+from .routeD_cmcp_pairwise_training import (
+    PairwiseSafetyLossConfig,
+    StaticTokenNormalization,
+)
 from .routeD_cmcp_pairwise_cache import (
     CMCP_PAIRWISE_TOKEN_CACHE_SCHEMA_VERSION,
     CMCP_PAIRWISE_TOKEN_INDEX_SCHEMA_VERSION,
@@ -68,6 +72,8 @@ __all__ = [
     "CMCP_PAIRWISE_TOKEN_INDEX_SCHEMA_VERSION",
     "CMCP_PAIRWISE_STATIC_TOKEN_DIM",
     "CMCP_PAIRWISE_DYNAMIC_SUMMARY_DIM",
+    "PairwiseSafetyLossConfig",
+    "StaticTokenNormalization",
     "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
     "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

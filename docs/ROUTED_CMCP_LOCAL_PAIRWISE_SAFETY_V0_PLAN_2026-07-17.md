@@ -100,8 +100,9 @@ harmful non-native selection rate: <= 1%
 ```
 
 If this comparator fails, do not tune a threshold on model-validation. The next
-route is the previously reserved partial joint fine-tuning of late CoTracker
-correlation/query-key layers under the same locked data protocol.
+route is the preregistered zero-initialized rank-32 late feature metric residual
+adapter after frozen CoTracker `fnet.conv3`, used only by the proposal/evidence
+branch while the native trajectory remains byte-frozen.
 
 
 ## 6. Completed interface milestone
@@ -125,3 +126,18 @@ and model-validation candidate-coordinate combined hashes are
 `3f1be12649a8c4757c933c3f6d8c99b9f3d6bcd146262406557e139377ca57c2`
 and `edf8ebe25cc11b04406efe27203a7d2bea4da8ce075160a27a11d8edda1fb0a1`.
 Replay anchors 0/47/48/63 are exact. Comparator-only fit training is authorized.
+
+
+## 8. Completed comparator-only result
+
+Formal seed-17 comparator training is exactly reproducible. Best epoch 3 improves
+model-validation AJ by `+0.2449` and delta average by `+0.4962`; paired AJ 95%
+CI is `[+0.1324,+0.3693]`, 15/16 videos are positive, harmful non-native
+selection is `0.3132%`, and the 16px severe-error rate improves. The frozen
+candidate oracle remains exactly `+20.0375` AJ.
+
+All safety and statistical gates pass, but the preregistered direct-AJ magnitude
+gate `>= +0.5` fails. Beneficial-candidate recall is only `3.3362%`. P0h is
+therefore closed without threshold tuning. P0i uses a zero-initialized rank-32
+late feature metric residual adapter in the proposal/evidence branch while
+keeping the native trajectory byte-frozen.

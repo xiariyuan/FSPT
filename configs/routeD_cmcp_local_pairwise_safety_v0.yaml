@@ -46,3 +46,27 @@ formal_gates:
   delta_gain_points_gt: 0.0
   severe_16px_not_worse: true
   harmful_non_native_rate_max: 0.01
+
+training:
+  seed: 17
+  optimizer: AdamW
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  epochs: 10
+  patience: 4
+  point_sequence_batch_size: 64
+  eval_point_sequence_batch_size: 128
+  grad_clip_norm: 1.0
+  bootstrap_samples: 5000
+  static_token_normalization: fit_only_first_84_dimensions
+  dynamic_summary_normalization: none
+  checkpoint_rule: safety_feasible_then_max_direct_AJ
+
+loss_weights:
+  utility_bce: 1.0
+  catastrophic_risk_bce: 0.5
+  pairwise_preference: 1.0
+  abstention_to_native: 1.0
+  no_harm_margin: 1.0
+  harmful_non_native_multiplier: 10.0
+  pairwise_margin: 0.25

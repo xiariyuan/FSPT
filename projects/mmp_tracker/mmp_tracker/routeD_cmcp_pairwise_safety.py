@@ -217,7 +217,8 @@ class CMCPLocalPairwiseSafetyComparator(nn.Module):
         score = score.masked_fill(~candidate_valid_mask, float("-inf"))
         proposed_index = score.argmax(dim=-1)
         pooled = encoded[:, 0]
-        abstention_probability = torch.sigmoid(self.abstention_head(pooled).squeeze(-1))
+        abstention_logit = self.abstention_head(pooled).squeeze(-1)
+        abstention_probability = torch.sigmoid(abstention_logit)
         selected_index = torch.where(
             abstention_probability >= 0.5,
             torch.zeros_like(proposed_index),
@@ -229,9 +230,11 @@ class CMCPLocalPairwiseSafetyComparator(nn.Module):
         return {
             "utility_logits": utility_logits,
             "utility_probability": utility_probability,
+            "risk_logit": self.risk_head(encoded).squeeze(-1),
             "risk_probability": risk_probability,
             "preference_logit": preference_logit,
             "candidate_score": score,
+            "abstention_logit": abstention_logit,
             "abstention_probability": abstention_probability,
             "selected_candidate_index": selected_index,
             "selected_coord_xy_px": selected_coord,
