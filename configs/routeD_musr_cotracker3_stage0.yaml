@@ -1,0 +1,80 @@
+# Route-D MUSR stage-0 research contract.
+# This file freezes the intended experiment design; it is not yet wired into train.py.
+experiment:
+  name: routeD_musr_cotracker3_stage0
+  description: >-
+    Multi-hypothesis utility-conditioned state recovery on a frozen CoTracker3
+    online backbone. Joint candidate attention, monotonic multi-threshold utility,
+    catastrophic-risk prediction, abstention, and bounded state writeback.
+
+protocol:
+  development_data: tapvid_kubric_only
+  model_selection_data: tapvid_kubric_holdout_only
+  external_domains_locked_until_preregistration:
+    - tapvid_kinetics_official_scale_1144
+    - tapvid_davis
+  forbid_external_result_tuning: true
+  query_mode: first
+  raster_size: 256
+  causal_candidates_only: true
+  candidate_zero_is_native: true
+
+backbone:
+  name: cotracker3_scaled_online
+  checkpoint: baselines/cotracker/checkpoints/scaled_online.pth
+  frozen: true
+  true_streaming: true
+  update_support_tokens_in_stage0: false
+  update_template_memory_in_stage0: false
+
+model:
+  class: MultiHypothesisStateRecoveryNetwork
+  candidate_feature_dim: 64
+  state_feature_dim: 32
+  hidden_dim: 128
+  num_attention_heads: 4
+  num_attention_layers: 3
+  feedforward_multiplier: 4
+  num_candidate_sources: 16
+  thresholds_px: [1.0, 2.0, 4.0, 8.0, 16.0]
+  threshold_utility_weights: [0.28, 0.24, 0.20, 0.16, 0.12]
+  catastrophe_risk_weight: 0.75
+  max_contextual_selector_bias: 0.25
+  coordinate_scale_px: 32.0
+  max_coordinate_update_px: 24.0
+  selection_temperature: 0.20
+  dropout: 0.10
+  state_fields: [coordinate, visibility, confidence, memory]
+
+candidate_sources:
+  - native_online_continuation
+  - native_local_correlation_topk
+  - query_memory_global_topk
+  - last_reliable_memory_topk
+  - motion_prior_candidate
+  - optional_audited_external_candidate
+
+loss:
+  threshold_bce_weight: 1.0
+  ranking_weight: 0.50
+  catastrophe_weight: 0.50
+  coordinate_weight: 1.0
+  no_harm_weight: 1.0
+  abstention_weight: 0.50
+  tail_weight: 0.25
+  catastrophe_threshold_px: 16.0
+  tail_start_px: 8.0
+  min_candidate_gain_px: 0.50
+  no_harm_margin_px: 0.0
+
+stage0_gates:
+  native_parity_when_only_native_candidate: exact
+  deterministic_replays: 2
+  candidate_export_deterministic: true
+  monotonic_threshold_probabilities: exact_by_parameterization
+  maximum_coordinate_update_px: 24.0
+  kubric_oracle_gain_aj_points_min: 3.0
+  kubric_learned_gain_aj_points_min: 1.0
+  paired_ci_lower_bound_gt: 0.0
+  closed_loop_better_than_open_loop: true
+  severe_tail_not_worse: true

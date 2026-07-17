@@ -63,7 +63,8 @@ Absolute-performance decision:
 Current next gate:
 
 ```text
-P0: complete the Route-D x strong-backbone feasibility audit and implement a one-video CoTracker3 online true-streaming interface/parity harness. CoTracker3 is the recommended first backbone; TAPNext/TAPNext++ is second. In parallel, complete Kubric-only A0--A7 component ablations and the efficiency package. Do not open a new external result until native parity, deterministic candidate export, causal state writeback, Kubric-only oracle headroom, and a new preregistration all pass. Preserve the current controller and corrected Kinetics result unchanged. Any stability guard must be developed on Kubric-only partitions under a separate prospective protocol.
+P0a completed: the new MUSR core model contract and tested implementation are in-tree. MUSR jointly models causal candidates, monotonic multi-threshold utility, catastrophic risk, abstention, and bounded multi-field state writeback; it is not a tree/threshold micro-tuning route.
+P0b active: implement the one-video CoTracker3 online true-streaming candidate/state adapter on Kubric only, prove routing-disabled native parity and deterministic replay, then measure causal candidate oracle headroom before any MUSR training. CoTracker3 is the first backbone; TAPNext/TAPNext++ or Track-On2 is the second-backbone validation route. Do not open a new external result until native parity, deterministic candidate export, causal state writeback, Kubric-only oracle headroom, learned Kubric gain, and a new preregistration all pass. Preserve the current controller and corrected Kinetics result unchanged.
 ```
 
 Read first:
