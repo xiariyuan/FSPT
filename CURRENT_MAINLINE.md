@@ -1,11 +1,13 @@
 # CURRENT_MAINLINE
 
-## Active override — 2026-07-16
+## Active override — 2026-07-17
 
 ```text
-Current active research mainline: Route-D frozen tree controller with official-scale TAP-Vid protocol correction.
+Current active research mainline: Route-D x strong-backbone feasibility and prospective validation.
+The corrected official-scale TAP-Vid-Kinetics gate is complete and frozen.
 Do not quote any pre-correction Route-D closed-loop TAP position metric.
-The earlier ReEntry paper status below is retained as historical project context, not the current execution priority.
+Do not use observed Kinetics results to tune any controller, threshold, fusion rule, candidate source, or guard.
+The earlier ReEntry and weak-backbone paper status below is retained as historical project context, not the current execution priority.
 ```
 
 Completed P0 audits:
@@ -37,18 +39,41 @@ Decisive external gate completed:
 - controller, policy, checkpoint, and configuration unchanged.
 ```
 
+Paper-writing gate completed:
+
+```text
+- independent Route-D paper identity separated from the historical ReEntry paper;
+- core abstract, introduction, method, corrected results, mechanism interpretation, and limitations drafted;
+- novelty positioned as multi-threshold utility modeling, risk-calibrated sparse routing, and explicit closed-loop state feedback;
+- current evidence judged promising but not yet sufficient for a confident CCF-B / CAS Zone 2 submission.
+```
+
+Absolute-performance decision:
+
+```text
+- independent MMP baseline AJ: 32.49;
+- Route-D closed-loop AJ: 34.80;
+- absolute improvement: +2.30 AJ points;
+- relative improvement: approximately +7.09%;
+- statistical confidence and mechanism evidence are strong;
+- absolute tracker competitiveness remains weak relative to modern strong TAP systems;
+- do not package the current 34.8 AJ system as SOTA, a benchmark leader, or a competitive full tracking system.
+```
+
 Current next gate:
 
 ```text
-Build the Route-D paper-ready method and experiment narrative around the exact byte-verified scope: 1,144 of 1,147 uniquely annotated release-CSV segments. Preserve the seven undefined-metric videos and severe per-video failures as limitations. Do not tune any guard on Kinetics; any stability guard must be developed on Kubric-only partitions and receive a new external protocol.
+P0: complete the Route-D x strong-backbone feasibility audit and implement a one-video CoTracker3 online true-streaming interface/parity harness. CoTracker3 is the recommended first backbone; TAPNext/TAPNext++ is second. In parallel, complete Kubric-only A0--A7 component ablations and the efficiency package. Do not open a new external result until native parity, deterministic candidate export, causal state writeback, Kubric-only oracle headroom, and a new preregistration all pass. Preserve the current controller and corrected Kinetics result unchanged. Any stability guard must be developed on Kubric-only partitions under a separate prospective protocol.
 ```
 
 Read first:
 
 ```text
+docs/ROUTED_PAPER_CORE_DRAFT_V0_2026-07-17.md
+docs/ROUTED_PAPER_READINESS_AND_EXPERIMENT_PLAN_2026-07-17.md
+docs/ROUTED_STRONG_BACKBONE_FEASIBILITY_AUDIT_2026-07-17.md
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
-docs/BELIEFCAL_MMP_MVP1_PREREG_2026-07-13.md
 ```
 
 ## Historical status

@@ -1,0 +1,192 @@
+{
+  "kind": "routeD_officialscale_paper_result_source",
+  "source_artifacts": {
+    "protocol_sha256": "61f1458ee0e62b865cde85d9f77e765b79da567add8fc277fe10599b0db13155",
+    "merged_sha256": "4b6d796ed017a86773c67c6447fd12827e9dfc185b0198430eef5f9813bf7b7e",
+    "paired_sha256": "f97da99d8e905d765c1f267521e4995b1c940ec2ae59bdcd751159a2b6e38c9a",
+    "final_audit_sha256": "8cf2af93c6629542b02062a625fc8c54ac3a14c6c65a6a3fb4111228c450408c"
+  },
+  "decisions": {
+    "primary_pass": true,
+    "official_protocol_pass": true,
+    "paper_claim_eligible": true
+  },
+  "scope": {
+    "official_annotation_groups": 1147,
+    "materialized_groups": 1144,
+    "missing_groups": 3,
+    "metric_coordinate_contract": "x * width, y * height",
+    "required_wording": "Exact order-preserving local materialization of 1,144 of the 1,147 uniquely annotated video segments in the byte-verified official TAP-Vid-Kinetics release CSV, evaluated with pinned official metric formulas and a frozen controller. Three release-CSV segments were not materialized.",
+    "invalid_video_count": 7,
+    "invalid_videos": [
+      {
+        "sample": 201,
+        "video_name": "kinetics_source_s001_p000086_kinetics_s000_000086"
+      },
+      {
+        "sample": 233,
+        "video_name": "kinetics_source_s002_p000003_kinetics_s000_000003"
+      },
+      {
+        "sample": 272,
+        "video_name": "kinetics_source_s002_p000042_kinetics_s000_000042"
+      },
+      {
+        "sample": 434,
+        "video_name": "kinetics_source_s003_p000089_kinetics_s000_000089"
+      },
+      {
+        "sample": 619,
+        "video_name": "kinetics_source_s005_p000044_kinetics_s000_000044"
+      },
+      {
+        "sample": 664,
+        "video_name": "kinetics_source_s005_p000089_kinetics_s000_000089"
+      },
+      {
+        "sample": 1114,
+        "video_name": "kinetics_source_s009_p000079_kinetics_s000_000079"
+      }
+    ],
+    "undefined_metric_policy": "Undefined official metrics are preserved as NaN, never replaced by zero, and excluded only from the affected finite-pair bootstrap."
+  },
+  "systems": {
+    "baseline": {
+      "label": "Independent baseline/local",
+      "AJ": 0.3249447807008109,
+      "OA": 0.9398428444023879,
+      "delta_avg": 0.42046051513808747
+    },
+    "routeD_open": {
+      "label": "Route-D open loop",
+      "AJ": 0.3373900717715783,
+      "OA": 0.9398428444023879,
+      "delta_avg": 0.4365033011038564
+    },
+    "routeD_closed": {
+      "label": "Route-D closed loop",
+      "AJ": 0.34798777423256194,
+      "OA": 0.9398428444023879,
+      "delta_avg": 0.4479908188009542
+    }
+  },
+  "comparisons": {
+    "open_vs_baseline": {
+      "label": "Open loop vs baseline",
+      "metrics": {
+        "AJ": {
+          "label": "Average Jaccard",
+          "aggregate_gain": 0.012445291070767417,
+          "finite_videos": 1138,
+          "paired_mean": 0.0124452910707674,
+          "ci95_low": 0.011200122495572201,
+          "ci95_high": 0.01371487770862955,
+          "positive_videos": 770,
+          "negative_videos": 188,
+          "tie_videos": 180,
+          "bootstrap_resamples": 20000
+        },
+        "delta_avg": {
+          "label": "Average point-threshold accuracy",
+          "aggregate_gain": 0.016042785965768913,
+          "finite_videos": 1137,
+          "paired_mean": 0.016042785965768906,
+          "ci95_low": 0.014671329920135522,
+          "ci95_high": 0.017425029714860183,
+          "positive_videos": 784,
+          "negative_videos": 169,
+          "tie_videos": 184,
+          "bootstrap_resamples": 20000
+        }
+      }
+    },
+    "closed_vs_baseline": {
+      "label": "Closed loop vs baseline",
+      "metrics": {
+        "AJ": {
+          "label": "Average Jaccard",
+          "aggregate_gain": 0.023042993531751044,
+          "finite_videos": 1138,
+          "paired_mean": 0.023042993531751075,
+          "ci95_low": 0.02056717201686339,
+          "ci95_high": 0.02556867030613993,
+          "positive_videos": 775,
+          "negative_videos": 199,
+          "tie_videos": 164,
+          "bootstrap_resamples": 20000
+        },
+        "delta_avg": {
+          "label": "Average point-threshold accuracy",
+          "aggregate_gain": 0.02753030366286674,
+          "finite_videos": 1137,
+          "paired_mean": 0.02753030366286673,
+          "ci95_low": 0.024800232453642643,
+          "ci95_high": 0.03026046249105195,
+          "positive_videos": 783,
+          "negative_videos": 188,
+          "tie_videos": 166,
+          "bootstrap_resamples": 20000
+        }
+      }
+    },
+    "closed_vs_open": {
+      "label": "Closed loop vs open loop",
+      "metrics": {
+        "AJ": {
+          "label": "Average Jaccard",
+          "aggregate_gain": 0.010597702460983627,
+          "finite_videos": 1138,
+          "paired_mean": 0.010597702460983675,
+          "ci95_low": 0.008804620374081439,
+          "ci95_high": 0.012395053200525674,
+          "positive_videos": 673,
+          "negative_videos": 274,
+          "tie_videos": 191,
+          "bootstrap_resamples": 20000
+        },
+        "delta_avg": {
+          "label": "Average point-threshold accuracy",
+          "aggregate_gain": 0.011487517697097827,
+          "finite_videos": 1137,
+          "paired_mean": 0.011487517697097823,
+          "ci95_low": 0.009494177881478579,
+          "ci95_high": 0.013464582784450176,
+          "positive_videos": 654,
+          "negative_videos": 289,
+          "tie_videos": 194,
+          "bootstrap_resamples": 20000
+        }
+      }
+    }
+  },
+  "paper_scale": {
+    "baseline_AJ_points": 32.49447807008109,
+    "closed_loop_AJ_points": 34.7987774232562,
+    "absolute_AJ_gain_points": 2.3042993531751046,
+    "relative_AJ_gain_percent": 7.091356716687076
+  },
+  "severe_failures": [
+    {
+      "sample": 113,
+      "video_name": "kinetics_source_s000_p000113_kinetics_s000_000113",
+      "closed_vs_baseline_AJ": -0.2976264864079905,
+      "closed_vs_baseline_delta_avg": -0.27485307763686967,
+      "mean_trajectory_diff_px": 6.26536750793457
+    },
+    {
+      "sample": 1115,
+      "video_name": "kinetics_source_s009_p000080_kinetics_s000_000080",
+      "closed_vs_baseline_AJ": -0.25226620093881064,
+      "closed_vs_baseline_delta_avg": -0.2648870636550308,
+      "mean_trajectory_diff_px": 9.612665176391602
+    },
+    {
+      "sample": 954,
+      "video_name": "kinetics_source_s008_p000034_kinetics_s000_000034",
+      "closed_vs_baseline_AJ": -0.15953708873379868,
+      "closed_vs_baseline_delta_avg": -0.09607731665719144,
+      "mean_trajectory_diff_px": 5.850607395172119
+    }
+  ],
+  "claim_boundary": "Component-level frozen-controller transfer evidence; not a leaderboard, SOTA, or competitive full-system claim."
+}
