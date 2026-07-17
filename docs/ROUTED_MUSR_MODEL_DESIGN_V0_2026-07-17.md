@@ -304,3 +304,27 @@ minimum cosine `0.999999404`; the resulting three-memory correlation error on
 the fit smoke is at most `1.2365e-4`. CMCP fit-only dense proposal training is
 therefore authorized, while all selectors, state writes, calibration, final
 holdout, DAVIS, and Kinetics remain locked.
+
+
+## 17. CMCP proposal-only result and local-safety pivot
+
+Before formal training, CMCP was corrected to match the preregistered
+nine-channel input by adding all three pairwise correlation differences. The
+formal 64-channel model contains 263,747 trainable parameters and retains exact
+zero-step native behavior and independent full-video replay.
+
+Formal fit-only seed-17 training is exactly reproducible. The best epoch-1
+proposal pool has `+20.0375` AJ coordinate-oracle gain with paired 95% CI
+`[+18.0040,+21.7391]`; every one of the 16 model-validation videos is positive.
+Direct top-1 improves AJ by `+1.5843` and delta average by `+1.8865`, and reduces
+the 16px severe-error rate from `25.8782%` to `18.5212%`. However, its paired AJ
+CI `[-2.5666,+4.5731]` crosses zero and harmful non-native selection is
+`27.9968%`, so the formal proposal-only gate fails.
+
+The strong, universal oracle result rules out candidate availability as the
+current bottleneck. P0h freezes the exact epoch-1 proposal generator and trains
+only a local pairwise native-vs-peak safety comparator. No candidate-coordinate,
+NMS, EMA, top-K, threshold, backbone, state-write, calibration, final-holdout,
+DAVIS, or Kinetics change is authorized. See
+`docs/ROUTED_CMCP_PROPOSAL_TRAINING_RESULT_2026-07-17.md` and
+`docs/ROUTED_CMCP_LOCAL_PAIRWISE_SAFETY_V0_PLAN_2026-07-17.md`.

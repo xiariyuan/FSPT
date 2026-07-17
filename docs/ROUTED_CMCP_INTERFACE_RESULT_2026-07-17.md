@@ -16,17 +16,19 @@ correlation fields:
 2. previous-native-feature correlation;
 3. fixed-alpha (`0.9`) EMA-memory correlation.
 
-These are fused with a native-centered motion prior and two previous proposal
-evidence maps by a causal ConvGRU. A dense utility head, dense catastrophic-risk
-head, and native-fallback head produce native plus five stable NMS proposals.
+The three correlation fields and all three pairwise differences are fused with
+a native-centered motion prior and two previous proposal-evidence maps by a
+causal ConvGRU. A dense utility head, dense catastrophic-risk head, and
+native-fallback head produce native plus five stable NMS proposals.
 
 Formal configuration:
 
 ```text
 hidden channels:       64
-trainable parameters:  262,019
+trainable parameters:  263,747
 proposal top-K:        5
 NMS radius:            1 feature cell
+recurrent input:       9 channels
 motion sigma:          2 feature cells
 native logit bias:     2.0
 feature map:            128 x 96 x 128 channels/height/width
@@ -67,7 +69,7 @@ or selections.
 Within the first run, the first point chunk is recomputed independently. The
 following tensors are bit-identical:
 
-- all three correlation maps;
+- all three correlation maps and their pairwise differences;
 - motion prior;
 - proposal score map;
 - native logit;
@@ -82,10 +84,10 @@ Key hashes:
 
 ```text
 correlation first-chunk SHA-256:
-09088c91a0e6387c28c0275588e8e1982849956875bfe10c999996571279a73d
+fc364555f9ea4dbd7f141c77e62417a2414f31ac34a97f2306805c20eb94de75
 
 proposal-score first-chunk SHA-256:
-edea98338a940efe0814c0e57b328d7b556ba244354899c72e586200c62b0efe
+a46f9e371aa95c3754b3c166a7cfe05dbab89c42e4aacc4391735d1ecb42381e
 
 selected-coordinate SHA-256:
 416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96
@@ -104,3 +106,17 @@ video while preserving exact causal inputs.
 
 MUSR selector training, state writeback, calibration, final_holdout, DAVIS, and
 Kinetics remain locked until the proposal-only gate passes.
+
+## 6. Pre-training contract correction
+
+Before formal training, the implementation was re-audited against the
+preregistered plan. The initial interface version omitted the three pairwise
+differences between query, previous-native, and EMA correlation maps. The formal
+nine-channel implementation includes all three differences and supersedes the
+previous `262,019`-parameter count. The feature-map cache is unchanged because
+it stores only frozen CoTracker feature maps.
+
+The corrected implementation was rerun twice on the full 64-point fit video.
+Native state, zero-step native selection, candidate coordinates, candidate
+scores, masks, and selected-coordinate tensor hashes are identical across the
+independent runs. Formal training uses only this corrected implementation.

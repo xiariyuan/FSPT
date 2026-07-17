@@ -157,3 +157,19 @@ This authorizes fit-only CMCP dense proposal training and model-validation
 checkpoint selection. It does not authorize selector, state-write, calibration,
 final-holdout, DAVIS, or Kinetics access. See
 `docs/ROUTED_CMCP_FEATURE_CACHE_RESULT_2026-07-17.md`.
+
+
+## 11. Completed proposal-only result
+
+The formal corrected CMCP uses all nine preregistered recurrent-input channels
+and is exactly reproducible at seed 17. Its best epoch-1 learned candidate pool
+passes the proposal mechanism gate decisively: model-validation coordinate
+oracle improves AJ by `+20.0375` and delta average by `+22.6947`; all 16 videos
+are positive and the paired AJ CI is `[+18.0040,+21.7391]`.
+
+Direct top-1 improves AJ by `+1.5843`, delta average by `+1.8865`, and the 16px
+severe tail, but the paired AJ CI crosses zero and harmful non-native selection
+is `27.9968%`. The formal proposal-only gate therefore fails. The candidate
+generator remains frozen as a successful mechanism; P0h changes only the local
+native-vs-peak safety comparison. See
+`docs/ROUTED_CMCP_PROPOSAL_TRAINING_RESULT_2026-07-17.md`.

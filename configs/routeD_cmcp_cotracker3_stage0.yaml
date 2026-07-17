@@ -32,6 +32,8 @@ model:
   risk_weight: 0.75
   native_logit_bias: 2.0
   previous_evidence_frames: 2
+  pairwise_correlation_differences: all_three
+  recurrent_input_channels: 9
   recurrent_core: ConvGRU
   native_safe_initialization: exact
 
@@ -54,3 +56,27 @@ proposal_only_gates:
   delta_gain_points_gt: 0.0
   severe_16px_not_worse: true
   harmful_non_native_rate_max: 0.01
+
+training:
+  seed: 17
+  optimizer: AdamW
+  learning_rate: 0.0003
+  weight_decay: 0.0001
+  epochs: 8
+  patience: 3
+  point_batch_size: 4
+  eval_point_batch_size: 8
+  grad_clip_norm: 1.0
+  bootstrap_samples: 5000
+  checkpoint_metric: direct_top1_AJ
+
+loss_weights:
+  focal: 1.0
+  utility: 0.5
+  catastrophic_risk: 0.25
+  native_fallback: 1.0
+  no_harm: 1.0
+  temporal_consistency: 0.05
+  focal_gamma: 2.0
+  focal_negative_beta: 4.0
+  ranking_margin: 0.25

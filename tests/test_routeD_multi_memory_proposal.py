@@ -150,3 +150,31 @@ def test_two_optimizer_steps_reach_recurrent_core():
         if parameter.grad is not None
     )
     assert gradient > 0.0
+
+
+def test_input_projection_matches_preregistered_nine_channels():
+    model = CausalMultiMemoryProposalGenerator(_config())
+    assert model.input_projection[0].in_channels == 9
+
+
+def test_pairwise_difference_channels_affect_projected_input():
+    config = _config()
+    model = CausalMultiMemoryProposalGenerator(config).eval()
+    captured = {}
+
+    def hook(_module, args):
+        captured["input"] = args[0].detach().clone()
+
+    handle = model.input_projection[0].register_forward_pre_hook(hook)
+    corr = torch.zeros(1, 3, 4, 5)
+    corr[:, 0] = 3.0
+    corr[:, 1] = 1.0
+    corr[:, 2] = -2.0
+    motion = torch.zeros(1, 1, 4, 5)
+    model.step(corr, motion)
+    handle.remove()
+    value = captured["input"]
+    assert value.shape[1] == 9
+    assert torch.equal(value[:, 3], torch.full_like(value[:, 3], 2.0))
+    assert torch.equal(value[:, 4], torch.full_like(value[:, 4], 5.0))
+    assert torch.equal(value[:, 5], torch.full_like(value[:, 5], 3.0))

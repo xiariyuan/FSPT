@@ -6,9 +6,9 @@
   "claim_boundary": "This is a zero-step interface audit on one authorized fit video; it is not a learned proposal result.",
   "model": {
     "proposal_schema_version": "routeD_cmcp_multi_memory_proposal_v0",
-    "trainable_parameters": 262019,
+    "trainable_parameters": 263747,
     "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_cotracker3_stage0.yaml",
-    "config_sha256": "4caaba265913ae785331065971bf52305849b2236e633f61df7b6efb144ef33f",
+    "config_sha256": "20113d30d972a6b90b68c0009b4c9f688f153e670bc87a92423eedf207fd2608",
     "memory_sources": [
       "immutable_query_anchor",
       "previous_native_feature",
@@ -51,8 +51,8 @@
       "native_joint_probability": "812c74f3a809d8e94f01794a28d2f3c32416d67852e123ef8d099d62a140430a",
       "native_visibility": "d54db5cbed59831d994e6af3d3bf2c6b72d8cb2c909462992cacd514cd107946"
     },
-    "correlation_sha256": "09088c91a0e6387c28c0275588e8e1982849956875bfe10c999996571279a73d",
-    "proposal_score_sha256": "edea98338a940efe0814c0e57b328d7b556ba244354899c72e586200c62b0efe",
+    "correlation_sha256": "fc364555f9ea4dbd7f141c77e62417a2414f31ac34a97f2306805c20eb94de75",
+    "proposal_score_sha256": "a46f9e371aa95c3754b3c166a7cfe05dbab89c42e4aacc4391735d1ecb42381e",
     "replay_checks": {
       "proposal_schema_version": true,
       "source_partition": true,
@@ -76,10 +76,10 @@
     }
   },
   "artifacts": {
-    "primary_report_sha256": "f8099c81067009cf9726b382eb4d58bfa287a551ba5a1f74698d8aacf425ee3c",
-    "primary_sidecar_sha256": "9c49e41311fc40c306900c247433bd9ddc9b4c7b959c857a981fbe5aa2e437c3",
-    "replay_report_sha256": "69f1247493780f9526c492eccf2a8c82a8e53998445587ec413c94386df28579",
-    "replay_sidecar_sha256": "6ad820b1570bac53710c8e865c7398541136cc7ee822bf9210c0e66bde5c1514",
+    "primary_report_sha256": "27f33cb368973687dd4373ff168e8ed746a0f902f3195365352e368f602dda65",
+    "primary_sidecar_sha256": "8dfe6f2a8f5f7fadc011bd0b87e85e77ee9912d2e91476b3cd81bc730e415f41",
+    "replay_report_sha256": "49a11d21ce359ab909b4de0013b574ea08b95d4c3db4fa5166ca389bddf186d8",
+    "replay_sidecar_sha256": "1ce98f5a757367291caa1fc6911ae490515b586d312f2b592cccb1cceac97899",
     "sidecar_file_hash_expected_to_differ_by_embedded_path": true
   },
   "next_gate": {

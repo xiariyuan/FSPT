@@ -20,6 +20,7 @@ from .cotracker3_stage0_adapter import sample_feature_at_xy
 CMCP_SCHEMA_VERSION = "routeD_cmcp_multi_memory_proposal_v0"
 CMCP_MEMORY_COUNT = 3
 CMCP_PREVIOUS_EVIDENCE_FRAMES = 2
+CMCP_PAIRWISE_DIFFERENCE_COUNT = 3
 
 
 @dataclass(frozen=True)
@@ -81,7 +82,10 @@ class CausalMultiMemoryProposalGenerator(nn.Module):
         super().__init__()
         self.config = config
         input_channels = (
-            CMCP_MEMORY_COUNT + 1 + CMCP_PREVIOUS_EVIDENCE_FRAMES
+            CMCP_MEMORY_COUNT
+            + CMCP_PAIRWISE_DIFFERENCE_COUNT
+            + 1
+            + CMCP_PREVIOUS_EVIDENCE_FRAMES
         )
         self.input_projection = nn.Sequential(
             nn.Conv2d(input_channels, config.hidden_channels, 3, padding=1),
@@ -171,8 +175,22 @@ class CausalMultiMemoryProposalGenerator(nn.Module):
         if frame_valid.shape != (batch,):
             raise ValueError("frame_valid must have shape (B,)")
 
+        pairwise_differences = torch.stack(
+            [
+                correlation_maps[:, 0] - correlation_maps[:, 1],
+                correlation_maps[:, 0] - correlation_maps[:, 2],
+                correlation_maps[:, 1] - correlation_maps[:, 2],
+            ],
+            dim=1,
+        )
         recurrent_input = torch.cat(
-            [correlation_maps, motion_prior, state.previous_evidence], dim=1
+            [
+                correlation_maps,
+                pairwise_differences,
+                motion_prior,
+                state.previous_evidence,
+            ],
+            dim=1,
         )
         projected = self.input_projection(recurrent_input)
         candidate_hidden = self.recurrent(projected, state.hidden)
@@ -382,38 +400,41 @@ def stable_spatial_topk_nms(
     topk: int,
     radius_cells: int,
 ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
-    """Stable row-major top-K with square NMS suppression."""
+    """Stable row-major top-K with square NMS suppression.
+
+    ``torch.argmax`` returns the first flattened maximum, preserving the frozen
+    row-major tie rule without sorting the entire dense map.
+    """
     if score_map.ndim != 3:
         raise ValueError("score_map must have shape (B,H,W)")
     if topk <= 0 or radius_cells < 0:
         raise ValueError("invalid topk or radius")
     batch, height, width = score_map.shape
-    flat = score_map.reshape(batch, -1)
+    work = score_map.clone()
     selected_indices = torch.zeros(batch, topk, dtype=torch.long, device=score_map.device)
     selected_scores = torch.full(
         (batch, topk), float("-inf"), device=score_map.device, dtype=score_map.dtype
     )
     selected_valid = torch.zeros(batch, topk, dtype=torch.bool, device=score_map.device)
-    for batch_index in range(batch):
-        order = torch.argsort(flat[batch_index], descending=True, stable=True)
-        suppressed = torch.zeros(height, width, dtype=torch.bool, device=score_map.device)
-        count = 0
-        for flat_index in order.tolist():
+    for rank in range(topk):
+        flat = work.reshape(batch, -1)
+        index = flat.argmax(dim=1)
+        value = flat.gather(1, index[:, None]).squeeze(1)
+        valid = torch.isfinite(value)
+        selected_indices[:, rank] = index
+        selected_scores[:, rank] = value
+        selected_valid[:, rank] = valid
+        for batch_index in range(batch):
+            if not bool(valid[batch_index]):
+                continue
+            flat_index = int(index[batch_index].item())
             y = flat_index // width
             x = flat_index % width
-            if suppressed[y, x] or not torch.isfinite(flat[batch_index, flat_index]):
-                continue
-            selected_indices[batch_index, count] = flat_index
-            selected_scores[batch_index, count] = flat[batch_index, flat_index]
-            selected_valid[batch_index, count] = True
-            count += 1
-            if count == topk:
-                break
             ymin = max(0, y - radius_cells)
             ymax = min(height, y + radius_cells + 1)
             xmin = max(0, x - radius_cells)
             xmax = min(width, x + radius_cells + 1)
-            suppressed[ymin:ymax, xmin:xmax] = True
+            work[batch_index, ymin:ymax, xmin:xmax] = float("-inf")
     return selected_indices, selected_scores, selected_valid
 
 
