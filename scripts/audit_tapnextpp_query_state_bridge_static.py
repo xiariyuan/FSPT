@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import sys
 from pathlib import Path
@@ -38,6 +39,17 @@ from mmp_tracker.tapnextpp_identity_state_bridge import (
 DEFAULT_REPO = Path("/gemini/code/FSPT/external/tapnextpp/repo")
 DEFAULT_CKPT = Path("/gemini/code/FSPT/checkpoints/tapnextpp/tapnextpp_ckpt.pt")
 DEFAULT_SCENE = Path("/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f")
+
+
+def file_sha256(path: Path, *, chunk_size: int = 8 << 20) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        while True:
+            chunk = handle.read(chunk_size)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def clone_tracking_state(state: Any) -> Any:
@@ -186,6 +198,9 @@ def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=DEFAULT_REPO)
     parser.add_argument("--checkpoint", type=Path, default=DEFAULT_CKPT)
+    parser.add_argument("--official-source-commit", default="989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc")
+    parser.add_argument("--mirror-repo-commit", default="4f3c01d15a5d3ed14639971d79bffef7748fc96e")
+    parser.add_argument("--skip-checkpoint-sha256", action="store_true")
     parser.add_argument("--scene", type=Path, default=DEFAULT_SCENE)
     parser.add_argument("--frame-index", type=int, default=0)
     parser.add_argument("--pre-frames", type=int, default=8)
@@ -218,6 +233,9 @@ def main() -> None:
         image.reshape(-1, 3).mean(axis=0).round().astype(np.uint8), image.shape
     ).copy()
     blackout_frame = prepare_frame(mean_rgb, device=args.device)
+    source_file = args.repo / "tapnet/tapnext/tapnext_torch.py"
+    source_sha256 = file_sha256(source_file)
+    checkpoint_sha256 = None if args.skip_checkpoint_sha256 else file_sha256(args.checkpoint)
     model = load_model(args.repo, args.checkpoint, device=args.device)
 
     teacher_state = None
@@ -296,9 +314,15 @@ def main() -> None:
         "schema_version": "tapnextpp_query_state_static_oracle_v0",
         "source": {
             "repo": str(args.repo.resolve()),
-            "repo_commit": "4f3c01d15a5d3ed14639971d79bffef7748fc96e",
+            "official_repository": "https://github.com/google-deepmind/tapnet",
+            "official_source_commit": args.official_source_commit,
+            "mirror_repository": str(args.repo.resolve()),
+            "mirror_repo_commit": args.mirror_repo_commit,
+            "implementation_source": str(source_file.resolve()),
+            "implementation_source_sha256": source_sha256,
             "checkpoint": str(args.checkpoint.resolve()),
             "checkpoint_size_bytes": args.checkpoint.stat().st_size,
+            "checkpoint_sha256": checkpoint_sha256,
             "scene": str(args.scene.resolve()),
             "split": "fit/train",
             "frame": str(frame_path.resolve()),

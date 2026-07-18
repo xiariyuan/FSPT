@@ -1,0 +1,136 @@
+{
+  "artifacts": {
+    "docs/generated/BRIDGETRACK_DYNAMIC_QUERY_STATE_ORACLE_2026-07-18.json": {
+      "bytes": 20378,
+      "sha256": "f97dab320b14dc41900bed6eb9e5614724ac6991b8e1724c5680f19752576826"
+    },
+    "docs/generated/BRIDGETRACK_QUERY_STATE_FACTORIZATION_ORACLE_2026-07-18.json": {
+      "bytes": 56845,
+      "sha256": "085bb93bee64a1dd14c1567cbd2e28db6aae85d13c7c17432e360634dce14d4f"
+    },
+    "docs/generated/BRIDGETRACK_STATIC_QUERY_STATE_ORACLE_2026-07-18.json": {
+      "bytes": 19871,
+      "sha256": "d1ee6819d1d46f1b857c34758888ab4358bd57963f54af36c38d99cd12f2fee3"
+    },
+    "projects/mmp_tracker/mmp_tracker/tapnextpp_identity_state_bridge.py": {
+      "bytes": 14449,
+      "sha256": "0546f5cdb63898c88e93a539efc67418270b0d24f74f5ac4e7f4e2d6d847a505"
+    },
+    "scripts/audit_tapnextpp_query_state_bridge_dynamic.py": {
+      "bytes": 13233,
+      "sha256": "9d5dfbfac83f1cae5997389cf5ddba71147ff4f679d192e4a9081f6e4ec83420"
+    },
+    "scripts/audit_tapnextpp_query_state_bridge_static.py": {
+      "bytes": 15271,
+      "sha256": "1191364cc553b6fdff53d166dc313ae5291b465cab8a7c410f87c78b9c231d5f"
+    },
+    "scripts/audit_tapnextpp_query_state_factorization.py": {
+      "bytes": 10359,
+      "sha256": "3c51aa60dbff3b6fd24de2dd2bbf65de0c8de51492321c431011849bd0c46a37"
+    },
+    "tests/test_tapnextpp_identity_state_bridge.py": {
+      "bytes": 6203,
+      "sha256": "917054f2a920aff077a26db2299bf6db799d4ca76f2971b0784497b8deeec0d0"
+    }
+  },
+  "base_commit": "d7598718763ac24fb6a143f7e34447047198658a",
+  "date": "2026-07-18",
+  "decision": {
+    "allow_locked_data": false,
+    "allow_training": false,
+    "close_persistence_only": true,
+    "next_allowed_step": "Pre-register and run multi-fit-scene verification of the mid-layer joint-state hypothesis. Do not train until that redesigned fit-only gate passes."
+  },
+  "development_branch": "bridgetrack-persistent-query-state-v0-20260718",
+  "dynamic_gate_A2": {
+    "delta": {
+      "pre_gap_query_mean_error_improvement": -5.628993831574917,
+      "query_fraction_of_full_improvement": 0.9763348487482517,
+      "teacher_full_mean_error_improvement": 3.5227229706943035,
+      "teacher_query_improved_frame_fraction": 1.0,
+      "teacher_query_mean_error_improvement": 3.4393571987748146
+    },
+    "gate": {
+      "decision": "STOP_OR_REDESIGN_DYNAMIC_QUERY_STATE_BRIDGE",
+      "pass": false,
+      "pre_gap_query_improves_mean_error": false,
+      "query_state_retains_ge_half_full_oracle_improvement": true,
+      "teacher_query_improves_ge_75pct_post_frames": true,
+      "teacher_query_improves_mean_error_by_ge_2px": true
+    },
+    "interpretation": "PERSISTENCE_ONLY_FAIL_RECONSTRUCTION_SIGNAL_PASS: stale pre-gap state is harmful, while same-time teacher query state improves all 16 future frames and retains 97.63% of full-state oracle gain.",
+    "result_file": "docs/generated/BRIDGETRACK_DYNAMIC_QUERY_STATE_ORACLE_2026-07-18.json",
+    "result_sha256": "f97dab320b14dc41900bed6eb9e5614724ac6991b8e1724c5680f19752576826",
+    "selection": {
+      "eligible_points": 232,
+      "motion_quantile": 0.9,
+      "selected_gap_motion_px_original": 25.22554588317871,
+      "selected_path_length_px_original": 35.70462417602539,
+      "selected_rank_ascending": 208,
+      "selected_total_displacement_px_original": 35.34124755859375
+    }
+  },
+  "factorization_gate": {
+    "best_compact_metrics": {
+      "gain_vs_native": 3.7010457944124937,
+      "improved_frame_fraction": 1.0,
+      "mean_error_px_256": 0.6134193483740091,
+      "replaced_fraction": 0.3332790798611111,
+      "retained_full_query_gain": 1.0760864837565867
+    },
+    "best_compact_variant": "teacher_mid4_all",
+    "best_single_component": "teacher_conv_all",
+    "best_single_component_metrics": {
+      "gain_vs_native": 2.357235912233591,
+      "improved_frame_fraction": 1.0,
+      "mean_error_px_256": 1.9572292305529118,
+      "replaced_fraction": 0.6875,
+      "retained_full_query_gain": 0.6853710667427325
+    },
+    "full_query_gain_vs_native": 3.4393571987748146,
+    "gate": {
+      "best_compact_improves_ge_75pct_frames": true,
+      "compact_le_50pct_retains_ge_80pct_query_gain": true,
+      "decision": "STOP_OR_REDESIGN_QUERY_STATE_FACTORIZATION",
+      "pass": false,
+      "single_component_retains_ge_70pct_query_gain": false
+    },
+    "interpretation": "MID_LAYER_SYNERGY_ONLY: layers 4-7 jointly retain 107.61% of full-query gain with ~33.33% state replacement; no single cache component passes the frozen 70% gate.",
+    "result_file": "docs/generated/BRIDGETRACK_QUERY_STATE_FACTORIZATION_ORACLE_2026-07-18.json",
+    "result_sha256": "085bb93bee64a1dd14c1567cbd2e28db6aae85d13c7c17432e360634dce14d4f"
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_test": false
+  },
+  "schema_version": "bridgetrack_query_state_feasibility_summary_v0",
+  "static_gate_A": {
+    "delta": {
+      "pre_gap_query_mean_error_improvement": 0.6941928351297975,
+      "query_fraction_of_full_improvement": 0.8987019244880908,
+      "teacher_full_mean_error_improvement": 0.7742224661633372,
+      "teacher_query_mean_error_improvement": 0.695795220322907
+    },
+    "gate": {
+      "decision": "STOP_OR_REDESIGN_QUERY_STATE_BRIDGE",
+      "pass": false,
+      "pre_gap_query_improves_mean_error": true,
+      "query_state_retains_ge_half_full_oracle_improvement": true,
+      "teacher_query_improves_mean_error_by_ge_2px": false
+    },
+    "interpretation": "STATIC_GATE_CEILING_TOO_SMALL: full-state oracle improvement was below the frozen 2px threshold; query-only retained 89.87% of the available gain.",
+    "result_file": "docs/generated/BRIDGETRACK_STATIC_QUERY_STATE_ORACLE_2026-07-18.json",
+    "result_sha256": "d1ee6819d1d46f1b857c34758888ab4358bd57963f54af36c38d99cd12f2fee3"
+  },
+  "tapnextpp": {
+    "checkpoint_sha256": null,
+    "checkpoint_sha256_status": "deferred to avoid additional 2.4GB read during exact Route-D replay",
+    "checkpoint_size_bytes": 2532282370,
+    "implementation_source_sha256": "2450cfe3a4317966abe0efa36ad0d6d5d65bfa70aa77479526b2558b8002d34d",
+    "mirror_repo_commit": "4f3c01d15a5d3ed14639971d79bffef7748fc96e",
+    "official_repository": "https://github.com/google-deepmind/tapnet",
+    "official_source_commit": "989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc"
+  }
+}

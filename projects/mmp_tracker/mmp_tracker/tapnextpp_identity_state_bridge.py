@@ -282,3 +282,86 @@ def query_state_distance(
         "conv1d_mse": conv_mse,
         "combined_mse": rg_mse + conv_mse,
     }
+
+
+def compose_persistent_query_state(
+    current: PersistentQueryState,
+    donor: PersistentQueryState,
+    *,
+    layer_mask: Sequence[bool] | None = None,
+    use_rg_lru: bool = True,
+    use_conv1d: bool = True,
+) -> PersistentQueryState:
+    """Compose a partial donor state for causal factorization audits.
+
+    Unselected layers and components are copied from ``current``. Selected
+    components are copied from ``donor``. This function does not modify either
+    input and preserves the current causal metadata.
+    """
+    if (
+        current.query_points.shape != donor.query_points.shape
+        or current.image_tokens_per_batch != donor.image_tokens_per_batch
+        or len(current.layers) != len(donor.layers)
+    ):
+        raise ValueError("persistent states are structurally incompatible")
+    if layer_mask is None:
+        selected = [True] * len(current.layers)
+    else:
+        selected = [bool(value) for value in layer_mask]
+        if len(selected) != len(current.layers):
+            raise ValueError("layer_mask length must equal the layer count")
+    layers: list[QueryLayerState] = []
+    for enabled, current_layer, donor_layer in zip(
+        selected, current.layers, donor.layers
+    ):
+        if current_layer.rg_lru_state.shape != donor_layer.rg_lru_state.shape:
+            raise ValueError("RG-LRU component shapes differ")
+        if current_layer.conv1d_state.shape != donor_layer.conv1d_state.shape:
+            raise ValueError("Conv1D component shapes differ")
+        rg = (
+            donor_layer.rg_lru_state
+            if enabled and use_rg_lru
+            else current_layer.rg_lru_state
+        )
+        conv = (
+            donor_layer.conv1d_state
+            if enabled and use_conv1d
+            else current_layer.conv1d_state
+        )
+        layers.append(
+            QueryLayerState(
+                rg_lru_state=rg.detach().clone(),
+                conv1d_state=conv.detach().clone(),
+            )
+        )
+    return PersistentQueryState(
+        source_step=donor.source_step,
+        query_points=current.query_points.detach().clone(),
+        image_tokens_per_batch=current.image_tokens_per_batch,
+        layers=tuple(layers),
+    )
+
+
+def persistent_state_replaced_fraction(
+    current: PersistentQueryState,
+    candidate: PersistentQueryState,
+) -> float:
+    """Return the exact fraction of query-state elements changed."""
+    if (
+        current.query_points.shape != candidate.query_points.shape
+        or current.image_tokens_per_batch != candidate.image_tokens_per_batch
+        or len(current.layers) != len(candidate.layers)
+    ):
+        raise ValueError("persistent states are structurally incompatible")
+    total = 0
+    changed = 0
+    for left, right in zip(current.layers, candidate.layers):
+        for left_tensor, right_tensor in (
+            (left.rg_lru_state, right.rg_lru_state),
+            (left.conv1d_state, right.conv1d_state),
+        ):
+            if left_tensor.shape != right_tensor.shape:
+                raise ValueError("persistent component shapes differ")
+            total += left_tensor.numel()
+            changed += int((left_tensor != right_tensor).sum().item())
+    return float(changed / total) if total else 0.0

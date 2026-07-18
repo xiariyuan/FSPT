@@ -260,3 +260,56 @@ Kinetics 1,144:                permanently frozen; never rerun
 ```
 
 Oracle state replacement must always be labelled oracle. It is not a learned result and cannot define the paper headline.
+
+## 13. Gate A result and frozen dynamic redesign
+
+The preregistered static Gate A produced a full-state oracle improvement of only
+`+0.7742 px`, so the original `>=2 px` threshold was unreachable in that
+controlled sequence. This is recorded as `STATIC_GATE_CEILING_TOO_SMALL`, not a
+pass. The threshold is not relaxed.
+
+Before running a dynamic redesign, freeze the following fit-only protocol:
+
+- real 56-frame moving PointOdyssey train clip;
+- 8 visible frames, 32 deterministic full-frame corruption frames, 16 visible rollout frames;
+- candidate points must be visible, valid, finite, and interior for all 56 frames;
+- select the 90th-percentile point by displacement across the synthetic gap;
+- compare native, pre-gap query state, same-time teacher query state, and full teacher state;
+- GT is used only for fit stress selection and scoring;
+- no holdout, test, DAVIS method evaluation, or Kinetics data may be read.
+
+Frozen dynamic gates:
+
+1. teacher query-state mean-error improvement `>=2 px` at 256 raster;
+2. pre-gap persistent query state improves over native;
+3. query-only state retains at least 50% of full-state oracle improvement;
+4. teacher query-state improves at least 75% of the 16 future frames.
+
+Only a pass allows expansion to multiple fit scenes. It still does not allow
+training or locked-data access.
+
+## 14. Frozen query-state factorization oracle
+
+Dynamic Gate A2 shows that same-time teacher query state is causal and nearly
+matches the full teacher state, while stale pre-gap state is harmful. Therefore
+no persistence-only method is allowed. Before designing a learned reconstructor,
+run a fit-only causal factorization audit on the same frozen clip and point.
+
+Variants are frozen before execution:
+
+- all RG-LRU state only;
+- all Conv1D state only;
+- all state in layers 0–3, 4–7, or 8–11;
+- all state in layers 0–5 or 6–11;
+- RG-LRU only in layers 6–11;
+- Conv1D only in layers 6–11.
+
+Factorization gates:
+
+1. a variant replacing at most 50% of query-state elements retains at least 80%
+   of the full teacher-query improvement;
+2. one single cache component retains at least 70% of that improvement;
+3. the best compact variant improves at least 75% of future frames.
+
+A pass allows only multi-fit-scene factorization verification. It does not allow
+training or locked-data access.

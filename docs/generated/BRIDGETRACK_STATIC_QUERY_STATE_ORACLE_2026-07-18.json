@@ -1,0 +1,588 @@
+{
+  "delta": {
+    "pre_gap_query_mean_error_improvement": 0.6941928351297975,
+    "query_fraction_of_full_improvement": 0.8987019244880908,
+    "teacher_full_mean_error_improvement": 0.7742224661633372,
+    "teacher_query_mean_error_improvement": 0.695795220322907
+  },
+  "frame_rows": {
+    "native_student": [
+      {
+        "error_px_256": 2.2260117530822754,
+        "pred_x": 126.19720458984375,
+        "pred_y": 55.13677978515625,
+        "visibility_logit": -0.0854962095618248,
+        "visibility_probability": 0.4786389470100403
+      },
+      {
+        "error_px_256": 4.657783031463623,
+        "pred_x": 132.98558044433594,
+        "pred_y": 55.98988342285156,
+        "visibility_logit": 0.9071396589279175,
+        "visibility_probability": 0.7124145030975342
+      },
+      {
+        "error_px_256": 1.060088872909546,
+        "pred_x": 129.35311889648438,
+        "pred_y": 56.05247116088867,
+        "visibility_logit": 0.7877302169799805,
+        "visibility_probability": 0.6873437166213989
+      },
+      {
+        "error_px_256": 0.4335889220237732,
+        "pred_x": 127.93424224853516,
+        "pred_y": 55.93246078491211,
+        "visibility_logit": 1.2279785871505737,
+        "visibility_probability": 0.7734646201133728
+      },
+      {
+        "error_px_256": 0.5739700794219971,
+        "pred_x": 127.77957916259766,
+        "pred_y": 55.913970947265625,
+        "visibility_logit": 1.3617616891860962,
+        "visibility_probability": 0.7960458993911743
+      },
+      {
+        "error_px_256": 0.7423102855682373,
+        "pred_x": 127.60511779785156,
+        "pred_y": 55.90695571899414,
+        "visibility_logit": 1.62502920627594,
+        "visibility_probability": 0.8354875445365906
+      },
+      {
+        "error_px_256": 0.710892379283905,
+        "pred_x": 127.63681030273438,
+        "pred_y": 55.90519714355469,
+        "visibility_logit": 1.888994812965393,
+        "visibility_probability": 0.8686408400535583
+      },
+      {
+        "error_px_256": 0.5154442191123962,
+        "pred_x": 127.83401489257812,
+        "pred_y": 55.89090347290039,
+        "visibility_logit": 2.2306368350982666,
+        "visibility_probability": 0.9029671549797058
+      },
+      {
+        "error_px_256": 0.2139178216457367,
+        "pred_x": 128.14918518066406,
+        "pred_y": 55.871829986572266,
+        "visibility_logit": 2.588438034057617,
+        "visibility_probability": 0.930113673210144
+      },
+      {
+        "error_px_256": 0.19034625589847565,
+        "pred_x": 128.4947509765625,
+        "pred_y": 55.86383056640625,
+        "visibility_logit": 2.919595956802368,
+        "visibility_probability": 0.9488067030906677
+      },
+      {
+        "error_px_256": 0.4814200699329376,
+        "pred_x": 128.80364990234375,
+        "pred_y": 55.86573791503906,
+        "visibility_logit": 3.1367509365081787,
+        "visibility_probability": 0.9583835005760193
+      },
+      {
+        "error_px_256": 0.7476611733436584,
+        "pred_x": 129.0739288330078,
+        "pred_y": 55.86547088623047,
+        "visibility_logit": 3.236452102661133,
+        "visibility_probability": 0.9621832370758057
+      },
+      {
+        "error_px_256": 0.9645370841026306,
+        "pred_x": 129.29354858398438,
+        "pred_y": 55.8541145324707,
+        "visibility_logit": 3.2904019355773926,
+        "visibility_probability": 0.9640980958938599
+      },
+      {
+        "error_px_256": 1.0843685865402222,
+        "pred_x": 129.41502380371094,
+        "pred_y": 55.839054107666016,
+        "visibility_logit": 3.3523738384246826,
+        "visibility_probability": 0.9661824703216553
+      },
+      {
+        "error_px_256": 1.1749093532562256,
+        "pred_x": 129.50653076171875,
+        "pred_y": 55.826271057128906,
+        "visibility_logit": 3.434267282485962,
+        "visibility_probability": 0.9687585234642029
+      },
+      {
+        "error_px_256": 1.2607239484786987,
+        "pred_x": 129.5931854248047,
+        "pred_y": 55.8097038269043,
+        "visibility_logit": 3.5291571617126465,
+        "visibility_probability": 0.9715060591697693
+      }
+    ],
+    "pre_gap_query": [
+      {
+        "error_px_256": 1.3258708715438843,
+        "pred_x": 127.55197143554688,
+        "pred_y": 54.69178771972656,
+        "visibility_logit": -0.20520156621932983,
+        "visibility_probability": 0.44887882471084595
+      },
+      {
+        "error_px_256": 0.6134335994720459,
+        "pred_x": 128.91656494140625,
+        "pred_y": 55.95305633544922,
+        "visibility_logit": 1.7943240404129028,
+        "visibility_probability": 0.857456624507904
+      },
+      {
+        "error_px_256": 0.47690969705581665,
+        "pred_x": 128.80938720703125,
+        "pred_y": 55.79143524169922,
+        "visibility_logit": 2.863104820251465,
+        "visibility_probability": 0.945992112159729
+      },
+      {
+        "error_px_256": 0.4306054413318634,
+        "pred_x": 128.76385498046875,
+        "pred_y": 55.754730224609375,
+        "visibility_logit": 3.4096450805664062,
+        "visibility_probability": 0.9680046439170837
+      },
+      {
+        "error_px_256": 0.3838847577571869,
+        "pred_x": 128.71690368652344,
+        "pred_y": 55.747554779052734,
+        "visibility_logit": 3.6081926822662354,
+        "visibility_probability": 0.9736142754554749
+      },
+      {
+        "error_px_256": 0.33067256212234497,
+        "pred_x": 128.6629180908203,
+        "pred_y": 55.73622512817383,
+        "visibility_logit": 3.7802364826202393,
+        "visibility_probability": 0.9776917695999146
+      },
+      {
+        "error_px_256": 0.29036128520965576,
+        "pred_x": 128.6217041015625,
+        "pred_y": 55.72906494140625,
+        "visibility_logit": 3.8923091888427734,
+        "visibility_probability": 0.9800096154212952
+      },
+      {
+        "error_px_256": 0.26323407888412476,
+        "pred_x": 128.59347534179688,
+        "pred_y": 55.7227668762207,
+        "visibility_logit": 3.9565627574920654,
+        "visibility_probability": 0.9812302589416504
+      },
+      {
+        "error_px_256": 0.2460714429616928,
+        "pred_x": 128.57505798339844,
+        "pred_y": 55.716941833496094,
+        "visibility_logit": 3.9967362880706787,
+        "visibility_probability": 0.9819560647010803
+      },
+      {
+        "error_px_256": 0.23542924225330353,
+        "pred_x": 128.5633087158203,
+        "pred_y": 55.71260452270508,
+        "visibility_logit": 4.023521423339844,
+        "visibility_probability": 0.9824245572090149
+      },
+      {
+        "error_px_256": 0.22912466526031494,
+        "pred_x": 128.55624389648438,
+        "pred_y": 55.709983825683594,
+        "visibility_logit": 4.048729419708252,
+        "visibility_probability": 0.9828546047210693
+      },
+      {
+        "error_px_256": 0.22527064383029938,
+        "pred_x": 128.5518035888672,
+        "pred_y": 55.70804977416992,
+        "visibility_logit": 4.078124046325684,
+        "visibility_probability": 0.9833430051803589
+      },
+      {
+        "error_px_256": 0.2224143147468567,
+        "pred_x": 128.54855346679688,
+        "pred_y": 55.706871032714844,
+        "visibility_logit": 4.112599849700928,
+        "visibility_probability": 0.9838983416557312
+      },
+      {
+        "error_px_256": 0.2202223241329193,
+        "pred_x": 128.54623413085938,
+        "pred_y": 55.706668853759766,
+        "visibility_logit": 4.150712490081787,
+        "visibility_probability": 0.9844911694526672
+      },
+      {
+        "error_px_256": 0.21892422437667847,
+        "pred_x": 128.54501342773438,
+        "pred_y": 55.707130432128906,
+        "visibility_logit": 4.1903862953186035,
+        "visibility_probability": 0.9850854277610779
+      },
+      {
+        "error_px_256": 0.2184593230485916,
+        "pred_x": 128.54473876953125,
+        "pred_y": 55.707916259765625,
+        "visibility_logit": 4.23038911819458,
+        "visibility_probability": 0.9856618046760559
+      }
+    ],
+    "teacher_full_oracle": [
+      {
+        "error_px_256": 0.2884441018104553,
+        "pred_x": 128.54046630859375,
+        "pred_y": 55.56222915649414,
+        "visibility_logit": 6.277132511138916,
+        "visibility_probability": 0.9981247782707214
+      },
+      {
+        "error_px_256": 0.2889433801174164,
+        "pred_x": 128.5413818359375,
+        "pred_y": 55.56245803833008,
+        "visibility_logit": 6.282424449920654,
+        "visibility_probability": 0.9981346130371094
+      },
+      {
+        "error_px_256": 0.2893902361392975,
+        "pred_x": 128.542236328125,
+        "pred_y": 55.56270217895508,
+        "visibility_logit": 6.287750720977783,
+        "visibility_probability": 0.9981445074081421
+      },
+      {
+        "error_px_256": 0.28981709480285645,
+        "pred_x": 128.54306030273438,
+        "pred_y": 55.56294631958008,
+        "visibility_logit": 6.293131351470947,
+        "visibility_probability": 0.9981544613838196
+      },
+      {
+        "error_px_256": 0.2901741862297058,
+        "pred_x": 128.54379272460938,
+        "pred_y": 55.56319808959961,
+        "visibility_logit": 6.298574924468994,
+        "visibility_probability": 0.9981644749641418
+      },
+      {
+        "error_px_256": 0.29051655530929565,
+        "pred_x": 128.5445098876953,
+        "pred_y": 55.56345748901367,
+        "visibility_logit": 6.304088115692139,
+        "visibility_probability": 0.9981745481491089
+      },
+      {
+        "error_px_256": 0.29079124331474304,
+        "pred_x": 128.54513549804688,
+        "pred_y": 55.563720703125,
+        "visibility_logit": 6.309677600860596,
+        "visibility_probability": 0.9981846213340759
+      },
+      {
+        "error_px_256": 0.29103973507881165,
+        "pred_x": 128.5457305908203,
+        "pred_y": 55.56399154663086,
+        "visibility_logit": 6.315365314483643,
+        "visibility_probability": 0.9981949925422668
+      },
+      {
+        "error_px_256": 0.29122331738471985,
+        "pred_x": 128.54624938964844,
+        "pred_y": 55.56427764892578,
+        "visibility_logit": 6.3211541175842285,
+        "visibility_probability": 0.998205304145813
+      },
+      {
+        "error_px_256": 0.29137861728668213,
+        "pred_x": 128.5467529296875,
+        "pred_y": 55.56459045410156,
+        "visibility_logit": 6.327009201049805,
+        "visibility_probability": 0.9982157945632935
+      },
+      {
+        "error_px_256": 0.29145750403404236,
+        "pred_x": 128.5471649169922,
+        "pred_y": 55.564918518066406,
+        "visibility_logit": 6.332919597625732,
+        "visibility_probability": 0.9982263445854187
+      },
+      {
+        "error_px_256": 0.2915493845939636,
+        "pred_x": 128.547607421875,
+        "pred_y": 55.56526184082031,
+        "visibility_logit": 6.338903903961182,
+        "visibility_probability": 0.998236894607544
+      },
+      {
+        "error_px_256": 0.29154306650161743,
+        "pred_x": 128.54794311523438,
+        "pred_y": 55.565635681152344,
+        "visibility_logit": 6.3449788093566895,
+        "visibility_probability": 0.998247504234314
+      },
+      {
+        "error_px_256": 0.2915005683898926,
+        "pred_x": 128.5482635498047,
+        "pred_y": 55.56604766845703,
+        "visibility_logit": 6.351146221160889,
+        "visibility_probability": 0.9982582926750183
+      },
+      {
+        "error_px_256": 0.29140204191207886,
+        "pred_x": 128.5485382080078,
+        "pred_y": 55.56649398803711,
+        "visibility_logit": 6.357407093048096,
+        "visibility_probability": 0.9982690811157227
+      },
+      {
+        "error_px_256": 0.2912433445453644,
+        "pred_x": 128.5487823486328,
+        "pred_y": 55.56699752807617,
+        "visibility_logit": 6.363765239715576,
+        "visibility_probability": 0.9982801675796509
+      }
+    ],
+    "teacher_query_oracle": [
+      {
+        "error_px_256": 0.9511373043060303,
+        "pred_x": 127.77659606933594,
+        "pred_y": 54.99178695678711,
+        "visibility_logit": 0.17191573977470398,
+        "visibility_probability": 0.5428733825683594
+      },
+      {
+        "error_px_256": 0.5270574688911438,
+        "pred_x": 128.85797119140625,
+        "pred_y": 55.8133544921875,
+        "visibility_logit": 2.002192497253418,
+        "visibility_probability": 0.881027102470398
+      },
+      {
+        "error_px_256": 0.405259370803833,
+        "pred_x": 128.72451782226562,
+        "pred_y": 55.6571044921875,
+        "visibility_logit": 3.299513816833496,
+        "visibility_probability": 0.9644120931625366
+      },
+      {
+        "error_px_256": 0.38552045822143555,
+        "pred_x": 128.67294311523438,
+        "pred_y": 55.58051300048828,
+        "visibility_logit": 3.9246275424957275,
+        "visibility_probability": 0.9806329607963562
+      },
+      {
+        "error_px_256": 0.3614802658557892,
+        "pred_x": 128.64471435546875,
+        "pred_y": 55.579368591308594,
+        "visibility_logit": 4.234928131103516,
+        "visibility_probability": 0.9857258796691895
+      },
+      {
+        "error_px_256": 0.3397684693336487,
+        "pred_x": 128.62112426757812,
+        "pred_y": 55.58236312866211,
+        "visibility_logit": 4.419034481048584,
+        "visibility_probability": 0.9880974888801575
+      },
+      {
+        "error_px_256": 0.3240260183811188,
+        "pred_x": 128.60215759277344,
+        "pred_y": 55.58206558227539,
+        "visibility_logit": 4.549372673034668,
+        "visibility_probability": 0.9895367622375488
+      },
+      {
+        "error_px_256": 0.3122105896472931,
+        "pred_x": 128.5897674560547,
+        "pred_y": 55.584877014160156,
+        "visibility_logit": 4.637417316436768,
+        "visibility_probability": 0.9904102087020874
+      },
+      {
+        "error_px_256": 0.3027624487876892,
+        "pred_x": 128.58143615722656,
+        "pred_y": 55.589447021484375,
+        "visibility_logit": 4.696620464324951,
+        "visibility_probability": 0.9909564852714539
+      },
+      {
+        "error_px_256": 0.29573115706443787,
+        "pred_x": 128.57608032226562,
+        "pred_y": 55.594058990478516,
+        "visibility_logit": 4.749894142150879,
+        "visibility_probability": 0.991421639919281
+      },
+      {
+        "error_px_256": 0.2905990183353424,
+        "pred_x": 128.5723876953125,
+        "pred_y": 55.597740173339844,
+        "visibility_logit": 4.793442726135254,
+        "visibility_probability": 0.9917842149734497
+      },
+      {
+        "error_px_256": 0.286893367767334,
+        "pred_x": 128.56980895996094,
+        "pred_y": 55.600528717041016,
+        "visibility_logit": 4.832607746124268,
+        "visibility_probability": 0.9920972585678101
+      },
+      {
+        "error_px_256": 0.2840630114078522,
+        "pred_x": 128.56790161132812,
+        "pred_y": 55.602752685546875,
+        "visibility_logit": 4.8698859214782715,
+        "visibility_probability": 0.9923842549324036
+      },
+      {
+        "error_px_256": 0.2815738320350647,
+        "pred_x": 128.5662384033203,
+        "pred_y": 55.604732513427734,
+        "visibility_logit": 4.905320167541504,
+        "visibility_probability": 0.9926474094390869
+      },
+      {
+        "error_px_256": 0.27943962812423706,
+        "pred_x": 128.56488037109375,
+        "pred_y": 55.60653305053711,
+        "visibility_logit": 4.938083648681641,
+        "visibility_probability": 0.9928827285766602
+      },
+      {
+        "error_px_256": 0.2777279019355774,
+        "pred_x": 128.56396484375,
+        "pred_y": 55.608238220214844,
+        "visibility_logit": 4.967625141143799,
+        "visibility_probability": 0.99308842420578
+      }
+    ]
+  },
+  "gap_student": {
+    "frames": 32,
+    "hit_1px": 0.59375,
+    "hit_2px": 0.75,
+    "hit_4px": 0.9375,
+    "hit_8px": 1.0,
+    "max_error_px_256": 4.4650750160217285,
+    "mean_error_px_256": 1.2130366726778448,
+    "mean_visibility_probability": 0.1997911303769797,
+    "median_error_px_256": 0.5126392096281052,
+    "visible_rate_at_0p5": 0.09375
+  },
+  "gate": {
+    "decision": "STOP_OR_REDESIGN_QUERY_STATE_BRIDGE",
+    "pass": false,
+    "pre_gap_query_improves_mean_error": true,
+    "query_state_retains_ge_half_full_oracle_improvement": true,
+    "teacher_query_improves_mean_error_by_ge_2px": false
+  },
+  "post_reappearance": {
+    "native_student": {
+      "frames": 16,
+      "hit_1px": 0.625,
+      "hit_2px": 0.875,
+      "hit_4px": 0.9375,
+      "hit_8px": 1.0,
+      "max_error_px_256": 4.657783031463623,
+      "mean_error_px_256": 1.0648733647540212,
+      "mean_visibility_probability": 0.8578147180378437,
+      "median_error_px_256": 0.7449857294559479,
+      "visible_rate_at_0p5": 0.9375
+    },
+    "pre_gap_query": {
+      "frames": 16,
+      "hit_1px": 0.9375,
+      "hit_2px": 1.0,
+      "hit_4px": 1.0,
+      "hit_8px": 1.0,
+      "max_error_px_256": 1.3258708715438843,
+      "mean_error_px_256": 0.3706805296242237,
+      "mean_visibility_probability": 0.9376620687544346,
+      "median_error_px_256": 0.2546527609229088,
+      "visible_rate_at_0p5": 0.9375
+    },
+    "teacher_full_oracle": {
+      "frames": 16,
+      "hit_1px": 1.0,
+      "hit_2px": 1.0,
+      "hit_4px": 1.0,
+      "hit_8px": 1.0,
+      "max_error_px_256": 0.2915493845939636,
+      "mean_error_px_256": 0.29065089859068394,
+      "mean_visibility_probability": 0.9982010237872601,
+      "median_error_px_256": 0.29113152623176575,
+      "visible_rate_at_0p5": 1.0
+    },
+    "teacher_query_oracle": {
+      "frames": 16,
+      "hit_1px": 1.0,
+      "hit_2px": 1.0,
+      "hit_4px": 1.0,
+      "hit_8px": 1.0,
+      "max_error_px_256": 0.9511373043060303,
+      "mean_error_px_256": 0.3690781444311142,
+      "mean_visibility_probability": 0.9537486433982849,
+      "median_error_px_256": 0.30748651921749115,
+      "visible_rate_at_0p5": 1.0
+    }
+  },
+  "pre_gap_teacher": {
+    "frames": 8,
+    "hit_1px": 1.0,
+    "hit_2px": 1.0,
+    "hit_4px": 1.0,
+    "hit_8px": 1.0,
+    "max_error_px_256": 0.3180917203426361,
+    "mean_error_px_256": 0.30145871080458164,
+    "mean_visibility_probability": 0.9938445463776588,
+    "median_error_px_256": 0.3098502904176712,
+    "visible_rate_at_0p5": 1.0
+  },
+  "protocol": {
+    "corruption": "whole-frame deterministic mean RGB during gap",
+    "gap_frames": 32,
+    "post_frames": 16,
+    "pre_frames": 8,
+    "state_boundary": "query-token RG-LRU and Conv1D caches only; image tokens and causal step preserved for query-only branches",
+    "student": "same image except gap corruption",
+    "teacher": "same static source image on every frame"
+  },
+  "schema_version": "tapnextpp_query_state_static_oracle_v0",
+  "source": {
+    "checkpoint": "/gemini/code/FSPT/checkpoints/tapnextpp/tapnextpp_ckpt.pt",
+    "checkpoint_sha256": null,
+    "checkpoint_size_bytes": 2532282370,
+    "frame": "/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f/rgbs/rgb_00000.jpg",
+    "implementation_source": "/gemini/code/FSPT/external/tapnextpp/repo/tapnet/tapnext/tapnext_torch.py",
+    "implementation_source_sha256": "2450cfe3a4317966abe0efa36ad0d6d5d65bfa70aa77479526b2558b8002d34d",
+    "locked_data_read": {
+      "davis_method_eval": false,
+      "kinetics_1144": false,
+      "pointodyssey_internal_holdout": false,
+      "pointodyssey_test": false
+    },
+    "mirror_repo_commit": "4f3c01d15a5d3ed14639971d79bffef7748fc96e",
+    "mirror_repository": "/gemini/code/FSPT/external/tapnextpp/repo",
+    "official_repository": "https://github.com/google-deepmind/tapnet",
+    "official_source_commit": "989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc",
+    "point_index": 6790,
+    "query_coord_xy_original": [
+      481.25,
+      117.625
+    ],
+    "repo": "/gemini/code/FSPT/external/tapnextpp/repo",
+    "scene": "/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f",
+    "split": "fit/train"
+  },
+  "student_teacher_query_state_distance_at_bridge": {
+    "combined_mse": 13.987703323364258,
+    "conv1d_mse": 13.568246841430664,
+    "rg_lru_mse": 0.41945600509643555
+  }
+}

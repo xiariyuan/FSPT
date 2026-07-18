@@ -1,6 +1,7 @@
 from collections import namedtuple
 from dataclasses import dataclass
 
+import pytest
 import torch
 
 from mmp_tracker.tapnextpp_identity_state_bridge import (
@@ -115,3 +116,40 @@ def test_rejects_incompatible_query_layout() -> None:
         assert "dimensions differ" in str(error)
     else:
         raise AssertionError("expected incompatible query dimensions to fail")
+
+
+def test_compose_partial_state_selects_only_requested_component_and_layer():
+    from mmp_tracker.tapnextpp_identity_state_bridge import (
+        compose_persistent_query_state,
+        extract_persistent_query_state,
+        persistent_state_replaced_fraction,
+    )
+
+    current = make_state(offset=0.0)
+    donor = make_state(offset=10.0)
+    current_q = extract_persistent_query_state(current)
+    donor_q = extract_persistent_query_state(donor)
+    mixed = compose_persistent_query_state(
+        current_q,
+        donor_q,
+        layer_mask=[False, True, False],
+        use_rg_lru=True,
+        use_conv1d=False,
+    )
+    assert torch.equal(mixed.layers[0].rg_lru_state, current_q.layers[0].rg_lru_state)
+    assert torch.equal(mixed.layers[1].rg_lru_state, donor_q.layers[1].rg_lru_state)
+    assert torch.equal(mixed.layers[1].conv1d_state, current_q.layers[1].conv1d_state)
+    assert torch.equal(mixed.layers[2].rg_lru_state, current_q.layers[2].rg_lru_state)
+    assert 0.0 < persistent_state_replaced_fraction(current_q, mixed) < 0.5
+
+
+def test_compose_rejects_wrong_layer_mask_length():
+    from mmp_tracker.tapnextpp_identity_state_bridge import (
+        compose_persistent_query_state,
+        extract_persistent_query_state,
+    )
+
+    state = make_state()
+    query = extract_persistent_query_state(state)
+    with pytest.raises(ValueError, match="layer_mask"):
+        compose_persistent_query_state(query, query, layer_mask=[True])
