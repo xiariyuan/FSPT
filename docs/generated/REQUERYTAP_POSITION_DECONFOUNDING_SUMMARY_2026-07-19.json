@@ -1,0 +1,108 @@
+{
+  "date": "2026-07-19",
+  "gate_E": {
+    "candidates": {
+      "conv_frame0": {
+        "aggregate_hit16_absolute_gain": -0.10932400932400932,
+        "checks": {
+          "aggregate_hit16_gain_ge_0p10": false,
+          "all_5_scenes_complete": true,
+          "median_scene_reduction_ge_10px": false,
+          "positive_reduction_5_of_5": false,
+          "scene_bootstrap_reduction_ci_lower_positive": false,
+          "worst_scene_reduction_ge_minus2": false
+        },
+        "median_scene_reduction_px": -20.880062103271484,
+        "pass": false,
+        "per_scene_reduction_px": {
+          "ani13_new_f": -20.880062103271484,
+          "animal": -16.591094970703125,
+          "r0_new_f_": -27.22457504272461,
+          "r2_new_": -32.61134910583496,
+          "scene_recording_20210910_S05_S06_0_ego2": 30.04834747314453
+        },
+        "positive_scenes": 1,
+        "scene_bootstrap_reduction_ci": {
+          "lower": -28.110382080078125,
+          "mean": -13.45174674987793,
+          "samples": 10000,
+          "seed": 17018,
+          "upper": 9.265874481201172
+        },
+        "variant": "conv_frame0",
+        "worst_scene_reduction_px": -32.61134910583496
+      },
+      "conv_max8": {
+        "aggregate_hit16_absolute_gain": -0.08467365967365967,
+        "checks": {
+          "aggregate_hit16_gain_ge_0p10": false,
+          "all_5_scenes_complete": true,
+          "median_scene_reduction_ge_10px": false,
+          "positive_reduction_5_of_5": false,
+          "scene_bootstrap_reduction_ci_lower_positive": false,
+          "worst_scene_reduction_ge_minus2": false
+        },
+        "median_scene_reduction_px": -29.785587310791016,
+        "pass": false,
+        "per_scene_reduction_px": {
+          "ani13_new_f": -27.300739288330078,
+          "animal": -34.89194107055664,
+          "r0_new_f_": -29.785587310791016,
+          "r2_new_": -31.191396713256836,
+          "scene_recording_20210910_S05_S06_0_ego2": 66.21590042114258
+        },
+        "positive_scenes": 1,
+        "scene_bootstrap_reduction_ci": {
+          "lower": -32.63359184265137,
+          "mean": -11.390752792358398,
+          "samples": 10000,
+          "seed": 17018,
+          "upper": 27.82070052146904
+        },
+        "variant": "conv_max8",
+        "worst_scene_reduction_px": -34.89194107055664
+      }
+    },
+    "decision": "CLOSE_TAPNEXT_PATCH_IDENTITY_ROUTE",
+    "model_validation_allowed": false,
+    "multiview_incremental": {
+      "checks": {
+        "median_scene_reduction_ge_5px": false,
+        "positive_reduction_4_of_5": false,
+        "worst_scene_reduction_ge_minus2": false
+      },
+      "median_scene_reduction_px": -2.5610122680664062,
+      "pass": false,
+      "per_scene_reduction_px": {
+        "ani13_new_f": -6.420677185058594,
+        "animal": -18.300846099853516,
+        "r0_new_f_": -2.5610122680664062,
+        "r2_new_": 1.419952392578125,
+        "scene_recording_20210910_S05_S06_0_ego2": 36.16755294799805
+      },
+      "positive_scenes": 2,
+      "worst_scene_reduction_px": -18.300846099853516
+    },
+    "pass": false,
+    "training_allowed": false
+  },
+  "interpretation": {
+    "direct_multiview_aggregation_not_sufficient": true,
+    "fresh_query_lifecycle_signal_retained": true,
+    "model_validation_allowed": false,
+    "next_allowed_step": "dedicated persistent identity descriptor feasibility audit on fit data only",
+    "position_encoding_removal_not_sufficient": true,
+    "tapnext_patch_identity_route_closed": true,
+    "training_allowed": false
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "manifest_sha256": "ab9e6502a0c015acf75b65fcc1bc8902e7d2ee0e079259891eeaccd80c4959ac",
+  "result_sha256": "432758aba466f74f2916b0afa7f0a790de5ec7a043ab01bba797da07f1182bb7",
+  "schema_version": "requerytap_position_deconfounding_summary_v0"
+}
