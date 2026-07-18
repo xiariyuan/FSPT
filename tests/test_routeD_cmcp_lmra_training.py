@@ -168,3 +168,85 @@ def test_memory_sampling_is_stop_gradient_but_current_map_is_trainable():
     assert adapted.grad.abs().sum() > 0
     assert adapter.up.weight.grad is not None
     assert adapter.up.weight.grad.abs().sum() > 0
+
+
+def _run_variant_epoch(monkeypatch, *, train_adapter: bool, train_cmcp: bool):
+    bundle = _synthetic_bundle()
+    monkeypatch.setattr(
+        "projects.mmp_tracker.mmp_tracker.routeD_cmcp_lmra_training.load_complete_feature_index",
+        lambda *args, **kwargs: {"videos": [{}]},
+    )
+    monkeypatch.setattr(
+        "projects.mmp_tracker.mmp_tracker.routeD_cmcp_lmra_training.load_cmcp_video",
+        lambda row: bundle,
+    )
+    adapter, cmcp, comparator = _modules()
+    for parameter in adapter.parameters():
+        parameter.requires_grad_(train_adapter)
+    for parameter in cmcp.parameters():
+        parameter.requires_grad_(train_cmcp)
+    trainable = [
+        parameter
+        for module in (adapter, cmcp, comparator)
+        for parameter in module.parameters()
+        if parameter.requires_grad
+    ]
+    optimizer = CountingAdamW(trainable)
+    initial = {
+        "adapter": {key: value.detach().clone() for key, value in adapter.state_dict().items()},
+        "cmcp": {key: value.detach().clone() for key, value in cmcp.state_dict().items()},
+    }
+    train_lmra_epoch(
+        adapter,
+        cmcp,
+        comparator,
+        "unused.json",
+        StaticTokenNormalization(mean=torch.zeros(84), std=torch.ones(84)),
+        CMCPLossConfig(),
+        PairwiseSafetyLossConfig(),
+        LMRAJointLossConfig(),
+        optimizer,
+        device="cpu",
+        point_batch_size=1,
+        generator=torch.Generator().manual_seed(17),
+        train_adapter=train_adapter,
+        train_cmcp=train_cmcp,
+        train_comparator=True,
+    )
+    return adapter, cmcp, comparator, initial
+
+
+def test_variant_b_freezes_identity_adapter(monkeypatch):
+    adapter, cmcp, comparator, initial = _run_variant_epoch(
+        monkeypatch, train_adapter=False, train_cmcp=True
+    )
+    assert all(
+        torch.equal(value, initial["adapter"][key])
+        for key, value in adapter.state_dict().items()
+    )
+    assert all(parameter.grad is None for parameter in adapter.parameters())
+    assert any(
+        parameter.grad is not None and parameter.grad.abs().sum() > 0
+        for parameter in cmcp.parameters()
+    )
+    assert any(
+        parameter.grad is not None and parameter.grad.abs().sum() > 0
+        for parameter in comparator.parameters()
+    )
+
+
+def test_variant_c_freezes_formal_cmcp(monkeypatch):
+    adapter, cmcp, comparator, initial = _run_variant_epoch(
+        monkeypatch, train_adapter=True, train_cmcp=False
+    )
+    assert all(
+        torch.equal(value, initial["cmcp"][key])
+        for key, value in cmcp.state_dict().items()
+    )
+    assert all(parameter.grad is None for parameter in cmcp.parameters())
+    assert adapter.up.weight.grad is not None
+    assert adapter.up.weight.grad.abs().sum() > 0
+    assert any(
+        parameter.grad is not None and parameter.grad.abs().sum() > 0
+        for parameter in comparator.parameters()
+    )

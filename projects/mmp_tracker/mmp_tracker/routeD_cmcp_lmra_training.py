@@ -133,14 +133,19 @@ def train_lmra_epoch(
     point_batch_size: int,
     generator: torch.Generator,
     max_videos: int = 0,
+    train_adapter: bool = True,
+    train_cmcp: bool = True,
+    train_comparator: bool = True,
 ) -> dict[str, float]:
     index = load_complete_feature_index(feature_index_path, expected_partition="fit")
     video_order = torch.randperm(len(index["videos"]), generator=generator).tolist()
     if max_videos > 0:
         video_order = video_order[: int(max_videos)]
-    adapter.train()
-    cmcp.train()
-    comparator.train()
+    if not (train_adapter or train_cmcp or train_comparator):
+        raise ValueError("at least one P0j component must be trainable")
+    adapter.train(train_adapter)
+    cmcp.train(train_cmcp)
+    comparator.train(train_comparator)
     totals: dict[str, float] = {}
     supervised_rows = 0
     for video_id in video_order:
@@ -269,8 +274,15 @@ def train_lmra_epoch(
             }
             for key, value in values.items():
                 totals[key] = totals.get(key, 0.0) + float(value.detach().item()) * rows
+        trainable_parameters = []
+        if train_adapter:
+            trainable_parameters.extend(adapter.parameters())
+        if train_cmcp:
+            trainable_parameters.extend(cmcp.parameters())
+        if train_comparator:
+            trainable_parameters.extend(comparator.parameters())
         nn.utils.clip_grad_norm_(
-            list(adapter.parameters()) + list(cmcp.parameters()) + list(comparator.parameters()),
+            trainable_parameters,
             float(joint_loss_config.grad_clip_norm),
         )
         optimizer.step()
