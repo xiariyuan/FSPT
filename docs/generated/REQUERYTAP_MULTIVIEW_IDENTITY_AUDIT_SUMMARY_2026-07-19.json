@@ -1,0 +1,103 @@
+{
+  "date": "2026-07-19",
+  "frozen_gate_D": {
+    "aggregate_hit16_absolute_gain": 0.024766899766899775,
+    "checks": {
+      "aggregate_hit16_gain_ge_0p10": false,
+      "all_5_scenes_complete": true,
+      "median_scene_reduction_ge_10px": false,
+      "positive_reduction_5_of_5": false,
+      "scene_bootstrap_reduction_ci_lower_positive": false,
+      "worst_scene_reduction_ge_minus2": false
+    },
+    "decision": "CLOSE_MULTI_VIEW_FEATURE_AGGREGATION",
+    "median_error_reduction_per_scene": {
+      "ani13_new_f": 2.7268714904785156,
+      "animal": -0.6601409912109375,
+      "r0_new_f_": -10.480533599853516,
+      "r2_new_": 19.7565860748291,
+      "scene_recording_20210910_S05_S06_0_ego2": -3.1977996826171875
+    },
+    "median_scene_reduction_px": -0.6601409912109375,
+    "model_validation_allowed": false,
+    "pass": false,
+    "primary_variant": "max8",
+    "scene_bootstrap_reduction_ci": {
+      "lower": -6.110893249511719,
+      "mean": 1.6289966583251954,
+      "samples": 10000,
+      "seed": 17018,
+      "upper": 11.082363510131836
+    },
+    "training_allowed": false,
+    "worst_scene_reduction_px": -10.480533599853516
+  },
+  "interpretation": {
+    "direct_multiview_aggregation_closed": true,
+    "model_validation_allowed": false,
+    "next_allowed_step": "fit-dev position-deconfounding information audit only",
+    "no_preregistered_variant_stable_across_scenes": true,
+    "primary_max8_failed": true,
+    "training_allowed": false
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "manifest_sha256": "76bbadc8cd98d29ab9b05d79985c06b26dc7443ba7092f4bc4ba52321905a4e1",
+  "result_sha256": "7d6b7eef2d90b3db798a158fa2ca212559a929215b8fd6c3581c04e685bc40d8",
+  "schema_version": "requerytap_multiview_identity_audit_summary_v0",
+  "variants": {
+    "logsumexp8": {
+      "aggregate_hit16_gain": 0.022902097902097907,
+      "ci_lower": -7.087748718261719,
+      "ci_upper": 11.725917434692382,
+      "mean_scene_reduction_px": 1.6668720245361328,
+      "median_scene_reduction_px": -0.9667167663574219,
+      "per_scene": {
+        "ani13_new_f": 3.7176170349121094,
+        "animal": -11.822265625,
+        "r0_new_f_": -0.9667167663574219,
+        "r2_new_": 21.09528923034668,
+        "scene_recording_20210910_S05_S06_0_ego2": -3.689563751220703
+      },
+      "positive_scenes": 2,
+      "worst_scene_reduction_px": -11.822265625
+    },
+    "max8": {
+      "aggregate_hit16_gain": 0.024766899766899775,
+      "ci_lower": -6.110893249511719,
+      "ci_upper": 11.082363510131836,
+      "mean_scene_reduction_px": 1.6289966583251954,
+      "median_scene_reduction_px": -0.6601409912109375,
+      "per_scene": {
+        "ani13_new_f": 2.7268714904785156,
+        "animal": -0.6601409912109375,
+        "r0_new_f_": -10.480533599853516,
+        "r2_new_": 19.7565860748291,
+        "scene_recording_20210910_S05_S06_0_ego2": -3.1977996826171875
+      },
+      "positive_scenes": 2,
+      "worst_scene_reduction_px": -10.480533599853516
+    },
+    "mean8": {
+      "aggregate_hit16_gain": 0.017832167832167845,
+      "ci_lower": -10.17217559814453,
+      "ci_upper": 14.601616287231446,
+      "mean_scene_reduction_px": 2.7802265167236326,
+      "median_scene_reduction_px": 6.928728103637695,
+      "per_scene": {
+        "ani13_new_f": 9.491283416748047,
+        "animal": -17.142444610595703,
+        "r0_new_f_": 6.928728103637695,
+        "r2_new_": 23.54839324951172,
+        "scene_recording_20210910_S05_S06_0_ego2": -8.924827575683594
+      },
+      "positive_scenes": 3,
+      "worst_scene_reduction_px": -17.142444610595703
+    }
+  }
+}
