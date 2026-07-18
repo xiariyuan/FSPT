@@ -1,0 +1,68 @@
+{
+  "date": "2026-07-18",
+  "frozen_gate": {
+    "checks": {
+      "all_six_scenes_complete": true,
+      "median_improved_frame_fraction_ge_0p75": true,
+      "median_mid4_gain_ge_2px": false,
+      "median_retained_full_query_gain_ge_0p80": false,
+      "mid4_improves_at_least_5_of_6_scenes": true,
+      "no_scene_regression_worse_than_1px": true,
+      "scene_bootstrap_ci_lower_positive": true
+    },
+    "complete_scenes": 6,
+    "decision": "CLOSE_OR_REDESIGN_MID4_QUERY_STATE_ROUTE",
+    "expected_scenes": 6,
+    "mean_gain_scene_bootstrap_ci": {
+      "lower": 0.4911478894840305,
+      "mean": 11.197598103783093,
+      "samples": 10000,
+      "seed": 17018,
+      "upper": 31.795453340893914
+    },
+    "median_improved_frame_fraction": 0.75,
+    "median_mid4_gain_px_256": 1.4653820825042203,
+    "median_retained_full_query_gain": 0.5113803579224118,
+    "model_validation_allowed": false,
+    "pass": false,
+    "positive_scenes": 5,
+    "training_allowed": false,
+    "worst_scene_gain_px_256": -0.0003930572420358658
+  },
+  "full_query": {
+    "lower": 1.6482278077940766,
+    "mean": 16.879258068627678,
+    "median": 3.475851877592504,
+    "positive_scenes": 6,
+    "samples": 10000,
+    "seed": 17018,
+    "upper": 45.80738075547075
+  },
+  "full_query_mean_excluding_largest": 2.543010247917846,
+  "full_query_median_excluding_largest": 2.9391040802001953,
+  "interpretation": {
+    "fixed_mid4_closed": true,
+    "full_query_same_time_signal_present": true,
+    "next_allowed_step": "fit-only low-rank query-state repair subspace oracle",
+    "training_allowed": false
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "manifest_sha256": "3d289d65dbb10d195484ac341fb8fd52afd009e8ec9ae89d45cb347f9905eb39",
+  "mid4": {
+    "lower": 0.4911478894840305,
+    "mean": 11.197598103783093,
+    "median": 1.4653820825042203,
+    "positive_scenes": 5,
+    "samples": 10000,
+    "seed": 17018,
+    "upper": 31.795453340893914
+  },
+  "oracle_sha256": "513403f05fab0ac4345565bbda7e34211c910c26863e402ca6b5f2902e7f44fd",
+  "schema_version": "bridgetrack_mid4_multiscene_summary_v0"
+}

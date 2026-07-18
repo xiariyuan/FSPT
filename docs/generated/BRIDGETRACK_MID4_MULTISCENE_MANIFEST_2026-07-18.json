@@ -1,0 +1,188 @@
+{
+  "clip": {
+    "gap_frames": 32,
+    "margin_px": 64.0,
+    "motion_quantile": 0.9,
+    "post_frames": 16,
+    "pre_frames": 8,
+    "start_frame": 0
+  },
+  "discovery_scene_excluded": "ani13_new_f",
+  "eligibility_rows": [
+    {
+      "eligible_points": 0,
+      "image_size": "960x540",
+      "scene": "cnb_dlab_0215_ego1"
+    },
+    {
+      "eligible_points": 1929,
+      "image_size": "960x540",
+      "scene": "seminar_h52_3rd"
+    },
+    {
+      "eligible_points": 1020,
+      "image_size": "960x540",
+      "scene": "r0_new_f_"
+    },
+    {
+      "eligible_points": 3057,
+      "image_size": "960x540",
+      "scene": "r2_new_"
+    },
+    {
+      "eligible_points": 1913,
+      "image_size": "960x540",
+      "scene": "r3_new_"
+    },
+    {
+      "eligible_points": 3365,
+      "image_size": "960x540",
+      "scene": "r0_new_f"
+    },
+    {
+      "eligible_points": 214,
+      "image_size": "960x540",
+      "scene": "ani13_new_f"
+    },
+    {
+      "eligible_points": 45,
+      "image_size": "960x540",
+      "scene": "ani18_new_f"
+    },
+    {
+      "eligible_points": 907,
+      "image_size": "960x540",
+      "scene": "character"
+    },
+    {
+      "eligible_points": 0,
+      "image_size": "960x540",
+      "scene": "cab_e1_3rd"
+    },
+    {
+      "eligible_points": 14719,
+      "image_size": "960x540",
+      "scene": "scene_carb_h_tables"
+    },
+    {
+      "eligible_points": 8089,
+      "image_size": "960x540",
+      "scene": "dancing"
+    },
+    {
+      "eligible_points": 786,
+      "image_size": "960x540",
+      "scene": "animal"
+    },
+    {
+      "eligible_points": 961,
+      "image_size": "960x540",
+      "scene": "animal_rabbit"
+    },
+    {
+      "eligible_points": 782,
+      "image_size": "960x540",
+      "scene": "character1"
+    },
+    {
+      "eligible_points": 4,
+      "image_size": "960x540",
+      "scene": "kg_ego2"
+    },
+    {
+      "eligible_points": 0,
+      "image_size": "960x540",
+      "scene": "scene_d78_0318_ego1"
+    },
+    {
+      "eligible_points": 161,
+      "image_size": "960x540",
+      "scene": "ani8_new_f"
+    },
+    {
+      "eligible_points": 101,
+      "image_size": "960x540",
+      "scene": "animal1_"
+    },
+    {
+      "eligible_points": 514,
+      "image_size": "960x540",
+      "scene": "character0_f"
+    },
+    {
+      "eligible_points": 0,
+      "image_size": "960x540",
+      "scene": "kitchen_gfloor_ego1"
+    },
+    {
+      "eligible_points": 532,
+      "image_size": "960x540",
+      "scene": "seminar_h52_ego2"
+    },
+    {
+      "eligible_points": 15,
+      "image_size": "960x540",
+      "scene": "r3_new_f"
+    },
+    {
+      "eligible_points": 847,
+      "image_size": "960x540",
+      "scene": "scene_recording_20210910_S05_S06_0_ego2"
+    }
+  ],
+  "eligible_scenes": [
+    "seminar_h52_3rd",
+    "r0_new_f_",
+    "r2_new_",
+    "r3_new_",
+    "r0_new_f",
+    "ani13_new_f",
+    "ani18_new_f",
+    "character",
+    "scene_carb_h_tables",
+    "dancing",
+    "animal",
+    "animal_rabbit",
+    "character1",
+    "kg_ego2",
+    "ani8_new_f",
+    "animal1_",
+    "character0_f",
+    "seminar_h52_ego2",
+    "r3_new_f",
+    "scene_recording_20210910_S05_S06_0_ego2"
+  ],
+  "fit_scenes_total": 24,
+  "minimum_eligible_points_per_scene": 64,
+  "qualified_scenes": [
+    "seminar_h52_3rd",
+    "r0_new_f_",
+    "r2_new_",
+    "r3_new_",
+    "r0_new_f",
+    "ani13_new_f",
+    "character",
+    "scene_carb_h_tables",
+    "dancing",
+    "animal",
+    "animal_rabbit",
+    "character1",
+    "ani8_new_f",
+    "animal1_",
+    "character0_f",
+    "seminar_h52_ego2",
+    "scene_recording_20210910_S05_S06_0_ego2"
+  ],
+  "schema_version": "bridgetrack_mid4_multiscene_manifest_v0",
+  "seed": 17018,
+  "selected_scenes": [
+    "r2_new_",
+    "character",
+    "seminar_h52_ego2",
+    "scene_carb_h_tables",
+    "r0_new_f_",
+    "dancing"
+  ],
+  "selection_hash_key": "17018|bridgetrack-mid4-multiscene-v0|scene",
+  "selection_note": "Minimum 64 eligible points frozen before model execution to keep the 0.90 motion quantile distinct from maximum-point selection."
+}

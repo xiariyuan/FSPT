@@ -313,3 +313,45 @@ Factorization gates:
 
 A pass allows only multi-fit-scene factorization verification. It does not allow
 training or locked-data access.
+
+## 15. Frozen multi-fit-scene mid-layer verification
+
+The original component-factorization gate remains failed because neither
+RG-LRU-only nor Conv1D-only met the frozen single-component requirement.  The
+redesigned hypothesis is narrower: layers 4--7 form a joint recurrent repair
+unit and must not be decomposed into a single cache component.
+
+Before any model execution, freeze the verification manifest:
+
+- source population: the 24 existing PointOdyssey fit scenes only;
+- discovery scene `ani13_new_f` excluded from the primary aggregate;
+- clip start 0, protocol 8 visible / 32 deterministic corruption / 16 rollout;
+- margin 64 px for all 56 frames;
+- at least 64 eligible, finite, visible points per scene;
+- within each scene select the 90th motion-quantile point;
+- rank qualified scenes by ascending
+  `sha256("17018|bridgetrack-mid4-multiscene-v0|scene")`;
+- use the first six scenes after excluding the discovery scene;
+- model is loaded once; all scene results, including failures, must be retained.
+
+Frozen primary comparison:
+
+```text
+native student
+same-time teacher layers 4--7, RG-LRU + Conv1D
+same-time teacher full query state
+same-time teacher full recurrent state
+```
+
+Frozen gates over the six non-discovery fit scenes:
+
+1. mid-layer joint state improves future mean error in at least 5/6 scenes;
+2. median mid-layer gain over native is at least 2.0 px at 256 raster;
+3. scene-bootstrap 95% CI lower bound for mean gain is positive;
+4. median retained full-query gain is at least 80%;
+5. median improved-frame fraction is at least 75%;
+6. no scene has a harmful regression worse than 1.0 px.
+
+Passing permits only the design of a fit-only mid-layer state reconstructor.  It
+does not permit model-validation, holdout, test, DAVIS method evaluation, or
+Kinetics access.  Failing closes the Query-State Bridge route.
