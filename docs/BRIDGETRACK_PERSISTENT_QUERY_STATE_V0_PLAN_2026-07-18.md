@@ -355,3 +355,63 @@ Frozen gates over the six non-discovery fit scenes:
 Passing permits only the design of a fit-only mid-layer state reconstructor.  It
 does not permit model-validation, holdout, test, DAVIS method evaluation, or
 Kinetics access.  Failing closes the Query-State Bridge route.
+
+## 16. Frozen low-rank Query-State repair-subspace oracle
+
+The six-scene audit closes fixed layers 4--7, but same-time full query-state
+replacement is positive in all six scenes with a median gain of 3.4759 px.
+Therefore the next hypothesis is not another fixed layer subset.  It is that
+long-occlusion state corruption lies in a compact cross-layer repair subspace.
+
+Data separation is frozen before execution:
+
+- the discovery scene and all six scenes already inspected by BridgeTrack form
+  the basis-development set;
+- every remaining qualified fit scene forms the internal verification set;
+- no scene may move from verification to basis after results are observed;
+- each of seven basis scenes contributes the first three eligible starts from
+  `{0,64,128,192,256}`;
+- each of ten verification scenes contributes start frame 0;
+- all clips use 8 visible / 32 deterministic corruption / 16 rollout frames,
+  64 px margin, at least 64 eligible points, and the 90th motion quantile.
+
+State representation is frozen:
+
+1. flatten teacher-minus-student query-state into 24 blocks: RG-LRU and Conv1D
+   for each of 12 layers;
+2. divide each block by its scalar RMS estimated only from basis clips;
+3. subtract the basis mean and compute SVD/PCA;
+4. evaluate oracle projections at ranks `{0,1,2,4,8}`;
+5. rank 8 is the sole primary variant; verification data cannot select rank;
+6. oracle coefficients use the hidden teacher delta and test compressibility
+   only, not deployable predictability.
+
+Frozen rank-8 verification gates over all ten unseen fit scenes:
+
+1. all ten scenes complete;
+2. full-query Oracle is positive in at least 8/10 scenes;
+3. rank-8 projection is positive in at least 8/10 scenes;
+4. rank-8 median future-error gain is at least 2.0 px;
+5. scene-bootstrap 95% CI lower bound is positive;
+6. median retained full-query gain is at least 75%;
+7. median improved-frame fraction is at least 75%;
+8. no scene regresses by more than 1.0 px.
+
+Passing permits only a fit-only coefficient-prediction feasibility model.  It
+does not permit PointOdyssey model-validation, holdout, test, DAVIS method
+evaluation, or Kinetics access.  Failing closes BridgeTrack Query-State repair.
+
+## 17. Final closure
+
+The frozen low-rank verification failed at every reported rank. Rank-8 was
+positive in only 1/10 unseen fit scenes and had a median gain of -6.7984 px.
+Same-time full query-state was also harmful in two scenes. Therefore the
+Query-State Bridge route is closed in full.
+
+No further changes to rank, normalization, layer subsets, basis construction,
+or state blending are allowed under this branch. No coefficient predictor may
+be trained. PointOdyssey model-validation and all locked data remain unread.
+
+A future project may study end-to-end identity/transient-state factorization
+inside a newly trained recurrent tracker, but it must be treated as a new model
+and a new preregistered branch rather than a continuation of frozen-state repair.

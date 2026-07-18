@@ -365,3 +365,112 @@ def persistent_state_replaced_fraction(
             total += left_tensor.numel()
             changed += int((left_tensor != right_tensor).sum().item())
     return float(changed / total) if total else 0.0
+
+
+@dataclass(frozen=True)
+class QueryStateVectorLayout:
+    """Deterministic flattened layout for all query-state blocks."""
+
+    block_names: tuple[str, ...]
+    block_shapes: tuple[tuple[int, ...], ...]
+    block_sizes: tuple[int, ...]
+
+    @property
+    def total_dim(self) -> int:
+        return int(sum(self.block_sizes))
+
+
+def query_state_vector_layout(state: PersistentQueryState) -> QueryStateVectorLayout:
+    """Return the fixed layer/component layout excluding B and Q axes."""
+    names: list[str] = []
+    shapes: list[tuple[int, ...]] = []
+    sizes: list[int] = []
+    for layer_id, layer in enumerate(state.layers):
+        for component, tensor in (
+            ("rg_lru", layer.rg_lru_state),
+            ("conv1d", layer.conv1d_state),
+        ):
+            if tensor.ndim < 3:
+                raise ValueError("query-state blocks require B,Q and feature axes")
+            if tensor.shape[:2] != state.query_points.shape[:2]:
+                raise ValueError("query-state block B,Q dimensions differ from metadata")
+            shape = tuple(int(value) for value in tensor.shape[2:])
+            names.append(f"layer{layer_id:02d}.{component}")
+            shapes.append(shape)
+            sizes.append(int(tensor[0, 0].numel()))
+    return QueryStateVectorLayout(
+        block_names=tuple(names),
+        block_shapes=tuple(shapes),
+        block_sizes=tuple(sizes),
+    )
+
+
+def flatten_persistent_query_state(
+    state: PersistentQueryState,
+) -> tuple[torch.Tensor, QueryStateVectorLayout]:
+    """Flatten state to B,Q,D while retaining an exact deterministic layout."""
+    layout = query_state_vector_layout(state)
+    blocks: list[torch.Tensor] = []
+    for layer in state.layers:
+        blocks.append(layer.rg_lru_state.flatten(2))
+        blocks.append(layer.conv1d_state.flatten(2))
+    vector = torch.cat(blocks, dim=-1)
+    if vector.shape[-1] != layout.total_dim:
+        raise RuntimeError("flattened dimension does not match layout")
+    return vector, layout
+
+
+def unflatten_persistent_query_state(
+    template: PersistentQueryState,
+    vector: torch.Tensor,
+    *,
+    source_step: int | None = None,
+) -> PersistentQueryState:
+    """Rebuild a query state from B,Q,D using ``template`` metadata/layout."""
+    layout = query_state_vector_layout(template)
+    expected_prefix = tuple(int(value) for value in template.query_points.shape[:2])
+    if tuple(vector.shape[:2]) != expected_prefix or vector.ndim != 3:
+        raise ValueError("vector must have shape B,Q,D matching the template")
+    if int(vector.shape[-1]) != layout.total_dim:
+        raise ValueError("vector dimension differs from the template layout")
+    blocks = torch.split(vector, layout.block_sizes, dim=-1)
+    layers: list[QueryLayerState] = []
+    block_index = 0
+    for template_layer in template.layers:
+        rg_block = blocks[block_index].reshape_as(template_layer.rg_lru_state)
+        conv_block = blocks[block_index + 1].reshape_as(template_layer.conv1d_state)
+        block_index += 2
+        layers.append(
+            QueryLayerState(
+                rg_lru_state=rg_block,
+                conv1d_state=conv_block,
+            )
+        )
+    return PersistentQueryState(
+        source_step=int(template.source_step if source_step is None else source_step),
+        query_points=template.query_points.detach().clone(),
+        image_tokens_per_batch=template.image_tokens_per_batch,
+        layers=tuple(layers),
+    )
+
+
+def add_persistent_query_state_delta(
+    current: PersistentQueryState,
+    delta_vector: torch.Tensor,
+    *,
+    source_step: int | None = None,
+) -> PersistentQueryState:
+    """Add a flattened B,Q,D repair delta to a current query state."""
+    current_vector, layout = flatten_persistent_query_state(current)
+    if delta_vector.shape != current_vector.shape:
+        raise ValueError("delta vector shape differs from current query state")
+    repaired = current_vector + delta_vector.to(
+        device=current_vector.device, dtype=current_vector.dtype
+    )
+    if repaired.shape[-1] != layout.total_dim:
+        raise RuntimeError("repaired vector dimension differs from layout")
+    return unflatten_persistent_query_state(
+        current,
+        repaired,
+        source_step=source_step,
+    )

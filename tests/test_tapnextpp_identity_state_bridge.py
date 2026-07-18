@@ -153,3 +153,57 @@ def test_compose_rejects_wrong_layer_mask_length():
     query = extract_persistent_query_state(state)
     with pytest.raises(ValueError, match="layer_mask"):
         compose_persistent_query_state(query, query, layer_mask=[True])
+
+
+def test_query_state_vector_roundtrip_is_exact():
+    from mmp_tracker.tapnextpp_identity_state_bridge import (
+        flatten_persistent_query_state,
+        unflatten_persistent_query_state,
+    )
+
+    state = extract_persistent_query_state(make_state())
+    vector, layout = flatten_persistent_query_state(state)
+    rebuilt = unflatten_persistent_query_state(state, vector)
+    assert vector.shape == (2, 3, layout.total_dim)
+    assert layout.block_names == (
+        "layer00.rg_lru", "layer00.conv1d",
+        "layer01.rg_lru", "layer01.conv1d",
+        "layer02.rg_lru", "layer02.conv1d",
+    )
+    for left, right in zip(state.layers, rebuilt.layers):
+        assert torch.equal(left.rg_lru_state, right.rg_lru_state)
+        assert torch.equal(left.conv1d_state, right.conv1d_state)
+
+
+def test_add_flattened_delta_reconstructs_donor_exactly():
+    from mmp_tracker.tapnextpp_identity_state_bridge import (
+        add_persistent_query_state_delta,
+        flatten_persistent_query_state,
+    )
+
+    current = extract_persistent_query_state(make_state(offset=0.0))
+    donor = extract_persistent_query_state(make_state(offset=3.0))
+    current_vector, current_layout = flatten_persistent_query_state(current)
+    donor_vector, donor_layout = flatten_persistent_query_state(donor)
+    assert current_layout == donor_layout
+    repaired = add_persistent_query_state_delta(
+        current,
+        donor_vector - current_vector,
+        source_step=donor.source_step,
+    )
+    assert repaired.source_step == donor.source_step
+    for left, right in zip(repaired.layers, donor.layers):
+        assert torch.equal(left.rg_lru_state, right.rg_lru_state)
+        assert torch.equal(left.conv1d_state, right.conv1d_state)
+
+
+def test_unflatten_rejects_wrong_dimension():
+    from mmp_tracker.tapnextpp_identity_state_bridge import (
+        flatten_persistent_query_state,
+        unflatten_persistent_query_state,
+    )
+
+    state = extract_persistent_query_state(make_state())
+    vector, _ = flatten_persistent_query_state(state)
+    with pytest.raises(ValueError, match="dimension"):
+        unflatten_persistent_query_state(state, vector[..., :-1])

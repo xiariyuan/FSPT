@@ -1,0 +1,389 @@
+{
+  "basis_clip_count": 21,
+  "basis_clips": [
+    {
+      "scene": "ani13_new_f",
+      "start_frame": 0
+    },
+    {
+      "scene": "ani13_new_f",
+      "start_frame": 64
+    },
+    {
+      "scene": "ani13_new_f",
+      "start_frame": 192
+    },
+    {
+      "scene": "r2_new_",
+      "start_frame": 0
+    },
+    {
+      "scene": "r2_new_",
+      "start_frame": 64
+    },
+    {
+      "scene": "r2_new_",
+      "start_frame": 128
+    },
+    {
+      "scene": "character",
+      "start_frame": 0
+    },
+    {
+      "scene": "character",
+      "start_frame": 64
+    },
+    {
+      "scene": "character",
+      "start_frame": 128
+    },
+    {
+      "scene": "seminar_h52_ego2",
+      "start_frame": 0
+    },
+    {
+      "scene": "seminar_h52_ego2",
+      "start_frame": 128
+    },
+    {
+      "scene": "seminar_h52_ego2",
+      "start_frame": 192
+    },
+    {
+      "scene": "scene_carb_h_tables",
+      "start_frame": 0
+    },
+    {
+      "scene": "scene_carb_h_tables",
+      "start_frame": 64
+    },
+    {
+      "scene": "scene_carb_h_tables",
+      "start_frame": 128
+    },
+    {
+      "scene": "r0_new_f_",
+      "start_frame": 0
+    },
+    {
+      "scene": "r0_new_f_",
+      "start_frame": 64
+    },
+    {
+      "scene": "r0_new_f_",
+      "start_frame": 128
+    },
+    {
+      "scene": "dancing",
+      "start_frame": 0
+    },
+    {
+      "scene": "dancing",
+      "start_frame": 64
+    },
+    {
+      "scene": "dancing",
+      "start_frame": 128
+    }
+  ],
+  "basis_scenes": [
+    "ani13_new_f",
+    "r2_new_",
+    "character",
+    "seminar_h52_ego2",
+    "scene_carb_h_tables",
+    "r0_new_f_",
+    "dancing"
+  ],
+  "clip_protocol": {
+    "basis_candidate_starts": [
+      0,
+      64,
+      128,
+      192,
+      256
+    ],
+    "basis_starts_per_scene": 3,
+    "gap_frames": 32,
+    "margin_px": 64.0,
+    "minimum_eligible_points": 64,
+    "motion_quantile": 0.9,
+    "post_frames": 16,
+    "pre_frames": 8
+  },
+  "date": "2026-07-18",
+  "design_exposed_scenes": [
+    "ani13_new_f",
+    "r2_new_",
+    "character",
+    "seminar_h52_ego2",
+    "scene_carb_h_tables",
+    "r0_new_f_",
+    "dancing"
+  ],
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "scan": [
+    {
+      "eligible_points": 214,
+      "scene": "ani13_new_f",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 506,
+      "scene": "ani13_new_f",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 17,
+      "scene": "ani13_new_f",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 266,
+      "scene": "ani13_new_f",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 9,
+      "scene": "ani13_new_f",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 3057,
+      "scene": "r2_new_",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 3419,
+      "scene": "r2_new_",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 2907,
+      "scene": "r2_new_",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 3747,
+      "scene": "r2_new_",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 4110,
+      "scene": "r2_new_",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 907,
+      "scene": "character",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 1583,
+      "scene": "character",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 648,
+      "scene": "character",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 878,
+      "scene": "character",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 1198,
+      "scene": "character",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 532,
+      "scene": "seminar_h52_ego2",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 16,
+      "scene": "seminar_h52_ego2",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 183,
+      "scene": "seminar_h52_ego2",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 575,
+      "scene": "seminar_h52_ego2",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 1882,
+      "scene": "seminar_h52_ego2",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 14719,
+      "scene": "scene_carb_h_tables",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 17576,
+      "scene": "scene_carb_h_tables",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 16879,
+      "scene": "scene_carb_h_tables",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 15542,
+      "scene": "scene_carb_h_tables",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 15730,
+      "scene": "scene_carb_h_tables",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 1020,
+      "scene": "r0_new_f_",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 1084,
+      "scene": "r0_new_f_",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 411,
+      "scene": "r0_new_f_",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 250,
+      "scene": "r0_new_f_",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 491,
+      "scene": "r0_new_f_",
+      "start_frame": 256
+    },
+    {
+      "eligible_points": 8089,
+      "scene": "dancing",
+      "start_frame": 0
+    },
+    {
+      "eligible_points": 1402,
+      "scene": "dancing",
+      "start_frame": 64
+    },
+    {
+      "eligible_points": 542,
+      "scene": "dancing",
+      "start_frame": 128
+    },
+    {
+      "eligible_points": 1256,
+      "scene": "dancing",
+      "start_frame": 192
+    },
+    {
+      "eligible_points": 1835,
+      "scene": "dancing",
+      "start_frame": 256
+    }
+  ],
+  "schema_version": "bridgetrack_lowrank_query_state_manifest_v0",
+  "seed": 17018,
+  "source_population": "24 frozen PointOdyssey fit scenes from routeD protocol",
+  "state_representation": {
+    "block_normalization": "fit-basis scalar RMS per layer/component block",
+    "blocks": "12 RG-LRU blocks + 12 Conv1D blocks",
+    "pca_centering": "fit-basis mean in normalized state-delta space",
+    "primary_rank": 8,
+    "reported_ranks": [
+      0,
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "verification_clip_count": 10,
+  "verification_clips": [
+    {
+      "scene": "seminar_h52_3rd",
+      "start_frame": 0
+    },
+    {
+      "scene": "r3_new_",
+      "start_frame": 0
+    },
+    {
+      "scene": "r0_new_f",
+      "start_frame": 0
+    },
+    {
+      "scene": "animal",
+      "start_frame": 0
+    },
+    {
+      "scene": "animal_rabbit",
+      "start_frame": 0
+    },
+    {
+      "scene": "character1",
+      "start_frame": 0
+    },
+    {
+      "scene": "ani8_new_f",
+      "start_frame": 0
+    },
+    {
+      "scene": "animal1_",
+      "start_frame": 0
+    },
+    {
+      "scene": "character0_f",
+      "start_frame": 0
+    },
+    {
+      "scene": "scene_recording_20210910_S05_S06_0_ego2",
+      "start_frame": 0
+    }
+  ],
+  "verification_gate": {
+    "all_10_scenes_complete": true,
+    "full_query_positive_scenes_min": 8,
+    "rank8_median_gain_px_min": 2.0,
+    "rank8_median_improved_frame_fraction_min": 0.75,
+    "rank8_median_retained_full_query_gain_min": 0.75,
+    "rank8_positive_scenes_min": 8,
+    "rank8_scene_bootstrap_ci_lower_gt": 0.0,
+    "rank8_worst_scene_gain_px_min": -1.0
+  },
+  "verification_scenes": [
+    "seminar_h52_3rd",
+    "r3_new_",
+    "r0_new_f",
+    "animal",
+    "animal_rabbit",
+    "character1",
+    "ani8_new_f",
+    "animal1_",
+    "character0_f",
+    "scene_recording_20210910_S05_S06_0_ego2"
+  ]
+}
