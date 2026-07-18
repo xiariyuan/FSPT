@@ -126,3 +126,34 @@ statistics use only the following 15 future frames.
 The scene population is the complete set of 17 PointOdyssey fit scenes already
 qualified by the pre-model metadata scan.  No scene may be omitted after model
 execution.
+
+## Gate B — lifecycle architecture integrity
+
+Before any fit-only performance training, implement a strict single-query
+ReQueryTAP wrapper whose TAPNext++ backbone remains a trainable submodule.
+Single-query execution is intentional and preserves TAP-Vid query independence.
+
+Required architecture behavior:
+
+1. identity memory is sampled at the original query frame and remains separate
+   from the active recurrent track state;
+2. a global differentiable locator maps identity memory and current image tokens
+   to a rebind coordinate and respawn logit;
+3. native and fresh track-token paths are both exposed during training;
+4. forced respawn creates a completely new TAPNext state at the predicted or
+   supplied coordinate; it never copies, blends, or injects old hidden state;
+5. respawn-disabled output is exactly the native TAPNext++ output;
+6. the fresh path is differentiable through the predicted coordinate.
+
+Frozen Gate B tests on a real fit clip:
+
+```text
+native-off coordinate/logit max difference = 0
+forced-GT fresh path vs standalone fresh TAPNext++ max difference <= 1e-6
+finite nonzero locator gradients through fresh-token rollout
+peak allocated GPU memory < 22 GiB
+single-query contract enforced
+```
+
+Passing Gate B permits fit-only training of the locator and respawn controller.
+It still does not permit PointOdyssey model-validation or locked data.

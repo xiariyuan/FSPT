@@ -43,7 +43,9 @@
   "causal_interpretation": {
     "architecture_focus": "persistent exact-point identity locator + transient query-token retirement/respawn",
     "architecture_implementation_allowed": true,
+    "fit_only_locator_training_allowed": true,
     "fresh_query_after_correct_relocalization_supported": true,
+    "performance_training_scope": "fit-only locator and respawn controller; model-validation remains locked",
     "state_reset_at_native_coordinate_rejected": true,
     "teacher_coordinate_not_uniformly_safe": true,
     "training_allowed": false
@@ -119,6 +121,62 @@
     "positive_scenes": 16,
     "training_allowed": false,
     "worst_scene_gain_px_256": -0.05503338177998851
+  },
+  "gateB_architecture_integrity": {
+    "forced_fresh_max_abs": {
+      "state": 0.0,
+      "track_logits": 0.0,
+      "tracks": 0.0,
+      "visibility_logits": 0.0
+    },
+    "gate": {
+      "finite_locator_gradients": true,
+      "finite_loss": true,
+      "forced_fresh_matches_standalone_le_1e6": true,
+      "identity_gradient_nonzero": true,
+      "image_gradient_nonzero": true,
+      "native_off_exact": true,
+      "offset_gradient_nonzero": true,
+      "pass": true,
+      "peak_allocated_below_22GiB": true,
+      "respawn_gradient_nonzero": true,
+      "single_query_contract": true
+    },
+    "gradient_norm_sums": {
+      "identity_projection": 628.2715110778809,
+      "image_projection": 642.178617477417,
+      "offset_head": 9.974575281143188,
+      "respawn_head": 0.12346513383090496
+    },
+    "locator_parameter_count": 263427,
+    "loss": 108.23704528808594,
+    "loss_components": {
+      "fresh_rollout_query_frame": 53.6551628112793,
+      "gate": 0.6865625977516174,
+      "locator": 53.685264587402344,
+      "patch": 8.279552459716797
+    },
+    "native_off_max_abs": {
+      "state": 0.0,
+      "track_logits": 0.0,
+      "tracks": 0.0,
+      "visibility_logits": 0.0
+    },
+    "peak_allocated_bytes": 2623069184,
+    "peak_reserved_bytes": 2803892224,
+    "schema_version": "requerytap_real_architecture_smoke_v0",
+    "source": {
+      "locked_data_read": {
+        "davis_method_eval": false,
+        "kinetics_1144": false,
+        "pointodyssey_internal_holdout": false,
+        "pointodyssey_model_validation": false,
+        "pointodyssey_test": false
+      },
+      "point_index": 4851,
+      "scene": "/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f",
+      "split": "fit/train"
+    }
   },
   "locked_data_read": {
     "davis_method_eval": false,
