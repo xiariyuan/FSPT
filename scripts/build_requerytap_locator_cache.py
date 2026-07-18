@@ -24,6 +24,11 @@ def sha256(path:Path)->str:
     return h.hexdigest()
 
 
+
+def cache_contract_sha256(manifest:dict)->str:
+    payload={key:manifest[key] for key in ["seed","train_scenes","dev_scenes","frames","sampling","feature_cache"]}
+    return hashlib.sha256(json.dumps(payload,sort_keys=True,separators=(",",":")).encode()).hexdigest()
+
 def select_points(scene:str,valid:np.ndarray,limit:int,seed:int)->np.ndarray:
     ids=np.flatnonzero(valid)
     ranked=sorted((hashlib.sha256(f'{seed}|{scene}|{int(i)}'.encode()).hexdigest(),int(i)) for i in ids)
@@ -89,7 +94,7 @@ def main():
         record={'schema_version':'requerytap_locator_scene_cache_v0','scene':scene,'split':'train' if scene in manifest['train_scenes'] else 'dev','point_ids':torch.from_numpy(points),'query_features':query_features,'target_tokens':target_tokens,'target_yx':target_yx,'target_valid':target_valid,'target_frames':torch.tensor(target_frames,dtype=torch.int64),'image_size_original':torch.tensor([h,w]),'raw_baseline':baseline}
         path=args.output/f'{scene}.pt';torch.save(record,path);records.append({'scene':scene,'split':record['split'],'path':str(path.resolve()),'sha256':sha256(path),'size_bytes':path.stat().st_size,'samples':baseline['samples'],'raw_baseline':baseline})
         print(json.dumps({'index':index,'scene':scene,'split':record['split'],'points':int(points.size),'samples':baseline['samples'],'raw_median':baseline['median_error_px'],'raw_hit16':baseline['hit16']}),flush=True)
-    index={'schema_version':'requerytap_locator_cache_index_v0','manifest':str(args.manifest.resolve()),'manifest_sha256':sha256(args.manifest),'checkpoint':str(args.checkpoint.resolve()),'checkpoint_size_bytes':args.checkpoint.stat().st_size,'records':records,'locked_data_read':manifest['locked_data_read']}
+    index={'schema_version':'requerytap_locator_cache_index_v0','manifest':str(args.manifest.resolve()),'manifest_sha256':sha256(args.manifest),'manifest_cache_contract_sha256':cache_contract_sha256(manifest),'checkpoint':str(args.checkpoint.resolve()),'checkpoint_size_bytes':args.checkpoint.stat().st_size,'records':records,'locked_data_read':manifest['locked_data_read']}
     path=args.output/'cache_index.json';path.write_text(json.dumps(index,indent=2,sort_keys=True)+'\n');print(json.dumps({'index':str(path),'sha256':sha256(path),'records':len(records)},indent=2))
 
 if __name__=='__main__':main()

@@ -184,3 +184,13 @@ Frozen C1 gates over all five dev scenes:
 C1 passing does not establish a tracking improvement.  It only allows Gate C2,
 which will re-instantiate fresh query tokens using predicted coordinates and
 score the following future frames.
+
+### C1 deterministic sampling clarification
+
+Before training, freeze the early-stop subset as the first 4096 valid dev pairs
+under ascending
+`sha256("17018|requerytap-locator-dev|scene|target_frame|point_id")`.
+Epoch `e` samples 4096 train pairs with replacement using a torch generator
+seeded by `17018 + e`.  C1 trains only identity projection, image projection,
+and coordinate-offset head.  The respawn head remains frozen until coordinate
+localization passes and C2 defines lifecycle supervision.

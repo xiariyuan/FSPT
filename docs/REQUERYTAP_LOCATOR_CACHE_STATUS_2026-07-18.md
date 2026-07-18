@@ -29,3 +29,8 @@ r2_new_:                                    median 62.04 px, hit@16 25.55%
 
 This establishes that the exact-point locator must learn cross-frame identity;
 a raw patch cosine or native-coordinate reset is not a viable method.
+
+The cache index records a cache-contract SHA over only scene split, frames,
+point sampling, seed, and feature-extraction fields.  Training-only additions
+such as deterministic early-stop selection do not invalidate the already-built
+features, but the complete current training-manifest SHA is also recorded.

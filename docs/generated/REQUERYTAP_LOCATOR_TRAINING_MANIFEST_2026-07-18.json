@@ -104,15 +104,23 @@
   "training": {
     "batch_size": 32,
     "early_stop_dev_samples": 4096,
+    "early_stop_dev_selection": "ascending sha256(\"17018|requerytap-locator-dev|scene|target_frame|point_id\") over all valid dev pairs",
     "early_stop_patience": 4,
+    "epoch_sampling": "4096 pairs sampled with replacement from all train pairs using torch.Generator seed 17018 + epoch",
     "epochs": 12,
     "final_dev_evaluation": "all valid dev point-frame pairs",
     "gradient_clip": 1.0,
     "learning_rate": 0.0003,
     "loss": "patch_cross_entropy + 10 * smooth_l1(pred_yx/256,target_yx/256)",
     "optimizer": "AdamW",
+    "respawn_head": "frozen/untrained in C1; trained only after coordinate locator passes and C2 is defined",
     "samples_per_epoch": 4096,
     "selection_metric": "dev median coordinate error",
+    "trainable_submodules": [
+      "identity_projection",
+      "image_projection",
+      "offset_head"
+    ],
     "weight_decay": 0.0001
   }
 }

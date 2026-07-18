@@ -1,5 +1,5 @@
 {
-  "cache_index_sha256": "f97497a1cd0424a9c06142319f9e596860e9fde7567633348d2bcd4f71a628de",
+  "cache_index_sha256": "898f0e1fc759de603d9bd9777a02e15b8a0523b811451fada9ac93d02e75e23a",
   "checkpoint_size_bytes": 2532282370,
   "date": "2026-07-18",
   "locked_data_read": {
@@ -9,7 +9,8 @@
     "pointodyssey_model_validation": false,
     "pointodyssey_test": false
   },
-  "manifest_sha256": "e5be0ac16d992691a009d30424a0c5a26e98e16afe2d5f65912aa2cefe6b67a7",
+  "manifest_cache_contract_sha256": "f6607e6e0eeeb31855bddb872be784271b498bf4eb610e57a73f9881edca99e5",
+  "manifest_sha256": "5b9f9dfe73740f82cefcd812f97ba559fe89d635ee2b370cf2e270370ac13bab",
   "records": 17,
   "schema_version": "requerytap_locator_cache_summary_v0",
   "splits": {
