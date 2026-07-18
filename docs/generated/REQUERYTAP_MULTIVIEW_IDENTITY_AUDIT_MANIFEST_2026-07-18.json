@@ -1,0 +1,77 @@
+{
+  "date": "2026-07-18",
+  "decision_if_fail": "CLOSE_MULTI_VIEW_FEATURE_AGGREGATION",
+  "decision_if_pass": "ALLOW_MULTI_VIEW_IDENTITY_LOCATOR_DESIGN",
+  "features": {
+    "dtype": "float16",
+    "image_size": [
+      256,
+      256
+    ],
+    "patch_size": 8,
+    "source": "official TAPNext++ lin_proj plus image_pos_emb",
+    "tokens_per_frame": 1024
+  },
+  "gate_D": {
+    "aggregate_hit16_absolute_gain_min": 0.1,
+    "all_5_scenes_complete": true,
+    "median_scene_error_reduction_px_min": 10.0,
+    "positive_median_error_reduction_scenes_min": 5,
+    "scene_bootstrap_reduction_ci_lower_gt": 0.0,
+    "worst_scene_error_reduction_min": -2.0
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "points": "same deterministic 256 point identities from frozen locator cache",
+  "primary_variant": "max8",
+  "query_memory_frames": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+  ],
+  "scenes": [
+    "animal",
+    "scene_recording_20210910_S05_S06_0_ego2",
+    "r0_new_f_",
+    "ani13_new_f",
+    "r2_new_"
+  ],
+  "schema_version": "requerytap_multiview_identity_audit_manifest_v0",
+  "seed": 17018,
+  "target_frames": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55
+  ],
+  "training_allowed": false,
+  "variants": {
+    "frame0": "single frame-0 normalized cosine, argmax patch center",
+    "logsumexp8": "logsumexp(10*cosine)/10 over visible memory features",
+    "max8": "maximum cosine over visible memory features for each target patch",
+    "mean8": "normalize each visible memory feature, mean over memory, renormalize, cosine to target patches"
+  },
+  "visible_memory_rule": "use only GT-visible, valid, finite, 8-px interior pre-gap observations; frame 0 always available"
+}
