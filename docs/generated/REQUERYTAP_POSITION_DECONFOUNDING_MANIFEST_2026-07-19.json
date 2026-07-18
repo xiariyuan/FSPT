@@ -1,0 +1,51 @@
+{
+  "schema_version": "requerytap_position_deconfounding_manifest_v0",
+  "date": "2026-07-19",
+  "seed": 17018,
+  "scenes": [
+    "animal",
+    "scene_recording_20210910_S05_S06_0_ego2",
+    "r0_new_f_",
+    "ani13_new_f",
+    "r2_new_"
+  ],
+  "query_memory_frames": [0,1,2,3,4,5,6,7],
+  "target_frames": [40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55],
+  "points": "same deterministic 256 identities from frozen locator cache",
+  "representation": {
+    "encoded_baseline": "official TAPNext++ lin_proj plus image_pos_emb, frozen Gate D frame0 errors",
+    "conv_frame0": "official TAPNext++ lin_proj output before image_pos_emb at frame 0",
+    "conv_max8": "maximum normalized cosine over GT-visible conv-only exact-point features from frames 0-7",
+    "conv_mean8": "normalized mean of GT-visible conv-only exact-point features from frames 0-7",
+    "conv_logsumexp8": "logsumexp(10*cosine)/10 over GT-visible conv-only exact-point features"
+  },
+  "candidate_variants": ["conv_frame0", "conv_max8"],
+  "candidate_gate": {
+    "all_5_scenes_complete": true,
+    "positive_median_error_reduction_scenes_min": 5,
+    "median_scene_error_reduction_px_min": 10.0,
+    "scene_bootstrap_reduction_ci_lower_gt": 0.0,
+    "aggregate_hit16_absolute_gain_min": 0.10,
+    "worst_scene_error_reduction_min": -2.0
+  },
+  "multiview_incremental_gate": {
+    "positive_median_error_reduction_scenes_min": 4,
+    "median_scene_error_reduction_px_min": 5.0,
+    "worst_scene_error_reduction_min": -2.0
+  },
+  "decision_order": [
+    "ALLOW_POSITION_FREE_MULTIVIEW_LOCATOR if conv_max8 candidate and multiview incremental gates pass",
+    "ALLOW_POSITION_FREE_SINGLE_VIEW_LOCATOR if conv_frame0 candidate gate passes",
+    "CLOSE_TAPNEXT_PATCH_IDENTITY_ROUTE otherwise"
+  ],
+  "training_allowed": false,
+  "model_validation_allowed": false,
+  "gate_D_result_sha256": "7d6b7eef2d90b3db798a158fa2ca212559a929215b8fd6c3581c04e685bc40d8",
+  "locked_data_read": {
+    "pointodyssey_model_validation": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_test": false,
+    "davis_method_eval": false,
+    "kinetics_1144": false
+  }
+}
