@@ -1,0 +1,709 @@
+{
+  "best_epoch": 4,
+  "checkpoint_path": "/gemini/code/FSPT_requerytap_stage/outputs/locator_training_20260718/best_locator.pt",
+  "checkpoint_sha256": "bb386e8a95690f0ce621f9faa2baf4ebda08b25ce427b4a04b91a04669bff09b",
+  "configuration": {
+    "batch_size": 32,
+    "early_stop_dev_samples": 4096,
+    "early_stop_dev_selection": "ascending sha256(\"17018|requerytap-locator-dev|scene|target_frame|point_id\") over all valid dev pairs",
+    "early_stop_patience": 4,
+    "epoch_sampling": "4096 pairs sampled with replacement from all train pairs using torch.Generator seed 17018 + epoch",
+    "epochs": 12,
+    "final_dev_evaluation": "all valid dev point-frame pairs",
+    "gradient_clip": 1.0,
+    "learning_rate": 0.0003,
+    "loss": "patch_cross_entropy + 10 * smooth_l1(pred_yx/256,target_yx/256)",
+    "optimizer": "AdamW",
+    "respawn_head": "frozen/untrained in C1; trained only after coordinate locator passes and C2 is defined",
+    "samples_per_epoch": 4096,
+    "selection_metric": "dev median coordinate error",
+    "trainable_submodules": [
+      "identity_projection",
+      "image_projection",
+      "offset_head"
+    ],
+    "weight_decay": 0.0001
+  },
+  "dev_pairs": 17160,
+  "final_dev": {
+    "hit16": 0.1872960372960373,
+    "hit32": 0.5095571095571095,
+    "hit4": 0.013752913752913752,
+    "hit8": 0.05174825174825175,
+    "mean_error_px": 52.7701060796378,
+    "median_error_px": 31.08877658843994,
+    "per_scene": {
+      "ani13_new_f": {
+        "hit16": 0.12990196078431374,
+        "hit32": 0.5917755991285403,
+        "hit4": 0.0010893246187363835,
+        "hit8": 0.012799564270152506,
+        "mean_error_px": 40.84530897214522,
+        "median_error_px": 29.247621536254883,
+        "samples": 3672
+      },
+      "animal": {
+        "hit16": 0.3648068669527897,
+        "hit32": 0.8403969957081545,
+        "hit4": 0.02119098712446352,
+        "hit8": 0.10783261802575107,
+        "mean_error_px": 24.465819789200637,
+        "median_error_px": 18.3755521774292,
+        "samples": 3728
+      },
+      "r0_new_f_": {
+        "hit16": 0.04685452162516383,
+        "hit32": 0.4724770642201835,
+        "hit4": 0.0,
+        "hit8": 0.000327653997378768,
+        "mean_error_px": 46.31356205227803,
+        "median_error_px": 33.44553756713867,
+        "samples": 3052
+      },
+      "r2_new_": {
+        "hit16": 0.3290666666666667,
+        "hit32": 0.5322666666666667,
+        "hit4": 0.0408,
+        "hit8": 0.1168,
+        "mean_error_px": 33.61723122491042,
+        "median_error_px": 27.368976593017578,
+        "samples": 3750
+      },
+      "scene_recording_20210910_S05_S06_0_ego2": {
+        "hit16": 0.0,
+        "hit32": 0.0,
+        "hit4": 0.0,
+        "hit8": 0.0,
+        "mean_error_px": 134.1882559600273,
+        "median_error_px": 136.87439727783203,
+        "samples": 2958
+      }
+    },
+    "samples": 17160
+  },
+  "fixed_dev_pairs": 4096,
+  "gate_C1": {
+    "checks": {
+      "all_5_dev_scenes_complete": true,
+      "learned_hit16_ge_0p60": false,
+      "learned_median_error_le_12px": false,
+      "positive_error_reduction_5_of_5": false,
+      "scene_bootstrap_error_reduction_ci_lower_positive": true,
+      "worst_scene_error_reduction_ge_minus2": false
+    },
+    "decision": "STOP_OR_REDESIGN_REQUERYTAP_LOCATOR",
+    "locked_data_allowed": false,
+    "model_validation_allowed": false,
+    "pass": false,
+    "raw_minus_learned_median_error_per_scene": {
+      "ani13_new_f": 51.261892318725586,
+      "animal": 56.73038196563721,
+      "r0_new_f_": 34.68666458129883,
+      "r2_new_": 34.67073059082031,
+      "scene_recording_20210910_S05_S06_0_ego2": -13.09393310546875
+    },
+    "scene_bootstrap_error_reduction_ci": {
+      "lower": 9.33016471862793,
+      "mean": 32.85114727020264,
+      "samples": 10000,
+      "seed": 17018,
+      "upper": 51.2247537612915
+    },
+    "worst_scene_error_reduction": -13.09393310546875
+  },
+  "history": [
+    {
+      "epoch": 0,
+      "fixed_dev": {
+        "hit16": 0.185302734375,
+        "hit32": 0.405029296875,
+        "hit4": 0.01513671875,
+        "hit8": 0.048095703125,
+        "mean_error_px": 52.9684292463935,
+        "median_error_px": 44.18888473510742,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.19541484716157206,
+            "hit32": 0.3089519650655022,
+            "hit4": 0.04148471615720524,
+            "hit8": 0.08624454148471616,
+            "mean_error_px": 45.78506705555333,
+            "median_error_px": 44.868133544921875,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.47570621468926555,
+            "hit32": 0.8,
+            "hit4": 0.003389830508474576,
+            "hit8": 0.07231638418079096,
+            "mean_error_px": 28.018329039266554,
+            "median_error_px": 16.622289657592773,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.024793388429752067,
+            "hit32": 0.371900826446281,
+            "hit4": 0.0,
+            "hit8": 0.006887052341597796,
+            "mean_error_px": 53.94721707824833,
+            "median_error_px": 44.11578559875488,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.15927189988623436,
+            "hit32": 0.4448236632536974,
+            "hit4": 0.023890784982935155,
+            "hit8": 0.055745164960182024,
+            "mean_error_px": 40.751666017902316,
+            "median_error_px": 37.25742721557617,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0014492753623188406,
+            "hit32": 0.010144927536231883,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 109.03905730731245,
+            "median_error_px": 110.2154312133789,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": true,
+      "stale_epochs": 0,
+      "train_coordinate_loss": 0.015173159117694013,
+      "train_loss": 5.18026752024889,
+      "train_patch_ce": 5.028535909950733
+    },
+    {
+      "epoch": 1,
+      "fixed_dev": {
+        "hit16": 0.223388671875,
+        "hit32": 0.447509765625,
+        "hit4": 0.018310546875,
+        "hit8": 0.05517578125,
+        "mean_error_px": 53.38143101610876,
+        "median_error_px": 36.98577308654785,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.1615720524017467,
+            "hit32": 0.4497816593886463,
+            "hit4": 0.0032751091703056767,
+            "hit8": 0.018558951965065504,
+            "mean_error_px": 42.439246199927474,
+            "median_error_px": 35.08301544189453,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.6135593220338983,
+            "hit32": 0.8135593220338984,
+            "hit4": 0.030508474576271188,
+            "hit8": 0.1344632768361582,
+            "mean_error_px": 22.7976394824389,
+            "median_error_px": 14.014531135559082,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.030303030303030304,
+            "hit32": 0.41597796143250687,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 50.763006853991634,
+            "median_error_px": 36.539567947387695,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.229806598407281,
+            "hit32": 0.45051194539249145,
+            "hit4": 0.051194539249146756,
+            "hit8": 0.10238907849829351,
+            "mean_error_px": 38.81809574059625,
+            "median_error_px": 37.12755584716797,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.004347826086956522,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 128.44207514334417,
+            "median_error_px": 130.9656219482422,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": true,
+      "stale_epochs": 0,
+      "train_coordinate_loss": 0.008445796171145048,
+      "train_loss": 4.166928686201572,
+      "train_patch_ce": 4.082470700144768
+    },
+    {
+      "epoch": 2,
+      "fixed_dev": {
+        "hit16": 0.2138671875,
+        "hit32": 0.497314453125,
+        "hit4": 0.010498046875,
+        "hit8": 0.055419921875,
+        "mean_error_px": 52.50499614830551,
+        "median_error_px": 32.20890426635742,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.185589519650655,
+            "hit32": 0.6222707423580786,
+            "hit4": 0.0054585152838427945,
+            "hit8": 0.021834061135371178,
+            "mean_error_px": 40.09732079766203,
+            "median_error_px": 26.56435489654541,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.503954802259887,
+            "hit32": 0.8124293785310734,
+            "hit4": 0.011299435028248588,
+            "hit8": 0.10621468926553672,
+            "mean_error_px": 23.780224322329808,
+            "median_error_px": 15.971701622009277,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.05509641873278237,
+            "hit32": 0.3608815426997245,
+            "hit4": 0.0,
+            "hit8": 0.005509641873278237,
+            "mean_error_px": 48.89451555181141,
+            "median_error_px": 37.33426284790039,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.24914675767918087,
+            "hit32": 0.5506257110352674,
+            "hit4": 0.03185437997724687,
+            "hit8": 0.12286689419795221,
+            "mean_error_px": 34.40830486648387,
+            "median_error_px": 28.18614387512207,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0014492753623188406,
+            "hit32": 0.002898550724637681,
+            "hit4": 0.0,
+            "hit8": 0.0014492753623188406,
+            "mean_error_px": 132.67174141925315,
+            "median_error_px": 136.60655975341797,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": true,
+      "stale_epochs": 0,
+      "train_coordinate_loss": 0.00676215288694948,
+      "train_loss": 3.8718308825045824,
+      "train_patch_ce": 3.8042093589901924
+    },
+    {
+      "epoch": 3,
+      "fixed_dev": {
+        "hit16": 0.2529296875,
+        "hit32": 0.47900390625,
+        "hit4": 0.01611328125,
+        "hit8": 0.05712890625,
+        "mean_error_px": 52.938252756008296,
+        "median_error_px": 34.04289245605469,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.24344978165938866,
+            "hit32": 0.5032751091703057,
+            "hit4": 0.0032751091703056767,
+            "hit8": 0.02947598253275109,
+            "mean_error_px": 41.029411320993475,
+            "median_error_px": 31.730212211608887,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.5581920903954802,
+            "hit32": 0.8259887005649718,
+            "hit4": 0.01807909604519774,
+            "hit8": 0.09717514124293786,
+            "mean_error_px": 23.189898398097625,
+            "median_error_px": 15.3715238571167,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.09090909090909091,
+            "hit32": 0.4393939393939394,
+            "hit4": 0.0,
+            "hit8": 0.008264462809917356,
+            "mean_error_px": 47.79170845297086,
+            "median_error_px": 34.73617935180664,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.28782707622298065,
+            "hit32": 0.5130830489192264,
+            "hit4": 0.053469852104664393,
+            "hit8": 0.13083048919226395,
+            "mean_error_px": 34.98892103656024,
+            "median_error_px": 30.86238670349121,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 135.18411667865254,
+            "median_error_px": 137.8623275756836,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": false,
+      "stale_epochs": 1,
+      "train_coordinate_loss": 0.006437380376155488,
+      "train_loss": 3.7626309394836426,
+      "train_patch_ce": 3.6982571370899677
+    },
+    {
+      "epoch": 4,
+      "fixed_dev": {
+        "hit16": 0.18994140625,
+        "hit32": 0.5166015625,
+        "hit4": 0.013916015625,
+        "hit8": 0.051025390625,
+        "mean_error_px": 52.344219531616545,
+        "median_error_px": 30.657443046569824,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.1331877729257642,
+            "hit32": 0.5938864628820961,
+            "hit4": 0.001091703056768559,
+            "hit8": 0.010917030567685589,
+            "mean_error_px": 40.613619997251504,
+            "median_error_px": 29.397846221923828,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.3751412429378531,
+            "hit32": 0.8497175141242937,
+            "hit4": 0.015819209039548022,
+            "hit8": 0.10056497175141244,
+            "mean_error_px": 24.1313292457559,
+            "median_error_px": 18.149356842041016,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.045454545454545456,
+            "hit32": 0.4559228650137741,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 47.427489012726085,
+            "median_error_px": 34.39648246765137,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.3310580204778157,
+            "hit32": 0.5563139931740614,
+            "hit4": 0.04778156996587031,
+            "hit8": 0.12514220705346984,
+            "mean_error_px": 32.66107406924066,
+            "median_error_px": 24.35978126525879,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 134.35098517597586,
+            "median_error_px": 136.90406036376953,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": true,
+      "stale_epochs": 0,
+      "train_coordinate_loss": 0.0060337457525747595,
+      "train_loss": 3.6188362073153257,
+      "train_patch_ce": 3.5584987569600344
+    },
+    {
+      "epoch": 5,
+      "fixed_dev": {
+        "hit16": 0.212646484375,
+        "hit32": 0.48193359375,
+        "hit4": 0.013427734375,
+        "hit8": 0.0458984375,
+        "mean_error_px": 53.90254705530606,
+        "median_error_px": 34.1752872467041,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.10152838427947598,
+            "hit32": 0.4661572052401747,
+            "hit4": 0.002183406113537118,
+            "hit8": 0.017467248908296942,
+            "mean_error_px": 44.19885265592925,
+            "median_error_px": 34.64885330200195,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.5853107344632769,
+            "hit32": 0.847457627118644,
+            "hit4": 0.022598870056497175,
+            "hit8": 0.10621468926553672,
+            "mean_error_px": 22.068283890330857,
+            "median_error_px": 14.758729934692383,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.048209366391184574,
+            "hit32": 0.4325068870523416,
+            "hit4": 0.0027548209366391185,
+            "hit8": 0.0027548209366391185,
+            "mean_error_px": 48.09624930091469,
+            "median_error_px": 35.151859283447266,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.25597269624573377,
+            "hit32": 0.5494880546075085,
+            "hit4": 0.03526734926052332,
+            "hit8": 0.08646188850967008,
+            "mean_error_px": 35.35695674356001,
+            "median_error_px": 27.354366302490234,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 137.35016013435697,
+            "median_error_px": 141.30109405517578,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": false,
+      "stale_epochs": 1,
+      "train_coordinate_loss": 0.005753258472395828,
+      "train_loss": 3.5687226094305515,
+      "train_patch_ce": 3.511190015822649
+    },
+    {
+      "epoch": 6,
+      "fixed_dev": {
+        "hit16": 0.218994140625,
+        "hit32": 0.479248046875,
+        "hit4": 0.017333984375,
+        "hit8": 0.056396484375,
+        "mean_error_px": 52.32858701288205,
+        "median_error_px": 33.49249458312988,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.14519650655021835,
+            "hit32": 0.4978165938864629,
+            "hit4": 0.006550218340611353,
+            "hit8": 0.03056768558951965,
+            "mean_error_px": 41.08435997184708,
+            "median_error_px": 32.15510177612305,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.536723163841808,
+            "hit32": 0.8327683615819209,
+            "hit4": 0.02937853107344633,
+            "hit8": 0.12429378531073447,
+            "mean_error_px": 22.95352500357197,
+            "median_error_px": 15.31061840057373,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.03305785123966942,
+            "hit32": 0.3925619834710744,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 49.581046604913126,
+            "median_error_px": 36.862762451171875,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.3014789533560865,
+            "hit32": 0.5506257110352674,
+            "hit4": 0.04436860068259386,
+            "hit8": 0.10580204778156997,
+            "mean_error_px": 32.83105798670863,
+            "median_error_px": 27.32276153564453,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0014492753623188406,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 132.66146266218544,
+            "median_error_px": 134.50775909423828,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": false,
+      "stale_epochs": 2,
+      "train_coordinate_loss": 0.0053276230337360175,
+      "train_loss": 3.419811151921749,
+      "train_patch_ce": 3.3665349185466766
+    },
+    {
+      "epoch": 7,
+      "fixed_dev": {
+        "hit16": 0.264404296875,
+        "hit32": 0.494384765625,
+        "hit4": 0.0283203125,
+        "hit8": 0.064697265625,
+        "mean_error_px": 52.38210141357558,
+        "median_error_px": 32.633134841918945,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.15611353711790393,
+            "hit32": 0.47161572052401746,
+            "hit4": 0.006550218340611353,
+            "hit8": 0.017467248908296942,
+            "mean_error_px": 42.9833598611917,
+            "median_error_px": 35.557861328125,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.6870056497175141,
+            "hit32": 0.8406779661016949,
+            "hit4": 0.07570621468926554,
+            "hit8": 0.16610169491525423,
+            "mean_error_px": 20.99108825558323,
+            "median_error_px": 13.778144836425781,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.0371900826446281,
+            "hit32": 0.4820936639118457,
+            "hit4": 0.0027548209366391185,
+            "hit8": 0.0027548209366391185,
+            "mean_error_px": 47.32701613456421,
+            "median_error_px": 33.28444480895996,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.34698521046643915,
+            "hit32": 0.5676905574516496,
+            "hit4": 0.04664391353811149,
+            "hit8": 0.11376564277588168,
+            "mean_error_px": 33.03058073626443,
+            "median_error_px": 24.224790573120117,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 135.09264126100402,
+            "median_error_px": 137.4493865966797,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": false,
+      "stale_epochs": 3,
+      "train_coordinate_loss": 0.005305195345499669,
+      "train_loss": 3.4168472085148096,
+      "train_patch_ce": 3.3637952655553818
+    },
+    {
+      "epoch": 8,
+      "fixed_dev": {
+        "hit16": 0.2158203125,
+        "hit32": 0.46826171875,
+        "hit4": 0.0126953125,
+        "hit8": 0.043701171875,
+        "mean_error_px": 54.117833881135084,
+        "median_error_px": 35.31412315368652,
+        "per_scene": {
+          "ani13_new_f": {
+            "hit16": 0.16375545851528384,
+            "hit32": 0.45305676855895194,
+            "hit4": 0.007641921397379912,
+            "hit8": 0.026200873362445413,
+            "mean_error_px": 44.09397336879672,
+            "median_error_px": 37.49466133117676,
+            "samples": 916
+          },
+          "animal": {
+            "hit16": 0.5288135593220339,
+            "hit32": 0.8101694915254237,
+            "hit4": 0.01694915254237288,
+            "hit8": 0.07344632768361582,
+            "mean_error_px": 23.515954094552725,
+            "median_error_px": 15.636308670043945,
+            "samples": 885
+          },
+          "r0_new_f_": {
+            "hit16": 0.0371900826446281,
+            "hit32": 0.4118457300275482,
+            "hit4": 0.0027548209366391185,
+            "hit8": 0.0027548209366391185,
+            "mean_error_px": 50.30475701674942,
+            "median_error_px": 35.237619400024414,
+            "samples": 726
+          },
+          "r2_new_": {
+            "hit16": 0.27189988623435724,
+            "hit32": 0.5540386803185438,
+            "hit4": 0.03185437997724687,
+            "hit8": 0.10011376564277588,
+            "mean_error_px": 33.855120006774946,
+            "median_error_px": 27.153785705566406,
+            "samples": 879
+          },
+          "scene_recording_20210910_S05_S06_0_ego2": {
+            "hit16": 0.0,
+            "hit32": 0.0,
+            "hit4": 0.0,
+            "hit8": 0.0,
+            "mean_error_px": 136.5000645181407,
+            "median_error_px": 137.14453125,
+            "samples": 690
+          }
+        },
+        "samples": 4096
+      },
+      "improved": false,
+      "stale_epochs": 4,
+      "train_coordinate_loss": 0.004978151717295987,
+      "train_loss": 3.327913349494338,
+      "train_patch_ce": 3.2781318239867687
+    }
+  ],
+  "model_state_sha256": "3340b799c8d5a59318ef3bf3f8087b2465d8f9c0ff0b3285c3219efa8a10cf8f",
+  "schema_version": "requerytap_locator_training_result_v0",
+  "source": {
+    "cache_index": "/gemini/code/FSPT_requerytap_stage/outputs/locator_cache_20260718/cache_index.json",
+    "cache_index_sha256": "898f0e1fc759de603d9bd9777a02e15b8a0523b811451fada9ac93d02e75e23a",
+    "locked_data_read": {
+      "davis_method_eval": false,
+      "kinetics_1144": false,
+      "pointodyssey_internal_holdout": false,
+      "pointodyssey_model_validation": false,
+      "pointodyssey_test": false
+    },
+    "manifest": "/gemini/code/FSPT_requerytap_stage/docs/generated/REQUERYTAP_LOCATOR_TRAINING_MANIFEST_2026-07-18.json",
+    "manifest_sha256": "5b9f9dfe73740f82cefcd812f97ba559fe89d635ee2b370cf2e270370ac13bab"
+  },
+  "train_pairs": 42615,
+  "trainable_parameters": 230018
+}

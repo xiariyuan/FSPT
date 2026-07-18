@@ -194,3 +194,14 @@ Epoch `e` samples 4096 train pairs with replacement using a torch generator
 seeded by `17018 + e`.  C1 trains only identity projection, image projection,
 and coordinate-offset head.  The respawn head remains frozen until coordinate
 localization passes and C2 defines lifecycle supervision.
+
+## C1 result and redesign boundary
+
+C1 failed with 31.0888 px median error and 18.73% hit@16.  Four dev scenes
+improved strongly over raw cosine, but one scene regressed by 13.09 px.  The
+single-frame identity locator is closed. Learning-rate, epoch-count, or loss
+weight sweeps are not allowed.
+
+The sole allowed redesign is an information audit of identity memory built from
+multiple reliable pre-gap observations of the same point.  No second locator
+may be trained until this audit passes a separately frozen gate.

@@ -1,0 +1,102 @@
+{
+  "allowed_next_step": "fit-only multi-view visible-tracklet identity-memory audit; no retraining until its preregistered information gate passes",
+  "best_epoch": 4,
+  "checkpoint_sha256": "bb386e8a95690f0ce621f9faa2baf4ebda08b25ce427b4a04b91a04669bff09b",
+  "date": "2026-07-18",
+  "decision": "STOP_SINGLE_FRAME_IDENTITY_LOCATOR",
+  "final_dev": {
+    "hit16": 0.1872960372960373,
+    "hit32": 0.5095571095571095,
+    "hit4": 0.013752913752913752,
+    "hit8": 0.05174825174825175,
+    "mean_error_px": 52.7701060796378,
+    "median_error_px": 31.08877658843994,
+    "samples": 17160
+  },
+  "gate_C1": {
+    "checks": {
+      "all_5_dev_scenes_complete": true,
+      "learned_hit16_ge_0p60": false,
+      "learned_median_error_le_12px": false,
+      "positive_error_reduction_5_of_5": false,
+      "scene_bootstrap_error_reduction_ci_lower_positive": true,
+      "worst_scene_error_reduction_ge_minus2": false
+    },
+    "decision": "STOP_OR_REDESIGN_REQUERYTAP_LOCATOR",
+    "locked_data_allowed": false,
+    "model_validation_allowed": false,
+    "pass": false,
+    "raw_minus_learned_median_error_per_scene": {
+      "ani13_new_f": 51.261892318725586,
+      "animal": 56.73038196563721,
+      "r0_new_f_": 34.68666458129883,
+      "r2_new_": 34.67073059082031,
+      "scene_recording_20210910_S05_S06_0_ego2": -13.09393310546875
+    },
+    "scene_bootstrap_error_reduction_ci": {
+      "lower": 9.33016471862793,
+      "mean": 32.85114727020264,
+      "samples": 10000,
+      "seed": 17018,
+      "upper": 51.2247537612915
+    },
+    "worst_scene_error_reduction": -13.09393310546875
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "metrics_sha256": "13e7a1e59162f06d2fa1093385b2975e78c8c46be4a2c308ea4f0a0b60d718cb",
+  "model_state_sha256": "3340b799c8d5a59318ef3bf3f8087b2465d8f9c0ff0b3285c3219efa8a10cf8f",
+  "per_scene": {
+    "ani13_new_f": {
+      "hit16": 0.12990196078431374,
+      "hit32": 0.5917755991285403,
+      "hit4": 0.0010893246187363835,
+      "hit8": 0.012799564270152506,
+      "mean_error_px": 40.84530897214522,
+      "median_error_px": 29.247621536254883,
+      "samples": 3672
+    },
+    "animal": {
+      "hit16": 0.3648068669527897,
+      "hit32": 0.8403969957081545,
+      "hit4": 0.02119098712446352,
+      "hit8": 0.10783261802575107,
+      "mean_error_px": 24.465819789200637,
+      "median_error_px": 18.3755521774292,
+      "samples": 3728
+    },
+    "r0_new_f_": {
+      "hit16": 0.04685452162516383,
+      "hit32": 0.4724770642201835,
+      "hit4": 0.0,
+      "hit8": 0.000327653997378768,
+      "mean_error_px": 46.31356205227803,
+      "median_error_px": 33.44553756713867,
+      "samples": 3052
+    },
+    "r2_new_": {
+      "hit16": 0.3290666666666667,
+      "hit32": 0.5322666666666667,
+      "hit4": 0.0408,
+      "hit8": 0.1168,
+      "mean_error_px": 33.61723122491042,
+      "median_error_px": 27.368976593017578,
+      "samples": 3750
+    },
+    "scene_recording_20210910_S05_S06_0_ego2": {
+      "hit16": 0.0,
+      "hit32": 0.0,
+      "hit4": 0.0,
+      "hit8": 0.0,
+      "mean_error_px": 134.1882559600273,
+      "median_error_px": 136.87439727783203,
+      "samples": 2958
+    }
+  },
+  "schema_version": "requerytap_locator_c1_summary_v0"
+}
