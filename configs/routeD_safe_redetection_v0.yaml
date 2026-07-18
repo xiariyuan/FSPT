@@ -1,0 +1,133 @@
+experiment:
+  name: routeD_safe_redetection_v0
+  purpose: risk-controlled long-occlusion redetection for a frozen online point tracker
+  date: 2026-07-18
+
+official_alignment_gate:
+  summary: docs/generated/OFFICIAL_COTRACKER3_DAVIS_FIRST_ALIGNMENT_2026-07-18.json
+  required_pass: true
+  backbone: CoTracker3 scaled-online
+  official_source_commit: 82e02e8029753ad4ef13cf06be7f4fc5facdda4d
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  benchmark: TAP-Vid-DAVIS first-query
+  single_point: true
+  frozen_baseline_AJ: 0.6444082286065439
+  frozen_baseline_OA: 0.9089406555452132
+  frozen_baseline_delta_average: 0.7715749524324561
+
+official_streaming_runtime_alignment:
+  artifact: docs/generated/ROUTED_SAFE_REDETECTION_RUNTIME_ALIGNMENT_2026-07-18.json
+  official_full_call_vs_streaming_track_max_abs_px: 0.01788330078125
+  official_full_call_vs_streaming_track_mean_abs_px: 0.0013415443245321512
+  visibility_exact: true
+  tested_real_queries: 4
+  numerical_equivalence_tolerance_px: 0.02
+  zero_step_interventions: 0
+  zero_step_writebacks: 0
+
+official_redetection_metric:
+  repository: https://github.com/google-deepmind/tapnet
+  commit: 989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc
+  source: tapnet/tapnextpp/metrics/aj_rd.py
+  source_sha256: 4b5f56bc04f4af5905108e999f1a79880cd7b1ae218e76b9a686c640d23b4c1b
+  parity_artifact: docs/generated/OFFICIAL_TAPNEXTPP_AJRD_PARITY_2026-07-18.json
+  randomized_cases: 100
+  maximum_absolute_difference: 0.0
+  distance_thresholds_px: [1, 2, 4, 8, 16]
+  minimum_invisibility_durations: [1, 4, 16, 64, 256]
+
+backbone:
+  trainable: false
+  checkpoint: /gemini/code/FSPT/weights/scaled_online.pth
+  native_coordinate_fallback: exact
+  native_visibility_fallback: exact
+  native_confidence_fallback: exact
+  query_independence: one_query_per_forward
+  input_raster: 256
+  feature_layer: fnet final 128-channel map
+
+model:
+  feature_dim: 128
+  memory_slots: 4
+  proposal_topk: 5
+  proposal_hidden_dim: 32
+  comparator_hidden_dim: 96
+  comparator_heads: 4
+  comparator_layers: 2
+  nms_radius_cells: 1
+  motion_sigma_cells: 2.0
+  reliable_visibility_min: 0.80
+  reliable_confidence_min: 0.80
+  reliable_consistency_min: 0.70
+  episodic_novelty_cosine_max: 0.95
+  last_reliable_ema: 0.90
+  confirmation_frames: 2
+  confirmation_radius_px: 8.0
+  max_future_writeback_step_px: 32.0
+  risk_weight: 1.0
+  preference_weight: 0.25
+  initial_abstention_bias: 8.0
+  initial_reappearance_bias: -8.0
+  initial_writeback_bias: -8.0
+
+training_data:
+  protocol: configs/routeD_safe_redetection_pointodyssey_protocol_v0.json
+  fit_gradients_only: true
+  model_validation_checkpoint_selection_only: true
+  event_window_lengths: [512, 1024]
+  pre_occlusion_context_frames: 32
+  post_reappearance_context_frames: 96
+  sparse_feature_frames:
+    reliable_pre_occlusion_offsets: [-32, -16, -8, -4, -2, 0]
+    occlusion_negative_samples: 8
+    consecutive_reappearance_frames: 16
+  event_sampling_uses_ground_truth: true
+  runtime_memory_updates_use_ground_truth: false
+  locked_internal_holdout_read: false
+  locked_pointodyssey_test_read: false
+  tapvid_kinetics_official_1144_read_or_rerun: false
+
+optimizer:
+  seed: 17
+  type: AdamW
+  learning_rate: 0.0001
+  weight_decay: 0.0001
+  epochs: 8
+  patience: 3
+  event_batch_size: 1
+  gradient_clip_norm: 1.0
+  checkpoint_rule: safety_feasible_then_max_official_AJ_RD
+
+loss:
+  dense_proposal_weight: 1.0
+  utility_weight: 1.0
+  risk_weight: 1.0
+  preference_weight: 0.5
+  visibility_weight: 1.0
+  reappearance_weight: 2.0
+  abstention_weight: 0.5
+  writeback_weight: 0.5
+  false_reacquisition_weight: 1.0
+  post_hard_topk_gradient_to_proposal: stopped_for_deterministic_replay
+
+formal_gates:
+  official_baseline_alignment: exact_provenance_and_published_range
+  official_AJ_RD_parity: exact_zero_difference
+  zero_step_coordinate_visibility_parity: exact
+  query_independence: exact
+  candidate_zero_native_parity: exact
+  seed17_exact_replay: true
+  model_validation_candidate_oracle_AJ_RD_gain_min: 0.05
+  model_validation_direct_AJ_RD_gain_min: 0.01
+  model_validation_standard_AJ_regression_min: -0.002
+  model_validation_OA_regression_min: -0.002
+  harmful_intervention_rate_max: 0.01
+  false_reacquisition_rate_increase_max: 0.002
+  severe_16px_rate_not_worse: true
+  locked_holdout_authorized_only_after_all_above: true
+
+claim_boundary:
+  current_backbone_count: 1
+  universal_plugin_claim_allowed: false
+  allowed_claim: CoTracker3 instantiation of a backbone-independent safe-redetection decision framework
+  second_backbone_required_for_general_framework_claim: true

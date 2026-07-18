@@ -1,0 +1,77 @@
+{
+  "schema_version": "routeD_safe_redetection_runtime_alignment_v0",
+  "video_index": 0,
+  "video_name": "goat",
+  "query_index": 0,
+  "query_count": 4,
+  "query_txy": [
+    [
+      [
+        0.0,
+        131.3984375,
+        87.48175048828125
+      ],
+      [
+        0.0,
+        139.2509307861328,
+        77.7098617553711
+      ],
+      [
+        0.0,
+        152.86192321777344,
+        69.33394622802734
+      ],
+      [
+        0.0,
+        117.2639389038086,
+        100.04562377929688
+      ]
+    ]
+  ],
+  "frames": 90,
+  "official_track_sha256": "63f79bee84cac5337f06f87a88b156994ef9ec9785e5040f3a55342b9d587bd7",
+  "runtime_track_sha256": "8ad0dcbdb1c4388d77eee0c30263bea76964978601b4c3925c0575584549c587",
+  "official_visibility_sha256": "a1e3eb6289f3515367e09e1031c95ddc31e6643b49a167bb9368ccea90b56fb0",
+  "runtime_visibility_sha256": "a1e3eb6289f3515367e09e1031c95ddc31e6643b49a167bb9368ccea90b56fb0",
+  "track_exact": false,
+  "track_max_abs_px": 0.01788330078125,
+  "track_mean_abs_px": 0.0013415443245321512,
+  "visibility_exact": true,
+  "visibility_disagreement_rows": 0,
+  "runtime_diagnostics": [
+    {
+      "frames": 90,
+      "query_frame": 0,
+      "internal_support_points": 89,
+      "interventions": 0,
+      "writes": 0,
+      "zero_step_override_count": 0
+    },
+    {
+      "frames": 90,
+      "query_frame": 0,
+      "internal_support_points": 89,
+      "interventions": 0,
+      "writes": 0,
+      "zero_step_override_count": 0
+    },
+    {
+      "frames": 90,
+      "query_frame": 0,
+      "internal_support_points": 89,
+      "interventions": 0,
+      "writes": 0,
+      "zero_step_override_count": 0
+    },
+    {
+      "frames": 90,
+      "query_frame": 0,
+      "internal_support_points": 89,
+      "interventions": 0,
+      "writes": 0,
+      "zero_step_override_count": 0
+    }
+  ],
+  "numerical_equivalence_tolerance_px": 0.02,
+  "pass": true
+}

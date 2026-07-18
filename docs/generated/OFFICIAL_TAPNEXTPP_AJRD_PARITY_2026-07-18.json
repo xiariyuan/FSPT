@@ -1,0 +1,114 @@
+{
+  "schema_version": "routeD_official_tapnextpp_ajrd_parity_v0",
+  "official_repository": "https://github.com/google-deepmind/tapnet",
+  "official_commit": "989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc",
+  "official_source": "/gemini/code/FSPT_v9a60_clean/outputs/official_tapnextpp_metric_20260718/vendor/tapnet-src/tapnet/tapnextpp/metrics/aj_rd.py",
+  "official_source_sha256": "4b5f56bc04f4af5905108e999f1a79880cd7b1ae218e76b9a686c640d23b4c1b",
+  "cases": 100,
+  "seed": 17018,
+  "maximum_absolute_scalar_difference": 0.0,
+  "mismatches": [],
+  "pass": true,
+  "sample_cases": [
+    {
+      "case": 0,
+      "shape": [
+        1,
+        8,
+        1
+      ],
+      "events": 1,
+      "AJ_RD": 0.25
+    },
+    {
+      "case": 1,
+      "shape": [
+        2,
+        9,
+        2
+      ],
+      "events": 3,
+      "AJ_RD": 0.6167460262775422
+    },
+    {
+      "case": 2,
+      "shape": [
+        3,
+        10,
+        3
+      ],
+      "events": 8,
+      "AJ_RD": 0.5727728255093097
+    },
+    {
+      "case": 3,
+      "shape": [
+        1,
+        11,
+        4
+      ],
+      "events": 4,
+      "AJ_RD": 0.47011905536055565
+    },
+    {
+      "case": 4,
+      "shape": [
+        2,
+        12,
+        5
+      ],
+      "events": 12,
+      "AJ_RD": 0.2910069990903139
+    },
+    {
+      "case": 5,
+      "shape": [
+        3,
+        13,
+        6
+      ],
+      "events": 19,
+      "AJ_RD": 0.26600717529654505
+    },
+    {
+      "case": 6,
+      "shape": [
+        1,
+        14,
+        7
+      ],
+      "events": 8,
+      "AJ_RD": 0.1432120547629893
+    },
+    {
+      "case": 7,
+      "shape": [
+        2,
+        15,
+        1
+      ],
+      "events": 4,
+      "AJ_RD": 0.24891234189271927
+    },
+    {
+      "case": 8,
+      "shape": [
+        3,
+        16,
+        2
+      ],
+      "events": 9,
+      "AJ_RD": 0.10732981758192181
+    },
+    {
+      "case": 9,
+      "shape": [
+        1,
+        17,
+        3
+      ],
+      "events": 6,
+      "AJ_RD": 0.6590793430805206
+    }
+  ]
+}

@@ -52,6 +52,26 @@ from .routeD_cmcp_training import (
     CMCPLossConfig,
     CMCPVideoBundle,
 )
+from .routeD_redetection_metrics import (
+    OFFICIAL_AJRD_DISTANCE_THRESHOLDS,
+    OFFICIAL_AJRD_MIN_DURATIONS,
+    compute_official_aj_rd,
+    recovery_latency_and_safety,
+)
+from .routeD_safe_redetection import (
+    SAFE_REDETECTION_SCHEMA_VERSION,
+    SafeRedetectionConfig,
+    SafeRedetectionLossConfig,
+    SafeRedetectionModel,
+)
+from .routeD_safe_redetection_cache import (
+    SAFE_REDETECTION_CACHE_SCHEMA,
+    SAFE_REDETECTION_INDEX_SCHEMA,
+)
+from .routeD_pointodyssey_protocol import (
+    DURATION_BUCKETS,
+    PointOdysseyEvent,
+)
 from .routeD_cmcp_feature_cache import (
     CMCP_FEATURE_CACHE_SCHEMA_VERSION,
     CMCP_FEATURE_INDEX_SCHEMA_VERSION,
@@ -88,6 +108,18 @@ __all__ = [
     "LMRA_SCHEMA_VERSION",
     "LMRA_TRAINABLE_PARAMETERS",
     "LMRAJointLossConfig",
+    "OFFICIAL_AJRD_DISTANCE_THRESHOLDS",
+    "OFFICIAL_AJRD_MIN_DURATIONS",
+    "compute_official_aj_rd",
+    "recovery_latency_and_safety",
+    "SAFE_REDETECTION_SCHEMA_VERSION",
+    "SafeRedetectionConfig",
+    "SafeRedetectionLossConfig",
+    "SafeRedetectionModel",
+    "SAFE_REDETECTION_CACHE_SCHEMA",
+    "SAFE_REDETECTION_INDEX_SCHEMA",
+    "DURATION_BUCKETS",
+    "PointOdysseyEvent",
     "CMCP_FEATURE_CACHE_SCHEMA_VERSION",
     "CMCP_FEATURE_INDEX_SCHEMA_VERSION",
 ]

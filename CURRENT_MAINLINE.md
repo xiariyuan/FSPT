@@ -77,7 +77,8 @@ P0h-b completed: frozen 88-D local-token caches are complete at fit/model-valida
 P0h-c completed with a safe, statistically positive, exact-replay result that fails only the preregistered magnitude gate. Best epoch 3 reaches +0.2449 AJ and +0.4962 delta with paired AJ CI [+0.1324,+0.3693], 15/16 videos positive, harmful non-native selection 0.3132%, and improved 16px tail. The frozen candidate oracle remains +20.0375 AJ. Beneficial-candidate recall is only 3.3362%, so the +0.5 AJ gate fails and MUSR/state writeback/calibration remain forbidden.
 P0i-a completed: the 8,352-parameter rank-32 LMRA passes exact fit-video zero-step equivalence. Adapted and frozen feature maps are byte-identical; online reconstruction reproduces the formal P0h candidate-coordinate hash c4cc84161d6522eb889c48c80cb5fb54673e4f446f54c697079ab5e4a9979300, raw token hash, dynamic decisions, and selected coordinates in independent runs. The initialized joint trainable branch has 681,323 parameters while the native tracker remains frozen.
 P0i-b completed with a formal exact-replay pass. Safety-first checkpoint selection retains epoch 2 at +0.5945 AJ and +0.8745 delta, paired AJ CI [+0.3910,+0.8171], all 16 videos positive, harmful non-native selection 0.8229%, and a 1.0870-point improvement in the 16px severe rate. Candidate oracle remains +20.2743 AJ. All preregistered gates pass.
-P0j active: run a preregistered fit/model-validation-only strong-backbone MUSR component ablation, then test bounded state writeback only if the non-redundant contribution gates pass. Calibration, final holdout, DAVIS, and official Kinetics remain locked.
+P0j paused after the preregistered B/C component runs exposed that the full P0i joint model is not the strongest ablation; those runs remain provisional until exact replay and packaging. No P0j result is used to define the new recovery model.
+P0k active: official strong-backbone alignment is now a hard prerequisite. The exact Meta CoTracker3 scaled-online checkpoint reaches 64.4408 AJ / 90.8941 OA / 77.1575 delta average on official DAVIS first-query with single_point=True. The public TAPNext++ AJ_RD implementation is reproduced with zero scalar difference over 100 randomized cases. A native-safe long-occlusion re-detection model is implemented with reliable/episodic appearance memory, global multi-anchor proposals, coordinate+visibility recovery, two-frame confirmation, abstention, and future-only bounded writeback. PointOdyssey is frozen at 24 fit scenes/240 events and 8 model-validation scenes/160 events; 7 internal-holdout and 13 test scenes remain locked. Formal sparse event-cache export is active. Official Kinetics 1,144 remains frozen and is not rerun.
 ```
 
 Read first:
@@ -105,6 +106,10 @@ docs/ROUTED_CMCP_LATE_METRIC_ADAPTER_V0_PLAN_2026-07-17.md
 docs/ROUTED_CMCP_LMRA_INTERFACE_RESULT_2026-07-17.md
 docs/ROUTED_CMCP_LMRA_TRAINING_RESULT_2026-07-17.md
 docs/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_V0_PLAN_2026-07-17.md
+docs/ROUTED_SAFE_REDETECTION_V0_PLAN_2026-07-18.md
+docs/generated/OFFICIAL_COTRACKER3_DAVIS_FIRST_ALIGNMENT_2026-07-18.json
+docs/generated/OFFICIAL_TAPNEXTPP_AJRD_PARITY_2026-07-18.json
+docs/generated/ROUTED_SAFE_REDETECTION_RUNTIME_ALIGNMENT_2026-07-18.json
 docs/TAPVID_KINETICS_OFFICIAL_PROTOCOL_AUDIT_2026-07-16.md
 docs/ROUTED_TREE_CONTROLLER_AUDIT_2026-07-16.md
 ```

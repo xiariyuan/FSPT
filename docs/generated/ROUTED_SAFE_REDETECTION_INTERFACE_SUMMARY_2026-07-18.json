@@ -1,0 +1,115 @@
+{
+  "schema_version": "routeD_safe_redetection_interface_summary_v0",
+  "date": "2026-07-18",
+  "status": "completed_authorize_committed_event_cache_export",
+  "formal_decision": "ALLOW_COMMITTED_POINTODYSSEY_EVENT_CACHE_EXPORT",
+  "research_direction": "risk-controlled long-occlusion re-detection for a frozen point tracker",
+  "claim_boundary": "CoTracker3 instantiation; a second distinct backbone is required for a general plug-in claim.",
+  "checks": {
+    "official_baseline_pass": true,
+    "official_AJ_RD_parity_pass": true,
+    "official_AJ_RD_zero_difference": true,
+    "portable_official_evidence_paths": true,
+    "protocol_baseline_hash_exact": true,
+    "protocol_AJ_RD_hash_exact": true,
+    "runtime_alignment_pass": true,
+    "runtime_visibility_exact": true,
+    "runtime_zero_intervention": true,
+    "fit_events_240": true,
+    "validation_events_160": true,
+    "internal_holdout_unread": true,
+    "pointodyssey_test_unread": true,
+    "kinetics_locked": true
+  },
+  "official_alignment": {
+    "source_commit": "82e02e8029753ad4ef13cf06be7f4fc5facdda4d",
+    "checkpoint_sha256": "205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218",
+    "DAVIS_first_AJ": 0.6444082286065439,
+    "DAVIS_first_OA": 0.9089406555452132,
+    "DAVIS_first_delta_average": 0.7715749524324561,
+    "single_point": true,
+    "summary_sha256": "ccf0eaaab8bd402d6d071a82faa0c12fc6a84263dfdf0bff2a9bd1e72017dc57"
+  },
+  "official_AJ_RD": {
+    "source_commit": "989a1fd62f7b2a3cf7f1c339bbde38e086e3a0fc",
+    "source_sha256": "4b5f56bc04f4af5905108e999f1a79880cd7b1ae218e76b9a686c640d23b4c1b",
+    "randomized_cases": 100,
+    "maximum_absolute_difference": 0.0,
+    "summary_sha256": "e8f4d6f9fdc552108162f49903a6cef023854319ca5834bac408c3d73908050f"
+  },
+  "runtime_alignment": {
+    "real_queries": 4,
+    "track_max_abs_px": 0.01788330078125,
+    "track_mean_abs_px": 0.0013415443245321512,
+    "visibility_exact": true,
+    "interventions": 0,
+    "writes": 0,
+    "summary_sha256": "dbe21f9cfd3f7058086c880e10f05be19f35825a141d94807fa412393e97744a"
+  },
+  "model": {
+    "proposal_parameters": 12258,
+    "comparator_parameters": 239915,
+    "total_parameters": 252173,
+    "config": {
+      "feature_dim": 128,
+      "memory_slots": 4,
+      "proposal_topk": 5,
+      "proposal_hidden_dim": 32,
+      "comparator_hidden_dim": 96,
+      "comparator_heads": 4,
+      "comparator_layers": 2,
+      "input_height": 256,
+      "input_width": 256,
+      "nms_radius_cells": 1,
+      "motion_sigma_cells": 2.0,
+      "reliable_visibility_min": 0.8,
+      "reliable_confidence_min": 0.8,
+      "reliable_consistency_min": 0.7,
+      "episodic_novelty_cosine_max": 0.95,
+      "last_reliable_ema": 0.9,
+      "confirmation_frames": 2,
+      "confirmation_radius_px": 8.0,
+      "max_future_writeback_step_px": 32.0,
+      "risk_weight": 1.0,
+      "preference_weight": 0.25,
+      "initial_abstention_bias": 8.0,
+      "initial_reappearance_bias": -8.0,
+      "initial_writeback_bias": -8.0,
+      "utility_thresholds_px": [
+        1.0,
+        2.0,
+        4.0,
+        8.0,
+        16.0
+      ],
+      "utility_weights": [
+        0.1,
+        0.15,
+        0.2,
+        0.25,
+        0.3
+      ]
+    },
+    "native_tracker_trainable": false,
+    "candidate_zero_native_exact": true,
+    "coordinate_visibility_joint_recovery": true,
+    "temporal_confirmation_frames": 2,
+    "future_only_bounded_writeback": true
+  },
+  "pointodyssey_protocol": {
+    "fit_scenes": 24,
+    "fit_events": 240,
+    "model_validation_scenes": 8,
+    "model_validation_events": 160,
+    "locked_internal_holdout_scenes": 7,
+    "locked_test_scenes": 13,
+    "protocol_sha256": "f7fad53e06d238025978dac812a6c0ce398ccff1bba1615e4fece27c26eadb44",
+    "payload_sha256": "f393009121fdffb5bcd15f7c8a83163f76a81439e82564ebf55638264f43bd72"
+  },
+  "config_sha256": "ecedde1f9d08c15221a40f1d537b5f11f99f47adfd6aa87bc72386e15a3547e1",
+  "external_data_read": {
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_test": false,
+    "tapvid_kinetics_official_1144": false
+  }
+}

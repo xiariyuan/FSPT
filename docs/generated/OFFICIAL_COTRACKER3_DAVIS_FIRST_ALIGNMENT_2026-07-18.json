@@ -1,0 +1,82 @@
+{
+  "schema_version": "official_cotracker3_davis_first_alignment_summary_v0",
+  "date": "2026-07-18",
+  "status": "pass",
+  "scope": "Official CoTracker3 scaled-online TAP-Vid-DAVIS first-query single-point replication",
+  "claim_boundary": "DAVIS has prior project exposure and is an alignment/development benchmark, not a new untouched final test.",
+  "official_source": {
+    "repository": "https://github.com/facebookresearch/co-tracker",
+    "commit": "82e02e8029753ad4ef13cf06be7f4fc5facdda4d",
+    "archive": "/gemini/code/FSPT_v9a60_clean/outputs/official_cotracker3_alignment_20260718/vendor/co-tracker-82e02e8029753ad4ef13cf06be7f4fc5facdda4d.tar.gz",
+    "archive_sha256": "45ccb696ddd27b89caffefe6b9c2f5c36f61357fd8419ae02da7ba7b8cc999d1",
+    "key_file_sha256": {
+      "cotracker/evaluation/evaluate.py": "5b7f886332ed7772567c0ae83ae5275a716fe69129a66ffc9168cd1a397e646d",
+      "cotracker/evaluation/core/evaluator.py": "9432df1c94f9786e4ef579632d9b8cd6b2e7680800564d50e38588ed7bb56274",
+      "cotracker/evaluation/core/eval_utils.py": "4f23ce75896694a8f5d8f7e5650c15d4f74a2e7135ae176c8295621d60916cb9",
+      "cotracker/models/evaluation_predictor.py": "7bb03606c08638de28f79abfcf8bd03eb0c42bfd811e6bb8a00d752a2a943597",
+      "cotracker/models/core/cotracker/cotracker3_online.py": "4c8bfce5546d85ba22c6b5292b870ad2aa0af1e0b6ba5a22e644c39bb496475e",
+      "cotracker/evaluation/configs/eval_tapvid_davis_first.yaml": "0f2925b5dc341e03256ef6fa7f2a85e5d584c38ddade63e96eb216a82b5aec92"
+    }
+  },
+  "checkpoint": {
+    "path": "/gemini/code/FSPT/weights/scaled_online.pth",
+    "sha256": "205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218"
+  },
+  "dataset": {
+    "path": "/gemini/code/FSPT/datasets/tapvid_davis/tapvid_davis.pkl",
+    "sha256": "8d4ed1b232fd27a78bc192e2e1ce943866ff640ab15e43db3bc7b10258bb48f5"
+  },
+  "frozen_config": {
+    "query_mode": "first",
+    "single_point": true,
+    "offline_model": false,
+    "window_len": 16,
+    "n_iters": 6,
+    "seed": 0,
+    "input_contract": "official TapVidDataset",
+    "metric_contract": "official CoTracker evaluator using TAP-Vid formulas"
+  },
+  "compatibility_launcher": {
+    "scope": "Hydra CLI replacement only; official run_eval, model, dataset and evaluator are unmodified",
+    "manifest_sha256": "0154f4866b18d711643de572ec07651fe947ae3eef4113bfe4449de02e3812a3",
+    "official_evaluate_sha256": "5b7f886332ed7772567c0ae83ae5275a716fe69129a66ffc9168cd1a397e646d",
+    "official_evaluator_sha256": "9432df1c94f9786e4ef579632d9b8cd6b2e7680800564d50e38588ed7bb56274"
+  },
+  "metrics": {
+    "occlusion_accuracy": 0.9089406555452132,
+    "pts_within_1": 0.4289146588436688,
+    "jaccard_1": 0.28839662639036584,
+    "pts_within_2": 0.673882179504821,
+    "jaccard_2": 0.5166915550592417,
+    "pts_within_4": 0.8528843828821401,
+    "jaccard_4": 0.724935238351657,
+    "pts_within_8": 0.9338359885971471,
+    "jaccard_8": 0.8271812450546228,
+    "pts_within_16": 0.968357552334504,
+    "jaccard_16": 0.8648364781768325,
+    "average_jaccard": 0.6444082286065439,
+    "average_pts_within_thresh": 0.7715749524324561,
+    "time": 44.598135471343994
+  },
+  "published_reference": {
+    "AJ": 0.638,
+    "absolute_tolerance": 0.01,
+    "difference": 0.0064082286065438865,
+    "aligned": true
+  },
+  "artifacts": {
+    "protocol_sha256": "2fec2f563b1efdf027896eb90bd4302a0a0e366e8d388adb47ab1cc65da52ec4",
+    "result_sha256": "f6edd2fa861dd0c0c3d037947d847c1e1dfef12303edbd7c108088564e877fcf",
+    "run_log_sha256": "c78d1dbc34306c92402e3c53488a3ff948044e96875de04aca6c790d0d5e7f10"
+  },
+  "gate": {
+    "official_source_pinned": true,
+    "official_checkpoint_exact": true,
+    "official_dataset_hashed": true,
+    "query_first": true,
+    "single_point_independence": true,
+    "published_range_alignment": true,
+    "pass": true,
+    "decision": "ALLOW_SAFE_REDETECTION_INTERFACE_AND_POINTODYSSEY_TRAINING_PROTOCOL"
+  }
+}
