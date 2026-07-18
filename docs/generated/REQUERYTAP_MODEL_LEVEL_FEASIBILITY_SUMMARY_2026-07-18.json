@@ -1,0 +1,139 @@
+{
+  "branch_statistics": {
+    "fresh_GT_coordinate_query": {
+      "maximum": 89.23932060177128,
+      "mean": 20.005506344183402,
+      "median": 6.843130958080292,
+      "minimum": -0.05503338177998851,
+      "positive_scenes": 16,
+      "scene_bootstrap_ci": {
+        "lower": 7.979277046248682,
+        "samples": 10000,
+        "seed": 17018,
+        "upper": 34.30435771066183
+      }
+    },
+    "fresh_native_coordinate_query": {
+      "maximum": -0.991967545946439,
+      "mean": -24.50790009947092,
+      "median": -8.840625508626303,
+      "minimum": -124.57242015202841,
+      "positive_scenes": 0,
+      "scene_bootstrap_ci": {
+        "lower": -43.131758500527155,
+        "samples": 10000,
+        "seed": 17018,
+        "upper": -10.045704698709448
+      }
+    },
+    "fresh_teacher_coordinate_query": {
+      "maximum": 86.56900747617085,
+      "mean": 18.098079805598395,
+      "median": 1.7873758316040034,
+      "minimum": -5.386893431345621,
+      "positive_scenes": 13,
+      "scene_bootstrap_ci": {
+        "lower": 5.743916087117977,
+        "samples": 10000,
+        "seed": 17018,
+        "upper": 32.9846847694955
+      }
+    }
+  },
+  "causal_interpretation": {
+    "architecture_focus": "persistent exact-point identity locator + transient query-token retirement/respawn",
+    "architecture_implementation_allowed": true,
+    "fresh_query_after_correct_relocalization_supported": true,
+    "state_reset_at_native_coordinate_rejected": true,
+    "teacher_coordinate_not_uniformly_safe": true,
+    "training_allowed": false
+  },
+  "date": "2026-07-18",
+  "fresh_query_manifest_sha256": "8ea908598cc1e6369dbcaa6dc12e6f1b9a52fab51f57e670974c6d7db895dbe9",
+  "fresh_query_oracle_sha256": "284ee2959e1b918d87fe34a5fca1f3633dfc093266551b4606ac033b3db3a501",
+  "gate0_training_smoke": {
+    "changed_parameter_tensors": 54,
+    "coordinate_loss": 0.0053671980276703835,
+    "gate": {
+      "coordinate_head_gradient_nonzero": true,
+      "finite_gradients": true,
+      "finite_loss": true,
+      "forward_backward_optimizer_step_complete": true,
+      "last_block_gradient_nonzero": true,
+      "parameter_changed": true,
+      "pass": true,
+      "peak_allocated_below_22GiB": true,
+      "visibility_head_gradient_nonzero": true
+    },
+    "gradient_norm_sums": {
+      "coordinate_head": 4.262914285063744,
+      "last_block": 2.5184431527741253,
+      "point_query_token": 0.3637349009513855,
+      "visibility_head": 3.9401468206197023
+    },
+    "loss": 0.24629221856594086,
+    "maximum_parameter_change_norm": 0.002139948308467865,
+    "peak_allocated_bytes": 2883004928,
+    "peak_reserved_bytes": 3256877056,
+    "schema_version": "requerytap_tapnextpp_backward_smoke_v0",
+    "source": {
+      "checkpoint": "/gemini/code/FSPT/checkpoints/tapnextpp/tapnextpp_ckpt.pt",
+      "frames": 4,
+      "locked_data_read": {
+        "davis_method_eval": false,
+        "kinetics_1144": false,
+        "pointodyssey_internal_holdout": false,
+        "pointodyssey_model_validation": false,
+        "pointodyssey_test": false
+      },
+      "scene": "/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f",
+      "split": "fit/train"
+    },
+    "trainable_parameter_count": 16711937,
+    "trainable_parameter_tensors": 54,
+    "visibility_loss": 0.24092501401901245
+  },
+  "gateA": {
+    "checks": {
+      "all_scenes_complete": true,
+      "fresh_GT_median_gain_ge_2px": true,
+      "fresh_GT_median_improved_frame_fraction_ge_0p75": true,
+      "fresh_GT_no_scene_regression_worse_than_1px": true,
+      "fresh_GT_positive_fraction_ge_0p80": true,
+      "fresh_GT_scene_bootstrap_ci_lower_positive": true
+    },
+    "complete_scenes": 17,
+    "decision": "ALLOW_REQUERYTAP_ARCHITECTURE_IMPLEMENTATION",
+    "expected_scenes": 17,
+    "mean_gain_scene_bootstrap_ci": {
+      "lower": 7.979277046248682,
+      "mean": 20.005506344183402,
+      "samples": 10000,
+      "seed": 17018,
+      "upper": 34.30435771066183
+    },
+    "median_gain_px_256": 6.843130958080292,
+    "median_improved_frame_fraction": 1.0,
+    "model_validation_allowed": false,
+    "pass": true,
+    "positive_scenes": 16,
+    "training_allowed": false,
+    "worst_scene_gain_px_256": -0.05503338177998851
+  },
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "novelty_boundary": [
+    "persistent query alone is insufficient because semantic persistent-query tracking exists",
+    "global matching alone overlaps ReTracker and TAPIR-style matching",
+    "streaming memory alone overlaps SPOT",
+    "long-sequence occlusion supervision overlaps TAPNext++",
+    "candidate contribution is explicit arbitrary-point transient-token lifecycle with differentiable respawn and counterfactual future-rollout training"
+  ],
+  "schema_version": "requerytap_model_level_feasibility_summary_v0",
+  "training_smoke_sha256": "1d59f6972d70d4afc30c7d037e2b312fd613351bb5141fda15a988f6deac12fd"
+}

@@ -1,0 +1,42 @@
+{
+  "changed_parameter_tensors": 54,
+  "coordinate_loss": 0.0053671980276703835,
+  "gate": {
+    "coordinate_head_gradient_nonzero": true,
+    "finite_gradients": true,
+    "finite_loss": true,
+    "forward_backward_optimizer_step_complete": true,
+    "last_block_gradient_nonzero": true,
+    "parameter_changed": true,
+    "pass": true,
+    "peak_allocated_below_22GiB": true,
+    "visibility_head_gradient_nonzero": true
+  },
+  "gradient_norm_sums": {
+    "coordinate_head": 4.262914285063744,
+    "last_block": 2.5184431527741253,
+    "point_query_token": 0.3637349009513855,
+    "visibility_head": 3.9401468206197023
+  },
+  "loss": 0.24629221856594086,
+  "maximum_parameter_change_norm": 0.002139948308467865,
+  "peak_allocated_bytes": 2883004928,
+  "peak_reserved_bytes": 3256877056,
+  "schema_version": "requerytap_tapnextpp_backward_smoke_v0",
+  "source": {
+    "checkpoint": "/gemini/code/FSPT/checkpoints/tapnextpp/tapnextpp_ckpt.pt",
+    "frames": 4,
+    "locked_data_read": {
+      "davis_method_eval": false,
+      "kinetics_1144": false,
+      "pointodyssey_internal_holdout": false,
+      "pointodyssey_model_validation": false,
+      "pointodyssey_test": false
+    },
+    "scene": "/gemini/code/FSPT/datasets/pointodyssey/train/ani13_new_f",
+    "split": "fit/train"
+  },
+  "trainable_parameter_count": 16711937,
+  "trainable_parameter_tensors": 54,
+  "visibility_loss": 0.24092501401901245
+}
