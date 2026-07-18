@@ -1,0 +1,118 @@
+{
+  "date": "2026-07-18",
+  "dev_scenes": [
+    "animal",
+    "scene_recording_20210910_S05_S06_0_ego2",
+    "r0_new_f_",
+    "ani13_new_f",
+    "r2_new_"
+  ],
+  "feature_cache": {
+    "dtype": "float16",
+    "image_size": [
+      256,
+      256
+    ],
+    "patch_size": 8,
+    "source": "official TAPNext++ lin_proj plus image_pos_emb",
+    "tokens_per_frame": 1024
+  },
+  "frames": {
+    "query_frame": 0,
+    "target_frames": [
+      40,
+      41,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55
+    ]
+  },
+  "gate_C1": {
+    "all_5_dev_scenes_complete": true,
+    "learned_median_error_px_max": 12.0,
+    "learned_median_hit16_min": 0.6,
+    "positive_error_reduction_scenes_min": 5,
+    "scene_bootstrap_error_reduction_ci_lower_gt": 0.0,
+    "worst_scene_error_reduction_min": -2.0
+  },
+  "gate_C2_after_C1": "predicted-coordinate fresh-query future rollout on the five dev scenes; frozen separately before execution",
+  "locked_data_read": {
+    "davis_method_eval": false,
+    "kinetics_1144": false,
+    "pointodyssey_internal_holdout": false,
+    "pointodyssey_model_validation": false,
+    "pointodyssey_test": false
+  },
+  "model": {
+    "identity_dim": 128,
+    "locator_parameters_expected": 263427,
+    "temperature": 10.0
+  },
+  "raw_baseline": "L2-normalized unprojected query feature vs target patch tokens, argmax patch center",
+  "sampling": {
+    "image_margin_px": 8.0,
+    "point_selection": "ascending sha256(seed|scene|point_id) among query-visible and at-least-one-target-visible points",
+    "points_per_scene": 256
+  },
+  "schema_version": "requerytap_locator_training_manifest_v0",
+  "seed": 17018,
+  "source_scenes": [
+    "seminar_h52_3rd",
+    "r0_new_f_",
+    "r2_new_",
+    "r3_new_",
+    "r0_new_f",
+    "ani13_new_f",
+    "character",
+    "scene_carb_h_tables",
+    "dancing",
+    "animal",
+    "animal_rabbit",
+    "character1",
+    "ani8_new_f",
+    "animal1_",
+    "character0_f",
+    "seminar_h52_ego2",
+    "scene_recording_20210910_S05_S06_0_ego2"
+  ],
+  "split_hash_key": "17018|requerytap-locator-v0|scene",
+  "train_scenes": [
+    "character",
+    "animal1_",
+    "seminar_h52_3rd",
+    "seminar_h52_ego2",
+    "r0_new_f",
+    "character0_f",
+    "r3_new_",
+    "scene_carb_h_tables",
+    "ani8_new_f",
+    "dancing",
+    "character1",
+    "animal_rabbit"
+  ],
+  "training": {
+    "batch_size": 32,
+    "early_stop_dev_samples": 4096,
+    "early_stop_patience": 4,
+    "epochs": 12,
+    "final_dev_evaluation": "all valid dev point-frame pairs",
+    "gradient_clip": 1.0,
+    "learning_rate": 0.0003,
+    "loss": "patch_cross_entropy + 10 * smooth_l1(pred_yx/256,target_yx/256)",
+    "optimizer": "AdamW",
+    "samples_per_epoch": 4096,
+    "selection_metric": "dev median coordinate error",
+    "weight_decay": 0.0001
+  }
+}

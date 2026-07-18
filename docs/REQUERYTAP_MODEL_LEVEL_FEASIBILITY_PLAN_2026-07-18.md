@@ -157,3 +157,30 @@ single-query contract enforced
 
 Passing Gate B permits fit-only training of the locator and respawn controller.
 It still does not permit PointOdyssey model-validation or locked data.
+
+## Gate C1 — fit-only exact-point locator training
+
+The 17 qualified fit scenes are split before cache construction by ascending
+`sha256("17018|requerytap-locator-v0|scene")`: 12 train scenes and 5 dev scenes.
+No scene may move after results are observed.
+
+Features are frozen TAPNext++ patch embeddings from `lin_proj + image_pos_emb`.
+The query identity comes from frame 0.  Target images are frames 40--55.  Each
+scene contributes a deterministic maximum of 256 point identities that are
+visible at query time and visible in at least one target frame.
+
+Train only the 263k-parameter global locator for 12 epochs with 4096 sampled
+pairs per epoch.  The raw unprojected cosine patch match is the baseline.
+
+Frozen C1 gates over all five dev scenes:
+
+1. every dev scene completes;
+2. aggregate median coordinate error <= 12 px;
+3. aggregate hit@16 >= 60%;
+4. learned median error improves over raw cosine in 5/5 scenes;
+5. scene-bootstrap 95% CI lower bound for error reduction is positive;
+6. no scene error reduction is worse than -2 px.
+
+C1 passing does not establish a tracking improvement.  It only allows Gate C2,
+which will re-instantiate fresh query tokens using predicted coordinates and
+score the following future frames.
