@@ -1,0 +1,120 @@
+schema_version: routeD_counterfactual_state_restoration_gate0_v0
+date: 2026-07-19
+experiment:
+  name: routeD_counterfactual_tracker_state_restoration_gate0
+  purpose: >-
+    Test whether CoTracker3 online commit state is a causally meaningful and
+    exactly restorable target before any learned state-restoration model is built.
+  claim_scope: interface feasibility only; no tracking-performance claim
+
+backbone:
+  name: cotracker3_scaled_online_true_streaming
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  frozen: true
+  window_length: 16
+  step: 8
+
+fit_sample:
+  manifest: /gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json
+  manifest_sha256: bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14
+  source_index: 0
+  video_name: "1680"
+  expected_frames: 24
+  expected_points: 64
+  allowed_use: fit-only causal interface audit
+
+commit_interface:
+  initialize_queries_only_call: true
+  first_window_chunk_start: 0
+  snapshot_after_first_window: true
+  snapshot_online_ind_expected: 8
+  next_window_chunk_start: 8
+  overlap_frames_in_global_time: [8, 15]
+  future_measurement_frames_in_global_time: [16, 23]
+  state_fields:
+    predictor:
+      - N
+      - queries
+    model:
+      - online_ind
+      - online_track_feat
+      - online_track_support
+      - online_coords_predicted
+      - online_vis_predicted
+      - online_conf_predicted
+
+corruption:
+  seed: 190719
+  active_point_rule: query_frame_less_than_16
+  coordinate:
+    overlap_only: true
+    input_raster_shift_xy_px: [16.0, -12.0]
+  visibility:
+    overlap_only: true
+    logit_delta: -4.0
+  confidence:
+    overlap_only: true
+    logit_delta: -4.0
+  track_support:
+    levels: all
+    active_points_only: true
+    deterministic_channel_keep_fraction: 0.5
+    channel_rule: ascending_sha256_of_seed_level_channel
+    dropped_channels_set_to_zero: true
+  online_track_feat:
+    included_in_snapshot: true
+    corruption_enabled: false
+    reason: current CoTracker3 forward consumes online_track_support, not online_track_feat
+
+variants:
+  - clean
+  - exact_noop_restore
+  - composite_corrupt
+  - coordinate_only_restore_after_composite_corruption
+  - full_state_restore_after_composite_corruption
+
+measurements:
+  coordinates:
+    raster: 256
+    active_post_query_rows_only: true
+    report_mean_l2_px: true
+    report_max_l2_px: true
+    report_fraction_above_1px: true
+  visibility_confidence:
+    report_max_abs_probability_difference: true
+    report_mean_abs_probability_difference: true
+  state:
+    tensor_sha256_each_field: true
+    nested_tensor_exact_equality: true
+  replay:
+    independent_process_runs: 2
+    compare_all_nested_tensors_and_scalars: exact
+
+gates:
+  clean_independent_replay_exact: true
+  snapshot_roundtrip_state_exact: true
+  exact_noop_restore_future_exact: true
+  full_state_restore_future_exact: true
+  composite_corruption_future_mean_l2_px_min: 2.0
+  composite_corruption_future_fraction_above_1px_min: 0.25
+  coordinate_only_restore_future_mean_l2_px_min: 0.5
+  coordinate_only_restore_future_fraction_above_1px_min: 0.10
+  full_restore_better_than_coordinate_only: true
+  full_restore_better_than_composite_corruption: true
+
+formal_decisions:
+  pass: AUTHORIZE_SEPARATE_FIT_ONLY_LEARNED_STATE_RESTORER_PREREGISTRATION
+  fail: STOP_COUNTERFACTUAL_STATE_RESTORATION_BEFORE_TRAINING
+
+integrity:
+  ground_truth_used_for_decision: false
+  clean_native_future_used_as_teacher_only: true
+  trainable_parameters: 0
+  gradients: false
+  model_validation_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
