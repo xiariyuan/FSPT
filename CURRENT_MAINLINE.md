@@ -20,11 +20,22 @@ cycle, peer geometry, and static DINOv3 controls remain at only 0.333--0.438
 top-8 recall and are closed. M1 top-128 oracle recall is 0.9125, so recoverable
 support exists but needs candidate-conditioned spatiotemporal identity.
 
-Gate 3C0 is preregistered and not run. It materializes a 512-video Kubric
-development protocol from assets already on the server. Expanded indices 0--63
-are overlap-verification-only; 64--383/384--447/448--511 are raw-record-disjoint
-gradient/checkpoint/audit splits. The original 48--63 and every external dataset
-remain locked. No user-supplied data or new weight is required.
+Gate 3C0 completed with exact data-identity qualification: 512 Kubric videos,
+32 shards, 54 hashed source TFRecords, and raw-record-disjoint gradient-train
+64--383 / checkpoint-selection 384--447 / fit-only audit 448--511 partitions.
+Gate 3C1 then fixed the causal candidate-conditioned feature contract with exact
+fresh-process replay: 129 candidates, 16 observed frames, nine temporal channels,
+14 static channels, and no persisted raw DINO descriptors.
+
+Gate 3C1A completed and passed on exactly gradient-train indices 64--383. All
+320 sidecars and tensor/file hashes validate; 12 videos are valid empty members
+and the cache contains 3,325 frozen natural-failure rows. Native plus static
+top-8 supports 1,725/3,325 rows within 12 px, while the complete native-plus-128
+bank supports 3,185/3,325, leaving a 43.9098-point ranking target. This is
+training-only candidate headroom, not selector or tracking improvement. Formal
+decision: AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION. Checkpoint-selection
+384--447, fit-only audit 448--511, original model-validation 48--63, calibration,
+final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain unread.
 ```
 
 Read first:
@@ -38,6 +49,11 @@ docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
 docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_PLAN_2026-07-19.md
 docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_RESULT_2026-07-19.md
 docs/ROUTED_TEMPORAL_IDENTITY_DATA_GATE3C0_V0_PLAN_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_DATA_GATE3C0_V0_RESULT_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_PLAN_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_RESULT_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_PLAN_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_RESULT_2026-07-19.md
 ```
 
 ## Active override — 2026-07-17

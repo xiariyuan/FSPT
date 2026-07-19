@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_PASS
 ```
 
 ## Why this gate precedes selector preregistration
@@ -56,3 +56,24 @@ selector performance and cannot be reported as an improvement.
 pass -> AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION
 fail -> STOP_AND_REPAIR_GRADIENT_TRAIN_CACHE
 ```
+
+## Final result
+
+The preregistered build completed on exactly source indices 64--383. All 320
+sidecars and their tensor hashes validated, including 12 videos with valid
+empty failure tensors. The cache contains 3,325 frozen natural-failure rows.
+
+Training-only descriptive support is 3,185/3,325 (95.7895%) for the complete
+native-plus-128 bank, versus 1,725/3,325 (51.8797%) for native plus the first
+eight non-native M1 candidates. Native alone covers 54/3,325 (1.6241%).
+
+The formal completion decision is:
+
+```text
+AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION
+```
+
+This is candidate-set headroom on gradient-training data. It is not learned
+ranking, a deployable restoration gain, model validation, or external
+performance improvement. Exact hashes and locked-data flags are recorded in
+`docs/generated/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_2026-07-19.json`.

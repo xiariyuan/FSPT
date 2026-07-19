@@ -1,0 +1,52 @@
+{
+  "schema_version": "routeD_temporal_identity_train_cache_gate3c1a_v0_result",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION",
+  "partition": {
+    "name": "gradient_train",
+    "source_indices": [
+      64,
+      383
+    ],
+    "videos": 320,
+    "videos_with_failures": 308,
+    "failure_rows": 3325
+  },
+  "training_only_descriptive_support": {
+    "top128_oracle_supported_12px_rows": 3185,
+    "top128_oracle_recall_12px": 0.9578947368421052,
+    "static_native_plus_top8_supported_12px_rows": 1725,
+    "static_native_plus_top8_recall_12px": 0.518796992481203,
+    "native_supported_12px_rows": 54,
+    "native_recall_12px": 0.0162406015037594
+  },
+  "integrity": {
+    "exact_source_membership": true,
+    "exact_video_count": true,
+    "all_sidecars_hash_verified": true,
+    "locked_data_unread": true,
+    "sidecar_paths_exact": true
+  },
+  "hashes": {
+    "config_sha256": "895c0d6bb916c2b9e2a94b3c787524f91f79ba510e7dc6a09a0eca6db5ad7ae7",
+    "manifest_sha256": "afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961",
+    "cache_index_file_sha256": "88a7127330a540e5a6bd4a57517eda08af399535e64e4906d78188deb1aa966a",
+    "cache_index_payload_sha256": "82092788cd214d2974be8a5e590713e36c7d559b28a693c33c5839fe7f342725",
+    "combined_sidecar_sha256": "d0ec1e5032d02e6a0301bcef1e7def3d2638e982eb4caf96a41ecb550feb29a3",
+    "combined_tensor_hash_digest": "f13f81b5d7bc617ea1e1eeab9194f6f5d659ddc197b7708d3ed662d34f2ff749"
+  },
+  "locked_data": {
+    "original_model_validation_indices_48_63_read": false,
+    "checkpoint_selection_indices_384_447_read": false,
+    "fit_only_internal_audit_indices_448_511_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Training-only cache qualification and support headroom. This is not learned ranking, deployable restoration, model-validation, or external performance improvement.",
+  "summary_payload_sha256": "700a4e8ad3711e46b36412d392f5612fa74215eaf2268e91e4209c08aa6e81c5"
+}
