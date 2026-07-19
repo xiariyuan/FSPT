@@ -195,3 +195,34 @@ AUTHORIZE_ONE_FROZEN_MODEL_VALIDATION_STATE_RESTORER_AUDIT
 
 It does not authorize calibration, final holdout, DAVIS, Kinetics, or a paper
 claim.
+
+## 11. Interface gate completed — 2026-07-19
+
+The source-8 primary/replay interface audit passed.
+
+```text
+trainable parameters:                    18,149
+re-extracted track-feature max error:    2.98e-8
+re-extracted support max error:          2.98e-8
+minimum re-extraction cosine:            0.99999994
+maximum float16 cache error:             1.2204e-4
+minimum float16 cache cosine:            0.99999988
+zero-action state parity:                exact
+independent replay:                      exact
+```
+
+Formal decision:
+
+```text
+ALLOW_GATE2_TEACHER_CACHE_BUILD
+```
+
+This authorizes only the sealed `8–31` training and `32–47` fit-internal
+validation caches. Source indices `48–63` and all later data remain locked.
+
+See:
+
+```text
+docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_INTERFACE_RESULT_2026-07-19.md
+docs/generated/ROUTED_COUNTERFACTUAL_STATE_RESTORER_INTERFACE_SUMMARY_2026-07-19.json
+```

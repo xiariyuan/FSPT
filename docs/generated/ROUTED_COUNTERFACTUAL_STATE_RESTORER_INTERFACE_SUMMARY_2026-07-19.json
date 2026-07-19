@@ -1,0 +1,153 @@
+{
+  "schema_version": "routeD_counterfactual_state_restorer_interface_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "formal_decision": "ALLOW_GATE2_TEACHER_CACHE_BUILD",
+  "pass": true,
+  "primary_report_sha256": "820c5e97640e5442c7323fb1e853dd52ef940150f2249724274ae1865b4cc1b3",
+  "replay_report_sha256": "5e534306bcc61d3ff309d8449544a72399400173dfa459c8f3d2a3cadd035bcc",
+  "primary_sidecar_sha256": "6deaced9c1e44fda9f574b235c18bc67764c694de01bbeeaf3a19cae31ea0929",
+  "replay_sidecar_sha256": "cf3fca6f37b4332756d9169d46bf9c1bfdc38db607002a55e7589aaf68bc1135",
+  "independent_replay": {
+    "report_exact_excluding_paths": true,
+    "all_nested_tensors_exact": true,
+    "exact": true
+  },
+  "trainable_parameters": 18149,
+  "levels": [
+    {
+      "level": 0,
+      "track_feature_reextraction": {
+        "max_absolute_error": 1.4901161193847656e-08,
+        "mean_absolute_error": 2.7193891583010554e-10,
+        "cosine_similarity": 1.0
+      },
+      "support_reextraction": {
+        "max_absolute_error": 2.9802322387695312e-08,
+        "mean_absolute_error": 6.010725805971617e-10,
+        "cosine_similarity": 1.0000001192092896
+      },
+      "frame_feature_float16": {
+        "max_absolute_error": 0.0001220405101776123,
+        "mean_absolute_error": 1.2435384633135982e-05,
+        "cosine_similarity": 1.0000001192092896
+      },
+      "teacher_track_feature_float16": {
+        "max_absolute_error": 6.000697612762451e-05,
+        "mean_absolute_error": 1.069025802280521e-05,
+        "cosine_similarity": 1.0
+      },
+      "teacher_support_float16": {
+        "max_absolute_error": 0.00011718273162841797,
+        "mean_absolute_error": 1.0285631105944049e-05,
+        "cosine_similarity": 1.0
+      }
+    },
+    {
+      "level": 1,
+      "track_feature_reextraction": {
+        "max_absolute_error": 1.4901161193847656e-08,
+        "mean_absolute_error": 5.152465121227578e-10,
+        "cosine_similarity": 0.9999999403953552
+      },
+      "support_reextraction": {
+        "max_absolute_error": 2.9802322387695312e-08,
+        "mean_absolute_error": 5.37317745852306e-10,
+        "cosine_similarity": 1.0
+      },
+      "frame_feature_float16": {
+        "max_absolute_error": 0.0001214146614074707,
+        "mean_absolute_error": 9.321349352831021e-06,
+        "cosine_similarity": 1.0
+      },
+      "teacher_track_feature_float16": {
+        "max_absolute_error": 6.0245394706726074e-05,
+        "mean_absolute_error": 8.177525160135701e-06,
+        "cosine_similarity": 0.9999999403953552
+      },
+      "teacher_support_float16": {
+        "max_absolute_error": 0.00010314583778381348,
+        "mean_absolute_error": 7.95686719357036e-06,
+        "cosine_similarity": 0.9999999403953552
+      }
+    },
+    {
+      "level": 2,
+      "track_feature_reextraction": {
+        "max_absolute_error": 2.9802322387695312e-08,
+        "mean_absolute_error": 5.431246563603054e-10,
+        "cosine_similarity": 1.0
+      },
+      "support_reextraction": {
+        "max_absolute_error": 2.9802322387695312e-08,
+        "mean_absolute_error": 4.3440240293790566e-10,
+        "cosine_similarity": 1.0
+      },
+      "frame_feature_float16": {
+        "max_absolute_error": 6.102025508880615e-05,
+        "mean_absolute_error": 7.122932402126025e-06,
+        "cosine_similarity": 0.9999998807907104
+      },
+      "teacher_track_feature_float16": {
+        "max_absolute_error": 6.003677845001221e-05,
+        "mean_absolute_error": 6.513173502753489e-06,
+        "cosine_similarity": 1.0
+      },
+      "teacher_support_float16": {
+        "max_absolute_error": 6.091594696044922e-05,
+        "mean_absolute_error": 6.394940555765061e-06,
+        "cosine_similarity": 1.0
+      }
+    },
+    {
+      "level": 3,
+      "track_feature_reextraction": {
+        "max_absolute_error": 1.4901161193847656e-08,
+        "mean_absolute_error": 3.942091097997036e-10,
+        "cosine_similarity": 0.9999999403953552
+      },
+      "support_reextraction": {
+        "max_absolute_error": 1.4901161193847656e-08,
+        "mean_absolute_error": 4.0865894002095615e-10,
+        "cosine_similarity": 1.0
+      },
+      "frame_feature_float16": {
+        "max_absolute_error": 6.063282489776611e-05,
+        "mean_absolute_error": 5.591840363194933e-06,
+        "cosine_similarity": 1.0
+      },
+      "teacher_track_feature_float16": {
+        "max_absolute_error": 3.9830803871154785e-05,
+        "mean_absolute_error": 4.9263830987911206e-06,
+        "cosine_similarity": 0.9999998807907104
+      },
+      "teacher_support_float16": {
+        "max_absolute_error": 6.099045276641846e-05,
+        "mean_absolute_error": 4.838957920583198e-06,
+        "cosine_similarity": 0.9999998807907104
+      }
+    }
+  ],
+  "checks": {
+    "source_index_is_gradient_train": true,
+    "frame_count_exact": true,
+    "point_count_exact": true,
+    "selected_points_exact": true,
+    "model_parameter_ceiling": true,
+    "teacher_reextraction_max_error": true,
+    "teacher_reextraction_min_cosine": true,
+    "float16_cache_max_error": true,
+    "float16_cache_min_cosine": true,
+    "zero_action_state_exact": true,
+    "model_reads_future_frames": false,
+    "model_reads_gt": false,
+    "model_validation_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false,
+    "independent_replay_exact": true
+  },
+  "claim_boundary": "Training-partition interface evidence only. No learned model, model-validation, holdout, or external claim."
+}
