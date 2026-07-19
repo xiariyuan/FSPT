@@ -1,0 +1,23 @@
+{
+  "schema_version": "routeD_temporal_identity_feature_probe_gate3c1_v0_replay",
+  "date": "2026-07-19",
+  "status": "completed_exact_replay",
+  "source_index": 64,
+  "first_result": "docs/generated/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_2026-07-19.json",
+  "replay_result": "/tmp/routeD_gate3c1_feature_probe_replay_index64_20260719.json",
+  "exact_checks": {
+    "sample": true,
+    "candidate_bank": true,
+    "shapes": true,
+    "storage_bytes": true,
+    "tensor_hashes": true,
+    "tensor_hash_digest": true,
+    "integrity": true
+  },
+  "tensor_hashes": {
+    "temporal_features": "ead419c4134840768d2ec60420f466734c48197a85bf8b14b3ecbb9926803de1",
+    "static_features": "0444940137629ee4b85ccda2c557dc3c740bcdc2bd2e64ab9334151181077ee9",
+    "valid_mask": "642a48616eb151ff1126f67fcdcef96f5abb6e798243d9b33e3dea60b4e10d78"
+  },
+  "tensor_hash_digest": "9460db07c74ef5b7c12180d1a05da9a5a24b8bc28459099b22833faf78a67a74"
+}

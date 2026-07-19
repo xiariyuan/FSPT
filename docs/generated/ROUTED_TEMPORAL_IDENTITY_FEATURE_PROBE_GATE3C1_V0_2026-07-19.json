@@ -1,0 +1,174 @@
+{
+  "schema_version": "routeD_temporal_identity_feature_probe_gate3c1_v0_result",
+  "feature_schema_version": "routeD_candidate_temporal_identity_features_v0",
+  "date": "2026-07-19",
+  "status": "completed_shape_probe",
+  "claim_scope": "Single-gradient-train-sample causal feature-shape, runtime, and GPU-memory probe only. No selector training, checkpoint choice, threshold search, performance gate, model-validation access, or external evaluation.",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_feature_probe_gate3c1_v0.yaml",
+  "config_sha256": "8b97b009cf2ae343ec9fa2e7491735ee9f695a7cdf3c0f68a826af551e4f7a01",
+  "authorized_parent": {
+    "summary": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_DATA_GATE3C0_V0_SUMMARY_2026-07-19.json",
+    "summary_file_sha256": "61f66acb8c105b2eb91d8dd9feb56a8092e6b59eada1df0ef7711ef6c0272a43",
+    "summary_payload_sha256": "94cdbc46cf7284659f8cf80b6d60a3783e52465e01288e4bb34d7e4111cdd20b",
+    "formal_decision": "AUTHORIZE_GATE3C1_CAUSAL_FEATURE_CACHE_ON_EXPANDED_KUBRIC"
+  },
+  "sample": {
+    "source_index": 64,
+    "video_name": "2238",
+    "sample_metadata": {
+      "manifest_path": "/gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json",
+      "manifest_sha256": "afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961",
+      "manifest_split": "train",
+      "manifest_num_samples": 512,
+      "global_video_index": 64,
+      "shard_index": 4,
+      "shard_local_index": 0,
+      "shard_path": "/gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train_00004.pkl",
+      "shard_sha256": "167588e1a9db4d5506eea6f1d7ea18cd6c2f64e1a3e92495461fd865b142577c"
+    },
+    "eligible_failure_count": 10,
+    "selected_point_index": 9,
+    "query_frame": 0
+  },
+  "candidate_bank": {
+    "total_candidates": 129,
+    "valid_candidates": 129,
+    "candidate_coordinate_hash_before_teacher": "9dfafa1910c8145ccf20312763d9c079508d81015089669507859f75c5aafe8a",
+    "native_commit_error_px": 86.70787811279297,
+    "oracle_min_commit_error_px": 10.643640518188477,
+    "oracle_support_within_12px": true,
+    "native_future_mean_error_px": 113.36312866210938
+  },
+  "shapes": {
+    "cotracker_feature_pyramid_frame15": [
+      [
+        128,
+        96,
+        128
+      ],
+      [
+        128,
+        48,
+        64
+      ],
+      [
+        128,
+        24,
+        32
+      ],
+      [
+        128,
+        12,
+        16
+      ]
+    ],
+    "reverse_tracklets": [
+      129,
+      16,
+      2
+    ],
+    "dinov3_feature_video": [
+      16,
+      384,
+      14,
+      14
+    ],
+    "descriptor_sequence": [
+      129,
+      16,
+      384
+    ],
+    "temporal_features": [
+      129,
+      16,
+      9
+    ],
+    "static_features": [
+      129,
+      14
+    ],
+    "valid_mask": [
+      129
+    ]
+  },
+  "channels": {
+    "temporal": [
+      "query_descriptor_cosine",
+      "descriptor_previous_frame_cosine",
+      "reverse_visibility_probability",
+      "reverse_confidence_probability",
+      "track_x_normalized",
+      "track_y_normalized",
+      "track_dx_normalized",
+      "track_dy_normalized",
+      "distance_from_native_track_normalized"
+    ],
+    "static": [
+      "m1_score_z",
+      "rank_fraction",
+      "is_native",
+      "is_valid",
+      "commit_x_normalized",
+      "commit_y_normalized",
+      "commit_offset_from_native_x_normalized",
+      "commit_offset_from_native_y_normalized",
+      "reverse_cycle_error_at_query_normalized",
+      "mean_query_descriptor_cosine",
+      "minimum_query_descriptor_cosine",
+      "mean_reverse_visibility_probability",
+      "mean_reverse_confidence_probability",
+      "mean_descriptor_previous_frame_cosine"
+    ]
+  },
+  "storage_bytes": {
+    "temporal_float32": 74304,
+    "static_float32": 7224,
+    "valid_bool": 129,
+    "total": 81657
+  },
+  "tensor_hashes": {
+    "temporal_features": "ead419c4134840768d2ec60420f466734c48197a85bf8b14b3ecbb9926803de1",
+    "static_features": "0444940137629ee4b85ccda2c557dc3c740bcdc2bd2e64ab9334151181077ee9",
+    "valid_mask": "642a48616eb151ff1126f67fcdcef96f5abb6e798243d9b33e3dea60b4e10d78"
+  },
+  "stage_measurements": {
+    "native_and_candidate": {
+      "seconds": 1.9903146401047707,
+      "peak_cuda_mib": 1564.83203125
+    },
+    "reverse_candidate_tracklets": {
+      "seconds": 0.1871720366179943,
+      "peak_cuda_mib": 1698.43603515625
+    },
+    "dinov3_and_feature_assembly": {
+      "seconds": 10.208790369331837,
+      "peak_cuda_mib": 266.9130859375
+    }
+  },
+  "integrity": {
+    "all_feature_tensors_finite": true,
+    "candidate_hash_frozen_before_teacher_distance": true,
+    "teacher_available_to_candidate_coordinates_or_features": false,
+    "future_frames_available_to_model_features": false,
+    "observed_frames": [
+      0,
+      15
+    ],
+    "checkpoint_selection_read": false,
+    "fit_only_internal_audit_read": false,
+    "original_model_validation_read": false,
+    "external_read": false
+  },
+  "locked_data": {
+    "original_model_validation_indices_48_63_read": false,
+    "checkpoint_selection_indices_384_447_read": false,
+    "fit_only_internal_audit_indices_448_511_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "tensor_hash_digest": "9460db07c74ef5b7c12180d1a05da9a5a24b8bc28459099b22833faf78a67a74",
+  "summary_payload_sha256": "42c9c7d0ca983e42a9f418dd1b7a9cde18d1abc071787b07d668b135a5cf0142"
+}

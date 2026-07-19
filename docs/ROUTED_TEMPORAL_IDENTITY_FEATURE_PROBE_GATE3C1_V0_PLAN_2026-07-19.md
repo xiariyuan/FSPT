@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED
 ```
 
 ## Purpose
@@ -66,3 +66,9 @@ The machine-readable result must record:
 
 The output is descriptive. Architecture, loss, checkpoint selection, and Gate
 3C1 pass thresholds remain unauthorized until this probe is complete.
+
+## Completion
+
+The probe completed and replayed exactly. The authoritative result is:
+
+`docs/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_RESULT_2026-07-19.md`
