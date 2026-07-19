@@ -1,0 +1,151 @@
+experiment:
+  name: routeD_cmcp_davis_external_v0
+  stage: P0m
+  date: 2026-07-19
+  purpose: >-
+    One-time frozen zero-shot TAP-Vid-DAVIS first-query transfer audit of the
+    finalized-state output-only P0j variant C after the P0l final synthetic
+    holdout passed.
+
+claim_boundary:
+  dataset_role: historically_exposed_external_transfer_benchmark
+  untouched_final_test_claim: forbidden
+  zero_shot_for_frozen_variant_C: true
+  reason: >-
+    DAVIS has been used by older project routes, but variant C, its checkpoint,
+    architecture, normalization, gates, and the decision to open this protocol
+    were frozen using Kubric only. No DAVIS result may alter the model.
+
+frozen_model:
+  name: C_lmra_frozen_cmcp_comparator
+  checkpoint: outputs/routeD_cmcp_lmra_ablation_20260717/C_seed17/best.pt
+  checkpoint_sha256: 7babb76e3407497832d0bc0fca4557df64b2d09450ebc60766e32a70816ab52f
+  combined_model_state_sha256: 64c3f6dae6ae34dc0223754aca3c76f78a1f48137d08bab6c3e01f2a806cd074
+  best_epoch: 3
+  execution_contract: finalized_state_output_only
+  state_writeback: disabled
+  calibration: none
+  new_trainable_parameters: 0
+  model_selection_after_external_read: forbidden
+
+backbone:
+  name: cotracker3_scaled_online_true_streaming
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  query_mode: first
+  input_raster: [256, 256]
+  metric_raster: [256, 256]
+  add_support_grid: false
+  all_points_jointly: true
+  finalized_native_state: true
+
+external_dataset:
+  name: TAP-Vid-DAVIS
+  path: /gemini/code/FSPT/datasets/tapvid_davis/tapvid_davis.pkl
+  sha256: 8d4ed1b232fd27a78bc192e2e1ce943866ff640ab15e43db3bc7b10258bb48f5
+  size_bytes: 2481403560
+  expected_videos: 30
+  loader_class: cotracker.datasets.tap_vid_datasets.TapVidDataset
+  loader_args:
+    dataset_type: davis
+    resize_to: [256, 256]
+    queried_first: true
+    fast_eval: false
+  video_order: insertion_order_of_pinned_pickle_keys
+  subset_allowed: false
+
+pinned_implementation:
+  repository_parent_commit: 3d681173cb589463c0f5b080f7b540494ee4b950
+  loader_source:
+    path: baselines/cotracker/cotracker/datasets/tap_vid_datasets.py
+    sha256: 2806cc6c1d5df1703c942feb05154a7b78ffa8ac4cb2fb032876ce3cf335699b
+  official_metric_source:
+    path: datasets/tapvid_official_eval.py
+    sha256: 4d5a448e3806bbfec3deb44f0f95a5794d0c53ce6ee38a268d3d946b226e9cea
+  metric_wrapper_source:
+    path: datasets/metrics.py
+    sha256: 33456bb86dd1dda95f81795d3ac7e6c30418c4a0b6f83a90ff7d9ce5cd10c898
+  predictor_source:
+    path: baselines/cotracker/cotracker/predictor.py
+    sha256: 783536d6c77790fa6c8e005f2df1d6bd4f0d8955c2c67d464bfb4e64d366375f
+  online_model_source:
+    path: baselines/cotracker/cotracker/models/core/cotracker/cotracker3_online.py
+    sha256: 4c8bfce5546d85ba22c6b5292b870ad2aa0af1e0b6ba5a22e644c39bb496475e
+  variant_C_evaluator_source:
+    path: projects/mmp_tracker/mmp_tracker/routeD_cmcp_lmra_training.py
+    sha256: 8b3592c46e3391189f6c816bff9b00c6a3646909722605162e32d39b9ca844cc
+
+metric_contract:
+  formula: vendored_official_TAP_Vid
+  query_mode: first
+  thresholds_px: [1, 2, 4, 8, 16]
+  tracks_storage: normalized_yx
+  official_metric_tracks: raster_xy
+  visibility_source: frozen_native_CoTracker_joint_probability_gt_0_6
+  variant_C_changes_visibility: false
+  report:
+    - AJ
+    - delta_average
+    - OA
+    - threshold_profile
+    - mean_and_median_visible_error
+    - severe_16px_rate
+    - candidate_oracle
+    - harmful_non_native_rate
+    - beneficial_candidate_recall
+    - per_video_paired_rows
+
+cache_contract:
+  cache_before_metrics: true
+  complete_30_video_cache_required: true
+  partial_performance_forbidden: true
+  per_video_performance_during_cache_forbidden: true
+  candidate_generation_ground_truth_free: true
+  gt_stored_only_for_frozen_post_generation_metrics: true
+  feature_map_dtype: float16
+  feature_map_quantization_max_abs_max: 0.0005
+  feature_map_quantization_min_cosine_min: 0.99999
+  extraction_replay_video_indices: [0, 14, 29]
+  cache_schema_smoke_source: kubric_fit_index_0_only
+
+formal_evaluation:
+  seed: 17
+  point_batch_size: 4
+  bootstrap_samples: 5000
+  bootstrap_seed: 20019
+  complete_partition_required: true
+  primary_and_replay_required: true
+  checkpoint_selection_on_DAVIS: false
+  threshold_selection_on_DAVIS: false
+  per_video_selection_on_DAVIS: false
+  one_aggregate_read_only: true
+
+formal_gates:
+  complete_30_video_partition: true
+  native_candidate_parity_all: exact
+  candidate_oracle_AJ_gain_points_min: 3.0
+  direct_AJ_gain_points_min: 0.30
+  paired_video_direct_AJ_CI_lower_gt: 0.0
+  direct_delta_average_gain_gt: 0.0
+  severe_16px_rate_not_worse: true
+  harmful_non_native_rate_max: 0.01
+  positive_video_count_min: 18
+  exact_primary_replay: true
+
+formal_decisions:
+  pass: AUTHORIZE_STRONG_BACKBONE_EXTERNAL_TRANSFER_CLAIM
+  fail: STOP_STRONG_BACKBONE_EXTERNAL_CLAIM_AND_RETAIN_SYNTHETIC_EVIDENCE_ONLY
+
+stop_rules:
+  - Do not change checkpoint, normalization, candidate extraction, NMS, EMA, top-K, or comparator rule after any DAVIS read.
+  - Do not calibrate or select a threshold on DAVIS.
+  - Do not print or inspect partial DAVIS performance.
+  - Do not select videos, frames, points, or a checkpoint using DAVIS results.
+  - If any gate fails, report the failure and retain only Kubric strong-backbone evidence.
+  - Do not use a DAVIS failure to justify a rescue sweep.
+  - Do not rerun or retune the official 1,144-video Kinetics result.
+
+kinetics_lock:
+  official_1144_result: frozen_historical_evidence
+  rerun: forbidden
+  tuning_use: forbidden
