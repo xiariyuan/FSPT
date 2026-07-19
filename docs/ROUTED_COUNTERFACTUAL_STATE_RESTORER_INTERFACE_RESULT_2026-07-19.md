@@ -18,7 +18,7 @@ holdout, DAVIS, Kinetics, or paper-level result.
 
 ```text
 Gate 2 config SHA256:
-3e4c4068acdeca7f4ac628b103bf462df4a9b23e1b353453d953450ecf01cd6b
+31a62db62d609e28acb9a7ac8cc5740866134d92ee3564e99a0bd7f847a33f6b
 
 CoTracker3 checkpoint SHA256:
 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
@@ -31,8 +31,19 @@ video name: 7137
 selected point indices: [0,2,5,6,7,8,10,16]
 input raster: 256 x 256
 CoTracker model raster: 384 x 512
-CSRR trainable parameters: 18,149
+CSRR trainable parameters: 19,685
 ```
+
+## Schema-corrected rerun
+
+Before cache construction, the enumerated trajectory representation was found to
+contain nine scalar channels while the module default was six and the config did
+not record an explicit dimension. No cache, checkpoint, training result, or
+validation metric existed. Commit `1ed05c6` corrected the module and explicitly
+froze `model.input.trajectory_dim: 9`.
+
+The primary/replay results and hashes in this document are from the corrected
+configuration. The earlier interface summary is superseded and must not be used.
 
 ## Structured re-extraction parity
 
@@ -99,19 +110,19 @@ bit-for-bit.
 
 ```text
 primary report SHA256:
-820c5e97640e5442c7323fb1e853dd52ef940150f2249724274ae1865b4cc1b3
+217bf83b5eee296f25dce65bc81a206dcde500eec0ccce3c9215355a1af56b70
 
 replay report SHA256:
-5e534306bcc61d3ff309d8449544a72399400173dfa459c8f3d2a3cadd035bcc
+652c1119d02587be617ac1366543e2a832de0e1f97d9fdf47997db172cd75799
 
 primary sidecar SHA256:
-6deaced9c1e44fda9f574b235c18bc67764c694de01bbeeaf3a19cae31ea0929
+49617a75838ac3103aec1b6a2d8c43be0016466ea5bf61611e69c494725241b5
 
 replay sidecar SHA256:
-cf3fca6f37b4332756d9169d46bf9c1bfdc38db607002a55e7589aaf68bc1135
+59a05856fc7fedafe1d6efa1d0a6b95b6e8fe2e5a4172e9ff8b7940671878ab1
 
 canonical summary SHA256:
-15c9f1f75ee9adc8ba179684e923b16d8faa5cb4befe523468d781ac0d8942d4
+84287c8ad739df418d8a2158ff36a0e2e69a4c87b9545b062c2e6eda4dfa9bfb
 ```
 
 ## Authorized next step

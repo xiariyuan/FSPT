@@ -201,7 +201,7 @@ claim.
 The source-8 primary/replay interface audit passed.
 
 ```text
-trainable parameters:                    18,149
+trainable parameters:                    19,685
 re-extracted track-feature max error:    2.98e-8
 re-extracted support max error:          2.98e-8
 minimum re-extraction cosine:            0.99999994
@@ -254,3 +254,20 @@ default is corrected to `9`, and the exact feature builder is part of the tested
 interface. All other architecture, data partitions,
 losses, thresholds, and gates remain unchanged. The interface primary/replay must
 be rerun under the corrected config before cache construction.
+
+
+### Corrected interface replay result
+
+The interface was rerun after the nine-dimensional schema correction.
+
+```text
+corrected config SHA256:                 31a62db62d609e28acb9a7ac8cc5740866134d92ee3564e99a0bd7f847a33f6b
+trainable parameters:                    19,685
+maximum teacher re-extraction error:     2.98e-8
+maximum float16 round-trip error:        1.2204e-4
+zero-action parity:                      exact
+independent replay:                      exact
+canonical summary SHA256:                84287c8ad739df418d8a2158ff36a0e2e69a4c87b9545b062c2e6eda4dfa9bfb
+```
+
+The decision remains `ALLOW_GATE2_TEACHER_CACHE_BUILD`.
