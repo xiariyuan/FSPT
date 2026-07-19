@@ -18,7 +18,7 @@ holdout, DAVIS, Kinetics, or paper-level result.
 
 ```text
 Gate 2 config SHA256:
-31a62db62d609e28acb9a7ac8cc5740866134d92ee3564e99a0bd7f847a33f6b
+b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
 
 CoTracker3 checkpoint SHA256:
 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
@@ -44,6 +44,10 @@ froze `model.input.trajectory_dim: 9`.
 
 The primary/replay results and hashes in this document are from the corrected
 configuration. The earlier interface summary is superseded and must not be used.
+
+The final cache contract also stores a float32 exact rollout state alongside the
+float16 model/teacher view. The interface was rerun after this pre-cache
+clarification; the hashes below refer to that final frozen configuration.
 
 ## Structured re-extraction parity
 
@@ -110,10 +114,10 @@ bit-for-bit.
 
 ```text
 primary report SHA256:
-217bf83b5eee296f25dce65bc81a206dcde500eec0ccce3c9215355a1af56b70
+b42397c6bfb62dce60c29050ea732e8b8c96a2ee817382eb6d07435dd15b61c9
 
 replay report SHA256:
-652c1119d02587be617ac1366543e2a832de0e1f97d9fdf47997db172cd75799
+eb1cb9b0eb2323c9ac5ae426a3d090bbb54ec73dfab65bd5e0f97d241a32799f
 
 primary sidecar SHA256:
 49617a75838ac3103aec1b6a2d8c43be0016466ea5bf61611e69c494725241b5
@@ -122,7 +126,7 @@ replay sidecar SHA256:
 59a05856fc7fedafe1d6efa1d0a6b95b6e8fe2e5a4172e9ff8b7940671878ab1
 
 canonical summary SHA256:
-84287c8ad739df418d8a2158ff36a0e2e69a4c87b9545b062c2e6eda4dfa9bfb
+50a7d53cd671118e34b68b750a4403a37854caf6c88abd0432b58fd9c64a42d0
 ```
 
 ## Authorized next step

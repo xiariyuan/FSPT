@@ -261,13 +261,13 @@ be rerun under the corrected config before cache construction.
 The interface was rerun after the nine-dimensional schema correction.
 
 ```text
-corrected config SHA256:                 31a62db62d609e28acb9a7ac8cc5740866134d92ee3564e99a0bd7f847a33f6b
+final pre-cache config SHA256:                 b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
 trainable parameters:                    19,685
 maximum teacher re-extraction error:     2.98e-8
 maximum float16 round-trip error:        1.2204e-4
 zero-action parity:                      exact
 independent replay:                      exact
-canonical summary SHA256:                84287c8ad739df418d8a2158ff36a0e2e69a4c87b9545b062c2e6eda4dfa9bfb
+canonical summary SHA256:                50a7d53cd671118e34b68b750a4403a37854caf6c88abd0432b58fd9c64a42d0
 ```
 
 The decision remains `ALLOW_GATE2_TEACHER_CACHE_BUILD`.
