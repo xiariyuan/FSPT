@@ -410,3 +410,27 @@ Do not write Tier 3 or Tier 4 claims before the corresponding evidence exists.
 - Stop or downgrade a broad method claim if strong-backbone gain is below approximately +0.5 AJ point or only the weak MMP backbone benefits.
 - Do not open a strong-backbone external evaluation before native parity, deterministic replay, candidate oracle, and preregistration gates pass.
 ```
+
+## 9. Strong-backbone update — 2026-07-19
+
+The CoTracker3 strong-backbone Kubric model-validation gate is no longer pending.
+The preregistered component matrix identifies a reproducible safety-feasible
+configuration:
+
+```text
+frozen formal CMCP core + LMRA + comparator
+AJ gain: +0.8861 points
+paired-video AJ 95% CI: [+0.6489,+1.0694]
+positive videos: 16 / 16
+harmful non-native rate: 0.9396%
+```
+
+This supplies internal strong-backbone evidence, but not a new external claim.
+Calibration, final synthetic holdout, DAVIS, and official Kinetics remain locked.
+The paper may now describe the strong-backbone mechanism and Kubric ablation, but
+Tier-3 external generalization language remains unauthorized until a separately
+frozen external protocol is completed.
+
+The immediate next step is one coordinate-only bounded writeback ablation against
+the frozen-CMCP variant C. Do not reopen candidate, layer, rank, threshold, NMS,
+EMA, top-K, or intervention-strength sweeps on model validation.

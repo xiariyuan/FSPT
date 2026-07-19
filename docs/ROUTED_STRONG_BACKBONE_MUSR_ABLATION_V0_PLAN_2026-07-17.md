@@ -57,3 +57,31 @@ be implemented. It must initialize as coordinate-only P0i, use fit gradients
 only, preserve candidate-0/native fallback, and pass a stricter no-regression
 comparison against P0i. Calibration and locked datasets remain unavailable until
 that separate gate passes.
+
+## 6. Completed formal result — 2026-07-19
+
+The complete A/B/C/D matrix and independent B/C seed-17 replays are finished.
+Both checkpoints are byte-identical to their respective primary runs.
+
+```text
+A: +0.2449 AJ
+B: +0.6365 AJ
+C: +0.8861 AJ
+D: +0.5945 AJ
+```
+
+C exceeds D by `+0.2650` AJ under the sign convention `C - D`; the paired-video
+95% CI is `[+0.1151,+0.4168]`. Under the preregistered clause in Section 4, the
+architecture claim is revised rather than tuning D:
+
+```text
+REVISE_TO_FROZEN_CMCP_LMRA_COMPARATOR
+```
+
+The recommended model freezes the formal P0g CMCP core and trains only LMRA plus
+the comparator. See
+`docs/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_RESULT_2026-07-19.md` and
+`docs/generated/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_SUMMARY_2026-07-19.json`.
+One separately preregistered coordinate-only bounded writeback ablation is now
+authorized on fit/model-validation only. All locked-data restrictions remain in
+force.

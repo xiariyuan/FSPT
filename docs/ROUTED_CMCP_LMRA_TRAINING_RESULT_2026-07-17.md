@@ -211,3 +211,21 @@ The following remain locked:
 - DAVIS;
 - official Kinetics 1,144-video rerun;
 - validation-selected layer, rank, threshold, NMS, EMA, or top-K sweeps.
+
+## 10. Post-P0j claim revision — 2026-07-19
+
+The preregistered P0j component matrix supersedes the interpretation that full
+joint LMRA+CMCP+comparator training is the preferred architecture. Variant C,
+which freezes the formal P0g CMCP core and trains LMRA plus the comparator,
+reaches `+0.8861` AJ versus `+0.5945` for full P0i. The paired C-minus-D
+advantage is `+0.2650` AJ with 95% CI `[+0.1151,+0.4168]`.
+
+Formal revision:
+
+```text
+REVISE_TO_FROZEN_CMCP_LMRA_COMPARATOR
+```
+
+P0i remains a valid passing result and a required ablation, but it is no longer
+the recommended final strong-backbone configuration. See
+`docs/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_RESULT_2026-07-19.md`.
