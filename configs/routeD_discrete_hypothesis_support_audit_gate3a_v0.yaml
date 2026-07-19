@@ -1,0 +1,142 @@
+schema_version: routeD_discrete_hypothesis_support_audit_gate3a_v0
+date: 2026-07-19
+
+experiment:
+  name: routeD_csrr_discrete_hypothesis_support_audit_gate3a
+  purpose: >-
+    Determine whether the frozen Gate 2 learned correlation maps already contain
+    a useful discrete candidate near the fresh-state teacher coordinate, and
+    whether coordinate-oracle selection from that frozen candidate set is
+    sufficient to recover future utility. No candidate selector or action gate
+    is trained in this audit.
+  claim_scope: fit-only candidate-support diagnosis
+
+frozen_gate2_model:
+  config: /gemini/code/FSPT_v9a60_clean/configs/routeD_counterfactual_state_restorer_gate2_v0.yaml
+  config_sha256: b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
+  checkpoint: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_training_20260719/seed17/best.pt
+  checkpoint_sha256: 537f1819e923bdc2a68d5ebc15d647e60ea39afb4225d4bd04e2bb8c68913257
+  model_state_digest: c5d7b126ff58507c3003a84d171d344e77d489de9ab30c996ff798a38925c462
+  selected_epoch: 6
+  trainable: false
+
+cache:
+  root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719
+  gradient_train_index: train/cache_index.json
+  gradient_train_index_sha256: ab93e070adc4d623aeada811a88b16def3f4bb2137946f3728327806ae331517
+  fit_development_index: fit_internal_validation/cache_index.json
+  fit_development_index_sha256: 4216898d32c65a60360087bd7c4026d2db7d6877bfa06a934932a429112e4bef
+  use_existing_sidecars_only: true
+  rebuild_backbone_features: false
+
+partition:
+  design_exposed_source_indices: [0, 1, 2, 3, 4, 5, 6, 7]
+  diagnostic_train_source_indices: [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+  fit_development_source_indices: [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
+  fit_development_is_already_exposed: true
+  model_validation_source_indices_locked: [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+
+rows:
+  failure_only: true
+  apply_target_used: false
+  clean_rows_used: false
+  expected_fit_development_failure_points: 80
+  expected_fit_development_failure_videos: 16
+
+candidate_generation:
+  gt_used: false
+  source_map: frozen_gate2_fused_logits
+  current_soft_expectation_retained_as_control: true
+  native_coordinate_candidate:
+    included: true
+    candidate_id: 0
+  nonnative_candidates:
+    top_k: 8
+    non_maximum_suppression_radius_grid_cells: 3
+    local_refinement_window_grid_cells: 5
+    local_softmax_temperature: 0.05
+    deduplicate_radius_input_px: 4.0
+  deterministic_tie_break: descending_logit_then_y_then_x
+  candidate_set_frozen_before_teacher_scoring: true
+
+teacher_scoring:
+  commit_teacher: exact_gt_coordinate_at_frame_15
+  gt_access_after_candidate_freeze_only: true
+  coordinate_oracle_selection: nearest_candidate_to_commit_teacher
+  future_outcome_not_used_for_candidate_selection: true
+  selected_candidate_action:
+    coordinate_write: commit_frame_only
+    probability_write: learned_gate2_residuals
+    memory_write: frozen_reextraction_at_selected_candidate
+    replace_all_four_memory_levels: true
+  continuation_frames: [16, 23]
+
+variants:
+  native:
+    action: none
+  gate2_soft_expectation_full_state:
+    coordinate: frozen_gate2_soft_expectation
+    memory: reextract_at_coordinate
+  discrete_top1_full_state:
+    coordinate: highest_logit_local_refined_candidate
+    memory: reextract_at_coordinate
+  discrete_coordinate_oracle_full_state:
+    coordinate: nearest_frozen_candidate_to_commit_teacher
+    memory: reextract_at_coordinate
+
+metrics:
+  commit_coordinate:
+    - mean_error_px
+    - median_error_px
+    - recall_within_4px
+    - recall_within_8px
+    - recall_within_16px
+    - teacher_inside_candidate_set_fraction
+  future_visible_rows_only: true
+  future:
+    - mean_l2_error_px
+    - severe_16px_rate
+    - threshold_utility_mean_at_1_2_4_8_16
+    - positive_point_fraction
+    - paired_point_bootstrap_CI
+    - better_video_fraction
+  candidate_geometry:
+    - top1_to_top2_distance_px
+    - candidate_spread_px
+    - native_candidate_rank
+    - teacher_nearest_candidate_rank
+  bootstrap_samples: 10000
+  bootstrap_seed: 193719
+
+integrity_gates:
+  candidate_generation_reads_gt: false
+  candidate_set_exact_primary_replay: true
+  current_soft_expectation_exact_primary_replay: true
+  all_nested_rollout_tensors_exact_primary_replay: true
+  source_membership_exact: true
+  model_validation_read: false
+
+scientific_gates:
+  fit_development_failure_points_min: 80
+  fit_development_failure_videos_min: 16
+  coordinate_oracle_recall_within_8px_min: 0.75
+  coordinate_oracle_median_commit_error_px_max: 4.0
+  coordinate_oracle_full_state_mean_error_reduction_vs_native_px_min: 8.0
+  coordinate_oracle_error_reduction_CI_lower_px_min: 2.0
+  coordinate_oracle_full_state_threshold_utility_gain_vs_native_min: 0.12
+  coordinate_oracle_utility_gain_CI_lower_min: 0.03
+  coordinate_oracle_full_state_positive_point_fraction_min: 0.65
+  coordinate_oracle_full_state_severe_16px_rate_reduction_min: 0.15
+  coordinate_oracle_utility_gain_vs_gate2_soft_expectation_min: 0.05
+
+formal_decisions:
+  pass: AUTHORIZE_FIT_ONLY_DISCRETE_CANDIDATE_SELECTOR_TRAINING
+  fail: STOP_DISCRETE_READOUT_AND_REDESIGN_SUPPORT_QUERY
+
+locked_data:
+  model_validation_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
