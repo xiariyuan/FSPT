@@ -13,6 +13,10 @@ Gate 3A v0 remains frozen and unrun, but it no longer independently decides the
 route. It is retained as the pooled-native-map control for the later Gate 3A v1
 representation audit. Source indices 48--63 and all external datasets remain
 locked. No new pretrained weights are authorized before Gate 2.5 completes.
+
+A geometry-preserving 49-token matcher interface is implemented with tests but
+is not yet an authorized Gate 3A-v1 experiment. Its distance gates and immutable
+anchor-cache protocol remain blocked on the valid Gate 2.5 primary/replay result.
 ```
 
 Read first:
@@ -21,6 +25,7 @@ Read first:
 docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_GATE2_RESULT_2026-07-19.md
 docs/ROUTED_CSRR_GATE2_FAILURE_DIAGNOSTIC_2026-07-19.md
 docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_V0_PLAN_2026-07-19.md
+docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
 ```
 
 ## Active override — 2026-07-17

@@ -4,16 +4,22 @@
 
 ```text
 PREREGISTERED_NOT_RUN
+PRE_EXECUTION_INTEGRITY_AMENDMENT_APPLIED
 ```
 
 Frozen implementation hashes at preregistration:
 
 ```text
-config:  8ede4e88755eaaa5d22b4ef0d7b4e26618227322629466f6549e0fd9b4575942
+config:  a6b2d6fa38184e59e6360d8fa5af4c2686606bbea2eb79994820d75358812a92
 runner:  259746932185b22929d7ca07ca3d0f502d6d060927b035a3b1fd8ed9c638b077
 cache:   67878d5f1aa202f9b743bb724038099989adf993a6719c84c184ff519b04c3bf
 helpers: cdd1dcdbcbc9b55fcf9bb8e2e680ced3770a7eec921e3c631b3c9bf6c1538217
+package: 743c33b56521a1f7a28f60cb7f61b045c0236f8c9a2914ef7184741a0b837741
 ```
+
+The amendment adds only center-memory parity gates and exact primary/replay
+packaging. It was frozen before any design-exposed cache or Gate 2.5 outcome was
+read and changes no offset, row, metric or downstream scientific threshold.
 
 Gate 2.5 is the next active experiment. It supersedes running Gate 3A v0 as a
 route-decision gate. Gate 3A v0 remains frozen and unrun and may later be used
@@ -145,6 +151,18 @@ python scripts/audit_routeD_state_reinstantiation_basin_gate2_5.py \
   --cache-root outputs/routeD_counterfactual_state_restorer_cache_20260719 \
   --output outputs/routeD_state_reinstantiation_basin_gate2_5_20260719/primary.json \
   --device cuda
+
+python scripts/audit_routeD_state_reinstantiation_basin_gate2_5.py \
+  --config configs/routeD_state_reinstantiation_basin_gate2_5_v0.yaml \
+  --cache-root outputs/routeD_counterfactual_state_restorer_cache_20260719 \
+  --output outputs/routeD_state_reinstantiation_basin_gate2_5_20260719/replay.json \
+  --device cuda
+
+python scripts/package_routeD_state_reinstantiation_basin_gate2_5.py \
+  --config configs/routeD_state_reinstantiation_basin_gate2_5_v0.yaml \
+  --primary outputs/routeD_state_reinstantiation_basin_gate2_5_20260719/primary.json \
+  --replay outputs/routeD_state_reinstantiation_basin_gate2_5_20260719/replay.json \
+  --output docs/generated/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_SUMMARY_2026-07-19.json
 ```
 
 Before result interpretation, the execution commit, config hash, design cache

@@ -79,6 +79,11 @@ metrics:
     seed: 192500
     equal_video_weight: true
 
+integrity_gates:
+  center_reextraction_track_feature_cosine_min: 0.9999
+  center_reextraction_track_support_cosine_min: 0.9999
+  primary_replay_report_exact: true
+
 downstream_gate_calibration:
   interpretation: >-
     The largest passing radius calibrates future candidate recall thresholds; it
@@ -92,6 +97,7 @@ downstream_gate_calibration:
 
 formal_decisions:
   always: REPORT_EMPIRICAL_REINSTATEMENT_BASIN_AND_PREREGISTER_GATE3A_V1
+  integrity_fail: STOP_BEFORE_GATE3A_AND_AUDIT_GATE2_5_REPLAY
   no_route_pass_fail_from_this_audit: true
 
 locked_data:
