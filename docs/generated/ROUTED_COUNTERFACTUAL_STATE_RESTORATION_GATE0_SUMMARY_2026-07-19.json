@@ -1,0 +1,174 @@
+{
+  "schema_version": "routeD_counterfactual_state_restoration_gate0_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "formal_decision": "AUTHORIZE_SEPARATE_FIT_ONLY_LEARNED_STATE_RESTORER_PREREGISTRATION",
+  "pass": true,
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_counterfactual_state_restoration_gate0_v0.yaml",
+  "config_sha256": "f5dedb16f2e46421c55b88c711c1edfeca8d8210c97e18de552dd273f4f0e0d8",
+  "primary_report_sha256": "30d2fe01329d2153544fbac2634e1f22e58b05c1024c8fea8ac394a557d8d87c",
+  "replay_report_sha256": "ebd0d6cd97fa88912ec84932f9a8d3aa44e951a19c550cb97e32fdfe9f91f2d8",
+  "primary_sidecar_sha256": "12630b2495444c9e476f2f84e3cbf72b80dd3024604078cf2ef461d26c319827",
+  "replay_sidecar_sha256": "cafc219074b959896d60f03576431b0a07e6da17200747ed0f155c47286c76d4",
+  "independent_replay": {
+    "report_exact_excluding_paths": true,
+    "all_nested_tensors_and_scalars_exact": true,
+    "exact": true
+  },
+  "state_shapes": {
+    "track_feat": [
+      [
+        1,
+        1,
+        64,
+        128
+      ],
+      [
+        1,
+        1,
+        64,
+        128
+      ],
+      [
+        1,
+        1,
+        64,
+        128
+      ],
+      [
+        1,
+        1,
+        64,
+        128
+      ]
+    ],
+    "track_support": [
+      [
+        1,
+        49,
+        64,
+        128
+      ],
+      [
+        1,
+        49,
+        64,
+        128
+      ],
+      [
+        1,
+        49,
+        64,
+        128
+      ],
+      [
+        1,
+        49,
+        64,
+        128
+      ]
+    ],
+    "coordinates": [
+      1,
+      16,
+      64,
+      2
+    ],
+    "visibility": [
+      1,
+      16,
+      64
+    ],
+    "confidence": [
+      1,
+      16,
+      64
+    ]
+  },
+  "future_differences_vs_clean": {
+    "exact_noop_restore": {
+      "rows": 506,
+      "coordinate_mean_l2_px": 0.0,
+      "coordinate_max_l2_px": 0.0,
+      "coordinate_fraction_above_1px": 0.0,
+      "visibility_mean_abs_probability_difference": 0.0,
+      "visibility_max_abs_probability_difference": 0.0,
+      "confidence_mean_abs_probability_difference": 0.0,
+      "confidence_max_abs_probability_difference": 0.0
+    },
+    "composite_corrupt": {
+      "rows": 506,
+      "coordinate_mean_l2_px": 17.291521072387695,
+      "coordinate_max_l2_px": 50.01985168457031,
+      "coordinate_fraction_above_1px": 0.9644269347190857,
+      "visibility_mean_abs_probability_difference": 0.3058905303478241,
+      "visibility_max_abs_probability_difference": 0.8267168998718262,
+      "confidence_mean_abs_probability_difference": 0.2752503752708435,
+      "confidence_max_abs_probability_difference": 0.9181833863258362
+    },
+    "coordinate_only_restore_after_composite_corruption": {
+      "rows": 506,
+      "coordinate_mean_l2_px": 1.5018116235733032,
+      "coordinate_max_l2_px": 51.7497444152832,
+      "coordinate_fraction_above_1px": 0.23320159316062927,
+      "visibility_mean_abs_probability_difference": 0.1887843757867813,
+      "visibility_max_abs_probability_difference": 0.7778390645980835,
+      "confidence_mean_abs_probability_difference": 0.083860844373703,
+      "confidence_max_abs_probability_difference": 0.7569543123245239
+    },
+    "full_state_restore_after_composite_corruption": {
+      "rows": 506,
+      "coordinate_mean_l2_px": 0.0,
+      "coordinate_max_l2_px": 0.0,
+      "coordinate_fraction_above_1px": 0.0,
+      "visibility_mean_abs_probability_difference": 0.0,
+      "visibility_max_abs_probability_difference": 0.0,
+      "confidence_mean_abs_probability_difference": 0.0,
+      "confidence_max_abs_probability_difference": 0.0
+    }
+  },
+  "checks": {
+    "snapshot_roundtrip_state_exact": true,
+    "exact_noop_restore_future_exact": true,
+    "full_state_restore_future_exact": true,
+    "composite_corruption_future_mean_l2_px_min": true,
+    "composite_corruption_future_fraction_above_1px_min": true,
+    "coordinate_only_restore_future_mean_l2_px_min": true,
+    "coordinate_only_restore_future_fraction_above_1px_min": true,
+    "full_restore_better_than_coordinate_only": true,
+    "full_restore_better_than_composite_corruption": true,
+    "clean_independent_replay_exact": true,
+    "primary_replay_local_checks_exact": true,
+    "primary_local_pass": true,
+    "replay_local_pass": true
+  },
+  "sample": {
+    "source_index": 0,
+    "video_name": "1680",
+    "frames": 24,
+    "points": 64,
+    "manifest_path": "/gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json",
+    "manifest_sha256": "bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14",
+    "manifest_split": "train",
+    "manifest_num_samples": 64,
+    "global_video_index": 0,
+    "shard_index": 0,
+    "shard_local_index": 0,
+    "shard_path": "/gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train_00000.pkl",
+    "shard_sha256": "d63151e55b8009d9bbfa5499f167b3b7f73c032e8b004485c83cefa99d30b44e"
+  },
+  "integrity": {
+    "ground_truth_used_for_decision": false,
+    "clean_native_future_used_as_teacher_only": true,
+    "trainable_parameters": 0,
+    "gradients": false,
+    "model_validation_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Fit-only causal interface evidence. A pass authorizes only a separately preregistered learned state-restorer experiment; it is not a tracking performance, external-transfer, or paper claim.",
+  "summary_payload_sha256": "6ec071c8a59dc014e0197fb9424a485c50d111b43d517a96f4b77b317d7750a2"
+}

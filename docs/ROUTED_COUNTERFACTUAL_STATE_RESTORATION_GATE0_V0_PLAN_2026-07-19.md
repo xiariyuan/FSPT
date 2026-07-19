@@ -225,3 +225,27 @@ DAVIS;
 PointOdyssey locked partitions;
 official Kinetics 1,144 or any Kinetics result used for tuning.
 ```
+
+## 11. Completed result — 2026-07-19
+
+Gate 0 passes every preregistered condition with independent-process exact replay:
+
+```text
+composite corruption mean future difference:       17.2915px
+composite rows above 1px:                           96.44%
+coordinate-only restore mean future difference:     1.5018px
+coordinate-only rows above 1px:                     23.32%
+full-state restore mean future difference:           0.0000px
+full-state restore nested future state:              exact
+```
+
+Formal decision:
+
+```text
+AUTHORIZE_SEPARATE_FIT_ONLY_LEARNED_STATE_RESTORER_PREREGISTRATION
+```
+
+The result proves causal value beyond coordinates but does not prove learnability
+or improvement over native tracking. The next required step is an oracle state
+teacher audit on naturally failed fit tracks, not immediate network training.
+See `docs/ROUTED_COUNTERFACTUAL_STATE_RESTORATION_GATE0_RESULT_2026-07-19.md`.
