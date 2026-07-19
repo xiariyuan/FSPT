@@ -1,7 +1,7 @@
 # Route-D Paper Core Draft V0
 
-Date: 2026-07-17
-Status: component-paper draft; submission packaging is held pending strong-backbone validation; numerical authority remains the corrected official-scale audit
+Date: 2026-07-19
+Status: evidence-complete component draft; the strong-backbone synthetic mechanism passes, the frozen DAVIS transfer audit fails, and broad external-generalization packaging is not authorized
 Target: build toward at least CCF-B / CAS Zone 2 without overstating current evidence
 
 ## 0. Working identity
@@ -18,7 +18,7 @@ Target: build toward at least CCF-B / CAS Zone 2 without overstating current evi
 
 ### One-sentence thesis
 
-A frozen online point tracker can benefit from global relocalization candidates without accepting them indiscriminately: a Kubric-trained controller that predicts multi-threshold candidate utility, calibrates action risk, and sparsely feeds accepted corrections back into tracker state improves official-scale TAP metrics on a preregistered external Kinetics evaluation.
+Selective global correction can materially improve a frozen online tracker when its candidate and action distributions are aligned with training, but the same mechanism is not automatically domain-general: Route-D improves the frozen MMP tracker on official-scale Kinetics and a frozen CoTracker3 variant on identity-disjoint Kubric, while a preregistered zero-shot DAVIS audit fails decisively.
 
 ### Correct paper identity
 
@@ -36,7 +36,8 @@ Core safety mechanism:
   calibrated beneficial-action probability plus profile constraints
 
 Core temporal mechanism:
-  accepted corrections update the next-frame prior and tracker commit state
+  the MMP main system can update the next-frame prior and tracker commit state;
+  the CoTracker3 extension is output-only because its commit-time parity gate fails
 ```
 
 The paper is not currently a universal TAP tracker or a leaderboard/SOTA paper. It is a selective-intervention paper about when and how a causal tracker should accept global corrections.
@@ -52,6 +53,9 @@ The paper is not currently a universal TAP tracker or a leaderboard/SOTA paper. 
 3. Closed-loop Route-D also improves both metrics over the corresponding open-loop intervention, showing that state feedback contributes beyond framewise candidate replacement.
 4. The intervention is sparse: the corrected full-run global selection rate is approximately 4.02%.
 5. The aggregate gain is not a per-video safety guarantee; substantial negative cases remain.
+6. On a frozen CoTracker3 true-streaming backbone, the preregistered output-only variant C improves identity-disjoint Kubric final-holdout AJ by `+0.7679` point with paired-video 95% CI `[+0.4532,+0.9184]`, 14/16 positive videos, and a pooled harmful rate of `0.9462%`.
+7. The CoTracker3 result is not closed loop: the provisional overlap state required for writeback is not equivalent to the finalized state used by variant C.
+8. Frozen zero-shot variant C fails on complete 30-video DAVIS: AJ changes by `-1.9170` points, the 95% CI is `[-2.4472,-1.4449]`, the candidate oracle is only `+0.4936`, and all 30 videos regress.
 
 ### Claims not currently supported
 
@@ -72,28 +76,30 @@ The paper is not currently a universal TAP tracker or a leaderboard/SOTA paper. 
 
 ### Current publication decision
 
-The corrected Kinetics result passes its preregistered statistical gate, but the resulting full system is not yet competitive enough to support a strong benchmark paper:
+The evidence package is now complete enough to reject a broad model-agnostic claim:
 
 ```text
-baseline AJ:                    32.49
-Route-D closed-loop AJ:         34.80
-absolute gain:                  +2.30 AJ points
-relative gain:                  approximately +7.09%
+MMP official-scale Kinetics gain:              +2.30 AJ points
+MMP closed-loop vs open-loop evidence:         positive
+CoTracker3 identity-disjoint Kubric gain:      +0.7679 AJ point
+CoTracker3 Kubric paired-video CI:             [+0.4532,+0.9184]
+CoTracker3 frozen DAVIS gain:                  -1.9170 AJ points
+CoTracker3 DAVIS paired-video CI:              [-2.4472,-1.4449]
+CoTracker3 DAVIS positive videos:              0 / 30
 
-relative improvement:           strong
-paired statistical evidence:    strong
-open/closed mechanism evidence: strong
-absolute tracker performance:   weak
-modern-baseline competitiveness:insufficient
+MMP component evidence:                        strong
+strong-backbone synthetic evidence:            positive
+strong-backbone external transfer:             failed
+modern-baseline competitiveness:                insufficient
 ```
 
-The paper must therefore remain a component-level selective-routing result until Route-D is validated prospectively on a strong backbone. The decisive next question is whether the gain survives when the native tracker itself is close to a modern published reference.
+The current work can be written as a tightly scoped component and falsification study, but it is not ready for a CCF-B / CAS Zone 2 submission as a broad tracker-agnostic method. Reaching that target requires a new domain-stable candidate mechanism and a future untouched external protocol; DAVIS cannot be used for rescue tuning.
 
 ---
 
 ## 2. Draft abstract
 
-Online point trackers must balance two conflicting hypotheses at every frame. Local tracking preserves temporal continuity but can drift or fail after large motion, whereas global relocalization can recover the target but may introduce destructive jumps. Existing trackers typically learn this behavior inside an end-to-end architecture or apply fixed matching heuristics. We instead study global correction as a selective action over a frozen tracker. We propose Route-D, a risk-calibrated candidate-routing controller that estimates each local and global hypothesis's correctness profile at multiple pixel thresholds, ranks global candidates by coarse utility, and accepts a correction only when a calibrated action model and explicit fine-to-coarse profile constraints agree. Accepted corrections are sparsely fed back into the subsequent tracking prior and commit state, yielding a true closed-loop intervention. All scorer, tree, calibration, and policy choices are fitted using disjoint Kubric-only partitions and frozen before external evaluation. On an exact order-preserving local materialization of 1,144 of the 1,147 uniquely annotated segments in the byte-verified official TAP-Vid-Kinetics release CSV, Route-D improves Average Jaccard by 0.023043 and average point-threshold accuracy by 0.027530 over an independent baseline. Paired-video bootstrap intervals are [0.020567, 0.025569] and [0.024800, 0.030260], respectively. Closed-loop feedback also significantly improves over the same controller applied open loop. The controller selects a global correction on only 4.02% of active decisions, but failures remain heterogeneous and can be severe. These results support risk-aware sparse feedback routing as a promising complement to end-to-end online point-tracking architectures, while motivating stronger cross-backbone and stability validation.
+Online point trackers repeatedly choose between a temporally consistent local estimate and a potentially corrective global match. This decision is asymmetric: rejecting a useful match preserves drift, while accepting a wrong match can introduce a destructive jump and, under closed-loop execution, corrupt future tracker state. We formulate global correction as a risk-sensitive action over a frozen tracker. Route-D predicts candidate correctness profiles at 1, 2, 4, 8, and 16 pixels, calibrates whether a global action is beneficial, and sparsely accepts corrections under explicit fine-to-coarse constraints. On an exact local materialization of 1,144 of 1,147 uniquely annotated TAP-Vid-Kinetics release-CSV segments, a Kubric-trained controller improves a frozen MMP tracker by 2.3043 AJ points and 2.7530 point-threshold points; paired-video confidence intervals are strictly positive, and closed-loop routing significantly exceeds the same controller used open loop. We then test the mechanism on a stronger frozen CoTracker3 backbone. A learned multi-memory proposal, late metric residual adapter, and local safety comparator improve identity-disjoint Kubric final-holdout AJ by 0.7679 point with 95% CI [0.4532,0.9184], but the output-only model fails a preregistered zero-shot 30-video DAVIS audit: AJ decreases by 1.9170 points, all videos regress, candidate-oracle headroom falls to 0.4936 point, and harmful interventions exceed the frozen ceiling. These results support selective routing as a useful aligned-domain component while falsifying a generic plug-in transfer claim. Domain-stable candidate generation and action calibration remain necessary for strong-backbone external generalization.
 
 ---
 
@@ -113,12 +119,13 @@ Our current contributions are:
 
 1. **Multi-threshold action representation.** We model local and global hypotheses through predicted correctness profiles at multiple spatial thresholds, preserving the difference between fine localization and coarse recovery.
 2. **Risk-calibrated sparse routing.** We introduce a calibrated action gate with explicit profile constraints that decides when a global candidate should replace the local candidate.
-3. **Open-loop versus closed-loop causal evaluation.** We separate framewise candidate replacement from state-feedback effects and show that closed-loop feedback provides an additional statistically resolved gain.
-4. **Frozen cross-domain evidence with audited scope.** We provide a preregistered, official-scale Kinetics evaluation with exact package lineage, paired-video uncertainty, undefined-metric handling, and explicit severe-failure reporting.
+3. **Open-loop versus closed-loop causal evaluation.** On the frozen MMP system, we separate framewise candidate replacement from state-feedback effects and show that closed-loop feedback provides an additional statistically resolved gain.
+4. **Strong-backbone component attribution.** On CoTracker3, a preregistered matrix shows that freezing the learned CMCP proposal core while training LMRA and the comparator is better than joint proposal/metric updating, and the selected model passes an identity-disjoint synthetic final holdout.
+5. **Prospective transfer falsification.** A complete frozen DAVIS audit shows that both proposal headroom and action safety collapse out of domain. We report this negative result and use it to bound, rather than inflate, the method claim.
 
-The current evidence establishes a strong component-level result for the frozen MMP tracker. It does not yet establish broad cross-backbone generality or state-of-the-art TAP performance.
+The current evidence establishes a strong MMP component result and a positive CoTracker3 synthetic mechanism result. It does not establish broad cross-domain generality, a model-agnostic plug-in, strong-backbone closed-loop benefit, or state-of-the-art TAP performance.
 
-The next decisive validation is Route-D on CoTracker3 online true-streaming under an independently preregistered protocol. That integration must first pass native parity, deterministic candidate export, coordinate/raster/query checks, and isolated closed-loop state-writeback tests. Kinetics remains frozen and cannot be used to choose the new adapter or controller.
+No further DAVIS or Kinetics tuning is permitted. Any future external claim requires a new candidate architecture developed without rescue tuning on the failed DAVIS audit and evaluated under a separately frozen untouched protocol.
 
 ---
 
@@ -138,7 +145,7 @@ ReTracker uses global-receptive-field matching and two-view pretraining to impro
 
 ### 4.4 Training and real-data scaling
 
-BootsTAP and CoTracker3 improve point tracking through real-video pseudo-labeling or bootstrapped training. These works target representation and training quality. Route-D is an inference-time decision layer trained on synthetic candidate evidence and frozen before external transfer.
+BootsTAP and CoTracker3 improve point tracking through real-video pseudo-labeling or bootstrapped training. These works target representation and training quality. Route-D is an inference-time decision layer trained on synthetic candidate evidence. Its MMP controller transfers positively to the frozen Kinetics protocol, whereas the CoTracker3 variant does not transfer to the frozen DAVIS audit.
 
 ### 4.5 Precise novelty sentence
 
@@ -163,13 +170,13 @@ BootsTAP and CoTracker3 improve point tracking through real-video pseudo-labelin
 
 ### 5.1 Online candidate set
 
-For query point `i` and active frame `t`, the frozen tracker produces a candidate set
+For the MMP main system, query point `i` and active frame `t` receive a candidate set
 
 ```text
 C_it = {c_it^0, c_it^1, ..., c_it^(K-1)}.
 ```
 
-Candidate `c_it^0` is the local hypothesis. Candidates with index `k > 0` are global relocalization hypotheses. Route-D does not alter candidate generation.
+Candidate `c_it^0` is the local hypothesis. Candidates with index `k > 0` are global relocalization hypotheses. The MMP main system does not alter candidate generation. The CoTracker3 extension retains candidate 0 as the exact native trajectory but learns a separate causal multi-memory proposal branch; it is described in Section 5.9 and must not be conflated with the MMP tree-controller implementation.
 
 Each candidate has a normalized two-dimensional point and twelve prediction-only features:
 
@@ -312,6 +319,34 @@ All controller fitting uses Kubric-only partitions. The final Kinetics protocol 
 
 No Kinetics result is used to tune any component.
 
+### 5.9 Strong-backbone output-only extension
+
+The CoTracker3 extension is a separate implementation of the same selective-action question, not a drop-in reuse of the MMP scorer and tree. It contains:
+
+```text
+frozen native branch:
+  CoTracker3 scaled-online true-streaming trajectory and visibility
+
+candidate branch:
+  causal query / previous-native / EMA correlations
+  frozen learned CMCP dense proposal core
+  native candidate 0 plus five stable NMS proposal peaks
+
+metric branch:
+  rank-32 late metric residual adapter (LMRA)
+
+selection branch:
+  local candidate-set transformer comparator
+  exact native fallback through abstention
+
+execution:
+  coordinate output replacement only
+  no visibility modification
+  no state writeback
+```
+
+The P0j component matrix shows that training LMRA and the comparator while freezing CMCP is better than jointly updating all three. The branch preserves exact candidate-0/native parity. A preregistered interface audit rejects closed-loop writeback because the provisional overlap state available before the next CoTracker window is not equivalent to the finalized state used by the trained comparator.
+
 ---
 
 ## 6. Experimental protocol
@@ -372,6 +407,23 @@ The preregistered primary gate passes only when the paired-video 95% bootstrap c
 ### 6.4 Undefined metrics
 
 Seven videos contain at least one undefined official metric because the corresponding denominator is empty. Raw NaNs are preserved. No metric is zero-imputed. Only the affected comparison/metric pair is excluded from its finite paired bootstrap.
+
+### 6.5 Strong-backbone synthetic protocol
+
+The CoTracker3 extension uses a frozen scaled-online true-streaming backbone and identity-disjoint Kubric partitions. The selected variant freezes the formal CMCP core and trains only the rank-32 LMRA and local safety comparator. Model validation chooses the checkpoint once; a separate 16-video final holdout is opened only after the architecture and output-only execution contract are frozen.
+
+```text
+model-validation videos: 16
+final-holdout videos:     16
+query mode:               first
+input / metric raster:    256 x 256
+state writeback:          disabled
+calibration:              none
+```
+
+### 6.6 Frozen DAVIS transfer protocol
+
+The complete 30-video DAVIS set is evaluated only after a sealed native/feature cache is complete. Metrics are computed independently per video with the official TAP-Vid first-query implementation and then equal-averaged across videos, matching the official CoTracker evaluator. No subset, model selection, threshold selection, calibration, or writeback rescue is allowed. DAVIS is historically exposed and is therefore described only as a frozen zero-shot transfer audit, not an untouched final test.
 
 ---
 
@@ -435,6 +487,34 @@ memory-write disagreement rate:                 0
 
 The lower closed-loop selection rate is expected because state feedback changes subsequent candidate evidence and future decisions. It must not be interpreted as a separately tuned policy.
 
+### 7.6 Strong-backbone synthetic result
+
+| Split | Native AJ | Variant-C AJ | AJ gain | Paired-video 95% CI | Positive videos | Harmful rate |
+|---|---:|---:|---:|---:|---:|---:|
+| Kubric model validation | 25.0135 | 25.8996 | +0.8861 | [+0.6489,+1.0694] | 16 / 16 | 0.9396% |
+| Kubric final holdout | 26.1450 | 26.9129 | +0.7679 | [+0.4532,+0.9184] | 14 / 16 | 0.9462% |
+
+The component matrix selects frozen CMCP + trainable LMRA + comparator. Jointly updating CMCP with LMRA is worse by approximately 0.2650 AJ point with a fully negative paired interval, indicating proposal/metric co-adaptation interference. The final-holdout result confirms identity-disjoint synthetic generalization but remains output-only.
+
+### 7.7 Frozen DAVIS transfer failure
+
+| Metric | Native | Variant C | Candidate oracle | Variant-C gain | Oracle gain |
+|---|---:|---:|---:|---:|---:|
+| AJ | 64.4109 | 62.4940 | 64.9045 | -1.9170 | +0.4936 |
+| Delta average | 77.1721 | 75.6130 | 77.8276 | -1.5591 | +0.6555 |
+| OA | 90.8488 | 90.8488 | 90.8488 | 0.0000 | 0.0000 |
+
+```text
+paired-video AJ 95% CI:        [-2.4472,-1.4449]
+positive / negative videos:    0 / 30
+selected non-native rate:      2.3035%
+harmful non-native rate:       2.2148%
+severe-16px change:            +0.0852 percentage points
+exact primary/replay:          yes
+```
+
+The candidate oracle itself fails the preregistered +3.0 gate, and nearly every accepted intervention is harmful. The result therefore diagnoses both candidate-generation and action-selection domain shift; it is not a threshold-only failure.
+
 ---
 
 ## 8. Mechanism interpretation
@@ -473,9 +553,9 @@ These cases are evidence of unresolved closed-loop instability. They cannot be u
 
 The corrected Kinetics baseline AJ is 0.324945. Modern TAP systems report substantially stronger benchmark numbers under their own published protocols. The current experiment therefore demonstrates component effectiveness on the frozen MMP tracker, not competitiveness with the strongest current trackers.
 
-### 9.3 Single-backbone evidence
+### 9.3 Cross-backbone but not cross-domain evidence
 
-Route-D is currently validated as an integrated controller for MMP. The action interface is conceptually reusable, but no second tracker backbone has yet demonstrated equivalent local/global candidate exposure, controller transfer, and closed-loop integration.
+A second frozen backbone, CoTracker3, demonstrates positive selective-routing behavior on identity-disjoint Kubric model validation and final holdout. This is meaningful cross-backbone mechanism evidence, but not a generic plug-in result: the CoTracker3 branch uses a learned CMCP/LMRA/comparator stack, remains output-only, and fails frozen DAVIS transfer on all 30 videos.
 
 ### 9.4 No formal safety guarantee
 
@@ -483,7 +563,7 @@ Isotonic calibration and a risk-aware policy improve empirical selection, but th
 
 ### 9.5 External dataset scope
 
-The strongest untouched claim is the exact 1,144-of-1,147 Kinetics materialization. DAVIS and RGB-Stacking appeared during prior development, and their pre-correction Route-D TAP position metrics are superseded. They must not be used as corrected headline evidence.
+The strongest frozen external MMP claim is the exact 1,144-of-1,147 Kinetics materialization. DAVIS and RGB-Stacking appeared during prior development and cannot be called untouched. The later complete CoTracker3 DAVIS audit is valid only as a historically exposed, preregistered zero-shot transfer test, and it fails decisively. It must be reported as a limitation, not converted into a tuned result.
 
 ### 9.6 Missing official release segments
 
@@ -501,13 +581,13 @@ Route-D suggests that global relocalization in an online point tracker is best v
 
 The closed-loop experiment is especially important. A framewise candidate selector can appear successful while having little effect on a tracker's future behavior. Conversely, one accepted correction can alter an entire trajectory suffix. By evaluating the same controller open loop and closed loop, we measure the downstream value and risk of state feedback directly. The positive full-scale result supports feedback as a core mechanism, but the severe negative videos show why stronger stability constraints remain necessary.
 
-A future stability guard cannot be derived from Kinetics failures without invalidating the current external evidence. The next guard must be designed and selected using Kubric-only partitions, frozen prospectively, and evaluated under a new external protocol. Stronger publication evidence should also demonstrate compatibility with a second candidate-generating tracker or a substantially stronger frozen base.
+A future stability guard cannot be derived from Kinetics failures without invalidating the current external evidence, and the failed DAVIS audit cannot be used for post-hoc rescue tuning while retaining a zero-shot claim. The CoTracker3 synthetic result shows that the action concept can work on a strong base, but the DAVIS result shows that synthetic proposal and risk statistics are not domain-stable. Stronger publication evidence therefore requires a new candidate mechanism trained for real-domain invariance and a future untouched external protocol.
 
 ---
 
 ## 11. Conclusion
 
-We presented Route-D, a risk-calibrated sparse candidate-routing controller for online point tracking. Route-D predicts multi-threshold correctness profiles for local and global hypotheses, applies a calibrated beneficial-action gate with explicit fine-to-coarse constraints, and optionally feeds accepted global corrections into future tracker state. Under a frozen official-scale TAP-Vid-Kinetics protocol covering an exact local materialization of 1,144 of 1,147 release-CSV segments, closed-loop Route-D improves Average Jaccard and average point-threshold accuracy over both an independent baseline and open-loop routing. The result establishes the promise of selective feedback routing, but not universal safety or state-of-the-art tracking. Severe closed-loop failures, a single evaluated backbone, and the strength of the base tracker remain the central limitations.
+We presented Route-D, a risk-sensitive candidate-routing study for online point tracking. On the frozen MMP system, multi-threshold utility modeling and sparse closed-loop feedback improve official-scale Kinetics metrics over both an independent baseline and open-loop routing. On a stronger frozen CoTracker3 backbone, a related output-only CMCP/LMRA/comparator variant improves identity-disjoint Kubric validation and final holdout. However, the same frozen variant decreases AJ on all 30 DAVIS videos, with weak oracle headroom and almost uniformly harmful accepted actions. The complete evidence therefore supports selective routing as an aligned-domain component, not as a universal or model-agnostic plug-in. Domain-stable candidate generation, external risk calibration, and strong-backbone closed-loop semantics remain open requirements.
 
 ---
 
@@ -534,6 +614,20 @@ Generated single-source paper artifacts:
 docs/generated/ROUTED_OFFICIALSCALE_RESULT_SOURCE_2026-07-17.json
 docs/generated/ROUTED_OFFICIALSCALE_TABLES_2026-07-17.md
 docs/generated/ROUTED_OFFICIALSCALE_TABLES_2026-07-17.tex
+```
+
+Strong-backbone canonical artifacts:
+
+```text
+docs/generated/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_SUMMARY_2026-07-19.json
+docs/generated/ROUTED_STRONG_BACKBONE_BOUNDED_WRITEBACK_INTERFACE_SUMMARY_2026-07-19.json
+docs/generated/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_SUMMARY_2026-07-19.json
+docs/generated/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_SUMMARY_2026-07-19.json
+
+docs/ROUTED_STRONG_BACKBONE_MUSR_ABLATION_RESULT_2026-07-19.md
+docs/ROUTED_STRONG_BACKBONE_BOUNDED_WRITEBACK_INTERFACE_RESULT_2026-07-19.md
+docs/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_RESULT_2026-07-19.md
+docs/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_RESULT_2026-07-19.md
 ```
 
 Regenerate only from the frozen final audit and paired artifacts with:
