@@ -158,3 +158,59 @@ def test_probability_residual_is_applied_in_probability_space():
     after_conf = torch.sigmoid(updated.online_conf_predicted[0, 15, 0])
     torch.testing.assert_close(after_vis, (before_vis + 0.1).clamp(1e-5, 1 - 1e-5))
     torch.testing.assert_close(after_conf, (before_conf - 0.1).clamp(1e-5, 1 - 1e-5))
+
+
+def test_shared_frame_feature_batch_matches_explicit_repeat():
+    torch.manual_seed(8)
+    model = CounterfactualStructuredReextractionRestorer()
+    batch = 3
+    support = [torch.randn(batch, 49, 128) for _ in range(4)]
+    shared = [
+        torch.randn(1, 128, 12, 16),
+        torch.randn(1, 128, 8, 10),
+        torch.randn(1, 128, 6, 8),
+        torch.randn(1, 128, 4, 5),
+    ]
+    common = dict(
+        trajectory_features=torch.randn(batch, 8, 9),
+        native_support_pyramid=support,
+        native_commit_coordinates_xy=torch.rand(batch, 2) * 255,
+    )
+    shared_out = model(frame_feature_pyramid=shared, **common)
+    repeated_out = model(
+        frame_feature_pyramid=[value.repeat(batch, 1, 1, 1) for value in shared],
+        **common,
+    )
+    torch.testing.assert_close(
+        shared_out["fused_logits"], repeated_out["fused_logits"], rtol=0, atol=2e-6
+    )
+
+
+def test_coordinate_only_control_does_not_write_probability_or_memory():
+    torch.manual_seed(9)
+    snapshot = _snapshot()
+    feat = [torch.randn(1, 1, 1, 128) for _ in range(4)]
+    support = [torch.randn(1, 49, 1, 128) for _ in range(4)]
+    updated = apply_reextracted_state_action(
+        snapshot,
+        point_indices=torch.tensor([0]),
+        predicted_coordinates_input_xy=torch.tensor([[50.0, 60.0]]),
+        apply_mask=torch.tensor([True]),
+        reextracted_track_features=feat,
+        reextracted_track_supports=support,
+        input_height=256,
+        input_width=256,
+        model_height=384,
+        model_width=512,
+        visibility_residual=torch.tensor([0.2]),
+        confidence_residual=torch.tensor([0.2]),
+        write_probability=False,
+        write_memory=False,
+    )
+    torch.testing.assert_close(updated.online_vis_predicted, snapshot.online_vis_predicted)
+    torch.testing.assert_close(updated.online_conf_predicted, snapshot.online_conf_predicted)
+    for left, right in zip(updated.online_track_feat, snapshot.online_track_feat):
+        torch.testing.assert_close(left, right)
+    for left, right in zip(updated.online_track_support, snapshot.online_track_support):
+        torch.testing.assert_close(left, right)
+    assert not torch.equal(updated.online_coords_predicted[:, 15, 0], snapshot.online_coords_predicted[:, 15, 0])
