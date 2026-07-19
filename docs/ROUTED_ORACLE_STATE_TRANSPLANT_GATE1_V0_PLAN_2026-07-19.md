@@ -167,3 +167,35 @@ Even a pass is fit-only oracle evidence. It does not establish inference-time
 localization, external transfer, or paper-level improvement. DAVIS remains a
 failed frozen audit and cannot be used to train or rescue this branch. Official
 Kinetics 1,144 remains frozen and is not rerun.
+
+## 11. Completed result — 2026-07-19
+
+Gate 1 passed under the frozen protocol.
+
+```text
+selected points:                         63
+selected videos:                         8 / 8
+native future mean error:                60.7129 px
+coordinate-only future mean error:       42.3839 px
+coordinate+probability mean error:       43.2158 px
+full-state future mean error:             5.8543 px
+full-state vs native error reduction:    54.8586 px
+95% CI:                                  [45.9531,63.9536]
+full-state positive points:              63 / 63
+full-state vs coordinate-only reduction: 36.5296 px
+full-state better videos:                 8 / 8
+independent replay exact:                true
+```
+
+Formal decision:
+
+```text
+AUTHORIZE_FIT_ONLY_COUNTERFACTUAL_STATE_RESTORER_TRAINING_PROTOCOL
+```
+
+See:
+
+```text
+docs/ROUTED_ORACLE_STATE_TRANSPLANT_GATE1_RESULT_2026-07-19.md
+docs/generated/ROUTED_ORACLE_STATE_TRANSPLANT_GATE1_SUMMARY_2026-07-19.json
+```
