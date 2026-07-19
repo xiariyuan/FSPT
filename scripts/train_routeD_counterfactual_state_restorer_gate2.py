@@ -597,6 +597,7 @@ def main() -> None:
     parser.add_argument("--output", default=str(DEFAULT_OUTPUT))
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--interface-smoke", action="store_true")
+    parser.add_argument("--validation-interface-smoke", action="store_true")
     args = parser.parse_args()
     config_path = Path(args.config).resolve()
     config = yaml.safe_load(config_path.read_text())
@@ -639,6 +640,103 @@ def main() -> None:
                 "tensors": artifact["model_tensors"],
             }
         )
+    if args.validation_interface_smoke:
+        validation_row = validation_index["rows"][0]
+        artifact = load_csrr_cache_video(
+            validation_row,
+            expected_partition="fit_internal_validation",
+            expected_config_sha256=config_sha256,
+        )
+        tensors = artifact["model_tensors"]
+        count = int(tensors["point_indices"].numel())
+        rows = torch.arange(count)
+        model.eval()
+        with torch.no_grad():
+            output, re_feat_batch, re_support_batch, _ = _model_batch(
+                model, tensors, rows, args.device
+            )
+            re_feat_native, re_support_native = _native_format_memory(
+                re_feat_batch, re_support_batch
+            )
+            exact_initial = exact_snapshot_from_artifact(artifact, args.device)
+            zero_state = apply_reextracted_state_action(
+                exact_initial,
+                point_indices=tensors["point_indices"],
+                predicted_coordinates_input_xy=output["predicted_coordinates_xy"],
+                apply_mask=torch.zeros(count, dtype=torch.bool),
+                reextracted_track_features=re_feat_native,
+                reextracted_track_supports=re_support_native,
+                input_height=256,
+                input_width=256,
+                model_height=int(predictor.interp_shape[0]),
+                model_width=int(predictor.interp_shape[1]),
+                visibility_residual=output["visibility_residual"],
+                confidence_residual=output["confidence_residual"],
+            )
+            variants = {}
+            for name, write_probability, write_memory in (
+                ("coordinate_only", False, False),
+                ("coordinate_probability", True, False),
+                ("full_state", True, True),
+            ):
+                initial = apply_reextracted_state_action(
+                    exact_initial,
+                    point_indices=tensors["point_indices"],
+                    predicted_coordinates_input_xy=output["predicted_coordinates_xy"],
+                    apply_mask=torch.ones(count, dtype=torch.bool),
+                    reextracted_track_features=re_feat_native,
+                    reextracted_track_supports=re_support_native,
+                    input_height=256,
+                    input_width=256,
+                    model_height=int(predictor.interp_shape[0]),
+                    model_width=int(predictor.interp_shape[1]),
+                    visibility_residual=output["visibility_residual"],
+                    confidence_residual=output["confidence_residual"],
+                    write_probability=write_probability,
+                    write_memory=write_memory,
+                )
+                final = _continue_cached(
+                    predictor, initial, tensors["continuation_video_u8"], args.device
+                )
+                variants[name] = list(final.online_coords_predicted.shape)
+            gate_mask = torch.sigmoid(output["apply_logit"]) >= 0.5
+            gate_initial = apply_reextracted_state_action(
+                exact_initial,
+                point_indices=tensors["point_indices"],
+                predicted_coordinates_input_xy=output["predicted_coordinates_xy"],
+                apply_mask=gate_mask.cpu(),
+                reextracted_track_features=re_feat_native,
+                reextracted_track_supports=re_support_native,
+                input_height=256,
+                input_width=256,
+                model_height=int(predictor.interp_shape[0]),
+                model_width=int(predictor.interp_shape[1]),
+                visibility_residual=output["visibility_residual"],
+                confidence_residual=output["confidence_residual"],
+            )
+            gate_final = _continue_cached(
+                predictor, gate_initial, tensors["continuation_video_u8"], args.device
+            )
+        result = {
+            "status": "validation_interface_smoke_pass",
+            "source_index": int(validation_row["source_index"]),
+            "rows": count,
+            "zero_action_state_exact": snapshots_exact(exact_initial, zero_state),
+            "variant_final_coordinate_shapes": variants,
+            "gate_final_coordinate_shape": list(gate_final.online_coords_predicted.shape),
+            "all_final_states_have_24_frames": all(shape[1] == 24 for shape in variants.values())
+            and gate_final.online_coords_predicted.shape[1] == 24,
+            "ground_truth_metrics_computed": False,
+            "model_validation_read": False,
+        }
+        if not result["zero_action_state_exact"] or not result["all_final_states_have_24_frames"]:
+            raise RuntimeError("validation continuation interface smoke failed")
+        output_path = Path(args.output).resolve()
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        output_path.write_text(json.dumps(result, indent=2) + "\n")
+        print(json.dumps(result, indent=2))
+        return
+
     if args.interface_smoke:
         tensors = train_videos[0]["tensors"]
         rows = torch.arange(min(4, int(tensors["point_indices"].numel())))

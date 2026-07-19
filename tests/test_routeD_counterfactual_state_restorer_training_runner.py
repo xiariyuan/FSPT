@@ -36,3 +36,4 @@ def test_training_runner_direct_help():
     )
     assert result.returncode == 0, result.stderr
     assert "--interface-smoke" in result.stdout
+    assert "--validation-interface-smoke" in result.stdout
