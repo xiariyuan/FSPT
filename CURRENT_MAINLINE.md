@@ -3,23 +3,22 @@
 ## Active override — 2026-07-19
 
 ```text
-Gate 2 is complete and formally failed; the learned CSRR v0 restorer and its
-no-op action head are closed before model validation. Gate 2.5 is now complete
-with exact independent replay on design-exposed source indices 0--7. Native-
-probability deterministic four-level state reinstantiation passes every frozen
-gate continuously through 12 input pixels; 16 pixels fails only the utility-mean
-gate. Teacher probability does not enlarge the 12-pixel basin.
+Gate 2 is complete and formally failed. Gate 2.5 completed with exact replay and
+measured a contiguous deterministic state-reinstatement basin through 12 input
+pixels. Teacher probability does not enlarge that basin.
 
-Gate 3A v0 remains frozen and unrun, but it no longer independently decides the
-route. It is retained as the pooled-native-map control for the later Gate 3A v1
-representation audit. Source indices 48--63 and all external datasets remain
-locked. No new pretrained weights are authorized before Gate 2.5 completes.
+Gate 3A v1 is preregistered and not run. It is a fit-only, three-representation
+candidate-support audit: M0 frozen Gate 2 pooled-native logits, M1 geometry-
+preserved native 49-token support, and M2 geometry-preserved immutable original-
+query support. All use one frozen top-8 extractor, 12 px primary recall, nested
+4/8 px diagnostics, and the same native-probability memory reinstatement.
 
-A geometry-preserving 49-token matcher and strictly causal original-query
-anchor extractor are implemented with tests. The next active step is to
-preregister Gate 3A v1 as a fit-only representation audit using 12 px as the
-primary recovery-support radius and 4/8 px as nested diagnostics. Later trusted-
-anchor write/update rules remain intentionally unimplemented.
+Candidate generation is physically isolated from teacher/future tensors by an
+allowlisted causal-input cache. Primary and fresh candidate replays must be
+nested-exact before teacher access; full teacher audit reports must then replay
+exactly. Formal choice is lexicographic M0 -> M1 -> M2. Source indices 48--63 and
+all external datasets remain locked. No new pretrained weight or dataset is
+authorized or required for Gate 3A v1.
 ```
 
 Read first:
@@ -30,6 +29,7 @@ docs/ROUTED_CSRR_GATE2_FAILURE_DIAGNOSTIC_2026-07-19.md
 docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_V0_PLAN_2026-07-19.md
 docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_RESULT_2026-07-19.md
 docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
+docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_PLAN_2026-07-19.md
 ```
 
 ## Active override — 2026-07-17

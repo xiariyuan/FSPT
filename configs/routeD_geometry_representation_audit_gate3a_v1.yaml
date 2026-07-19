@@ -1,0 +1,141 @@
+schema_version: routeD_geometry_representation_audit_gate3a_v1
+date: 2026-07-19
+
+experiment:
+  name: routeD_geometry_representation_support_audit_gate3a_v1
+  purpose: >-
+    Compare frozen pooled-native, geometry-preserved native, and
+    geometry-preserved immutable-query maps under one deterministic candidate
+    extractor before any selector or action training.
+  claim_scope: fit-only representation and candidate-support diagnosis
+
+frozen_parent:
+  gate2_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_counterfactual_state_restorer_gate2_v0.yaml
+  gate2_config_sha256: b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
+  gate2_checkpoint: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_training_20260719/seed17/best.pt
+  gate2_checkpoint_sha256: 537f1819e923bdc2a68d5ebc15d647e60ea39afb4225d4bd04e2bb8c68913257
+  selected_epoch: 6
+  learned_model_trainable: false
+  new_trainable_parameters: 0
+
+cache:
+  gate2_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719
+  gate2_fit_index: fit_internal_validation/cache_index.json
+  gate2_fit_index_sha256: 4216898d32c65a60360087bd7c4026d2db7d6877bfa06a934932a429112e4bef
+  causal_input_output_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_geometry_causal_input_cache_gate3a_v1_20260719
+  causal_input_index: /gemini/code/FSPT_v9a60_clean/outputs/routeD_geometry_causal_input_cache_gate3a_v1_20260719/cache_index.json
+  causal_input_schema: routeD_geometry_causal_input_cache_gate3a_v1
+  causal_input_forbidden_teacher_future_keys: true
+  candidate_output_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_geometry_representation_cache_gate3a_v1_20260719
+  candidate_schema: routeD_geometry_representation_candidate_cache_gate3a_v1
+  complete_index_required_before_teacher_read: true
+  store_float32_score_maps: true
+  store_float32_candidate_coordinates: true
+  independent_candidate_cache_replay_required: true
+
+partition:
+  manifest: /gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json
+  manifest_sha256: bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14
+  source_indices: [32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47]
+  already_fit_exposed: true
+  expected_failure_points: 80
+  expected_failure_videos: 16
+  model_validation_locked: [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+
+causal_contract:
+  observed_frames: [0, 15]
+  commit_frame: 15
+  future_frames_unavailable_during_candidate_build: true
+  teacher_coordinate_unavailable_during_candidate_build: true
+  original_query_anchor_feature_prefix_truncated_after_latest_query: true
+  candidate_process_reads_only_allowlisted_causal_input_sidecars: true
+
+representations:
+  M0_pooled_native_gate2:
+    map: frozen_gate2_epoch6_fused_logits
+    role: original Gate 3A v0 control
+  M1_geometry_native:
+    anchor: current_native_49_token_support
+    token_similarity: cosine
+    token_trim_fraction: 0.125
+    pyramid_fusion: equal_four_level_mean
+  M2_geometry_immutable_query:
+    anchor: original_query_49_token_support
+    token_similarity: cosine
+    token_trim_fraction: 0.125
+    pyramid_fusion: equal_four_level_mean
+  selection_order_if_independently_passing:
+    - M0_pooled_native_gate2
+    - M1_geometry_native
+    - M2_geometry_immutable_query
+
+candidate_extraction:
+  include_native_candidate_zero: true
+  nonnative_top_k: 8
+  nms_shape: square_chebyshev
+  nms_radius_grid_cells: 3
+  local_refinement_window_grid_cells: 5
+  local_softmax_temperature: 0.05
+  deduplicate_radius_input_px: 4.0
+  suppress_duplicate_peak_before_backfill: true
+  backfill_until_top_k_or_map_exhausted: true
+  tie_break: descending_score_then_y_then_x
+  native_map_score: bilinear_at_native_coordinate
+  candidate_set_frozen_and_hashed_before_teacher_read: true
+
+teacher_audit:
+  primary_reinstatement_radius_px: 12.0
+  nested_coordinate_recall_radii_px: [4.0, 8.0, 12.0]
+  coordinate_oracle: nearest_valid_frozen_candidate_to_exact_frame15_teacher
+  future_not_used_for_candidate_selection: true
+  state_action:
+    coordinate_write: commit_frame_only
+    probability_write: false
+    memory_write: deterministic_four_level_reextraction
+  continuation_frames: [16, 23]
+
+metrics:
+  commit:
+    - nearest_candidate_mean_error_px
+    - nearest_candidate_median_error_px
+    - recall_within_4px
+    - recall_within_8px
+    - recall_within_12px
+    - teacher_nearest_candidate_rank
+  future:
+    - mean_l2_error_px
+    - severe_16px_rate
+    - threshold_utility_mean_at_1_2_4_8_16
+    - positive_point_fraction
+    - equal_video_weight_cluster_bootstrap_CI
+  bootstrap_samples: 10000
+  bootstrap_seed: 193721
+
+integrity_gates:
+  candidate_cache_all_nested_tensors_exact: true
+  teacher_audit_full_report_replay_exact: true
+
+representation_pass_gates:
+  candidate_recall_within_12px_min: 0.75
+  median_nearest_candidate_error_px_max: 8.0
+  future_mean_error_reduction_vs_native_px_min: 8.0
+  future_error_reduction_CI_lower_px_min: 2.0
+  future_threshold_utility_gain_vs_native_min: 0.12
+  future_utility_gain_CI_lower_min: 0.03
+  future_positive_point_fraction_min: 0.65
+  future_severe_16px_rate_reduction_min: 0.15
+
+formal_decisions:
+  M0_pass: AUTHORIZE_GATE3B_SELECTOR_ON_FROZEN_GATE2_DISCRETE_MAP
+  M0_fail_M1_pass: AUTHORIZE_GATE3B_SELECTOR_ON_GEOMETRY_NATIVE_MAP
+  M0_M1_fail_M2_pass: AUTHORIZE_GATE3B_SELECTOR_ON_IMMUTABLE_QUERY_GEOMETRY_MAP
+  all_fail: STOP_CURRENT_CANDIDATES_AND_REDESIGN_TEMPORAL_IDENTITY_MATCHING
+  integrity_fail: STOP_BEFORE_TEACHER_AUDIT
+
+locked_data:
+  model_validation_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
