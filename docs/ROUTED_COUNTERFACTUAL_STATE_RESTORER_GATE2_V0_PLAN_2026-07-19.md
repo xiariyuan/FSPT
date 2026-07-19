@@ -321,3 +321,30 @@ See:
 docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_SMOKE_RESULT_2026-07-19.md
 docs/generated/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_SMOKE_SUMMARY_2026-07-19.json
 ```
+
+## 15. Complete teacher caches qualified — 2026-07-19
+
+```text
+train videos:                         24 / 24
+train failure / clean rows:           164 / 212
+fit-internal validation videos:       16 / 16
+validation failure / clean rows:      80 / 80
+validation failure-support videos:    16 / 16
+validation clean-support videos:      16 / 16
+all sidecars verified:                40 / 40
+fixed anchor tensor digests exact:    4 / 4
+canonical summary SHA256:             b8a4750ad84cf080bde6d5d30c6e58dc12ec42b97d23e7eb3c945903ccccf4ec
+```
+
+Formal decision:
+
+```text
+ALLOW_GATE2_RESTORER_TRAINING
+```
+
+See:
+
+```text
+docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_COMPLETE_RESULT_2026-07-19.md
+docs/generated/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_COMPLETE_SUMMARY_2026-07-19.json
+```
