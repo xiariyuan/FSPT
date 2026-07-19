@@ -1,0 +1,26 @@
+{
+  "schema_version": "routeD_gate3c0_static_control_diagnostic_v0",
+  "date": "2026-07-19",
+  "status": "completed_fit_only_post_gate_diagnostic",
+  "claim_scope": "route selection only; not a preregistered pass result",
+  "failure_points": 80,
+  "controls": {
+    "M1_static_top8_recall_within_12px": 0.3875,
+    "reverse_cycle_source32_top8_recall_within_12px": 0.3333333432674408,
+    "peer_geometry_best_top8_recall_within_12px": 0.375,
+    "DINO_query_top8_recall_within_12px": 0.3875,
+    "best_fixed_M1_DINO_fusion_top8_recall_within_12px": 0.4375,
+    "M1_top128_oracle_recall_within_12px": 0.9125,
+    "M1_top128_oracle_median_nearest_error_px": 6.826999999999999
+  },
+  "decision": "REJECT_STATIC_CONTROLS_AND_EXPAND_DATA_FOR_CANDIDATE_CONDITIONED_SPATIOTEMPORAL_IDENTITY",
+  "available_assets": {
+    "kubric_train_tfrecord_shards": 1024,
+    "kubric_train_size_gib": 253.98741485830396,
+    "dinov3_weights_sha256": "208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2"
+  },
+  "locked_data": {
+    "original_model_validation_indices_48_63_read": false,
+    "external_read": false
+  }
+}

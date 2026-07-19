@@ -15,12 +15,16 @@ missing top-8 support. Formal decision:
 STOP_CURRENT_CANDIDATES_AND_REDESIGN_TEMPORAL_IDENTITY_MATCHING.
 
 Post-gate diagnosis shows M1 native and M2 immutable-query maps are effectively
-identical because CoTracker's online support is already query memory. Expanding
-M1 to 64 nonnative proposals raises fit-only 12-px recall to 0.7875 and median
-error to 7.67 px, so the next bottleneck is temporal identity/ranking over a
-broad proposal bank, not another static support map. The next active step is a
-weight-free reverse-cycle temporal identity feasibility gate on already exposed
-fit data. Source indices 48--63 and every external dataset remain locked.
+identical because CoTracker's online support is already query memory. Reverse
+cycle, peer geometry, and static DINOv3 controls remain at only 0.333--0.438
+top-8 recall and are closed. M1 top-128 oracle recall is 0.9125, so recoverable
+support exists but needs candidate-conditioned spatiotemporal identity.
+
+Gate 3C0 is preregistered and not run. It materializes a 512-video Kubric
+development protocol from assets already on the server. Expanded indices 0--63
+are overlap-verification-only; 64--383/384--447/448--511 are raw-record-disjoint
+gradient/checkpoint/audit splits. The original 48--63 and every external dataset
+remain locked. No user-supplied data or new weight is required.
 ```
 
 Read first:
@@ -33,6 +37,7 @@ docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_RESULT_2026-07-19.md
 docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
 docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_PLAN_2026-07-19.md
 docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_RESULT_2026-07-19.md
+docs/ROUTED_TEMPORAL_IDENTITY_DATA_GATE3C0_V0_PLAN_2026-07-19.md
 ```
 
 ## Active override — 2026-07-17
