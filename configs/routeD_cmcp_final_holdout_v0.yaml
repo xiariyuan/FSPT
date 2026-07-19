@@ -1,0 +1,117 @@
+experiment:
+  name: routeD_cmcp_final_holdout_v0
+  stage: P0l
+  date: 2026-07-19
+  purpose: >-
+    One-time identity-disjoint Kubric final-holdout evaluation of the frozen
+    output-only P0j variant C after the P0k closed-loop route was stopped.
+
+frozen_model:
+  name: C_lmra_frozen_cmcp_comparator
+  checkpoint: outputs/routeD_cmcp_lmra_ablation_20260717/C_seed17/best.pt
+  checkpoint_sha256: 7babb76e3407497832d0bc0fca4557df64b2d09450ebc60766e32a70816ab52f
+  combined_model_state_sha256: 64c3f6dae6ae34dc0223754aca3c76f78a1f48137d08bab6c3e01f2a806cd074
+  best_epoch: 3
+  components:
+    lmra: frozen
+    cmcp: frozen_formal_P0g
+    comparator: frozen
+    native_cotracker3: frozen
+  execution_contract: finalized_state_output_only
+  state_writeback: disabled
+  new_trainable_parameters: 0
+
+backbone:
+  name: cotracker3_scaled_online_true_streaming
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  query_mode: first
+  input_raster: 256
+  metric_raster: 256
+  add_support_grid: false
+
+source_manifests:
+  train_source:
+    path: /gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json
+    sha256: bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14
+    num_samples: 64
+  validation_source:
+    path: /gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_validation/test.index.json
+    sha256: ae31d7a2d6c9c31c487afcb0d15e89f1cc4ee51323f8673abdeabacfb307333e
+    num_samples: 32
+
+partitions:
+  implementation_smoke:
+    source: train_source
+    indices: [0]
+    expected_count: 1
+    allowed_use: schema, parity, quantization, and deterministic replay only
+  final_holdout:
+    source: validation_source
+    indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+    expected_count: 16
+    allowed_use: one-time final aggregate evaluation only
+
+identity_boundary:
+  pilot_excluded_validation_indices: [0]
+  candidate_qualification_validation_indices: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]
+  final_holdout_validation_indices: [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31]
+  overlap_allowed: false
+
+calibration_policy:
+  calibration_source_read: false
+  posthoc_calibration: none
+  reason: >-
+    Variant C has a fixed graph-level abstention rule and no threshold or
+    operating point remains to select. Reading calibration would add an
+    unnecessary adaptation opportunity after model selection.
+
+cache_contract:
+  cache_before_metrics: true
+  partial_metrics_forbidden: true
+  per_video_performance_during_cache_forbidden: true
+  native_state_source: finalized_true_streaming_state
+  feature_map_dtype: float16
+  feature_map_quantization_max_abs_max: 0.0005
+  feature_map_quantization_min_cosine_min: 0.99999
+  candidate_generation_ground_truth_free: true
+  gt_stored_only_for_frozen_post_generation_metrics: true
+  deterministic_full_extraction_replay_indices: [16, 23, 31]
+
+formal_evaluation:
+  seed: 17
+  point_batch_size: 4
+  bootstrap_samples: 5000
+  bootstrap_seed: 19017
+  complete_partition_required: true
+  primary_and_replay_required: true
+  checkpoint_selection_on_final_holdout: false
+  per_video_result_used_for_selection: false
+
+formal_gates:
+  native_candidate_parity_all: exact
+  candidate_oracle_AJ_gain_points_min: 3.0
+  direct_AJ_gain_points_min: 0.5
+  paired_video_direct_AJ_CI_lower_gt: 0.0
+  direct_delta_average_gain_gt: 0.0
+  severe_16px_rate_not_worse: true
+  harmful_non_native_rate_max: 0.01
+  positive_video_count_min: 12
+  exact_primary_replay: true
+  complete_16_video_partition: true
+
+formal_decisions:
+  pass: AUTHORIZE_FROZEN_EXTERNAL_PROTOCOL_PREREGISTRATION
+  fail: STOP_STRONG_BACKBONE_EXTERNAL_ROUTE_AND_RETAIN_INTERNAL_EVIDENCE_ONLY
+
+stop_rules:
+  - Do not change checkpoint, normalization, candidate extraction, NMS, EMA, top-K, or comparator rule.
+  - Do not read calibration before or after final holdout.
+  - Do not print or inspect partial final-holdout performance.
+  - Do not select a final checkpoint or policy from final-holdout per-video results.
+  - If any final gate fails, do not open DAVIS or rerun official Kinetics.
+  - A failed final holdout may be reported but may not trigger a rescue sweep.
+
+external_lock:
+  tapvid_davis: unread
+  tapvid_kinetics_official_1144: unread_and_not_rerun
