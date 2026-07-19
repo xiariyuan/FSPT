@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_PASS
 ```
 
 ## Why the route changes here
@@ -120,3 +120,15 @@ fail -> STOP_AND_REPAIR_DATA_IDENTITY_BEFORE_MODELING
 ```
 
 No new user-supplied data or model weight is needed for this stage.
+
+## Completion
+
+Gate 3C0 completed after preregistration. The authoritative result is:
+
+`docs/ROUTED_TEMPORAL_IDENTITY_DATA_GATE3C0_V0_RESULT_2026-07-19.md`
+
+The formal decision is:
+
+```text
+AUTHORIZE_GATE3C1_CAUSAL_FEATURE_CACHE_ON_EXPANDED_KUBRIC
+```
