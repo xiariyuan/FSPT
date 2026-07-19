@@ -1,5 +1,28 @@
 # CURRENT_MAINLINE
 
+## Active override — 2026-07-19
+
+```text
+Gate 2 is complete and formally failed; the learned CSRR v0 restorer and its
+no-op action head are closed before model validation. The current active step is
+Gate 2.5, a design-exposed coordinate-basin audit for deterministic four-level
+state reinstantiation. It reads source indices 0--7 only, trains no parameters,
+and does not load the Gate 2 learned checkpoint.
+
+Gate 3A v0 remains frozen and unrun, but it no longer independently decides the
+route. It is retained as the pooled-native-map control for the later Gate 3A v1
+representation audit. Source indices 48--63 and all external datasets remain
+locked. No new pretrained weights are authorized before Gate 2.5 completes.
+```
+
+Read first:
+
+```text
+docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_GATE2_RESULT_2026-07-19.md
+docs/ROUTED_CSRR_GATE2_FAILURE_DIAGNOSTIC_2026-07-19.md
+docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_V0_PLAN_2026-07-19.md
+```
+
 ## Active override — 2026-07-17
 
 ```text

@@ -1,0 +1,105 @@
+schema_version: routeD_state_reinstantiation_basin_gate2_5_v0
+date: 2026-07-19
+
+experiment:
+  name: routeD_state_reinstantiation_coordinate_basin_gate2_5
+  purpose: >-
+    Measure how commit-coordinate error changes the future benefit of exact
+    four-level memory re-extraction. This is a design-exposed mechanistic audit,
+    not a candidate-method or tracking-performance claim.
+  claim_scope: fit-only coordinate-basin calibration
+
+frozen_parent:
+  gate2_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_counterfactual_state_restorer_gate2_v0.yaml
+  gate2_config_sha256: b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
+  learned_gate2_checkpoint_used: false
+  trainable_parameters: 0
+
+cache:
+  build_command: >-
+    python scripts/build_routeD_counterfactual_state_restorer_cache.py
+    --partition design_exposed --resume
+  root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719
+  index: design_exposed/cache_index.json
+  expected_partition: design_exposed
+  expected_source_indices: [0, 1, 2, 3, 4, 5, 6, 7]
+  verify_complete_index: true
+  verify_every_sidecar_hash: true
+  exact_teacher_coordinate_field: teacher_commit_coordinates_xy_float32
+  exact_teacher_probability_fields:
+    - teacher_visibility_probability_float32
+    - teacher_confidence_probability_float32
+  expected_gate2_config_sha256: b294498e1ea8c668c6197d3adbf747a1bb54794b4e6839c76cbaaf2f806609c2
+
+rows:
+  failure_only: true
+  apply_target_must_equal: 1
+  original_query_frame_less_than: 8
+  gt_visible_at_commit_required: true
+  expected_failure_points_min: 32
+  expected_failure_videos_min: 8
+
+offset_schedule:
+  commit_frame: 15
+  input_raster: 256
+  nominal_radii_px: [0, 1, 2, 4, 8, 12, 16]
+  directions_xy:
+    east: [1, 0]
+    northeast: [1, -1]
+    north: [0, -1]
+    northwest: [-1, -1]
+    west: [-1, 0]
+    southwest: [-1, 1]
+    south: [0, 1]
+    southeast: [1, 1]
+  boundary_policy: clip_to_input_raster_and_report_realized_error
+
+state_action:
+  coordinate_write: perturbed_teacher_coordinate_at_commit_only
+  memory_source: deterministic_reextraction_from_frozen_frame15_feature_pyramid
+  replace_all_four_memory_levels: true
+  support_radius: 3
+  variants:
+    native_probability:
+      visibility_confidence_write: false
+      role: primary deployable mechanism isolation
+    teacher_probability:
+      visibility_confidence_write: exact_fresh_query_teacher_at_commit
+      role: probability-controlled upper bound only
+  continuation_frames: [16, 23]
+
+metrics:
+  future_visible_rows_only: true
+  thresholds_px: [1, 2, 4, 8, 16]
+  report_each_direction: true
+  aggregate_by_nominal_radius: true
+  report_realized_commit_error: true
+  video_cluster_bootstrap:
+    samples: 10000
+    seed: 192500
+    equal_video_weight: true
+
+downstream_gate_calibration:
+  interpretation: >-
+    The largest passing radius calibrates future candidate recall thresholds; it
+    does not authorize a model-validation read or a candidate selector.
+  mean_error_reduction_px_min: 8.0
+  error_reduction_CI_lower_px_min: 2.0
+  utility_gain_min: 0.12
+  utility_gain_CI_lower_min: 0.03
+  positive_fraction_min: 0.65
+  severe_rate_reduction_min: 0.15
+
+formal_decisions:
+  always: REPORT_EMPIRICAL_REINSTATEMENT_BASIN_AND_PREREGISTER_GATE3A_V1
+  no_route_pass_fail_from_this_audit: true
+
+locked_data:
+  gradient_train_read_for_outcomes: false
+  fit_internal_validation_read: false
+  model_validation_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

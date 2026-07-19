@@ -75,6 +75,11 @@ def _atomic_json_save(value: Any, path: Path) -> None:
 
 
 def _partition_sources(config: dict[str, Any], partition: str) -> list[int]:
+    if partition == "design_exposed":
+        return [
+            int(value)
+            for value in config["partition"]["design_exposed_source_indices"]
+        ]
     if partition == "train":
         return [int(value) for value in config["partition"]["gradient_train_source_indices"]]
     if partition == "fit_internal_validation":
@@ -342,6 +347,21 @@ def _build_video(
         "future_visible_mask": future_visible,
         "native_future_coordinates_xy": native_future_selected,
     }
+    if partition == "design_exposed":
+        # Gate 2 training intentionally consumes the quantized normalized view.
+        # The coordinate-basin mechanism audit needs an exact radius-zero anchor,
+        # so its newly built design-only cache also seals the float32 input-raster
+        # teacher coordinate. Existing train/validation cache payloads are not
+        # changed by this conditional field.
+        model_tensors["teacher_commit_coordinates_xy_float32"] = (
+            teacher_commit_input.detach().float().cpu().contiguous()
+        )
+        model_tensors["teacher_visibility_probability_float32"] = (
+            teacher_vis.detach().float().cpu().contiguous()
+        )
+        model_tensors["teacher_confidence_probability_float32"] = (
+            teacher_conf.detach().float().cpu().contiguous()
+        )
     hashed_value = {
         "exact_native_state": exact_native_state,
         "model_tensors": model_tensors,
@@ -410,7 +430,11 @@ def _build_video(
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", default=str(DEFAULT_CONFIG))
-    parser.add_argument("--partition", choices=("train", "fit_internal_validation", "smoke"), required=True)
+    parser.add_argument(
+        "--partition",
+        choices=("design_exposed", "train", "fit_internal_validation", "smoke"),
+        required=True,
+    )
     parser.add_argument("--output-root", default=str(DEFAULT_OUTPUT_ROOT))
     parser.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     parser.add_argument("--resume", action="store_true")
