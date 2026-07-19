@@ -1,0 +1,121 @@
+schema_version: routeD_oracle_state_transplant_gate1_v0
+date: 2026-07-19
+experiment:
+  name: routeD_oracle_full_state_transplant_gate1
+  purpose: >-
+    Determine whether a training-only GT fresh-query state can be transplanted
+    into an existing CoTracker3 online track to improve its future rollout, and
+    whether full latent-state transplantation adds value beyond coordinates.
+  claim_scope: fit-only oracle teacher feasibility; no learned model claim
+
+backbone:
+  name: cotracker3_scaled_online_true_streaming
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  frozen: true
+  window_length: 16
+  step: 8
+  input_raster: 256
+
+fit_partition:
+  manifest: /gemini/code/FSPT/outputs/beliefcal_mvp1_a2_protocol_run_20260714/kubric_train/train.index.json
+  manifest_sha256: bedc1678fccfeb89ea081bf006dc28b4fb37deae1f226d39cb37a68195d0eb14
+  source_indices: [0, 1, 2, 3, 4, 5, 6, 7]
+  expected_videos: 8
+  expected_frames_each: 24
+  expected_points_each: 64
+  allowed_use: GT may construct an oracle teacher and score fit-only futures
+
+commit_protocol:
+  snapshot_after_global_frames: [0, 15]
+  snapshot_online_ind: 8
+  overlap_frames: [8, 15]
+  future_frames: [16, 23]
+  original_track_established_rule: original_query_frame_less_than_8
+
+failure_event_selection:
+  gt_visible_in_overlap_min_frames: 1
+  gt_visible_in_future_min_frames: 4
+  native_future_mean_error_px_min: 16.0
+  per_video_cap: 8
+  ranking_if_above_cap: descending_native_future_mean_error_then_point_index
+  total_selected_points_min: 16
+  selected_videos_min: 4
+  no_fallback_below_error_threshold: true
+
+oracle_teacher:
+  oracle_query_frame_rule: latest_gt_visible_frame_in_overlap
+  oracle_query_coordinate: exact_gt_at_oracle_query_frame
+  fresh_predictor:
+    independent_frozen_cotracker_instance: true
+    query_only_selected_points: true
+    process_first_window_before_transplant: true
+  transplant_point_mapping: selected_points_in_ascending_original_point_index
+  copy_timing_rule: copy_fresh_state_from_oracle_query_frame_through_frame_15
+  keep_original_predictor_queries: true
+  reason: preserve original identity/time contract while transplanting causal state
+
+variants:
+  native:
+    transplant: none
+  coordinate_only:
+    copy:
+      - online_coords_predicted
+  coordinate_probability:
+    copy:
+      - online_coords_predicted
+      - online_vis_predicted
+      - online_conf_predicted
+  full_state:
+    copy:
+      - online_coords_predicted
+      - online_vis_predicted
+      - online_conf_predicted
+      - online_track_feat
+      - online_track_support
+
+metrics:
+  future_gt_visible_rows_only: true
+  per_point:
+    - mean_l2_error_px
+    - severe_16px_rate
+    - threshold_utility_mean_at_1_2_4_8_16
+  aggregate:
+    point_equal_weight: true
+    video_equal_weight_for_video_support: true
+    paired_point_bootstrap_samples: 10000
+    paired_point_bootstrap_seed: 191719
+  teacher_state:
+    support_delta_svd_energy_ranks: [1, 2, 4, 8, 16]
+    report_per_level_and_pooled: true
+
+integrity_gates:
+  native_clean_independent_replay_exact: true
+  fresh_teacher_independent_replay_exact: true
+  native_no_transplant_parity_exact: true
+  candidate_or_selector_used: false
+
+scientific_gates:
+  selected_points_min: 16
+  selected_videos_min: 4
+  full_state_mean_error_reduction_vs_native_px_min: 4.0
+  full_state_threshold_utility_gain_vs_native_min: 0.10
+  full_state_positive_point_fraction_vs_native_min: 0.70
+  full_state_severe_16px_rate_not_worse: true
+  full_state_mean_error_reduction_vs_coordinate_only_px_min: 0.50
+  full_state_threshold_utility_gain_vs_coordinate_only_min: 0.02
+  full_state_better_than_coordinate_only_video_fraction_min: 0.60
+  full_state_mean_error_reduction_vs_coordinate_probability_px_min: 0.25
+  full_state_threshold_utility_gain_vs_coordinate_probability_min: 0.01
+
+formal_decisions:
+  pass: AUTHORIZE_FIT_ONLY_COUNTERFACTUAL_STATE_RESTORER_TRAINING_PROTOCOL
+  fail: STOP_ORACLE_STATE_TRANSPLANT_BEFORE_LEARNED_RESTORER
+
+locked_data:
+  model_validation_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
