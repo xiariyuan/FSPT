@@ -20,6 +20,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from projects.mmp_tracker.mmp_tracker.routeD_cmcp_davis_external import (
     DAVIS_EXTERNAL_RESULT_SCHEMA,
+    evaluate_davis_lmra_index,
     load_davis_external_config,
     verify_davis_external_files,
 )
@@ -27,7 +28,6 @@ from projects.mmp_tracker.mmp_tracker.routeD_cmcp_late_metric_adapter import (
     LMRAConfig,
     LateMetricResidualAdapter,
 )
-from projects.mmp_tracker.mmp_tracker.routeD_cmcp_lmra_training import evaluate_lmra_index
 from projects.mmp_tracker.mmp_tracker.routeD_cmcp_pairwise_safety import (
     CMCPLocalPairwiseSafetyComparator,
     CMCPLocalSafetyConfig,
@@ -35,7 +35,6 @@ from projects.mmp_tracker.mmp_tracker.routeD_cmcp_pairwise_safety import (
 from projects.mmp_tracker.mmp_tracker.routeD_cmcp_pairwise_training import (
     StaticTokenNormalization,
 )
-from projects.mmp_tracker.mmp_tracker.routeD_cmcp_training import load_cmcp_video
 from projects.mmp_tracker.mmp_tracker.routeD_kubric_cache import file_sha256
 from projects.mmp_tracker.mmp_tracker.routeD_multi_memory_proposal import (
     CMCPConfig,
@@ -120,10 +119,16 @@ def verify_sealed_davis_index(index_path: Path, config: dict) -> dict:
         raise RuntimeError("DAVIS cache ran variant C before completion")
     if integrity.get("partial_performance_exposed") is not False:
         raise RuntimeError("DAVIS cache exposed partial performance")
-    for row in payload["videos"]:
+    for expected_index, row in enumerate(payload["videos"]):
+        if int(row.get("source_index", -1)) != expected_index:
+            raise RuntimeError("DAVIS cache row-order mismatch")
         if row["integrity"]["performance_metrics_computed"] is not False:
             raise RuntimeError("DAVIS video cache exposed performance")
-        load_cmcp_video(row)
+        if not isinstance(row.get("native_state_hashes"), dict):
+            raise RuntimeError("DAVIS cache row lacks native-state provenance")
+    # Full feature/base hashes and native-state provenance are verified exactly
+    # once by load_cmcp_video during the frozen evaluation loop. Avoiding a
+    # redundant pre-pass changes no model or metric behavior.
     return payload
 
 
@@ -144,13 +149,12 @@ def main() -> None:
     adapter, cmcp, comparator, normalization, combined_sha, checkpoint = (
         load_variant_c_external(config, args.device)
     )
-    metrics = evaluate_lmra_index(
+    metrics = evaluate_davis_lmra_index(
         adapter,
         cmcp,
         comparator,
         index_path,
         normalization,
-        expected_partition="davis_external",
         device=args.device,
         point_batch_size=int(config["formal_evaluation"]["point_batch_size"]),
         bootstrap_samples=int(config["formal_evaluation"]["bootstrap_samples"]),

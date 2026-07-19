@@ -188,3 +188,35 @@ ALLOW_P0M_COMPLETE_DAVIS_CACHE_BUILD
 ```
 
 See `docs/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_SMOKE_RESULT_2026-07-19.md`.
+
+## 12. Completed formal result — 2026-07-19
+
+The complete sealed 30-video evaluation and independent replay are finished. The
+primary and replay JSON files are byte-identical, but the preregistered scientific
+gate fails decisively:
+
+```text
+native AJ:                     64.4109
+variant-C AJ:                  62.4940
+direct AJ gain:                -1.9170
+paired-video 95% CI:           [-2.4472,-1.4449]
+candidate-oracle AJ gain:      +0.4936
+harmful non-native rate:       2.2148%
+positive / negative videos:    0 / 30
+```
+
+Formal decision:
+
+```text
+STOP_STRONG_BACKBONE_EXTERNAL_CLAIM_AND_RETAIN_SYNTHETIC_EVIDENCE_ONLY
+```
+
+The native result differs from the independent official CoTracker3 replication
+by only `-0.0299` AJ point, so protocol misalignment does not explain the failure.
+The failure is a dual transfer breakdown: DAVIS candidate-oracle headroom
+collapses, and nearly all accepted non-native actions are harmful.
+
+No checkpoint, threshold, calibration, candidate, NMS, EMA, top-K, or writeback
+rescue is authorized. The official Kinetics 1,144 result remains frozen and is
+not rerun. See
+`docs/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_RESULT_2026-07-19.md`.

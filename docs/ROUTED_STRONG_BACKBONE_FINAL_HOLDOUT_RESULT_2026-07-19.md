@@ -207,3 +207,24 @@ external read, the protocol must pin:
 docs/generated/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_SUMMARY_2026-07-19.json
 SHA-256: 918d75ee72aa868676dacb04d5d066fa80696a46328649bf7fe84e302c46b05c
 ```
+
+## 13. External follow-up boundary — 2026-07-19
+
+P0l authorized only the preregistration of a frozen external protocol. It did not
+establish external transfer. The subsequent complete P0m DAVIS audit fails:
+
+```text
+DAVIS direct AJ gain:       -1.9170
+paired-video 95% CI:        [-2.4472,-1.4449]
+DAVIS oracle AJ gain:       +0.4936
+harmful non-native rate:    2.2148%
+positive videos:            0 / 30
+```
+
+Therefore the P0l claim remains restricted to identity-disjoint synthetic
+Kubric generalization. It cannot be extended to DAVIS, broad domain transfer, or
+tracker-agnostic safety. This negative follow-up does not invalidate the frozen
+Kubric result; it defines its external boundary.
+
+Canonical P0m result:
+`docs/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_RESULT_2026-07-19.md`.

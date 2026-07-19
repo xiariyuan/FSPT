@@ -33,6 +33,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_cmcp_davis_external import (
     load_davis_external_config,
     load_davis_sample_preserving_points,
     prepare_davis_sample,
+    validated_davis_native_state_hashes,
     verify_davis_external_files,
 )
 from projects.mmp_tracker.mmp_tracker.routeD_cmcp_feature_cache import (
@@ -128,16 +129,23 @@ def _tensor_dict_exact(
     )
 
 
-def _valid_resume_row(row: dict[str, Any]) -> bool:
+def _load_valid_resume_row(report_path: Path) -> dict[str, Any] | None:
+    row = json.loads(report_path.read_text())
     base = Path(row.get("base_sidecar", ""))
     feature = Path(row.get("sidecar", ""))
-    return (
+    if not (
         base.exists()
         and feature.exists()
         and row.get("base_sidecar_sha256") == file_sha256(base)
         and row.get("sidecar_sha256") == file_sha256(feature)
         and row.get("integrity", {}).get("performance_metrics_computed") is False
-    )
+    ):
+        return None
+    native_hashes = validated_davis_native_state_hashes(base, feature)
+    if row.get("native_state_hashes") != native_hashes:
+        row["native_state_hashes"] = native_hashes
+        report_path.write_text(json.dumps(row, indent=2, ensure_ascii=False) + "\n")
+    return row
 
 
 def main() -> None:
@@ -162,8 +170,8 @@ def main() -> None:
         for source_index in expected_indices:
             _, _, report_path = _paths(output_root, source_index)
             if report_path.exists():
-                row = json.loads(report_path.read_text())
-                if _valid_resume_row(row):
+                row = _load_valid_resume_row(report_path)
+                if row is not None:
                     reports[source_index] = row
 
     dataset = TapVidDataset(
@@ -306,6 +314,7 @@ def main() -> None:
             "feature_maps_f16_sha256": tensor_sha256(feature16),
             "feature_maps_float32_sha256": tensor_sha256(feature32),
             "quantization_audit": quantization,
+            "native_state_hashes": feature_artifact["native_state_hashes"],
             "deterministic_full_extraction_replay_exact": replay_exact,
             "seconds": round(time.time() - started, 3),
             "integrity": {

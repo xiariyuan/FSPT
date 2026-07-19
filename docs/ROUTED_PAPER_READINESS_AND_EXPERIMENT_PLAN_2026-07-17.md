@@ -472,3 +472,39 @@ This materially strengthens the paper's internal generalization evidence and
 authorizes a frozen external protocol. It does not yet authorize an external
 claim. The paper must retain the output-only boundary, the slight 1px regression,
 and per-video safety heterogeneity.
+
+## 12. Frozen DAVIS transfer result — 2026-07-19
+
+The preregistered complete 30-video DAVIS transfer audit of frozen output-only
+variant C fails every scientific performance and safety gate:
+
+```text
+AJ gain:                    -1.9170
+paired-video AJ 95% CI:     [-2.4472,-1.4449]
+delta-average gain:         -1.5591
+candidate-oracle AJ gain:   +0.4936
+harmful non-native rate:    2.2148%
+positive videos:            0 / 30
+exact primary/replay:       yes
+```
+
+The P0m native AJ is `64.4109`, within `0.0299` point of the independent official
+CoTracker3 replication. The external failure is therefore not dismissed as a
+protocol mismatch. Candidate headroom collapses from the synthetic domain, and
+the Kubric-trained safety comparator accepts almost exclusively harmful DAVIS
+actions.
+
+Paper claim correction:
+
+```text
+Tier 3 external generalization: not authorized
+strong-backbone evidence: Kubric-only
+strong-backbone closed loop: not authorized
+DAVIS zero-shot transfer: failed and must be reported
+tracker-agnostic/domain-general wording: forbidden
+```
+
+The main paper may still use P0j/P0l as a controlled synthetic strong-backbone
+mechanism study, but it must present P0m as a central limitation. A broad method
+paper claim of external generalization is not supported by the current evidence.
+No DAVIS rescue sweep is allowed, and official Kinetics 1,144 remains frozen.
