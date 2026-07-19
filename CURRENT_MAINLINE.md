@@ -4,21 +4,22 @@
 
 ```text
 Gate 2 is complete and formally failed; the learned CSRR v0 restorer and its
-no-op action head are closed before model validation. The current active step is
-Gate 2.5, a design-exposed coordinate-basin audit for deterministic four-level
-state reinstantiation. It reads source indices 0--7 only, trains no parameters,
-and does not load the Gate 2 learned checkpoint.
+no-op action head are closed before model validation. Gate 2.5 is now complete
+with exact independent replay on design-exposed source indices 0--7. Native-
+probability deterministic four-level state reinstantiation passes every frozen
+gate continuously through 12 input pixels; 16 pixels fails only the utility-mean
+gate. Teacher probability does not enlarge the 12-pixel basin.
 
 Gate 3A v0 remains frozen and unrun, but it no longer independently decides the
 route. It is retained as the pooled-native-map control for the later Gate 3A v1
 representation audit. Source indices 48--63 and all external datasets remain
 locked. No new pretrained weights are authorized before Gate 2.5 completes.
 
-A geometry-preserving 49-token matcher interface is implemented with tests but
-is not yet an authorized Gate 3A-v1 experiment. Its distance gates and immutable
-anchor-cache protocol remain blocked on the valid Gate 2.5 primary/replay result.
-The strictly causal original-query anchor extractor is implemented; later
-trusted-anchor write/update rules remain intentionally unimplemented.
+A geometry-preserving 49-token matcher and strictly causal original-query
+anchor extractor are implemented with tests. The next active step is to
+preregister Gate 3A v1 as a fit-only representation audit using 12 px as the
+primary recovery-support radius and 4/8 px as nested diagnostics. Later trusted-
+anchor write/update rules remain intentionally unimplemented.
 ```
 
 Read first:
@@ -27,6 +28,7 @@ Read first:
 docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_GATE2_RESULT_2026-07-19.md
 docs/ROUTED_CSRR_GATE2_FAILURE_DIAGNOSTIC_2026-07-19.md
 docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_V0_PLAN_2026-07-19.md
+docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_RESULT_2026-07-19.md
 docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
 ```
 
