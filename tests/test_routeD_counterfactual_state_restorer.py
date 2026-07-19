@@ -214,3 +214,34 @@ def test_coordinate_only_control_does_not_write_probability_or_memory():
     for left, right in zip(updated.online_track_support, snapshot.online_track_support):
         torch.testing.assert_close(left, right)
     assert not torch.equal(updated.online_coords_predicted[:, 15, 0], snapshot.online_coords_predicted[:, 15, 0])
+
+
+def test_deterministic_sampler_known_plane_and_repeatable_gradient():
+    from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restorer import (
+        deterministic_reextract_cotracker_memory,
+    )
+
+    yy, xx = torch.meshgrid(torch.arange(4.0), torch.arange(5.0), indexing="ij")
+    feature = (xx + 10.0 * yy)[None, None]
+    gradients = []
+    values = []
+    for _ in range(2):
+        coordinate = torch.tensor([[2.5, 1.5]], requires_grad=True)
+        track, support = deterministic_reextract_cotracker_memory(
+            [feature],
+            coordinate,
+            input_height=4,
+            input_width=5,
+            model_height=4,
+            model_width=5,
+            stride=1,
+            support_radius=0,
+        )
+        value = track[0][0, 0, 0, 0]
+        value.backward()
+        values.append(value.detach())
+        gradients.append(coordinate.grad.detach().clone())
+        assert support[0].shape == (1, 1, 1, 1)
+    torch.testing.assert_close(values[0], torch.tensor(17.5))
+    torch.testing.assert_close(gradients[0], torch.tensor([[1.0, 10.0]]))
+    torch.testing.assert_close(gradients[0], gradients[1], rtol=0, atol=0)

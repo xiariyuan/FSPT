@@ -38,6 +38,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restorer impor
     CSRR_SCHEMA_VERSION,
     CounterfactualStructuredReextractionRestorer,
     apply_reextracted_state_action,
+    deterministic_reextract_cotracker_memory,
     model_xy_to_input_xy,
     reextract_cotracker_memory,
 )
@@ -75,6 +76,8 @@ def _model_batch(
     tensors: Mapping[str, Any],
     row_indices: torch.Tensor,
     device: str,
+    *,
+    deterministic_backward: bool = False,
 ) -> tuple[dict[str, torch.Tensor], list[torch.Tensor], list[torch.Tensor], dict[str, Any]]:
     rows = row_indices.long()
     trajectory = tensors["trajectory_features"][rows].to(device=device, dtype=torch.float32)
@@ -98,16 +101,28 @@ def _model_batch(
         input_width=256,
     )
     feature_for_sampling = [value[:, None] for value in frame_feature]
-    re_feat_native, re_support_native = reextract_cotracker_memory(
-        _model_batch.frozen_cotracker_model,
-        feature_for_sampling,
-        output["predicted_coordinates_xy"][None],
-        input_height=256,
-        input_width=256,
-    )
-    # Loss code treats rows as the batch dimension.
-    re_feat_batch = [value.permute(2, 1, 0, 3) for value in re_feat_native]
-    re_support_batch = [value.permute(2, 1, 0, 3) for value in re_support_native]
+    if deterministic_backward:
+        re_feat_batch, re_support_batch = deterministic_reextract_cotracker_memory(
+            feature_for_sampling,
+            output["predicted_coordinates_xy"],
+            input_height=256,
+            input_width=256,
+            model_height=384,
+            model_width=512,
+            stride=4,
+            support_radius=3,
+        )
+    else:
+        re_feat_native, re_support_native = reextract_cotracker_memory(
+            _model_batch.frozen_cotracker_model,
+            feature_for_sampling,
+            output["predicted_coordinates_xy"][None],
+            input_height=256,
+            input_width=256,
+        )
+        # Loss code treats rows as the batch dimension.
+        re_feat_batch = [value.permute(2, 1, 0, 3) for value in re_feat_native]
+        re_support_batch = [value.permute(2, 1, 0, 3) for value in re_support_native]
     batch = {
         "apply_target": tensors["apply_target"][rows].to(device=device),
         "teacher_commit_coordinates_normalized_xy": tensors[
@@ -628,7 +643,9 @@ def main() -> None:
         tensors = train_videos[0]["tensors"]
         rows = torch.arange(min(4, int(tensors["point_indices"].numel())))
         model.train()
-        output, re_feat, re_support, batch = _model_batch(model, tensors, rows, args.device)
+        output, re_feat, re_support, batch = _model_batch(
+            model, tensors, rows, args.device, deterministic_backward=True
+        )
         losses = csrr_batch_loss(
             output=output,
             reextracted_track_features=re_feat,
@@ -719,7 +736,11 @@ def main() -> None:
                 tensors = train_videos[video_index]["tensors"]
                 row_tensor = torch.tensor(local_rows, dtype=torch.long)
                 output, re_feat, re_support, batch = _model_batch(
-                    model, tensors, row_tensor, args.device
+                    model,
+                    tensors,
+                    row_tensor,
+                    args.device,
+                    deterministic_backward=True,
                 )
                 losses = csrr_batch_loss(
                     output=output,

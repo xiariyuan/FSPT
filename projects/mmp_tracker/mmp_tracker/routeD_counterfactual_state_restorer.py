@@ -339,6 +339,96 @@ class CounterfactualStructuredReextractionRestorer(nn.Module):
         }
 
 
+def _deterministic_bilinear_sample_shared_map(
+    feature_map: torch.Tensor, coordinates_xy: torch.Tensor
+) -> torch.Tensor:
+    """Sample a shared ``[1,C,H,W]`` map without CUDA grid-sampler backward.
+
+    The feature map is frozen. Gathered corner values therefore act as constants
+    and gradients flow only through the bilinear weights into coordinates.
+    Border padding and align-corners pixel coordinates match CoTracker.
+    """
+    if feature_map.ndim != 4 or feature_map.shape[0] != 1:
+        raise ValueError("deterministic sampler requires a shared [1,C,H,W] map")
+    if coordinates_xy.ndim != 3 or coordinates_xy.shape[-1] != 2:
+        raise ValueError("coordinates must have shape [B,R,2]")
+    _, channels, height, width = feature_map.shape
+    x = coordinates_xy[..., 0].clamp(0.0, float(width - 1))
+    y = coordinates_xy[..., 1].clamp(0.0, float(height - 1))
+    x0 = torch.floor(x).long()
+    y0 = torch.floor(y).long()
+    x1 = (x0 + 1).clamp(max=width - 1)
+    y1 = (y0 + 1).clamp(max=height - 1)
+    wx = x - x0.to(x.dtype)
+    wy = y - y0.to(y.dtype)
+    flat = feature_map[0].detach().reshape(channels, height * width)
+
+    def gather(ix: torch.Tensor, iy: torch.Tensor) -> torch.Tensor:
+        linear = (iy * width + ix).reshape(-1)
+        values = flat[:, linear].transpose(0, 1)
+        return values.reshape(*ix.shape, channels)
+
+    top_left = gather(x0, y0)
+    top_right = gather(x1, y0)
+    bottom_left = gather(x0, y1)
+    bottom_right = gather(x1, y1)
+    return (
+        top_left * ((1.0 - wx) * (1.0 - wy))[..., None]
+        + top_right * (wx * (1.0 - wy))[..., None]
+        + bottom_left * ((1.0 - wx) * wy)[..., None]
+        + bottom_right * (wx * wy)[..., None]
+    )
+
+
+def deterministic_reextract_cotracker_memory(
+    feature_pyramid: Sequence[torch.Tensor],
+    coordinates_input_xy: torch.Tensor,
+    *,
+    input_height: int = 256,
+    input_width: int = 256,
+    model_height: int = 384,
+    model_width: int = 512,
+    stride: int = 4,
+    support_radius: int = 3,
+) -> tuple[tuple[torch.Tensor, ...], tuple[torch.Tensor, ...]]:
+    """Deterministic differentiable equivalent of single-frame get_track_feat."""
+    if coordinates_input_xy.ndim != 2 or coordinates_input_xy.shape[-1] != 2:
+        raise ValueError("coordinates must have shape [B,2]")
+    model_xy = input_xy_to_model_xy(
+        coordinates_input_xy,
+        input_height=input_height,
+        input_width=input_width,
+        model_height=model_height,
+        model_width=model_width,
+    )
+    offsets = torch.linspace(
+        -float(support_radius),
+        float(support_radius),
+        2 * int(support_radius) + 1,
+        device=coordinates_input_xy.device,
+        dtype=coordinates_input_xy.dtype,
+    )
+    xgrid, ygrid = torch.meshgrid(offsets, offsets, indexing="ij")
+    # This ordering matches CoTracker get_support_points: stack([t,xgrid,ygrid]).
+    offset_xy = torch.stack([xgrid, ygrid], dim=-1).reshape(-1, 2)
+    track_features: list[torch.Tensor] = []
+    track_supports: list[torch.Tensor] = []
+    center_index = offset_xy.shape[0] // 2
+    for level, feature in enumerate(feature_pyramid):
+        if feature.ndim == 5:
+            if feature.shape[1] != 1:
+                raise ValueError("training feature pyramid must contain one frame")
+            feature = feature[:, 0]
+        center = model_xy / float(int(stride) * (2**level))
+        support_coordinates = center[:, None] + offset_xy[None]
+        sampled = _deterministic_bilinear_sample_shared_map(
+            feature, support_coordinates
+        )
+        track_features.append(sampled[:, center_index][:, None, None])
+        track_supports.append(sampled[:, :, None])
+    return tuple(track_features), tuple(track_supports)
+
+
 def apply_reextracted_state_action(
     snapshot: CoTrackerOnlineStateSnapshot,
     *,
