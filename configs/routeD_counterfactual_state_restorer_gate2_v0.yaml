@@ -106,6 +106,7 @@ model:
   trainable_parameter_ceiling: 250000
   input:
     trajectory_frames: [8, 15]
+    trajectory_dim: 9
     trajectory_features:
       - normalized_xy
       - framewise_xy_delta

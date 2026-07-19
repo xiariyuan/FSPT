@@ -226,3 +226,31 @@ See:
 docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_INTERFACE_RESULT_2026-07-19.md
 docs/generated/ROUTED_COUNTERFACTUAL_STATE_RESTORER_INTERFACE_SUMMARY_2026-07-19.json
 ```
+
+## 12. Pre-cache schema correction — 2026-07-19
+
+Before any Gate 2 teacher cache was built, an internal dimensional inconsistency
+was found in the frozen configuration. The enumerated trajectory input contains
+nine values per frame:
+
+```text
+normalized xy:                       2
+normalized framewise delta:          2
+visibility and confidence:           2
+normalized original query xy:        2
+distance from original query:        1
+                                      -
+total:                                9
+```
+
+The configuration omitted an explicit trajectory dimension while the module
+default was mistakenly `6`. The interface smoke used synthetic placeholder
+trajectory tensors and therefore did not exercise this field; no learned result,
+cache, checkpoint, or validation metric existed when the inconsistency was
+discovered.
+
+The protocol now explicitly records `model.input.trajectory_dim: 9`, the module
+default is corrected to `9`, and the exact feature builder is part of the tested
+interface. All other architecture, data partitions,
+losses, thresholds, and gates remain unchanged. The interface primary/replay must
+be rerun under the corrected config before cache construction.

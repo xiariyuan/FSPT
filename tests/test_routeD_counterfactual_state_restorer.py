@@ -9,6 +9,7 @@ from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restoration im
 from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restorer import (
     CounterfactualStructuredReextractionRestorer,
     apply_reextracted_state_action,
+    build_csrr_trajectory_features,
     input_xy_to_model_xy,
     model_xy_to_input_xy,
 )
@@ -43,7 +44,7 @@ def test_model_shapes_and_parameter_ceiling():
     model = CounterfactualStructuredReextractionRestorer()
     batch = 2
     output = model(
-        trajectory_features=torch.randn(batch, 8, 6),
+        trajectory_features=torch.randn(batch, 8, 9),
         native_support_pyramid=[torch.randn(batch, 49, 128) for _ in range(4)],
         frame_feature_pyramid=[
             torch.randn(batch, 128, 96, 128),
@@ -108,3 +109,24 @@ def test_true_apply_changes_only_requested_point_memory():
         torch.testing.assert_close(updated.online_track_support[level][:, :, 0], new_support[level][:, :, 0])
         torch.testing.assert_close(updated.online_track_feat[level][:, :, 2], snapshot.online_track_feat[level][:, :, 2])
         torch.testing.assert_close(updated.online_track_support[level][:, :, 2], snapshot.online_track_support[level][:, :, 2])
+
+
+def test_real_trajectory_feature_contract_is_nine_dimensional():
+    torch.manual_seed(6)
+    snapshot = _snapshot(points=3)
+    snapshot = CoTrackerOnlineStateSnapshot(
+        predictor_n=snapshot.predictor_n,
+        predictor_queries=torch.tensor([[[0.0, 100.0, 120.0], [0.0, 200.0, 220.0], [0.0, 300.0, 320.0]]]),
+        online_ind=snapshot.online_ind,
+        online_track_feat=snapshot.online_track_feat,
+        online_track_support=snapshot.online_track_support,
+        online_coords_predicted=snapshot.online_coords_predicted,
+        online_vis_predicted=snapshot.online_vis_predicted,
+        online_conf_predicted=snapshot.online_conf_predicted,
+    )
+    features = build_csrr_trajectory_features(
+        snapshot, point_indices=torch.tensor([0, 2])
+    )
+    assert features.shape == (2, 8, 9)
+    torch.testing.assert_close(features[:, 0, 2:4], torch.zeros(2, 2))
+    assert torch.all((features[..., 4:6] >= 0) & (features[..., 4:6] <= 1))

@@ -143,6 +143,65 @@ def reextract_cotracker_memory(
     return tuple(track_features), tuple(track_supports)
 
 
+def build_csrr_trajectory_features(
+    snapshot: CoTrackerOnlineStateSnapshot,
+    *,
+    point_indices: torch.Tensor,
+    frame_start: int = 8,
+    frame_end_inclusive: int = 15,
+    input_height: int = 256,
+    input_width: int = 256,
+    model_height: int = 384,
+    model_width: int = 512,
+) -> torch.Tensor:
+    """Build the frozen nine-dimensional causal trajectory representation.
+
+    Per frame the channels are normalized ``xy`` (2), normalized framewise
+    ``dxy`` (2), visibility/confidence probabilities (2), normalized original
+    query ``xy`` (2), and normalized distance from the original query (1).
+    """
+    indices = point_indices.long().to(snapshot.online_coords_predicted.device)
+    frame_slice = slice(int(frame_start), int(frame_end_inclusive) + 1)
+    model_xy = snapshot.online_coords_predicted[0, frame_slice, indices].permute(1, 0, 2)
+    input_xy = model_xy_to_input_xy(
+        model_xy,
+        input_height=input_height,
+        input_width=input_width,
+        model_height=model_height,
+        model_width=model_width,
+    )
+    scale = input_xy.new_tensor(
+        [float(max(input_width - 1, 1)), float(max(input_height - 1, 1))]
+    )
+    normalized_xy = input_xy / scale
+    delta = torch.zeros_like(normalized_xy)
+    delta[:, 1:] = normalized_xy[:, 1:] - normalized_xy[:, :-1]
+    visibility = torch.sigmoid(
+        snapshot.online_vis_predicted[0, frame_slice, indices].permute(1, 0)
+    )[..., None]
+    confidence = torch.sigmoid(
+        snapshot.online_conf_predicted[0, frame_slice, indices].permute(1, 0)
+    )[..., None]
+    query_model_xy = snapshot.predictor_queries[0, indices, 1:3]
+    query_input_xy = model_xy_to_input_xy(
+        query_model_xy,
+        input_height=input_height,
+        input_width=input_width,
+        model_height=model_height,
+        model_width=model_width,
+    )
+    normalized_query = query_input_xy / scale
+    query_sequence = normalized_query[:, None].expand(-1, normalized_xy.shape[1], -1)
+    query_distance = torch.linalg.vector_norm(normalized_xy - query_sequence, dim=-1, keepdim=True)
+    features = torch.cat(
+        [normalized_xy, delta, visibility, confidence, query_sequence, query_distance],
+        dim=-1,
+    )
+    if features.shape[-1] != 9:
+        raise RuntimeError("unexpected CSRR trajectory dimension")
+    return features
+
+
 @dataclass(frozen=True)
 class CSRRConfig:
     latent_dim: int = 128
@@ -150,7 +209,7 @@ class CSRRConfig:
     common_height: int = 64
     common_width: int = 64
     trajectory_frames: int = 8
-    trajectory_dim: int = 6
+    trajectory_dim: int = 9
     temperature: float = 0.10
 
 
