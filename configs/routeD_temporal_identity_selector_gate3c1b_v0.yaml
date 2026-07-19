@@ -1,0 +1,142 @@
+schema_version: routeD_temporal_identity_selector_gate3c1b_v0
+date: 2026-07-20
+
+claim_boundary: >-
+  Causal candidate-retention support at frame 15 on preregistered Kubric
+  development partitions. This is not coordinate refinement, state restoration,
+  future rollout utility, model-validation, DAVIS, Kinetics, or external
+  tracking improvement.
+
+authorized_parent:
+  gate3c1a_result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_RESULT_2026-07-19.md
+  gate3c1a_result_sha256: e29d9da0634fead3960648015c53648b8459b846fb9d42f7ac01fadf42bdc00c
+  gate3c1a_summary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_2026-07-19.json
+  gate3c1a_summary_sha256: 38565047ae38f4b075e4e3f830ecad367bf532041dba192ec61e5fc7bbbc8bcf
+  gradient_train_cache_index: /gemini/code/FSPT/outputs/routeD_temporal_identity_train_cache_gate3c1a_20260719/cache_index.json
+  gradient_train_cache_index_sha256: 88a7127330a540e5a6bd4a57517eda08af399535e64e4906d78188deb1aa966a
+
+manifest_sha256: afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961
+
+mechanism:
+  name: query_closure_identity_energy
+  hypothesis: >-
+    A correct frame-15 candidate must reverse-track back to the known query
+    location and preserve the query identity descriptor through the observed
+    path. Closure and identity must agree; generic trajectory smoothness,
+    visibility, and confidence can instead reward stable wrong identities.
+  normalization: candidate_relative_mean_std_over_valid_candidates
+  candidate_relative_zscore_epsilon: 0.0001
+  score_formula: >-
+    -2*z(reverse_cycle_error_at_query_normalized)
+    +z(query_descriptor_cosine_at_query_frame)
+    +z(mean_query_descriptor_cosine)
+    +z(minimum_query_descriptor_cosine)
+  cycle_weight: 2.0
+  query_frame_identity_weight: 1.0
+  mean_identity_weight: 1.0
+  minimum_identity_weight: 1.0
+  tie_break: lower_frozen_M1_rank
+  trainable_parameters: 0
+  learned_residual_forbidden: true
+
+selection:
+  mandatory_native_candidate_zero: true
+  retained_nonnative: 8
+  total_retained_candidates: 9
+  label_positive_radius_px: 12.0
+  candidate_coordinates_unchanged: true
+
+excluded_from_primary_score:
+  - m1_score_z
+  - rank_fraction
+  - reverse_visibility_probability
+  - reverse_confidence_probability
+  - descriptor_previous_frame_cosine
+  - track_velocity
+  - track_acceleration
+  - track_jerk
+  - distance_from_native_track
+
+controls:
+  static_m1: mandatory_native_plus_first_eight_nonnative
+  cycle_only: smallest_candidate_relative_cycle_error
+  identity_only: >-
+    largest sum of query-frame, mean, and minimum identity z-scores
+
+training:
+  optimizer: none
+  loss: none
+  epochs: 0
+  checkpoint: none
+  checkpoint_selection_used_for_parameter_choice: false
+  reason: >-
+    The primary mechanism is frozen analytically before reading indices 384--447.
+    Checkpoint-selection is therefore an independent confirmation gate, not a
+    tuning partition.
+
+partitions:
+  gradient_train:
+    source_indices: [64, 383]
+    cache_index: /gemini/code/FSPT/outputs/routeD_temporal_identity_train_cache_gate3c1a_20260719/cache_index.json
+    cache_index_sha256: 88a7127330a540e5a6bd4a57517eda08af399535e64e4906d78188deb1aa966a
+    cache_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_train_cache_gate3c1a_v0.yaml
+    cache_config_sha256: 895c0d6bb916c2b9e2a94b3c787524f91f79ba510e7dc6a09a0eca6db5ad7ae7
+    read_state_after_evaluation:
+      checkpoint_selection_read: false
+      fit_only_internal_audit_read: false
+      original_model_validation_read: false
+      external_read: false
+  checkpoint_selection:
+    source_indices: [384, 447]
+    cache_index: /gemini/code/FSPT/outputs/routeD_temporal_identity_checkpoint_cache_gate3c1b_20260720/cache_index.json
+    cache_index_sha256: GENERATED_AFTER_PREREGISTRATION
+    cache_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_checkpoint_cache_gate3c1b_v0.yaml
+    cache_config_sha256: d5e153439cffcd38e6e554777c30f7544ac04ca250b868cb4cc5f3b84dc65ac0
+    read_state_after_evaluation:
+      checkpoint_selection_read: true
+      fit_only_internal_audit_read: false
+      original_model_validation_read: false
+      external_read: false
+  fit_only_internal_audit:
+    source_indices: [448, 511]
+    cache_index: /gemini/code/FSPT/outputs/routeD_temporal_identity_audit_cache_gate3c1b_20260720/cache_index.json
+    cache_index_sha256: GENERATED_AFTER_PREREGISTRATION
+    cache_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_audit_cache_gate3c1b_v0.yaml
+    cache_config_sha256: 8e34dca788955a0e5c7ec3def01f1c24928fd2d25f3587849607cfa2977f222f
+    read_state_after_evaluation:
+      checkpoint_selection_read: true
+      fit_only_internal_audit_read: true
+      original_model_validation_read: false
+      external_read: false
+
+bootstrap:
+  unit: video
+  samples: 10000
+  seed: 17
+  confidence: 0.95
+
+gates:
+  checkpoint_selection:
+    minimum_pooled_support_gain_12px: 0.04
+    minimum_absolute_support_recall_12px: 0.56
+    minimum_median_distance_improvement_px: 0.75
+    minimum_nonnegative_video_fraction: 0.60
+    exact_replay_required: true
+    decision_pass: AUTHORIZE_GATE3C1B_FIT_ONLY_AUDIT_448_511
+    decision_fail: STOP_GATE3C1B_WITHOUT_AUDIT
+  fit_only_internal_audit:
+    minimum_pooled_support_gain_12px: 0.05
+    minimum_absolute_support_recall_12px: 0.57
+    minimum_median_distance_improvement_px: 1.0
+    minimum_nonnegative_video_fraction: 0.60
+    exact_replay_required: true
+    decision_pass: AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION
+    decision_fail: STOP_QUERY_CLOSURE_IDENTITY_SELECTOR
+
+locked_after_preregistration:
+  original_model_validation_indices_48_63_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

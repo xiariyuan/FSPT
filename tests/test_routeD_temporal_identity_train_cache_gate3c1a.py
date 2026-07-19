@@ -75,3 +75,25 @@ def test_train_cache_payload_rejects_candidate_hash_drift():
         assert "candidate pre-teacher hash drift" in str(error)
     else:
         raise AssertionError("candidate hash drift was not rejected")
+
+
+def test_generic_cache_payload_accepts_explicit_checkpoint_read_state():
+    from scripts.build_routeD_temporal_identity_train_cache_gate3c1a_v0 import (
+        verify_temporal_identity_cache_payload,
+    )
+
+    payload = _payload()
+    payload["partition"] = "checkpoint_selection"
+    payload["integrity"]["checkpoint_selection_read"] = True
+    verify_temporal_identity_cache_payload(
+        payload,
+        expected_partition="checkpoint_selection",
+        expected_source_index=64,
+        expected_config_sha256="config",
+        expected_read_state={
+            "checkpoint_selection_read": True,
+            "fit_only_internal_audit_read": False,
+            "original_model_validation_read": False,
+            "external_read": False,
+        },
+    )

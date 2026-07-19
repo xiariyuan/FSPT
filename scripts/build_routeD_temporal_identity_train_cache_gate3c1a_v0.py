@@ -145,18 +145,24 @@ def _tensor_hashes(tensors: Mapping[str, torch.Tensor]) -> dict[str, str]:
     }
 
 
-def verify_train_cache_payload(
+def verify_temporal_identity_cache_payload(
     payload: Mapping[str, Any],
     *,
+    expected_partition: str,
     expected_source_index: int,
     expected_config_sha256: str,
+    expected_read_state: Mapping[str, bool],
 ) -> None:
     if payload.get("schema_version") != CACHE_SCHEMA:
         raise ValueError("Gate 3C1A sidecar schema drift")
-    if payload.get("partition") != "gradient_train":
+    if payload.get("partition") != expected_partition:
         raise ValueError("Gate 3C1A sidecar partition drift")
     if int(payload.get("source_index", -1)) != int(expected_source_index):
         raise ValueError("Gate 3C1A sidecar source drift")
+    integrity = payload.get("integrity", {})
+    for key, expected in expected_read_state.items():
+        if bool(integrity.get(key)) is not bool(expected):
+            raise ValueError(f"Gate 3C1A read-state drift: {key}")
     if payload.get("provenance", {}).get("config_sha256") != expected_config_sha256:
         raise ValueError("Gate 3C1A sidecar config drift")
     tensors = payload.get("tensors", {})
@@ -218,13 +224,29 @@ def verify_train_cache_payload(
     forbidden_true = (
         "teacher_available_to_candidate_coordinates_or_features",
         "future_frames_available_to_model_features",
-        "checkpoint_selection_read",
-        "fit_only_internal_audit_read",
-        "original_model_validation_read",
-        "external_read",
     )
     if any(bool(integrity.get(key)) for key in forbidden_true):
         raise ValueError("Gate 3C1A locked-data integrity failed")
+
+
+def verify_train_cache_payload(
+    payload: Mapping[str, Any],
+    *,
+    expected_source_index: int,
+    expected_config_sha256: str,
+) -> None:
+    verify_temporal_identity_cache_payload(
+        payload,
+        expected_partition="gradient_train",
+        expected_source_index=expected_source_index,
+        expected_config_sha256=expected_config_sha256,
+        expected_read_state={
+            "checkpoint_selection_read": False,
+            "fit_only_internal_audit_read": False,
+            "original_model_validation_read": False,
+            "external_read": False,
+        },
+    )
 
 
 def _build_video(
@@ -236,7 +258,16 @@ def _build_video(
     dino: torch.nn.Module,
     source_index: int,
     device: str,
+    partition_name: str = "gradient_train",
+    read_state: Mapping[str, bool] | None = None,
 ) -> dict[str, Any]:
+    if read_state is None:
+        read_state = {
+            "checkpoint_selection_read": False,
+            "fit_only_internal_audit_read": False,
+            "original_model_validation_read": False,
+            "external_read": False,
+        }
     manifest = Path(config["partition"]["manifest"])
     sample, sample_metadata = load_manifest_sample(manifest, source_index)
     prepared = prepare_sample(
@@ -496,7 +527,7 @@ def _build_video(
     hashes = _tensor_hashes(tensors)
     payload = {
         "schema_version": CACHE_SCHEMA,
-        "partition": "gradient_train",
+        "partition": partition_name,
         "source_index": int(source_index),
         "video_name": str(prepared["video_name"]),
         "tensors": tensors,
@@ -516,10 +547,16 @@ def _build_video(
             "teacher_available_to_candidate_coordinates_or_features": False,
             "future_frames_available_to_model_features": False,
             "observed_frames": [0, 15],
-            "checkpoint_selection_read": False,
-            "fit_only_internal_audit_read": False,
-            "original_model_validation_read": False,
-            "external_read": False,
+            "checkpoint_selection_read": bool(
+                read_state["checkpoint_selection_read"]
+            ),
+            "fit_only_internal_audit_read": bool(
+                read_state["fit_only_internal_audit_read"]
+            ),
+            "original_model_validation_read": bool(
+                read_state["original_model_validation_read"]
+            ),
+            "external_read": bool(read_state["external_read"]),
         },
         "provenance": {
             "config": str(config_path),
@@ -535,10 +572,12 @@ def _build_video(
             ],
         },
     }
-    verify_train_cache_payload(
+    verify_temporal_identity_cache_payload(
         payload,
+        expected_partition=partition_name,
         expected_source_index=source_index,
         expected_config_sha256=config_sha256,
+        expected_read_state=read_state,
     )
     del video
     if device.startswith("cuda"):
