@@ -1,0 +1,109 @@
+{
+  "schema_version": "routeD_cmcp_final_holdout_smoke_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "decision": "ALLOW_P0L_FINAL_HOLDOUT_CACHE_BUILD",
+  "source_index": 0,
+  "video_name": "1680",
+  "config_sha256": "a166ff9bce984c9207d8e53699d11f97c4586277ec716580f6c1922f5af2a8b9",
+  "combined_model_state_sha256": "64c3f6dae6ae34dc0223754aca3c76f78a1f48137d08bab6c3e01f2a806cd074",
+  "smoke_index_sha256": "9a84cf296e1e41e5b82a114dffff8dae59fe9e18e90f42e751ef3d2a24374362",
+  "reference_index_sha256": "bfb10726a317b7bdb1a7993ab1e417440dc561dad03c748a2c5e958f2b5bac76",
+  "checks": {
+    "base": {
+      "native_coords_xy_px": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96",
+        "right_sha256": "416f90ac9df0d9c48aefc25dceb667ff6e5a46efada81f3677ad4f3c22a2da96"
+      },
+      "native_visibility_probability": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "06409a741fc468ca609ccb1d6db696d6189184927d59f17a4db0fb39fb4cadbb",
+        "right_sha256": "06409a741fc468ca609ccb1d6db696d6189184927d59f17a4db0fb39fb4cadbb"
+      },
+      "native_confidence_probability": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "5e47e98b7e4fd40e4201a1feb4b34a7bdddfe9bcf8ceca6b0d320b7356617a4b",
+        "right_sha256": "5e47e98b7e4fd40e4201a1feb4b34a7bdddfe9bcf8ceca6b0d320b7356617a4b"
+      },
+      "native_joint_probability": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "812c74f3a809d8e94f01794a28d2f3c32416d67852e123ef8d099d62a140430a",
+        "right_sha256": "812c74f3a809d8e94f01794a28d2f3c32416d67852e123ef8d099d62a140430a"
+      },
+      "native_visibility": {
+        "exact": true,
+        "max_abs": null,
+        "left_sha256": "d54db5cbed59831d994e6af3d3bf2c6b72d8cb2c909462992cacd514cd107946",
+        "right_sha256": "d54db5cbed59831d994e6af3d3bf2c6b72d8cb2c909462992cacd514cd107946"
+      },
+      "query_points_tyx": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "a14a9d61b11f9ceec2971628967c9e1f058a3755d6d9c98a2441b2387057315a",
+        "right_sha256": "a14a9d61b11f9ceec2971628967c9e1f058a3755d6d9c98a2441b2387057315a"
+      },
+      "gt_tracks_yx": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "d826da895be154358143e8b4a483feb05c7faad3697f13ec4185468fea7a1542",
+        "right_sha256": "d826da895be154358143e8b4a483feb05c7faad3697f13ec4185468fea7a1542"
+      },
+      "gt_occluded": {
+        "exact": true,
+        "max_abs": null,
+        "left_sha256": "fa2c64f4085b379426d3b7e8b309e2852fda8039f2ca99d974c86794000bb886",
+        "right_sha256": "fa2c64f4085b379426d3b7e8b309e2852fda8039f2ca99d974c86794000bb886"
+      }
+    },
+    "feature_maps_f16": {
+      "exact": true,
+      "max_abs": 0.0,
+      "left_sha256": "41d6c65fdfa0aab859fafc876f106746ee46a4c37b636d3f358a3c8ef4d78b89",
+      "right_sha256": "41d6c65fdfa0aab859fafc876f106746ee46a4c37b636d3f358a3c8ef4d78b89"
+    },
+    "variant_C_outputs": {
+      "candidate_coords_xy_px": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "3e0141150b94365dd0f458340de059acc89f6c5584f3417a31329bb53b002482",
+        "right_sha256": "3e0141150b94365dd0f458340de059acc89f6c5584f3417a31329bb53b002482"
+      },
+      "candidate_valid_mask": {
+        "exact": true,
+        "max_abs": null,
+        "left_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c",
+        "right_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c"
+      },
+      "selected_candidate_index": {
+        "exact": true,
+        "max_abs": null,
+        "left_sha256": "a300954eab4af2a2010b70c8d4774c4de366e60951d67a1e0a89d81755209026",
+        "right_sha256": "a300954eab4af2a2010b70c8d4774c4de366e60951d67a1e0a89d81755209026"
+      },
+      "selected_coords_xy_px": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "0cca7c3a86c08d2328c7da7799daa237c1e3e78bcbfacc54438f0771c3513900",
+        "right_sha256": "0cca7c3a86c08d2328c7da7799daa237c1e3e78bcbfacc54438f0771c3513900"
+      },
+      "decision_summary": {
+        "exact": true,
+        "max_abs": 0.0,
+        "left_sha256": "4e1d82ae177510fb8674681e0493906f2905a65718d23c4182411b5e4134f46c",
+        "right_sha256": "4e1d82ae177510fb8674681e0493906f2905a65718d23c4182411b5e4134f46c"
+      }
+    }
+  },
+  "performance_metrics_computed": false,
+  "calibration_read": false,
+  "final_holdout_read": false,
+  "external_data_read": {
+    "tapvid_davis": false,
+    "tapvid_kinetics": false
+  }
+}

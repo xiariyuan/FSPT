@@ -176,3 +176,16 @@ Until P0l formally passes:
 TAP-Vid-DAVIS: unread
 official TAP-Vid-Kinetics 1,144: unread and not rerun
 ```
+
+## 10. Completed implementation smoke — 2026-07-19
+
+The fit-source-0 sealed-cache smoke passes exact parity for all native/query/GT
+tensors, the float16 feature map, and all frozen variant-C candidate/selection
+outputs. No performance metric or final-holdout sample was read.
+
+```text
+ALLOW_P0L_FINAL_HOLDOUT_CACHE_BUILD
+```
+
+Canonical evidence:
+`docs/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_SMOKE_RESULT_2026-07-19.md`.
