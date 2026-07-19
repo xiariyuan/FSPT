@@ -259,13 +259,21 @@ def _build_video(
                 fresh.online_track_support[level][0].permute(1, 0, 2).detach().float().cpu()
             )
 
-    native_vis = native_initial.online_vis_predicted[0, 15, selected_device].detach().float().cpu()
-    native_conf = native_initial.online_conf_predicted[0, 15, selected_device].detach().float().cpu()
+    native_vis = torch.sigmoid(
+        native_initial.online_vis_predicted[0, 15, selected_device]
+    ).detach().float().cpu()
+    native_conf = torch.sigmoid(
+        native_initial.online_conf_predicted[0, 15, selected_device]
+    ).detach().float().cpu()
     teacher_vis = native_vis.clone()
     teacher_conf = native_conf.clone()
     if fresh is not None:
-        teacher_vis[: failure.numel()] = fresh.online_vis_predicted[0, 15].detach().float().cpu()
-        teacher_conf[: failure.numel()] = fresh.online_conf_predicted[0, 15].detach().float().cpu()
+        teacher_vis[: failure.numel()] = torch.sigmoid(
+            fresh.online_vis_predicted[0, 15]
+        ).detach().float().cpu()
+        teacher_conf[: failure.numel()] = torch.sigmoid(
+            fresh.online_conf_predicted[0, 15]
+        ).detach().float().cpu()
 
     frame_half, frame_q = _quantize_list(commit_pyramid_float)
     trajectory_half, trajectory_q = _quantize_tensor(trajectory_float)
@@ -273,8 +281,10 @@ def _build_video(
     native_support_half, native_support_q = _quantize_list(native_support_float)
     teacher_feat_half, teacher_feat_q = _quantize_list(teacher_feat_float)
     teacher_support_half, teacher_support_q = _quantize_list(teacher_support_float)
-    native_commit_half, native_commit_q = _quantize_tensor(native_commit_input)
-    teacher_commit_half, teacher_commit_q = _quantize_tensor(teacher_commit_input)
+    native_commit_normalized = native_commit_input / 255.0
+    teacher_commit_normalized = teacher_commit_input / 255.0
+    native_commit_half, native_commit_q = _quantize_tensor(native_commit_normalized)
+    teacher_commit_half, teacher_commit_q = _quantize_tensor(teacher_commit_normalized)
     native_vis_half, native_vis_q = _quantize_tensor(native_vis)
     native_conf_half, native_conf_q = _quantize_tensor(native_conf)
     teacher_vis_half, teacher_vis_q = _quantize_tensor(teacher_vis)
@@ -317,12 +327,12 @@ def _build_video(
         "clean_point_indices": clean.long(),
         "apply_target": apply_target,
         "trajectory_features": trajectory_half,
-        "native_commit_coordinates_xy": native_commit_half,
-        "teacher_commit_coordinates_xy": teacher_commit_half,
-        "native_visibility_logits": native_vis_half,
-        "native_confidence_logits": native_conf_half,
-        "teacher_visibility_logits": teacher_vis_half,
-        "teacher_confidence_logits": teacher_conf_half,
+        "native_commit_coordinates_normalized_xy": native_commit_half,
+        "teacher_commit_coordinates_normalized_xy": teacher_commit_half,
+        "native_visibility_probability": native_vis_half,
+        "native_confidence_probability": native_conf_half,
+        "teacher_visibility_probability": teacher_vis_half,
+        "teacher_confidence_probability": teacher_conf_half,
         "frame_feature_pyramid": frame_half,
         "native_track_feat": native_feat_half,
         "native_track_support": native_support_half,

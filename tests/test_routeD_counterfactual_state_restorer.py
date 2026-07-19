@@ -130,3 +130,31 @@ def test_real_trajectory_feature_contract_is_nine_dimensional():
     assert features.shape == (2, 8, 9)
     torch.testing.assert_close(features[:, 0, 2:4], torch.zeros(2, 2))
     assert torch.all((features[..., 4:6] >= 0) & (features[..., 4:6] <= 1))
+
+
+def test_probability_residual_is_applied_in_probability_space():
+    torch.manual_seed(7)
+    snapshot = _snapshot()
+    point = torch.tensor([0])
+    feat = [torch.randn(1, 1, 1, 128) for _ in range(4)]
+    support = [torch.randn(1, 49, 1, 128) for _ in range(4)]
+    before_vis = torch.sigmoid(snapshot.online_vis_predicted[0, 15, 0])
+    before_conf = torch.sigmoid(snapshot.online_conf_predicted[0, 15, 0])
+    updated = apply_reextracted_state_action(
+        snapshot,
+        point_indices=point,
+        predicted_coordinates_input_xy=torch.tensor([[30.0, 40.0]]),
+        apply_mask=torch.tensor([True]),
+        reextracted_track_features=feat,
+        reextracted_track_supports=support,
+        input_height=256,
+        input_width=256,
+        model_height=384,
+        model_width=512,
+        visibility_residual=torch.tensor([0.1]),
+        confidence_residual=torch.tensor([-0.1]),
+    )
+    after_vis = torch.sigmoid(updated.online_vis_predicted[0, 15, 0])
+    after_conf = torch.sigmoid(updated.online_conf_predicted[0, 15, 0])
+    torch.testing.assert_close(after_vis, (before_vis + 0.1).clamp(1e-5, 1 - 1e-5))
+    torch.testing.assert_close(after_conf, (before_conf - 0.1).clamp(1e-5, 1 - 1e-5))

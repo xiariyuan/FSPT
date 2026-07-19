@@ -384,9 +384,23 @@ def apply_reextracted_state_action(
     )
     coords[0, int(commit_frame), native_indices.to(coords.device)] = model_xy
     if visibility_residual is not None:
-        vis[0, int(commit_frame), native_indices.to(vis.device)] += visibility_residual[applied_rows].to(vis.device)
+        selected_vis = vis[0, int(commit_frame), native_indices.to(vis.device)]
+        probability = torch.sigmoid(selected_vis)
+        updated_probability = (
+            probability + visibility_residual[applied_rows].to(vis.device)
+        ).clamp(1.0e-5, 1.0 - 1.0e-5)
+        vis[0, int(commit_frame), native_indices.to(vis.device)] = torch.logit(
+            updated_probability
+        )
     if confidence_residual is not None:
-        conf[0, int(commit_frame), native_indices.to(conf.device)] += confidence_residual[applied_rows].to(conf.device)
+        selected_conf = conf[0, int(commit_frame), native_indices.to(conf.device)]
+        probability = torch.sigmoid(selected_conf)
+        updated_probability = (
+            probability + confidence_residual[applied_rows].to(conf.device)
+        ).clamp(1.0e-5, 1.0 - 1.0e-5)
+        conf[0, int(commit_frame), native_indices.to(conf.device)] = torch.logit(
+            updated_probability
+        )
     feat_rows = list(feat)
     support_rows = list(support)
     for level, (new_feat, new_support) in enumerate(zip(reextracted_track_features, reextracted_track_supports)):

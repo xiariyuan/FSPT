@@ -189,12 +189,12 @@ def verify_csrr_cache_artifact(
     if labels.shape != (point_indices.numel(),):
         raise ValueError("apply target shape mismatch")
     for key in (
-        "native_commit_coordinates_xy",
-        "teacher_commit_coordinates_xy",
-        "native_visibility_logits",
-        "native_confidence_logits",
-        "teacher_visibility_logits",
-        "teacher_confidence_logits",
+        "native_commit_coordinates_normalized_xy",
+        "teacher_commit_coordinates_normalized_xy",
+        "native_visibility_probability",
+        "native_confidence_probability",
+        "teacher_visibility_probability",
+        "teacher_confidence_probability",
     ):
         tensor = _require_tensor(tensors, key)
         if tensor.dtype != torch.float16:
