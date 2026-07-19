@@ -1,0 +1,52 @@
+{
+  "schema_version": "routeD_cmcp_davis_external_smoke_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "decision": "ALLOW_P0M_COMPLETE_DAVIS_CACHE_BUILD",
+  "source": "Kubric fit index 0 only",
+  "config_sha256": "94ae3b5d6c80eb4c7f2ac2f66a9e77477726035a9ec0414765af3ad08cf69552",
+  "combined_model_state_sha256": "64c3f6dae6ae34dc0223754aca3c76f78a1f48137d08bab6c3e01f2a806cd074",
+  "normalization_exact": true,
+  "behavior_exact": true,
+  "checks": {
+    "selected_coords_xy_px": {
+      "exact": true,
+      "max_abs": 0.0,
+      "left_sha256": "0cca7c3a86c08d2328c7da7799daa237c1e3e78bcbfacc54438f0771c3513900",
+      "right_sha256": "0cca7c3a86c08d2328c7da7799daa237c1e3e78bcbfacc54438f0771c3513900"
+    },
+    "selected_candidate_index": {
+      "exact": true,
+      "max_abs": null,
+      "left_sha256": "a300954eab4af2a2010b70c8d4774c4de366e60951d67a1e0a89d81755209026",
+      "right_sha256": "a300954eab4af2a2010b70c8d4774c4de366e60951d67a1e0a89d81755209026"
+    },
+    "candidate_coords_xy_px": {
+      "exact": true,
+      "max_abs": 0.0,
+      "left_sha256": "3e0141150b94365dd0f458340de059acc89f6c5584f3417a31329bb53b002482",
+      "right_sha256": "3e0141150b94365dd0f458340de059acc89f6c5584f3417a31329bb53b002482"
+    },
+    "candidate_valid_mask": {
+      "exact": true,
+      "max_abs": null,
+      "left_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c",
+      "right_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c"
+    },
+    "oracle_coords_xy_px": {
+      "exact": true,
+      "max_abs": 0.0,
+      "left_sha256": "3feae8722fc65461adafd41f0b0bba8fda67c9c79858d1c704c27775173a001b",
+      "right_sha256": "3feae8722fc65461adafd41f0b0bba8fda67c9c79858d1c704c27775173a001b"
+    },
+    "oracle_candidate_index": {
+      "exact": true,
+      "max_abs": null,
+      "left_sha256": "f3fbf3e1cafc37a1e6ade12b6d6f84062a4f680ea6fd96c76eff41c3225568b5",
+      "right_sha256": "f3fbf3e1cafc37a1e6ade12b6d6f84062a4f680ea6fd96c76eff41c3225568b5"
+    }
+  },
+  "DAVIS_sample_read": false,
+  "DAVIS_performance_computed": false,
+  "kinetics_read_or_rerun": false
+}

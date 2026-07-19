@@ -175,3 +175,16 @@ writeback rescue.
 
 The completed official 1,144-video Kinetics result remains frozen historical
 evidence. P0m does not rerun, rescore or tune against Kinetics.
+
+## 11. Completed implementation smoke — 2026-07-19
+
+The P0m model/cache wrapper passes an exact Kubric fit-index-0 smoke against the
+established P0l implementation. All candidate, selection and oracle tensors,
+normalization, behavior and model-state hashes are exact. No DAVIS sample or
+performance was read.
+
+```text
+ALLOW_P0M_COMPLETE_DAVIS_CACHE_BUILD
+```
+
+See `docs/ROUTED_STRONG_BACKBONE_DAVIS_EXTERNAL_SMOKE_RESULT_2026-07-19.md`.
