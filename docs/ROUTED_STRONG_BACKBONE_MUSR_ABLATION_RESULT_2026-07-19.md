@@ -172,3 +172,14 @@ STOP_P0K_BEFORE_MODEL_VALIDATION_COMMIT_STATE_MISMATCH
 
 No bounded write was executed and no writeback performance result exists. See
 `docs/ROUTED_STRONG_BACKBONE_BOUNDED_WRITEBACK_INTERFACE_RESULT_2026-07-19.md`.
+
+## 9. Post-P0l final-holdout evidence — 2026-07-19
+
+Variant C passes the frozen 16-video identity-disjoint final holdout with
+`+0.7679` AJ and paired 95% CI
+`[+0.4532,+0.9184]`.
+Fourteen of sixteen videos are positive and the pooled harmful non-native rate is
+`0.9462%`.
+
+This confirms C as the final strong-backbone output-only configuration and
+authorizes external protocol preregistration. It does not reopen state writeback.

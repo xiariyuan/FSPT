@@ -189,3 +189,25 @@ ALLOW_P0L_FINAL_HOLDOUT_CACHE_BUILD
 
 Canonical evidence:
 `docs/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_SMOKE_RESULT_2026-07-19.md`.
+
+## 11. Completed final result — 2026-07-19
+
+The sealed 16-video final holdout and independent replay are complete. Every
+preregistered gate passes:
+
+```text
+AJ gain: +0.7679
+paired-video AJ 95% CI: [+0.4532,+0.9184]
+delta-average gain: +0.8889
+harmful non-native rate: 0.9462%
+positive videos: 14 / 16
+```
+
+Formal decision:
+
+```text
+AUTHORIZE_FROZEN_EXTERNAL_PROTOCOL_PREREGISTRATION
+```
+
+See `docs/ROUTED_STRONG_BACKBONE_FINAL_HOLDOUT_RESULT_2026-07-19.md`.
+External datasets remain unread until a separate protocol is committed.

@@ -454,3 +454,21 @@ coordinate-only writeback route: closed for this paper
 
 The paper should present this as an explicit limitation and causal-interface
 negative result, not hide it or infer a closed-loop benefit from the P0j oracle.
+
+## 11. Final synthetic holdout update — 2026-07-19
+
+Frozen output-only variant C passes the one-time identity-disjoint 16-video
+Kubric final holdout:
+
+```text
+AJ gain: +0.7679
+paired-video AJ CI: [+0.4532,+0.9184]
+delta gain: +0.8889
+positive videos: 14 / 16
+harmful rate: 0.9462%
+```
+
+This materially strengthens the paper's internal generalization evidence and
+authorizes a frozen external protocol. It does not yet authorize an external
+claim. The paper must retain the output-only boundary, the slight 1px regression,
+and per-video safety heterogeneity.
