@@ -7,18 +7,20 @@ Gate 2 is complete and formally failed. Gate 2.5 completed with exact replay and
 measured a contiguous deterministic state-reinstatement basin through 12 input
 pixels. Teacher probability does not enlarge that basin.
 
-Gate 3A v1 is preregistered and not run. It is a fit-only, three-representation
-candidate-support audit: M0 frozen Gate 2 pooled-native logits, M1 geometry-
-preserved native 49-token support, and M2 geometry-preserved immutable original-
-query support. All use one frozen top-8 extractor, 12 px primary recall, nested
-4/8 px diagnostics, and the same native-probability memory reinstatement.
+Gate 3A v1 is complete with exact candidate-cache and teacher-audit replay. All
+three top-8 representations fail candidate support: recall within 12 px is only
+0.3750--0.3875 and median nearest error is 15.21--16.73 px. All future-rollout
+gates pass under the nearest-candidate teacher oracle, but this cannot rescue
+missing top-8 support. Formal decision:
+STOP_CURRENT_CANDIDATES_AND_REDESIGN_TEMPORAL_IDENTITY_MATCHING.
 
-Candidate generation is physically isolated from teacher/future tensors by an
-allowlisted causal-input cache. Primary and fresh candidate replays must be
-nested-exact before teacher access; full teacher audit reports must then replay
-exactly. Formal choice is lexicographic M0 -> M1 -> M2. Source indices 48--63 and
-all external datasets remain locked. No new pretrained weight or dataset is
-authorized or required for Gate 3A v1.
+Post-gate diagnosis shows M1 native and M2 immutable-query maps are effectively
+identical because CoTracker's online support is already query memory. Expanding
+M1 to 64 nonnative proposals raises fit-only 12-px recall to 0.7875 and median
+error to 7.67 px, so the next bottleneck is temporal identity/ranking over a
+broad proposal bank, not another static support map. The next active step is a
+weight-free reverse-cycle temporal identity feasibility gate on already exposed
+fit data. Source indices 48--63 and every external dataset remain locked.
 ```
 
 Read first:
@@ -30,6 +32,7 @@ docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_V0_PLAN_2026-07-19.md
 docs/ROUTED_STATE_REINSTATEMENT_BASIN_GATE2_5_RESULT_2026-07-19.md
 docs/ROUTED_GEOMETRY_PRESERVING_RELOCALIZATION_INTERFACE_V0_2026-07-19.md
 docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_PLAN_2026-07-19.md
+docs/ROUTED_GEOMETRY_REPRESENTATION_AUDIT_GATE3A_V1_RESULT_2026-07-19.md
 ```
 
 ## Active override — 2026-07-17
