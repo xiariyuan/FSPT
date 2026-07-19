@@ -294,3 +294,30 @@ No cache, checkpoint, training epoch, or validation metric existed when this
 clarification was made. Model architecture, source partitions, losses, thresholds,
 and scientific gates are unchanged. The interface primary/replay must be rebuilt
 under the clarified config hash before cache construction.
+
+## 14. Four-anchor cache smoke completed — 2026-07-19
+
+The frozen anchors `8`, `31`, `32`, and `47` were independently rebuilt twice.
+All nested artifacts and reports reproduce exactly.
+
+```text
+failure rows:                         12
+clean rows:                           28
+maximum float16 absolute error:       0.0004826784
+minimum float16 cosine similarity:    0.9999974966
+independent replay:                   exact
+canonical summary SHA256:             584ef5e6be13efced9181a9488819b493acf69859393b06ff30ae2316405860c
+```
+
+Formal decision:
+
+```text
+ALLOW_COMPLETE_GATE2_TEACHER_CACHE_BUILD
+```
+
+See:
+
+```text
+docs/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_SMOKE_RESULT_2026-07-19.md
+docs/generated/ROUTED_COUNTERFACTUAL_STATE_RESTORER_CACHE_SMOKE_SUMMARY_2026-07-19.json
+```

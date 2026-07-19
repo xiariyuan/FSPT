@@ -1,0 +1,63 @@
+{
+  "schema_version": "routeD_csrr_teacher_cache_smoke_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_pass",
+  "formal_decision": "ALLOW_COMPLETE_GATE2_TEACHER_CACHE_BUILD",
+  "pass": true,
+  "primary_index": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719/smoke/cache_index.json",
+  "primary_index_sha256": "8012a7bb89cd58b6520f4862b191d880bc93f203e0d73618badaf4393432ac9f",
+  "replay_index": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_replay_20260719/smoke/cache_index.json",
+  "replay_index_sha256": "7362688f6902d1c10c02deb5bcbc024f5f5e9197d0776161826fe67a95c38b48",
+  "independent_replay": {
+    "index_exact_excluding_paths_and_serialization_hashes": true,
+    "all_artifacts_exact": true,
+    "all_reports_exact_excluding_paths": true,
+    "exact": true
+  },
+  "completed_source_indices": [
+    8,
+    31,
+    32,
+    47
+  ],
+  "total_failure_rows": 12,
+  "total_clean_rows": 28,
+  "maximum_quantization_absolute_error": 0.0004826784133911133,
+  "minimum_quantization_cosine_similarity": 0.9999974966049194,
+  "combined_tensor_hash_digest": "1c2f5234aa458d8377aba56fc6f30310a6e14fc4b3a5bb240e26fff1fcef71de",
+  "videos": [
+    {
+      "source_index": 8,
+      "artifact_all_nested_tensors_and_metadata_exact": true,
+      "report_exact_excluding_paths": true,
+      "primary_sidecar_sha256": "a53388abb166773448f254a408652a7e91aacec4d58c6052bc2e047f872fb640",
+      "replay_sidecar_sha256": "a53388abb166773448f254a408652a7e91aacec4d58c6052bc2e047f872fb640",
+      "tensor_hash_digest": "cb561f756fd00f1549c19c9a3c7e449e2cefe69d957080c11c80fb3f5302909f"
+    },
+    {
+      "source_index": 31,
+      "artifact_all_nested_tensors_and_metadata_exact": true,
+      "report_exact_excluding_paths": true,
+      "primary_sidecar_sha256": "e6de227f341b4c9afc2ff8998c5908725244e544d26f01764774992e940df7e9",
+      "replay_sidecar_sha256": "e6de227f341b4c9afc2ff8998c5908725244e544d26f01764774992e940df7e9",
+      "tensor_hash_digest": "5868eb20e5412cbb2a7dadbfcc8b4c93dc2721b79fc5daa93161c15c1dfd495d"
+    },
+    {
+      "source_index": 32,
+      "artifact_all_nested_tensors_and_metadata_exact": true,
+      "report_exact_excluding_paths": true,
+      "primary_sidecar_sha256": "2625fdcb523538b95c930954f8ad9427b9c98c2c9d3bdd0285238f995a316f4d",
+      "replay_sidecar_sha256": "2625fdcb523538b95c930954f8ad9427b9c98c2c9d3bdd0285238f995a316f4d",
+      "tensor_hash_digest": "2a2d64ba2051d9a09dd85c41fa59d2c357fb67b9fdb3969dfed7cff0920ef75a"
+    },
+    {
+      "source_index": 47,
+      "artifact_all_nested_tensors_and_metadata_exact": true,
+      "report_exact_excluding_paths": true,
+      "primary_sidecar_sha256": "f3bb7882acea7b6b8206c478844e4cd48f863c9f2574579b521ff2900034c5b8",
+      "replay_sidecar_sha256": "f3bb7882acea7b6b8206c478844e4cd48f863c9f2574579b521ff2900034c5b8",
+      "tensor_hash_digest": "a3eff9fa07bda93f2e09be4ce3cb8f14dd7f4b4e820e275f8502c846d07fe3b4"
+    }
+  ],
+  "claim_boundary": "Four-anchor cache interface replay only; no learned model or performance claim."
+}
