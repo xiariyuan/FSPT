@@ -1,0 +1,110 @@
+from types import SimpleNamespace
+
+import torch
+
+from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restoration import (
+    CoTrackerOnlineStateSnapshot,
+    snapshots_exact,
+)
+from projects.mmp_tracker.mmp_tracker.routeD_counterfactual_state_restorer import (
+    CounterfactualStructuredReextractionRestorer,
+    apply_reextracted_state_action,
+    input_xy_to_model_xy,
+    model_xy_to_input_xy,
+)
+
+
+def _snapshot(points: int = 3) -> CoTrackerOnlineStateSnapshot:
+    return CoTrackerOnlineStateSnapshot(
+        predictor_n=points,
+        predictor_queries=torch.zeros(1, points, 3),
+        online_ind=8,
+        online_track_feat=tuple(torch.randn(1, 1, points, 128) for _ in range(4)),
+        online_track_support=tuple(torch.randn(1, 49, points, 128) for _ in range(4)),
+        online_coords_predicted=torch.randn(1, 16, points, 2),
+        online_vis_predicted=torch.randn(1, 16, points),
+        online_conf_predicted=torch.randn(1, 16, points),
+    )
+
+
+def test_coordinate_roundtrip():
+    xy = torch.tensor([[0.0, 0.0], [255.0, 255.0], [83.25, 129.5]])
+    model = input_xy_to_model_xy(
+        xy, input_height=256, input_width=256, model_height=384, model_width=512
+    )
+    recovered = model_xy_to_input_xy(
+        model, input_height=256, input_width=256, model_height=384, model_width=512
+    )
+    torch.testing.assert_close(recovered, xy, rtol=0, atol=1.0e-5)
+
+
+def test_model_shapes_and_parameter_ceiling():
+    torch.manual_seed(3)
+    model = CounterfactualStructuredReextractionRestorer()
+    batch = 2
+    output = model(
+        trajectory_features=torch.randn(batch, 8, 6),
+        native_support_pyramid=[torch.randn(batch, 49, 128) for _ in range(4)],
+        frame_feature_pyramid=[
+            torch.randn(batch, 128, 96, 128),
+            torch.randn(batch, 128, 48, 64),
+            torch.randn(batch, 128, 24, 32),
+            torch.randn(batch, 128, 12, 16),
+        ],
+        native_commit_coordinates_xy=torch.rand(batch, 2) * 255.0,
+    )
+    assert model.trainable_parameter_count <= 250_000
+    assert output["predicted_coordinates_xy"].shape == (batch, 2)
+    assert output["apply_logit"].shape == (batch,)
+    assert output["spatial_probability"].shape == (batch, 64, 64)
+    torch.testing.assert_close(
+        output["spatial_probability"].flatten(1).sum(dim=1),
+        torch.ones(batch),
+        rtol=0,
+        atol=1.0e-5,
+    )
+
+
+def test_false_apply_is_exact_noop():
+    torch.manual_seed(4)
+    snapshot = _snapshot()
+    updated = apply_reextracted_state_action(
+        snapshot,
+        point_indices=torch.tensor([0, 2]),
+        predicted_coordinates_input_xy=torch.tensor([[20.0, 30.0], [80.0, 90.0]]),
+        apply_mask=torch.tensor([False, False]),
+        reextracted_track_features=[torch.randn(1, 1, 2, 128) for _ in range(4)],
+        reextracted_track_supports=[torch.randn(1, 49, 2, 128) for _ in range(4)],
+        input_height=256,
+        input_width=256,
+        model_height=384,
+        model_width=512,
+    )
+    assert snapshots_exact(snapshot, updated)
+    assert snapshot.online_coords_predicted.data_ptr() != updated.online_coords_predicted.data_ptr()
+
+
+def test_true_apply_changes_only_requested_point_memory():
+    torch.manual_seed(5)
+    snapshot = _snapshot()
+    new_feat = [torch.randn(1, 1, 2, 128) for _ in range(4)]
+    new_support = [torch.randn(1, 49, 2, 128) for _ in range(4)]
+    updated = apply_reextracted_state_action(
+        snapshot,
+        point_indices=torch.tensor([0, 2]),
+        predicted_coordinates_input_xy=torch.tensor([[20.0, 30.0], [80.0, 90.0]]),
+        apply_mask=torch.tensor([True, False]),
+        reextracted_track_features=new_feat,
+        reextracted_track_supports=new_support,
+        input_height=256,
+        input_width=256,
+        model_height=384,
+        model_width=512,
+    )
+    assert not torch.equal(snapshot.online_coords_predicted[:, 15, 0], updated.online_coords_predicted[:, 15, 0])
+    torch.testing.assert_close(snapshot.online_coords_predicted[:, :, 1:], updated.online_coords_predicted[:, :, 1:])
+    for level in range(4):
+        torch.testing.assert_close(updated.online_track_feat[level][:, :, 0], new_feat[level][:, :, 0])
+        torch.testing.assert_close(updated.online_track_support[level][:, :, 0], new_support[level][:, :, 0])
+        torch.testing.assert_close(updated.online_track_feat[level][:, :, 2], snapshot.online_track_feat[level][:, :, 2])
+        torch.testing.assert_close(updated.online_track_support[level][:, :, 2], snapshot.online_track_support[level][:, :, 2])
