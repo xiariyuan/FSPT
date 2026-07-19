@@ -1,0 +1,106 @@
+schema_version: routeD_temporal_identity_train_cache_gate3c1a_v0
+date: 2026-07-19
+
+claim_scope: >-
+  Gradient-train-only causal feature cache. Descriptive training statistics
+  may inform later architecture preregistration. No checkpoint-selection,
+  fit-only audit, model-validation, external evaluation, or performance claim.
+
+authorized_parent:
+  probe_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_2026-07-19.json
+  probe_result_sha256: ed9a1b1de26ead1d28ec83ad0c1a612401af414deb70cf2e90036ab574f86c1a
+  probe_summary_payload_sha256: 42c9c7d0ca983e42a9f418dd1b7a9cde18d1abc071787b07d668b135a5cf0142
+  replay_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_REPLAY_2026-07-19.json
+  replay_result_sha256: c32ae5293a751a932218b41b04e62200bc1ffdc68a135aa7ef832f72ae020761
+  required_probe_status: completed_shape_probe
+  required_replay_status: completed_exact_replay
+
+partition:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json
+  manifest_sha256: afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961
+  name: gradient_train
+  source_indices: [64, 383]
+  expected_videos: 320
+  checkpoint_selection_indices_384_447_read: false
+  fit_only_internal_audit_indices_448_511_read: false
+
+backbones:
+  cotracker3:
+    checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+    checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+    input_raster: 256
+    observed_frames: [0, 15]
+    reverse_tracklet_frames: [15, 0]
+    frozen: true
+  dinov3:
+    model_dir: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m
+    weights: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/model.safetensors
+    weights_sha256: 208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2
+    frozen: true
+
+failure_membership:
+  commit_frame: 15
+  future_evaluation_frames: [16, 23]
+  original_query_frame_less_than: 8
+  gt_visible_at_commit: true
+  gt_visible_in_future_min_frames: 4
+  native_future_mean_error_px_min: 16.0
+  clean_future_mean_error_px_max: 4.0
+  per_video_cap: 16
+  ranking: descending_native_future_mean_error_then_point_index
+  membership_may_use_teacher: true
+  teacher_available_to_candidate_coordinates_or_features: false
+
+candidate_bank:
+  representation: M1_geometry_native
+  mandatory_native_candidate_zero: true
+  nonnative_top_k: 128
+  nms_radius_grid_cells: 3
+  local_refinement_window_grid_cells: 5
+  local_softmax_temperature: 0.05
+  deduplicate_radius_input_px: 4.0
+  geometry_support_radius: 3
+  geometry_token_trim_fraction: 0.125
+  reverse_tracklet_microbatch_failure_rows: 1
+
+feature_contract:
+  observed_frames: [0, 15]
+  temporal_shape_per_row: [129, 16, 9]
+  static_shape_per_row: [129, 14]
+  valid_shape_per_row: [129]
+  storage_dtype: float32
+  label_positive_radius_px: 12.0
+  raw_dinov3_descriptors_persisted: false
+  candidate_coordinates_persisted: true
+  candidate_scores_persisted: true
+  teacher_distances_persisted_as_labels: true
+  candidate_hash_frozen_before_teacher_labels: true
+
+cache:
+  output_root: /gemini/code/FSPT/outputs/routeD_temporal_identity_train_cache_gate3c1a_20260719
+  sidecar_schema: routeD_temporal_identity_train_cache_video_gate3c1a_v0
+  index_schema: routeD_temporal_identity_train_cache_index_gate3c1a_v0
+  atomic_writes: true
+  resume_requires_sidecar_validation: true
+  all_320_sidecars_required_before_index: true
+
+completion_gate:
+  exact_source_membership_required: true
+  exact_video_count_required: 320
+  all_sidecars_hash_verified: true
+  all_feature_tensors_finite: true
+  candidate_hashes_before_teacher_required: true
+  empty_failure_videos_allowed: true
+  training_support_statistics_descriptive_only: true
+  decision_pass: AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION
+  decision_fail: STOP_AND_REPAIR_GRADIENT_TRAIN_CACHE
+
+locked_data:
+  original_model_validation_indices_48_63_read: false
+  checkpoint_selection_indices_384_447_read: false
+  fit_only_internal_audit_indices_448_511_read: false
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
