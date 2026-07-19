@@ -14,6 +14,8 @@ Interface source hashes:
 ```text
 implementation: 784e14d35a9b8e797800d80be4f330eba33d3a21071dd39f4a23b2f7ac350a47
 tests:          65caa23f890d68ba3bba93c270c589754faee440389352652b0954baddd4ed6c
+query anchor:   73b524583316716cd0ea81623fe17d7458c92b30f77f030d0e6691ecfcd1fefd
+anchor tests:   4c720974ec7d49e903054506448d3dff3ed6ae69ff7d750bbf257f006a287efc
 ```
 
 This is an implementation interface, not an authorized experiment. Candidate
@@ -67,3 +69,15 @@ The interface does not yet establish:
 After Gate 2.5 passes integrity packaging, Gate 3A v1 must separately freeze a
 new immutable-anchor cache, representation controls, candidate extraction, and
 recall thresholds derived only from the measured recovery basin.
+
+## Immutable query-anchor interface
+
+The accompanying causal-anchor helper extracts each point's four-level feature
+and support memory at its original query frame and coordinate. Before calling
+CoTracker's `get_track_feat`, every feature-pyramid level is physically
+truncated after the latest requested query frame. Consequently, changing any
+later observed feature cannot change the immutable anchor.
+
+This helper defines only the original-query anchor. “Last trusted” and
+“pre-risk” anchor update rules remain deliberately unimplemented because their
+write conditions require a separately frozen causal protocol.

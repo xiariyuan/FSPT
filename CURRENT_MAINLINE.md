@@ -17,6 +17,8 @@ locked. No new pretrained weights are authorized before Gate 2.5 completes.
 A geometry-preserving 49-token matcher interface is implemented with tests but
 is not yet an authorized Gate 3A-v1 experiment. Its distance gates and immutable
 anchor-cache protocol remain blocked on the valid Gate 2.5 primary/replay result.
+The strictly causal original-query anchor extractor is implemented; later
+trusted-anchor write/update rules remain intentionally unimplemented.
 ```
 
 Read first:
