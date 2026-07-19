@@ -172,3 +172,29 @@ final holdout: unread
 TAP-Vid-DAVIS: unread
 official Kinetics 1,144: unread and not rerun
 ```
+
+## 9. Completed interface result — 2026-07-19
+
+The fit-source-0 interface audit fails before bounded writeback or model-validation
+access. Formal P0j-C is reconstructed exactly and the final live native state
+matches the frozen cache exactly, but the provisional commit-time stream does
+not match formal C:
+
+```text
+candidate-coordinate max component difference: 56.3684px
+selected-coordinate max component difference:  36.5723px
+selected-index mismatches:                       2 / 1536 rows
+selected-coordinate mismatches:                502 / 1536 rows
+eligible native rows later revised:             50.0%
+maximum eligible native revision:               40.9733px
+```
+
+The fixed write hook was not executed. Model validation and every locked dataset
+remain unread. Formal decision:
+
+```text
+STOP_P0K_BEFORE_MODEL_VALIDATION_COMMIT_STATE_MISMATCH
+```
+
+Do not sweep write timing, bounds, confirmation, or state fields. See
+`docs/ROUTED_STRONG_BACKBONE_BOUNDED_WRITEBACK_INTERFACE_RESULT_2026-07-19.md`.

@@ -1,0 +1,146 @@
+{
+  "schema_version": "routeD_strong_backbone_bounded_writeback_interface_summary_v0",
+  "date": "2026-07-19",
+  "status": "completed_fail_before_model_validation",
+  "formal_decision": "STOP_P0K_BEFORE_MODEL_VALIDATION_COMMIT_STATE_MISMATCH",
+  "scientific_interpretation": "P0j variant C is exact under its frozen finalized-state output-only contract, but the same decisions are not available at the provisional commit point required for next-window CoTracker writeback.",
+  "claim_boundary": "Variant C remains valid as the previously reported finalized-state output-only Kubric model-validation result. P0k does not establish a closed-loop gain and model validation was not read.",
+  "interface": {
+    "source_index": 0,
+    "video_name": "1680",
+    "frames": 24,
+    "points": 64,
+    "formal_framewise_self_check_exact": true,
+    "internal_no_write_replay_exact": true,
+    "independent_process_replay_exact": true,
+    "independent_replay_tensor_count": 22,
+    "final_native_state_parity_exact": true,
+    "commit_time_formal_C_exact": false,
+    "bounded_write_executed": false
+  },
+  "commit_time_vs_formal_C": {
+    "candidate_coordinates": {
+      "exact": false,
+      "max_abs": 56.36842346191406,
+      "left_sha256": "e04b0f70d1b559989ccd089587ff7a49a08fe96bc3e2e713c6d6b7e6cedcb17b",
+      "right_sha256": "3e0141150b94365dd0f458340de059acc89f6c5584f3417a31329bb53b002482"
+    },
+    "candidate_valid_mask": {
+      "exact": true,
+      "max_abs": null,
+      "left_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c",
+      "right_sha256": "d5606b5e93cf0a0bb7ae4694510678fcdea2ed90fd323aae5f5251e71395bb8c"
+    },
+    "selected_indices": {
+      "exact": false,
+      "max_abs": null,
+      "left_sha256": "60482ab42aaaea8c084fd53a0c9d2c9f0f367c5690669b6327c6e57050de0ae7",
+      "right_sha256": "a300954eab4af2a2010b70c8d4774c4de366e60951d67a1e0a89d81755209026"
+    },
+    "selected_coordinates": {
+      "exact": false,
+      "max_abs": 36.57231140136719,
+      "left_sha256": "d1cc3004b075699144f11989bd4db71efad872b5837832bac2c468616ba84351",
+      "right_sha256": "0cca7c3a86c08d2328c7da7799daa237c1e3e78bcbfacc54438f0771c3513900"
+    },
+    "dynamic_summary": {
+      "exact": false,
+      "max_abs": 1.0,
+      "left_sha256": "08f941b02c2948d128d4953e0028396129bb6126ff27fae010e4c97c71ec0041",
+      "right_sha256": "4e1d82ae177510fb8674681e0493906f2905a65718d23c4182411b5e4134f46c"
+    }
+  },
+  "structural_diagnostics": {
+    "rows": 1536,
+    "eligible_rows": 1024,
+    "selected_index_mismatch_rows": 2,
+    "selected_index_mismatch_fraction": 0.0013020833721384406,
+    "eligible_selected_index_mismatch_rows": 2,
+    "eligible_selected_index_mismatch_fraction": 0.001953125,
+    "selected_coordinate_mismatch_rows": 502,
+    "selected_coordinate_mismatch_fraction": 0.3268229067325592,
+    "selected_coordinate_max_difference_px": 40.97328186035156,
+    "candidate_coordinate_max_difference_px": 60.54104232788086,
+    "formal_non_native_rows": 80,
+    "commit_non_native_rows": 80,
+    "formal_non_native_eligible_rows": 29,
+    "commit_non_native_eligible_rows": 29,
+    "commit_native_vs_final_max_difference_px": 40.97328186035156,
+    "commit_native_vs_final_nonzero_fraction": 0.3333333432674408,
+    "eligible_commit_native_vs_final_max_difference_px": 40.97328186035156,
+    "eligible_commit_native_vs_final_nonzero_fraction": 0.5,
+    "eligible_frame_indices": [
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23
+    ]
+  },
+  "replay": {
+    "checks": {
+      "decision": true,
+      "interface_pass": true,
+      "source_index": true,
+      "video_name": true,
+      "frames": true,
+      "points": true,
+      "config_sha256": true,
+      "protocol_sha256": true,
+      "variant_C_checkpoint_sha256": true,
+      "feature_index_sha256": true,
+      "formal_self_check": true,
+      "no_write_replay_exact": true,
+      "no_write_replay_hashes": true,
+      "final_native_parity": true,
+      "commit_time_vs_formal_C": true,
+      "commit_native_vs_final_native": true,
+      "bounded_write_executed": true,
+      "locked_data_read": true
+    },
+    "primary_report_sha256": "edbff80c75b287a6143155e0745904de39532a1d07f55a1c94d0bf1b8c3e28fd",
+    "replay_report_sha256": "e7d3db81bfc260503563754dbc97f4a864b096a82f2fd1e37580dc190bf1c5a0",
+    "primary_sidecar_sha256": "7e0542ad9df0dcb682a568a6f01d659eb71c91ebdfb7ca33b09d0b33fb6e5e9f",
+    "replay_sidecar_sha256": "c1398e37ce9a1b98d4f960dd5b94ef197c2b32974f751fe75b6e9346c2323d52",
+    "note": "Torch archive byte hashes differ, while every nested tensor and scalar in the primary/replay artifacts is exact."
+  },
+  "provenance": {
+    "config_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_cmcp_bounded_writeback_v0.yaml",
+    "config_sha256": "d3db199673295bfd294975dfbe05fd7516e3fd801003c16254a3b26e0f394ee6",
+    "protocol_path": "/gemini/code/FSPT_v9a60_clean/configs/routeD_musr_kubric_cache_protocol_v0.json",
+    "protocol_sha256": "317a9ad2dbf36c1ed9a2c10eaa408967682f6f95a3870dfbaf61329077ed2fb0",
+    "variant_C_checkpoint": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_cmcp_lmra_ablation_20260717/C_seed17/best.pt",
+    "variant_C_checkpoint_sha256": "7babb76e3407497832d0bc0fca4557df64b2d09450ebc60766e32a70816ab52f",
+    "feature_index": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_cmcp_feature_cache_20260717/fit/cache_index.json",
+    "feature_index_sha256": "bfb10726a317b7bdb1a7993ab1e417440dc561dad03c748a2c5e958f2b5bac76"
+  },
+  "gate": {
+    "formal_framewise_C_reconstruction_exact": true,
+    "final_native_state_matches_cache_exact": true,
+    "no_write_replay_exact": true,
+    "commit_time_candidate_coordinates_exact": false,
+    "commit_time_selected_indices_exact": false,
+    "commit_time_selected_coordinates_exact": false,
+    "commit_time_dynamic_summary_exact": false,
+    "pass": false,
+    "decision": "STOP_P0K_BEFORE_MODEL_VALIDATION_COMMIT_STATE_MISMATCH"
+  },
+  "next_step": "Close coordinate-only next-window writeback for the current paper. Retain variant C as the strong-backbone output-only model and do not open model validation or sweep state-write timing.",
+  "locked_data_read": {
+    "calibration": false,
+    "final_holdout": false,
+    "tapvid_davis": false,
+    "tapvid_kinetics": false
+  }
+}

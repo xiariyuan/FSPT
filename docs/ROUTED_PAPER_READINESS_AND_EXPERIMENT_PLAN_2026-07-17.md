@@ -434,3 +434,23 @@ frozen external protocol is completed.
 The immediate next step is one coordinate-only bounded writeback ablation against
 the frozen-CMCP variant C. Do not reopen candidate, layer, rank, threshold, NMS,
 EMA, top-K, or intervention-strength sweeps on model validation.
+
+## 10. Closed-loop boundary update — 2026-07-19
+
+The strong-backbone variant C result remains valid only under its finalized-state
+output-only evaluation contract. The preregistered P0k interface audit shows that
+the provisional overlap state required for next-window writeback differs from the
+finalized state used by formal C on 50% of eligible native rows, with revisions
+up to 40.9733px.
+
+Therefore:
+
+```text
+strong-backbone output-only evidence: retained
+strong-backbone closed-loop claim: not authorized
+P0k model-validation evaluation: not run
+coordinate-only writeback route: closed for this paper
+```
+
+The paper should present this as an explicit limitation and causal-interface
+negative result, not hide it or infer a closed-loop benefit from the P0j oracle.

@@ -157,3 +157,18 @@ pass a stricter no-regression comparison against C
 Calibration, final holdout, DAVIS, and official Kinetics remain locked until that
 separate gate passes. No layer, rank, threshold, NMS, EMA, top-K, write strength,
 or horizon sweep is authorized on model validation.
+
+## 8. Post-P0k closed-loop boundary — 2026-07-19
+
+The separately preregistered coordinate-only bounded writeback interface fails
+before model-validation access. Variant C remains the recommended finalized-state
+output-only model, but it cannot be reinterpreted as a next-window closed-loop
+controller: 50% of write-eligible native rows change between the provisional
+commit state and the finalized state used by formal C.
+
+```text
+STOP_P0K_BEFORE_MODEL_VALIDATION_COMMIT_STATE_MISMATCH
+```
+
+No bounded write was executed and no writeback performance result exists. See
+`docs/ROUTED_STRONG_BACKBONE_BOUNDED_WRITEBACK_INTERFACE_RESULT_2026-07-19.md`.
