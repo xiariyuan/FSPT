@@ -85,7 +85,15 @@ teacher:
 cache:
   schema_version: routeD_csrr_teacher_cache_v0
   raster: 256
-  storage_dtype: float16
+  model_tensor_storage_dtype: float16
+  exact_rollout_state_storage_dtype: float32
+  exact_rollout_state_fields:
+    - predictor_queries
+    - online_track_feat_all_levels
+    - online_track_support_all_levels
+    - online_coords_predicted
+    - online_vis_predicted
+    - online_conf_predicted
   per_video_fields:
     - frozen_frame15_feature_pyramid
     - native_commit_state

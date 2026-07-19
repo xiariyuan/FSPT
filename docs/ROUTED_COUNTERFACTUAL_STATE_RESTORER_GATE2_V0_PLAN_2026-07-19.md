@@ -271,3 +271,26 @@ canonical summary SHA256:                84287c8ad739df418d8a2158ff36a0e2e69a4c8
 ```
 
 The decision remains `ALLOW_GATE2_TEACHER_CACHE_BUILD`.
+
+
+## 13. Pre-cache exact-state storage clarification — 2026-07-19
+
+Before any teacher cache was built, the cache dtype contract was clarified to
+preserve both training efficiency and exact causal replay.
+
+```text
+model inputs and teacher views:          float16
+complete native rollout state:           float32
+video frames:                            uint8
+```
+
+The float16 view is used by CSRR training and remains subject to the frozen
+`1e-3 / 0.99999` quantization gates. A separate float32 copy of the complete
+native commit state is required for exact native continuation, zero-action
+parity, and C/P/F future-rollout comparisons. Quantizing the only native state
+copy would weaken the already frozen exact-no-op gate.
+
+No cache, checkpoint, training epoch, or validation metric existed when this
+clarification was made. Model architecture, source partitions, losses, thresholds,
+and scientific gates are unchanged. The interface primary/replay must be rebuilt
+under the clarified config hash before cache construction.
