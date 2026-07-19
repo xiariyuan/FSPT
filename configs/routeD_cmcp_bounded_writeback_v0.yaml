@@ -1,0 +1,95 @@
+experiment:
+  name: routeD_cmcp_bounded_writeback_v0
+  stage: P0k
+  description: >-
+    One fixed coordinate-only closed-loop writeback ablation attached to the
+    preregistered best P0j variant C. No write-strength, horizon, threshold,
+    candidate, or visibility/confidence sweep is permitted.
+
+base_model:
+  name: C_lmra_frozen_cmcp_comparator
+  checkpoint: outputs/routeD_cmcp_lmra_ablation_20260717/C_seed17/best.pt
+  checkpoint_sha256: 7babb76e3407497832d0bc0fca4557df64b2d09450ebc60766e32a70816ab52f
+  combined_model_state_sha256: 64c3f6dae6ae34dc0223754aca3c76f78a1f48137d08bab6c3e01f2a806cd074
+  cmcp_frozen: true
+  lmra_frozen: true
+  comparator_frozen: true
+  native_tracker_frozen: true
+
+backbone:
+  name: cotracker3_scaled_online_true_streaming
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  input_raster: 256
+  query_mode: first
+  add_support_grid: false
+
+intervention:
+  output_policy: exact_variant_C_selected_coordinate
+  state_field: online_coords_predicted
+  coordinate_only: true
+  visibility_writeback: false
+  confidence_writeback: false
+  track_feature_writeback: false
+  support_feature_writeback: false
+  cmcp_memory_writeback: false
+  selected_candidate_must_be_non_native: true
+  max_step_px: 8.0
+  step_bound: l2_norm_clip_from_current_native_coordinate
+  write_region: second_half_overlap_consumed_by_next_streaming_window
+  current_frame_output_copied_before_state_write: true
+  new_trainable_parameters: 0
+
+causal_memory:
+  query_support: immutable_first_visible_query_feature
+  previous_native_support: pre_writeback_native_feature_from_current_frame
+  ema_support_alpha: 0.9
+  future_frames_used: false
+  ground_truth_used_for_generation_or_action: false
+
+partitions:
+  interface_smoke:
+    partition: fit
+    source_index: 0
+    allowed_use: exact parity, state mutation, and deterministic replay only
+  formal_model_validation:
+    partition: model_validation
+    source_indices: [48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63]
+    allowed_use: one fixed closed-loop comparison against output-only C
+
+interface_gates:
+  output_only_native_state_matches_frozen_base: exact
+  output_only_candidate_coordinates_match_cached_C: exact
+  output_only_candidate_valid_mask_matches_cached_C: exact
+  output_only_selected_indices_match_cached_C: exact
+  output_only_selected_coordinates_match_cached_C: exact
+  output_only_dynamic_summary_match_cached_C: exact
+  independent_full_video_replay: exact
+  state_mutation_only_in_declared_overlap: true
+  coordinate_write_norm_max_px: 8.0
+  visibility_state_unchanged_by_hook: exact
+  confidence_state_unchanged_by_hook: exact
+  candidate_zero_native_fallback: exact
+
+formal_gates_against_output_only_C:
+  complete_16_video_partition: true
+  closed_loop_AJ_gain_points_min: 0.10
+  paired_video_closed_loop_minus_C_AJ_CI_lower_gt: 0.0
+  closed_loop_delta_average_gain_gt: 0.0
+  closed_loop_severe_16px_rate_not_worse: true
+  closed_loop_harmful_non_native_rate_max: 0.01
+  each_video_native_candidate_parity: exact
+  independent_seed17_replay: exact
+
+stop_rules:
+  - If interface parity fails, fix implementation and do not run model validation.
+  - If the formal gate fails, close bounded writeback for the paper mainline.
+  - Do not sweep max_step_px, write region, confirmation length, visibility or confidence writes.
+  - Do not retrain LMRA, CMCP, comparator, or CoTracker for this ablation.
+  - Do not read calibration, final holdout, DAVIS, or official Kinetics.
+
+locked_data:
+  calibration: unread
+  final_holdout: unread
+  tapvid_davis: unread
+  tapvid_kinetics_official_1144: unread_and_not_rerun
