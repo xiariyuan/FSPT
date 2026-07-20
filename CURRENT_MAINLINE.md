@@ -84,6 +84,17 @@ zero. Renewed partitions are checkpoint 0--255, audit 256--383, and model
 validation 384--511. Formal decision:
 AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION. No renewed selector metric
 has been read.
+
+Gate 3C1D v1 is preregistered and has not read any renewed feature or policy
+metric. On the already exposed 4,901-row development pool, strict nested
+source-video diagnosis showed that value/harm gates without an independent
+support condition have zero passing policies. The frozen redesign ranks by
+predicted expected distance, then requires separate 12-pixel support, predicted
+positive value, and low harmful-action risk. A design-only nested point reaches
+31.7282% coverage, 65.6592% action precision, +3.9970 px mean error reduction,
+and 0.7958% all-row harmful rate. Formal execution uses five-fold OOF row-model
+training and a frozen 480-policy grid on renewed checkpoint 0--255. Checkpoint
+failure stops without opening renewed audit 256--383.
 ```
 
 Read first:
@@ -112,6 +123,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

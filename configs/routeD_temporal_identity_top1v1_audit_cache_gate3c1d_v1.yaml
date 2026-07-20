@@ -1,0 +1,110 @@
+schema_version: routeD_temporal_identity_eval_cache_gate3c1d_v1
+date: 2026-07-20
+claim_scope: Frozen raw-record-disjoint causal feature cache for fit_only_internal_audit_v1.
+  No later renewed partition, final holdout, or external dataset may be read before
+  exact replay authorization.
+determinism_seed: 193721
+backbones:
+  cotracker3:
+    checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+    checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+    input_raster: 256
+    observed_frames:
+    - 0
+    - 15
+    reverse_tracklet_frames:
+    - 15
+    - 0
+    frozen: true
+  dinov3:
+    model_dir: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m
+    weights: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/model.safetensors
+    weights_sha256: 208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2
+    frozen: true
+failure_membership:
+  commit_frame: 15
+  future_evaluation_frames:
+  - 16
+  - 23
+  original_query_frame_less_than: 8
+  gt_visible_at_commit: true
+  gt_visible_in_future_min_frames: 4
+  native_future_mean_error_px_min: 16.0
+  clean_future_mean_error_px_max: 4.0
+  per_video_cap: 16
+  ranking: descending_native_future_mean_error_then_point_index
+  membership_may_use_teacher: true
+  teacher_available_to_candidate_coordinates_or_features: false
+candidate_bank:
+  representation: M1_geometry_native
+  mandatory_native_candidate_zero: true
+  nonnative_top_k: 128
+  nms_radius_grid_cells: 3
+  local_refinement_window_grid_cells: 5
+  local_softmax_temperature: 0.05
+  deduplicate_radius_input_px: 4.0
+  geometry_support_radius: 3
+  geometry_token_trim_fraction: 0.125
+  reverse_tracklet_microbatch_failure_rows: 1
+feature_contract:
+  observed_frames:
+  - 0
+  - 15
+  temporal_shape_per_row:
+  - 129
+  - 16
+  - 9
+  static_shape_per_row:
+  - 129
+  - 14
+  valid_shape_per_row:
+  - 129
+  storage_dtype: float32
+  label_positive_radius_px: 12.0
+  raw_dinov3_descriptors_persisted: false
+  candidate_coordinates_persisted: true
+  candidate_scores_persisted: true
+  teacher_distances_persisted_as_labels: true
+  candidate_hash_frozen_before_teacher_labels: true
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md
+  result_sha256: 3583e4838d64b1f30e2d8c8b7241a654652d905b00173f5d914ad02a8ba3d647
+  summary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_SUMMARY_2026-07-20.json
+  summary_sha256: 0aa42f3d8d952dc6ff7fcc600eedbf3d9738609838f439dc34df7200988e5ad8
+  summary_payload_sha256: 576f3a97f9a878726dda6eca7047c38413c343882decb23b8947c1e70d6db03b
+  required_decision: AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION
+implementation:
+  cache_builder:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_temporal_identity_eval_cache_gate3c1d_v1.py
+    sha256: 17a67d5056ce36f44e47831c15d40549f89a3cd55f33efb6875dec3c76b7d025
+  feature_builder:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_temporal_identity_train_cache_gate3c1a_v0.py
+    sha256: fa6988ab74f5e8cbb58e69d52718046b820f262c022b292c57d414212a2374ab
+partition:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_kubric512_seed314159_20260720/train.index.json
+  manifest_sha256: 8937a2ef925b6c97c994da7b755b91b401d2239162c1254b720567f66e028105
+  name: fit_only_internal_audit_v1
+  source_indices:
+  - 256
+  - 383
+  expected_videos: 128
+  read_state:
+    checkpoint_selection_read: true
+    fit_only_internal_audit_read: true
+    original_model_validation_read: true
+    external_read: false
+    renewed_checkpoint_selection_v1_read: true
+    renewed_fit_only_internal_audit_v1_read: true
+    renewed_model_validation_v1_read: false
+cache:
+  output_root: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_audit_cache_gate3c1d_v1_20260720
+  atomic_writes: true
+  resume_requires_sidecar_validation: true
+  all_expected_sidecars_required_before_index: true
+runtime_authorization:
+  required_replay_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_CHECKPOINT_REPLAY_2026-07-20.json
+  required_partition: checkpoint_selection_v1
+  required_exact_replay: true
+  required_gate_pass: true
+  required_decision: AUTHORIZE_GATE3C1D_V1_FIT_ONLY_AUDIT
+  required_protocol_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_top1_gate3c1d_v1.yaml

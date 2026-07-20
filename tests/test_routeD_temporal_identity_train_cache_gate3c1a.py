@@ -97,3 +97,28 @@ def test_generic_cache_payload_accepts_explicit_checkpoint_read_state():
             "external_read": False,
         },
     )
+
+
+def test_generic_cache_payload_accepts_additional_protocol_read_state():
+    from scripts.build_routeD_temporal_identity_train_cache_gate3c1a_v0 import (
+        verify_temporal_identity_cache_payload,
+    )
+    payload = _payload()
+    payload["partition"] = "checkpoint_selection_v1"
+    payload["integrity"]["checkpoint_selection_read"] = True
+    payload["integrity"]["fit_only_internal_audit_read"] = True
+    payload["integrity"]["original_model_validation_read"] = True
+    payload["integrity"]["renewed_checkpoint_selection_v1_read"] = True
+    verify_temporal_identity_cache_payload(
+        payload,
+        expected_partition="checkpoint_selection_v1",
+        expected_source_index=64,
+        expected_config_sha256="config",
+        expected_read_state={
+            "checkpoint_selection_read": True,
+            "fit_only_internal_audit_read": True,
+            "original_model_validation_read": True,
+            "external_read": False,
+            "renewed_checkpoint_selection_v1_read": True,
+        },
+    )

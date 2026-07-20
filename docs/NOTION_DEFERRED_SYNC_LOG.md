@@ -485,3 +485,93 @@ locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1D v1 two-stage causal top-1 preregistration
+
+### Status
+
+```text
+PREREGISTERED_NOT_RUN
+renewed checkpoint metrics unread
+```
+
+### Old-development mechanism diagnosis
+
+Only the already exposed four development caches were used: `4,901` failure
+rows from `450` videos. A four-fold outer source-video split and three-fold
+inner OOF candidate prediction compared candidate-probability argmax with
+minimum predicted expected distance.
+
+Candidate discrimination remained strong:
+
+- candidate AUC/AP: `0.8483/0.4549`;
+- expected-distance raw top-1 12 px support: `35.6662%`;
+- expected-distance raw selected-candidate harmful rate: `8.0800%`.
+
+Value and harm gates alone produced zero passing strategies for both ranking
+rules. Adding an independent 12-pixel support condition created a feasible
+region. The highest-coverage expected-distance design point was:
+
+```text
+support >= 0.30
+value   >= 0 px
+harm    <= 0.20
+coverage:                 31.7282%
+action precision 12 px:   65.6592%
+mean error reduction:     +3.9970 px
+video 95% CI:             [+3.6819,+4.3937] px
+all-row harmful rate:     0.7958%
+nonnegative videos:       98.0%
+```
+
+This is design evidence only and is not copied as the final checkpoint policy.
+
+### Frozen factorization
+
+The v1 bundle contains four fixed models:
+
+1. candidate 12-pixel support classifier;
+2. candidate expected-distance regressor used for stable top-1 ranking;
+3. row-level expected-value regressor;
+4. row-level harmful-action classifier.
+
+Row models are trained only from five-fold source-video OOF candidate
+predictions on the old 4,901-row development pool. The renewed 512 videos are
+forbidden from model fitting.
+
+### Renewed execution sequence
+
+```text
+checkpoint selection v1: 0--255
+fit-only audit v1:       256--383
+model validation v1:     384--511
+```
+
+Checkpoint selects one policy from a frozen `10 x 8 x 6 = 480` grid over support,
+value, and harm thresholds. It cannot alter models, features, or ranking. A
+checkpoint failure stops before audit cache creation. Audit and validation
+require exact replay authorization and use the unchanged hash-pinned primary
+bundle and policy.
+
+### Replay and runtime
+
+Checkpoint replay independently retrains all four models and compares OOF
+training digests plus every renewed target prediction and scientific digest.
+Joblib bytes are not used as the scientific equality criterion because two
+scientifically identical sklearn fits produced different pickle bytes. Later
+stages may load only the primary bundle with its fixed file SHA256.
+
+Frozen runtime: Python `3.11.8`, NumPy `1.26.4`, PyTorch `2.2.2+cu121`,
+scikit-learn `1.4.2`, joblib `1.4.2`.
+
+Calibration, final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain
+locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

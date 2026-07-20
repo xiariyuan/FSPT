@@ -1,0 +1,219 @@
+{
+  "schema_version": "routeD_temporal_identity_top1_gate3c1d_v1_design_diagnostic",
+  "date": "2026-07-20",
+  "status": "completed_design_only",
+  "data_scope": {
+    "renewed_checkpoint_or_later_read": false,
+    "old_exposed_development_only": true,
+    "rows": 4901,
+    "videos_with_failures": 450,
+    "shortlist_size": 9,
+    "candidate_feature_dim": 102,
+    "partition_rows": {
+      "gradient_train": 3325,
+      "checkpoint_selection": 631,
+      "fit_only_internal_audit": 753,
+      "original_model_validation": 192
+    },
+    "assembled_tensor_digests": {
+      "features": "5489a282dbbfc472f0bd6db7213fcd010af6d911f5bcb89e44ca6650513ec416",
+      "distances": "4242d6e94ffee6c12bc01ebf06ef952e87728a6990850a88bcbe21a82fb4ad5f",
+      "shortlist_indices": "16e5801c6f6819608542a7559ca6701829469076c8e893b5180e204d2d2d2e8e",
+      "groups": "c93d11e46600a2143839866a71ac3c564e5e2841ae98d374a663dc9a2998b199",
+      "point_indices": "d049ac2217c18108202668a2cb6d582f1a6c8ff0e790fa97853750fc31734ab5",
+      "partition_id": "431fbc630c2c32febdaaf82a9f7900d555bdd53ddf97c4d90f4f15312c3f359e"
+    }
+  },
+  "nested_design": {
+    "outer_folds": 4,
+    "outer_group": "source_video",
+    "inner_folds": 3,
+    "inner_candidate_predictions": "strict_group_out_of_fold",
+    "candidate_support_target": "distance_px <= 12",
+    "candidate_distance_target": "log1p(clip(distance_px,0,64))",
+    "row_value_target": "clip(native_distance-selected_distance,-64,64)",
+    "row_harm_target": "selected_distance > native_distance + 4",
+    "design_bootstrap_samples": 4000,
+    "design_bootstrap_seed": 193721,
+    "claim_boundary": "Architecture and policy-factorization evidence only; thresholds and metrics are not renewed checkpoint results."
+  },
+  "ablation_without_support_gate": {
+    "policy_dimensions": [
+      "predicted_value_min_px",
+      "predicted_harm_max"
+    ],
+    "grid_size": 48,
+    "maximum_support_probability_ranking": {
+      "metrics": {
+        "candidate_auc": 0.8483005779525685,
+        "candidate_ap": 0.45491870433344994,
+        "raw_top1_within12": 0.3650275453988982,
+        "raw_top1_mean_error": 21.879741668701172,
+        "raw_top1_median_error": 15.93953800201416,
+        "raw_improves_native": 0.8479902060803918,
+        "raw_harm_all": 0.10304019587839217,
+        "value_mae": 7.641500198353405,
+        "value_corr": 0.4835706805600197,
+        "harm_auc": 0.8628721880377301,
+        "harm_ap": 0.40376017276900233,
+        "harm_prevalence": 0.10304019587839217
+      },
+      "passing_policy_count": 0,
+      "highest_coverage_passing_policy": null
+    },
+    "minimum_expected_distance_ranking": {
+      "metrics": {
+        "candidate_auc": 0.8483005779525685,
+        "candidate_ap": 0.45491870433344994,
+        "raw_top1_within12": 0.35666190573352374,
+        "raw_top1_mean_error": 21.48035430908203,
+        "raw_top1_median_error": 15.97851848602295,
+        "raw_improves_native": 0.8510508059579678,
+        "raw_harm_all": 0.08079983676800653,
+        "value_mae": 7.082114029517617,
+        "value_corr": 0.4913356414743379,
+        "harm_auc": 0.8484175831567619,
+        "harm_ap": 0.33323470252118403,
+        "harm_prevalence": 0.08079983676800653
+      },
+      "passing_policy_count": 0,
+      "highest_coverage_passing_policy": null
+    },
+    "finding": "Neither ranking produced a policy passing the fixed coverage, 12-pixel precision, improvement, CI, and harm gates."
+  },
+  "three_condition_policy_probe": {
+    "policy_dimensions": [
+      "selected_support_probability_min",
+      "predicted_value_min_px",
+      "predicted_harm_max"
+    ],
+    "grid_size": 480,
+    "maximum_support_probability_ranking": {
+      "metrics": {
+        "candidate_auc": 0.8483005779525685,
+        "candidate_ap": 0.45491870433344994,
+        "raw_top1_within12": 0.3650275453988982,
+        "raw_top1_mean_error": 21.879741668701172,
+        "raw_top1_median_error": 15.93953800201416,
+        "raw_improves_native": 0.8479902060803918,
+        "raw_harm_all": 0.10304019587839217,
+        "value_mae": 7.641500198353405,
+        "value_corr": 0.4835706805600197,
+        "harm_auc": 0.8628721880377301,
+        "harm_ap": 0.40376017276900233,
+        "harm_prevalence": 0.10304019587839217
+      },
+      "passing_policy_count": 106,
+      "highest_coverage_passing_policy": {
+        "support_min": 0.3,
+        "value_min": 5,
+        "harm_max": 0.05,
+        "coverage": 0.32319934707202613,
+        "precision12": 0.6502525252525253,
+        "mean_reduction": 4.185027122497559,
+        "ci": [
+          4.146132469177246,
+          3.7840236008167265,
+          4.517081570625305
+        ],
+        "harm_all": 0.00632523974699041,
+        "harm_action": 0.019570707070707072,
+        "nonnegative_videos": 0.9888888888888889
+      }
+    },
+    "minimum_expected_distance_ranking": {
+      "metrics": {
+        "candidate_auc": 0.8483005779525685,
+        "candidate_ap": 0.45491870433344994,
+        "raw_top1_within12": 0.35666190573352374,
+        "raw_top1_mean_error": 21.48035430908203,
+        "raw_top1_median_error": 15.97851848602295,
+        "raw_improves_native": 0.8510508059579678,
+        "raw_harm_all": 0.08079983676800653,
+        "value_mae": 7.082114029517617,
+        "value_corr": 0.4913356414743379,
+        "harm_auc": 0.8484175831567619,
+        "harm_ap": 0.33323470252118403,
+        "harm_prevalence": 0.08079983676800653
+      },
+      "passing_policy_count": 144,
+      "highest_coverage_passing_policy": {
+        "support_min": 0.3,
+        "value_min": 0,
+        "harm_max": 0.2,
+        "coverage": 0.3172821873087125,
+        "precision12": 0.6565916398713826,
+        "mean_reduction": 3.996976375579834,
+        "ci": [
+          4.040739059448242,
+          3.6818878829479216,
+          4.393679511547089
+        ],
+        "harm_all": 0.007957559681697613,
+        "harm_action": 0.02508038585209003,
+        "nonnegative_videos": 0.98
+      }
+    }
+  },
+  "selected_mechanism": {
+    "candidate_ranking": "minimum predicted expected distance with stable lower shortlist slot tie-break",
+    "support_gate": "candidate support classifier is an independent 12-pixel basin condition",
+    "value_gate": "row-level expected commit-error reduction",
+    "harm_gate": "row-level probability of output error exceeding native by more than 4 pixels",
+    "formal_row_training": "five-fold source-video OOF candidate predictions on all 4,901 old exposed rows",
+    "renewed_checkpoint_role": "select one policy from the frozen 10 x 8 x 6 grid only; no model fitting or architecture change",
+    "decision": "PREREGISTER_EXPECTED_DISTANCE_PLUS_SUPPORT_VALUE_HARM_POLICY"
+  },
+  "serialization_determinism_probe": {
+    "independent_training_runs": 2,
+    "scientific_training_digests_exact": true,
+    "oof_feature_digest": "bd4533a83f4e28549c84cccac7fd00fc6585187455248393e11721b4cecd6285",
+    "oof_support_digest": "c829ea0ceb2730af3232ec76e9d845c34b8ea1de43603a0aaf774814973ec7db",
+    "oof_expected_distance_digest": "6980ca7c50dca2c1d77f1c306b2e531ae625ea77f1d41815206e5cdab4c6d0df",
+    "oof_selected_slot_digest": "d57fe9410e04b228befec7caee4ecebc0e871a8873ccbb76983d102d5852baaf",
+    "joblib_file_bytes_exact": false,
+    "replay_rule": "Compare OOF training digests and all target prediction/scientific digests; downstream stages load only the hash-pinned primary bundle."
+  },
+  "formal_protocol": {
+    "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_top1_gate3c1d_v1.yaml",
+    "config_sha256": "6abfcac0c56612aa87b97a556d72cf4c2e95c6314fec318cf46446b824e89e8c",
+    "runtime_contract": {
+      "python": "3.11.8",
+      "numpy": "1.26.4",
+      "torch": "2.2.2+cu121",
+      "scikit_learn": "1.4.2",
+      "joblib": "1.4.2"
+    },
+    "renewed_partitions": {
+      "checkpoint_selection_v1": {
+        "source_indices": [
+          0,
+          255
+        ],
+        "config_sha256": "6d2d22069cdda00fa710c3d9753b9095558c325885990c167651957e0a62cc9d"
+      },
+      "fit_only_internal_audit_v1": {
+        "source_indices": [
+          256,
+          383
+        ],
+        "config_sha256": "38cbaf97f60b55d0d2dfbadda3f7d15ab74913e8607623fc5030196b4b25f659"
+      },
+      "model_validation_v1": {
+        "source_indices": [
+          384,
+          511
+        ],
+        "config_sha256": "64c87c3d12239e3aa00796e84d6b29d8f096f6821d9c250904e00a0b7ada263c"
+      }
+    },
+    "locked_data": {
+      "calibration_read": false,
+      "final_holdout_read": false,
+      "tapvid_davis_read": false,
+      "tapvid_kinetics_read": false,
+      "official_kinetics_1144_rerun": false
+    }
+  },
+  "payload_sha256": "0b0e93040aaf92c29c6a3e7ad3d197cdaaeefcfa7b43f0f36fd619c2386785b3"
+}

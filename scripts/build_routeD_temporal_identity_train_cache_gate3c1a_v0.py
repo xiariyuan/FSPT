@@ -557,6 +557,17 @@ def _build_video(
                 read_state["original_model_validation_read"]
             ),
             "external_read": bool(read_state["external_read"]),
+            **{
+                key: bool(value)
+                for key, value in read_state.items()
+                if key
+                not in {
+                    "checkpoint_selection_read",
+                    "fit_only_internal_audit_read",
+                    "original_model_validation_read",
+                    "external_read",
+                }
+            },
         },
         "provenance": {
             "config": str(config_path),
