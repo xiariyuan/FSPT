@@ -126,12 +126,14 @@ All 14 source TFRecords independently rehash exactly and raw overlap is zero.
 Formal decision: AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION.
 No metric from the new population has been read.
 
-Gate 3C1F2 v0 is preregistered and not run. It freezes the causal 130-D entry
-rule at probability >=0.93 and native joint probability <=0.02, the Gate 3C1D
-top-1 policy, coordinate plus four-level memory writeback, native visibility
-semantics, equal-video AJ/delta_avg/OA metrics, paired-video CIs, and exact
-replay. A pass requires positive CI lower bounds for all three complete-video
-metrics plus action benefit and <=5% future harm. External data remain locked.
+Gate 3C1F2 v0 completed with exact replay and failed the frozen full-population
+gates. On 128 third-population videos, AJ gain is +0.0014 points with CI
+[-0.0340,+0.0435], delta_avg gain is +0.0937 points with positive CI, and OA
+gain is +0.1591 points with positive CI. Among 51 evaluable actions, future
+error reduction is +15.2680 px, 98.04% are positive, and none is harmful by more
+than 4 px. The current bottleneck is population coverage and AJ leverage, not
+action quality. Formal decision: STOP_BEFORE_OFFICIAL_TAPVID. External data
+remain locked; any redesign requires a new raw-record-disjoint confirmation.
 ```
 
 Read first:
@@ -169,6 +171,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

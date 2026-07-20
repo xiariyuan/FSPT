@@ -47,20 +47,33 @@ def _video_record(index: int, *, future_reduction: float = 10.0):
     return record
 
 
-def test_gate3c1f2_config_authorities_and_locked_outputs_are_exact():
+def test_gate3c1f2_config_authorities_and_completed_exact_replay_are_exact():
     config, _, parents = _validate_config(CONFIG.resolve())
     assert parents["data"]["formal_decision"] == (
         "AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION"
     )
     assert all(value is False for value in config["locked_data"].values())
-    assert not Path(config["determinism"]["primary_work_root"]).exists()
-    assert not Path(config["determinism"]["replay_work_root"]).exists()
-    assert not Path(
+    primary_root = Path(config["determinism"]["primary_work_root"])
+    replay_root = Path(config["determinism"]["replay_work_root"])
+    assert len(list(primary_root.glob("video_*.json"))) == 128
+    assert len(list(replay_root.glob("video_*.json"))) == 128
+    primary_path = Path(
         "docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_PRIMARY_2026-07-20.json"
-    ).exists()
-    assert not Path(
+    )
+    replay_path = Path(
         "docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_REPLAY_2026-07-20.json"
-    ).exists()
+    )
+    primary = json.loads(primary_path.read_text())
+    replay = json.loads(replay_path.read_text())
+    assert primary["gate"]["decision"] == "PRIMARY_COMPLETE_AWAIT_EXACT_REPLAY"
+    assert replay["exact_replay"] is True
+    assert all(replay["replay_comparison"].values())
+    assert replay["gate"]["pass"] is False
+    assert replay["gate"]["decision"] == "STOP_BEFORE_OFFICIAL_TAPVID"
+    assert replay["scientific"]["metrics"]["videos"] == 128
+    assert replay["scientific"]["scientific_payload_sha256"] == (
+        "e1000928de9565aba106612aa2bca7c89566f8859d3325e9c00b91ae2fe9b9e4"
+    )
 
 
 def test_gate3c1f2_synthetic_primary_and_exact_replay_pass(tmp_path):

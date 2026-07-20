@@ -869,3 +869,37 @@ DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F2 complete-population confirmation result
+
+### Status
+
+```text
+COMPLETED_FAIL_WITH_EXACT_REPLAY
+STOP_BEFORE_OFFICIAL_TAPVID
+```
+
+The frozen causal pipeline completed on all 128 third-population Kubric videos.
+Complete-video equal-video gains are `+0.0014` AJ points, `+0.0937` delta_avg
+points, and `+0.1591` OA points. AJ CI is `[-0.0340,+0.0435]` points; delta_avg
+and OA CIs are strictly positive but below their preregistered magnitude gates.
+
+There are 537 causal entry triggers, 89 final top-1 actions, 44 action-support
+videos, and 51 actions with visible future GT. Those 51 actions reduce future
+error by `+15.2680 px` on average; `98.04%` improve and `0%` are harmful by more
+than 4 px. The remaining bottleneck is complete-population coverage/AJ leverage,
+not action quality. Fresh-process replay reproduces every per-video and aggregate
+scientific digest exactly.
+
+No official TAP-Vid evaluation is authorized. Any redesigned entry/action policy
+requires a newly preregistered raw-record-disjoint confirmation population.
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
