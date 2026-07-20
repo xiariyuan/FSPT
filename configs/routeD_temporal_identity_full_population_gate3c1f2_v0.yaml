@@ -1,0 +1,193 @@
+schema_version: routeD_temporal_identity_full_population_confirmation_gate3c1f2_v0
+date: 2026-07-20
+claim_scope: >-
+  One-shot complete-population confirmation on 128 third-population Kubric videos
+  that are raw-record-disjoint from all Gate 3C0 and Gate 3C2 data. The causal
+  entry, candidate generator, Gate 3C1D selector, four-level memory writeback,
+  visibility semantics, metrics, and gates are frozen before any new-population
+  tracking metric is read. A pass may authorize only separately preregistered
+  official TAP-Vid evaluation.
+
+authorized_parents:
+  data_qualification:
+    path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_SUMMARY_2026-07-20.json
+    file_sha256: bfdf6a1dc2b513dcf8db6a678573eaf403294d2925f11acc9153e46177655969
+    payload_field: summary_payload_sha256
+    payload_sha256: 25688db59aa64a84c1be877ea8c136f5b6d471eb5a064ac2385cd0846beac461
+    required_decision: AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION
+  entry_replay:
+    path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_REPLAY_2026-07-20.json
+    file_sha256: 43f457abde9ba563322864e8f802fa0a156d6a952a3e23d403a69f06c9da28df
+    payload_field: result_payload_sha256
+    payload_sha256: 0957fb7f74b0576ef28940b52a746d578b4eda1494558aee79b63a4010e9178e
+    required_decision: AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA
+  top1_replay:
+    path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_MODEL_VALIDATION_REPLAY_2026-07-20.json
+    file_sha256: 104527b0615723858c90aa137107bac6a7307931bd99fced33af88526f9c1c29
+    payload_field: result_payload_sha256
+    payload_sha256: 5a95b02681827041f941c8ac459e23e31c64dc12ef26f46213310e04a1f10bad
+    required_decision: AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION
+  future_rollout_replay:
+    path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_REPLAY_2026-07-20.json
+    file_sha256: 97a4c4972ff2db03ad18b8a2c0e6a2bd477bd1c1e03b89bba19eb87e4d58c406
+    payload_field: result_payload_sha256
+    payload_sha256: 9518f96c1cc19b37b02348d9d559c07898ce76c8dc1d3fadf6f2f1e3729ad173
+    required_decision: AUTHORIZE_GATE3C1F_OFFICIAL_TAPVID_BENCHMARK_PREREGISTRATION
+
+implementation:
+  runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_full_population_gate3c1f2_v0.py
+    sha256: ca646f69b055f7549165c950ad17bae585389b5ad9bea4e6e2e8f8cbee3a3b29
+  entry_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_entry_v0.py
+    sha256: a99fead45a91e462283029eb93ccfc42216d735802543d1399fbbf97911c5e89
+  top1_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_top1_gate3c1d_v1.py
+    sha256: 4fc820931d4f700236f6675695c8525c746e0f65d2a62e84bdbbd208abef5434
+  top1_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_top1.py
+    sha256: 6ad2b4ff515cc82cfa88743f47bab3829e3af0d734a2a94eda3f8fe8ad479170
+  state_restorer:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_counterfactual_state_restorer.py
+    sha256: 61b40b3a581b48267605f3f19dfa0a1a34dfb4e3d7f05cad528581116fdc89a9
+  geometry_relocalization:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_geometry_preserving_relocalization.py
+    sha256: 784e14d35a9b8e797800d80be4f330eba33d3a21071dd39f4a23b2f7ac350a47
+  candidate_bank:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_discrete_candidates.py
+    sha256: af7d5a0bf0619be851c5fdf2ab3e22e257bbbe07f22226fb6388a1a64ddd10c7
+  temporal_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_features.py
+    sha256: 63524c1640d0868bf36a5f9b13e5492ad788f119619e44e12053c850cfe6f18f
+  csrr_cache_helpers:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_counterfactual_state_restorer_cache.py
+    sha256: 67878d5f1aa202f9b743bb724038099989adf993a6719c84c184ff519b04c3bf
+  temporal_cache_helpers:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_temporal_identity_train_cache_gate3c1a_v0.py
+    sha256: fa6988ab74f5e8cbb58e69d52718046b820f262c022b292c57d414212a2374ab
+  interface_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_cotracker3_interface.py
+    sha256: 2b36e17a81cb9930bf1e999640d44e55946016a44d1608df3f8673484983d51b
+  state_transplant_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_oracle_state_transplant_gate1.py
+    sha256: 672cabad0a29183326d3eb1f500415770f6249ab2940b714db766677302c8791
+  memory_format_authority:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_temporal_identity_causal_future_rollout_gate3c1e_v0.py
+    sha256: 8686a7811514cb6c75b731618f139bc988949ce28d28e58a94103f80535a751b
+  tap_metric_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_musr_training.py
+    sha256: 0020140f96569a481c4b73e244d8416520923eb8bb90513d3da410bf7a8c4187
+
+data:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_full_population_kubric128_seed271828_20260720/train.index.json
+  manifest_sha256: 060e0f9de3aeb945932ea15b9a0a7ab70aa88c1d703fa313c9e0db21ad2f3c01
+  selected_identity_digest: 85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28
+  source_indices: [0, 127]
+  expected_videos: 128
+  expected_points_each: 64
+  expected_frames_each: 24
+  raw_record_disjoint_from_previous_1024: true
+
+bundles:
+  entry_bundle:
+    path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/primary_bundle.joblib
+    file_sha256: ac25440f3f15e15033e73f783af172796afb218c1964c736d758928fb5fb003f
+    schema_version: routeD_temporal_identity_entry_bundle_gate3c1f0_v0
+  top1_bundle:
+    path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_top1_gate3c1d_v1/primary_bundle.joblib
+    file_sha256: 878f122bdb647a88e45b4b3ff38f56c9674207a5ea043bcf3bafab9285a72dc2
+    schema_version: routeD_temporal_identity_top1_bundle_gate3c1d_v1
+
+entry_contract:
+  query_frame_less_than: 8
+  feature_dim: 130
+  observed_frames: [0, 15]
+  teacher_or_future_available_to_entry: false
+  operating_point:
+    entry_probability_min: 0.93
+    native_joint_probability_max: 0.02
+    semantics: both_conditions_required
+    candidate_generation_only_after_entry: true
+
+top1_contract:
+  config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_top1_gate3c1d_v1.yaml
+  config_sha256: 6abfcac0c56612aa87b97a556d72cf4c2e95c6314fec318cf46446b824e89e8c
+  frozen_policy:
+    support_min: 0.30
+    value_min_px: 1.0
+    harm_max: 0.20
+
+candidate_bank:
+  common_height: 64
+  common_width: 64
+  geometry_support_radius: 3
+  geometry_token_trim_fraction: 0.125
+  nonnative_top_k: 128
+  nms_radius_grid_cells: 3
+  local_refinement_window_grid_cells: 5
+  local_softmax_temperature: 0.05
+  deduplicate_radius_input_px: 4.0
+
+backbone:
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  input_raster: 256
+  model_stride: 4
+  support_radius: 3
+  observed_frames: [0, 15]
+  future_frames: [16, 23]
+  frozen: true
+
+dinov3:
+  model_dir: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m
+  weights: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/model.safetensors
+  weights_sha256: 208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2
+  frozen: true
+
+metrics:
+  query_mode: first
+  metric_raster: 256
+  visibility_rule: sigmoid_visibility_times_sigmoid_confidence_greater_than_0.6
+  equal_video_aggregation: true
+  paired_video_bootstrap: true
+  bootstrap_seed: 271828
+  bootstrap_samples: 10000
+
+pass_gates:
+  videos_exact: 128
+  entry_trigger_rows_min: 128
+  top1_action_rows_min: 64
+  action_videos_min: 32
+  evaluable_action_rows_min: 64
+  AJ_gain_min: 0.0005
+  AJ_CI_lower_min: 0.0
+  delta_avg_gain_min: 0.0025
+  delta_avg_CI_lower_min: 0.0
+  OA_gain_min: 0.0025
+  OA_CI_lower_min: 0.0
+  AJ_nonnegative_video_fraction_min: 0.75
+  action_future_mean_reduction_px_min: 8.0
+  action_future_positive_fraction_min: 0.85
+  action_future_harm_gt4_fraction_max: 0.05
+  decision_pass: AUTHORIZE_GATE3C1F3_OFFICIAL_TAPVID_PREREGISTRATION
+  decision_fail: STOP_BEFORE_OFFICIAL_TAPVID
+
+determinism:
+  seed: 193721
+  primary_work_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_full_population_gate3c1f2_v0/primary
+  replay_work_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_full_population_gate3c1f2_v0/replay
+  exact_replay_required: true
+
+runtime_contract:
+  python: 3.11.8
+  numpy: 1.26.4
+  torch: 2.2.2+cu121
+  scikit_learn: 1.4.2
+  joblib: 1.4.2
+
+locked_data:
+  threshold_adjustment_after_new_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

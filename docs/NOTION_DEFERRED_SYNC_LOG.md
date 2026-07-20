@@ -836,3 +836,36 @@ holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F2 complete-population confirmation preregistration
+
+### Status
+
+```text
+PREREGISTERED_NOT_RUN
+third-population tracking metrics unread
+```
+
+Gate 3C1F2 freezes the complete causal pipeline before reading any metric from
+the third raw-record-disjoint 128-video Kubric population. The entry rule is
+probability `>=0.93` and native joint probability `<=0.02`. Entry-positive rows
+then use the frozen Gate 3C1D expected-distance top-1 selector and Gate 3C1E
+coordinate plus four-level memory writeback.
+
+The confirmation requires at least `+0.05` AJ points, `+0.25` delta_avg points,
+and `+0.25` OA points, with paired-video 95% CI lower bounds strictly above
+zero for all three. It also requires at least 64 evaluable actions, at least
+`+8 px` mean future error reduction, at least 85% positive actions, at most 5%
+harmful actions, and fresh-process exact replay. A pass authorizes only a later
+separately preregistered official TAP-Vid evaluation.
+
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
