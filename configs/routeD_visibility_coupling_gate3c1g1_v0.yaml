@@ -1,0 +1,148 @@
+schema_version: routeD_visibility_coupling_gate3c1g1_v0
+date: '2026-07-20'
+claim_scope: Exposed-development nested source-video OOF selection of a causal post-writeback
+  visibility model. No new raw population or external benchmark is authorized by this
+  protocol.
+authorized_parent:
+  summary_path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_SUMMARY_2026-07-20.json
+  summary_file_sha256: b451458650b668f2513a353ca5bae64c831f4983b7f7e77c59a90bf4862894e7
+  summary_payload_sha256: 22078b9853755e563bc9850b641b56d8b778623b5f72b570634237bea0019713
+  cache_index_path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_visibility_coupling_cache_gate3c1g0_v0_20260720/cache_index.json
+  cache_index_file_sha256: 5c690647e8fee4ae812e24f132622f3941fa12682b5e000f7ce08851d2493b45
+  cache_index_payload_sha256: a990040bcd8a86808451c8e77c6bed3b38ec2032522b9ef3bd1372f08dc1ea72
+implementation:
+  runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_visibility_coupling_gate3c1g1_v0.py
+    sha256: fcfb1b2be1884e4ee308ef4bf24b937ba876239dde95243175a96c2022f4abf1
+  feature_schema:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_visibility_coupling_v0.py
+    sha256: 2bd51bba9287e48ab7811a7bc9a58a12e18189d5277440bbd77bb7d702828172
+  cache_builder:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_visibility_coupling_cache_gate3c1g0_v0.py
+    sha256: b1f1c3e3caf874e2ea2568561d38836bdce9c25b1858d447546a204bf5943c1f
+  metrics_wrapper:
+    path: /gemini/code/FSPT_v9a60_clean/datasets/metrics.py
+    sha256: 33456bb86dd1dda95f81795d3ac7e6c30418c4a0b6f83a90ff7d9ce5cd10c898
+  official_metrics:
+    path: /gemini/code/FSPT_v9a60_clean/datasets/tapvid_official_eval.py
+    sha256: 4d5a448e3806bbfec3deb44f0f95a5794d0c53ce6ee38a268d3d946b226e9cea
+  track_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_musr_training.py
+    sha256: 0020140f96569a481c4b73e244d8416520923eb8bb90513d3da410bf7a8c4187
+runtime_contract:
+  python: 3.11.8
+  numpy: 1.26.4
+  torch: 2.2.2+cu121
+  scikit_learn: 1.4.2
+  joblib: 1.4.2
+folds:
+  outer: 5
+  inner: 4
+  group: source_index
+  unit: action_frame
+model_grid:
+- name: log_visible_c0p1
+  target: gt_visible
+  kind: logistic
+  parameter: 0.1
+- name: log_visible_c1
+  target: gt_visible
+  kind: logistic
+  parameter: 1.0
+- name: hgb_visible_l2_3
+  target: gt_visible
+  kind: hgb_classifier
+  parameter: 3.0
+- name: hgb_visible_l2_10
+  target: gt_visible
+  kind: hgb_classifier
+  parameter: 10.0
+- name: log_utility16_c0p1
+  target: utility16
+  kind: logistic
+  parameter: 0.1
+- name: log_utility16_c1
+  target: utility16
+  kind: logistic
+  parameter: 1.0
+- name: hgb_utility16_l2_3
+  target: utility16
+  kind: hgb_classifier
+  parameter: 3.0
+- name: hgb_utility16_l2_10
+  target: utility16
+  kind: hgb_classifier
+  parameter: 10.0
+- name: hgb_soft_utility_l2_3
+  target: soft_utility
+  kind: hgb_regressor
+  parameter: 3.0
+- name: hgb_soft_utility_l2_10
+  target: soft_utility
+  kind: hgb_regressor
+  parameter: 10.0
+threshold_grid:
+- 0.05
+- 0.075
+- 0.1
+- 0.125
+- 0.15
+- 0.175
+- 0.2
+- 0.225
+- 0.25
+- 0.275
+- 0.3
+- 0.325
+- 0.35
+- 0.375
+- 0.4
+- 0.425
+- 0.45
+- 0.475
+- 0.5
+- 0.525
+- 0.55
+- 0.575
+- 0.6
+- 0.625
+- 0.65
+- 0.675
+- 0.7
+- 0.725
+- 0.75
+- 0.775
+- 0.8
+- 0.825
+- 0.85
+- 0.875
+- 0.9
+- 0.925
+- 0.95
+inner_selection_constraints:
+  OA_over_actual_min: -0.001
+  GT_visible_recall_min: 0.65
+  GT_occluded_false_positive_rate_max: 0.5
+formal_gates:
+  AUC_min: 0.7
+  AP_min: 0.65
+  GT_visible_recall_min: 0.7
+  GT_occluded_false_positive_rate_max: 0.4
+  AJ_over_actual_min: 0.0015
+  AJ_over_actual_CI_lower_min: 0.0
+  AJ_over_native_min: 0.0015
+  OA_over_actual_min: -0.0005
+  OA_over_native_min: 0.0
+bootstrap:
+  samples: 10000
+  seed: 161803
+determinism:
+  seed: 161803
+  primary_bundle: /gemini/code/FSPT_v9a60_clean/outputs/routeD_visibility_coupling_gate3c1g1_v0/primary_bundle.joblib
+  replay_bundle: /gemini/code/FSPT_v9a60_clean/outputs/routeD_visibility_coupling_gate3c1g1_v0/replay_bundle.joblib
+locked_data:
+  new_raw_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

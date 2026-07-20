@@ -1048,3 +1048,35 @@ Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1G1 nested visibility model preregistration
+
+### Status
+
+```text
+PREREGISTERED_UNOPENED
+primary/replay and bundles absent
+```
+
+Gate 3C1G1 freezes a 5-outer/4-inner source-video GroupKFold protocol over the
+44 exposed action videos, 89 actions, 801 frame rows, and 66 causal features.
+Ten deterministic regularized logistic/HGB candidates use GT-visible,
+visible-and-within-16px, or mean multi-threshold utility targets. Thirty-seven
+visibility thresholds are selected only from inner OOF complete-video AJ, with
+OA preservation, visible recall, and occluded false-positive constraints.
+
+The formal outer-OOF gate requires GT-visible AUC >=0.70, AP >=0.65, recall
+>=70%, occluded false-positive rate <=40%, AJ gain >=+0.15 points over actual
+modified with positive paired-video CI, AJ gain >=+0.15 points over native, and
+preserved OA. Fresh-process scientific replay must be exact. A pass authorizes
+only a separately preregistered new raw-record-disjoint confirmation. No new raw
+population or external benchmark has been read.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

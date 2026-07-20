@@ -154,6 +154,17 @@ files, tensor hashes, and payloads verify exactly; labels remain outside the
 causal feature channels. Formal decision:
 AUTHORIZE_GATE3C1G1_NESTED_VIDEO_OOF_PREREGISTRATION. This exposed cache cannot
 authorize confirmation or external evaluation.
+
+
+Gate 3C1G1 nested visibility coupling is preregistered and unopened. It freezes
+5 outer and 4 inner source-video GroupKFold splits over the 44 exposed action
+videos. Ten regularized logistic/HGB candidates span GT-visible, utility16, and
+soft multi-threshold targets; 37 thresholds are selected only from inner OOF
+complete-video AJ with OA/recall/FPR constraints. Formal outer-OOF gates require
+at least +0.15 points AJ over actual modified with positive paired CI, +0.15
+points over native, preserved OA, AUC/AP and visibility safety, followed by
+fresh-process exact replay. A pass can authorize only a new raw-record-disjoint
+confirmation; all external data remain locked.
 ```
 
 Read first:
@@ -196,6 +207,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_PLAN_
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_RESULT_2026-07-20.md
 docs/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_PLAN_2026-07-20.md
 docs/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_RESULT_2026-07-20.md
+docs/ROUTED_VISIBILITY_COUPLING_GATE3C1G1_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17
