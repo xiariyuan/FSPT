@@ -1,0 +1,153 @@
+schema_version: routeD_temporal_identity_causal_future_rollout_gate3c1e_v0
+date: 2026-07-20
+claim_scope: >-
+  Deployable causal top-1 future-rollout confirmation on renewed raw-record-disjoint
+  model-validation indices 384--511. The Gate 3C1D v1 bundle and policy are frozen.
+  No teacher or future tensor may influence action identity. This gate evaluates
+  frames 16--23 after coordinate-only and coordinate-plus-deterministic-four-level-
+  memory writeback. It is not yet an official DAVIS/Kinetics benchmark result.
+
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_RESULT_2026-07-20.md
+  result_sha256: c7abb4e9ea0d73b3ca52de75ab759cba774a6992f5acf669557f1a708c032f51
+  model_validation_replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_MODEL_VALIDATION_REPLAY_2026-07-20.json
+  model_validation_replay_sha256: 104527b0615723858c90aa137107bac6a7307931bd99fced33af88526f9c1c29
+  required_partition: model_validation_v1
+  required_decision: AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION
+  bundle_path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_top1_gate3c1d_v1/primary_bundle.joblib
+  bundle_sha256: 878f122bdb647a88e45b4b3ff38f56c9674207a5ea043bcf3bafab9285a72dc2
+  frozen_policy:
+    support_min: 0.3
+    value_min_px: 1.0
+    harm_max: 0.2
+
+implementation:
+  runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_temporal_identity_causal_future_rollout_gate3c1e_v0.py
+    sha256: 8686a7811514cb6c75b731618f139bc988949ce28d28e58a94103f80535a751b
+  top1_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_top1_gate3c1d_v1.py
+    sha256: 4fc820931d4f700236f6675695c8525c746e0f65d2a62e84bdbbd208abef5434
+  top1_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_top1.py
+    sha256: 6ad2b4ff515cc82cfa88743f47bab3829e3af0d734a2a94eda3f8fe8ad479170
+  row_policy_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_top1_v1.py
+    sha256: 049171b54d83604e63ece1c35f616ae79bb438bee099a545a02fb75f5b24d393
+  state_restorer:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_counterfactual_state_restorer.py
+    sha256: 61b40b3a581b48267605f3f19dfa0a1a34dfb4e3d7f05cad528581116fdc89a9
+  state_metrics:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_counterfactual_state_restorer_training.py
+    sha256: 81fa15f61fb9a749fbb537e66ceea065df868e545ae7a909a49090b117a6c332
+  interface_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_cotracker3_interface.py
+    sha256: 2b36e17a81cb9930bf1e999640d44e55946016a44d1608df3f8673484983d51b
+  state_transplant_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_oracle_state_transplant_gate1.py
+    sha256: 672cabad0a29183326d3eb1f500415770f6249ab2940b714db766677302c8791
+  cache_verifier:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_temporal_identity_train_cache_gate3c1a_v0.py
+    sha256: fa6988ab74f5e8cbb58e69d52718046b820f262c022b292c57d414212a2374ab
+
+partition:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_kubric512_seed314159_20260720/train.index.json
+  manifest_sha256: 8937a2ef925b6c97c994da7b755b91b401d2239162c1254b720567f66e028105
+  name: model_validation_v1
+  source_indices: [384, 511]
+  expected_videos: 128
+  expected_failure_rows: 1379
+  candidate_cache_index: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_model_validation_cache_gate3c1d_v1_20260720/cache_index.json
+  candidate_cache_index_sha256: d091d9bf5be463a36d312f72b8dc7a76df9a054263f3abd694d0bbd92f2fa513
+  candidate_cache_index_payload_sha256: f2f4d4958bbe21acf354a1ad2f09e83da79041057013aaf0ceb5f12a0af25fb6
+  expected_read_state:
+    checkpoint_selection_read: true
+    fit_only_internal_audit_read: true
+    original_model_validation_read: true
+    external_read: false
+    renewed_checkpoint_selection_v1_read: true
+    renewed_fit_only_internal_audit_v1_read: true
+    renewed_model_validation_v1_read: true
+
+feature_contract:
+  shortlist_size: 9
+  candidate_feature_dim: 102
+  row_policy_feature_dim: 164
+  temporal_summary_channels: [0, 1, 2, 3, 6, 7, 8]
+  candidate_relative_zscore_epsilon: 0.0001
+  teacher_unavailable_to_features: true
+  future_unavailable_to_features: true
+  complete_causal_preflight_before_backbone_initialization: true
+  exact_match_to_parent_records_required: true
+
+backbone:
+  checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+  checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+  input_raster: 256
+  model_stride: 4
+  support_radius: 3
+  observed_frames: [0, 15]
+  future_frames: [16, 23]
+  frozen: true
+
+state_actions:
+  native:
+    coordinate_write: false
+    probability_write: false
+    memory_write: false
+  coordinate_only:
+    coordinate_write: commit_frame_only
+    probability_write: false
+    memory_write: false
+    apply_only_when_frozen_policy_action_is_true: true
+  coordinate_plus_memory:
+    coordinate_write: commit_frame_only
+    probability_write: false
+    memory_write: deterministic_four_level_reextraction
+    reextract_from_observed_frame: 15
+    model_stride: 4
+    support_radius: 3
+    apply_only_when_frozen_policy_action_is_true: true
+
+metrics:
+  future_thresholds_px: [1.0, 2.0, 4.0, 8.0, 16.0]
+  future_frames: [16, 23]
+  bootstrap_unit: source_video
+  bootstrap_samples: 10000
+  bootstrap_seed: 193721
+  harmful_future_definition: policy_mean_future_error_gt_native_plus_4px
+  report_all_failure_rows: true
+  report_action_rows_separately: true
+
+pass_gates:
+  commit_mean_error_reduction_px_min: 2.0
+  full_future_mean_error_reduction_px_min: 1.0
+  full_future_error_reduction_CI_lower_px_min: 0.25
+  full_future_threshold_utility_gain_min: 0.01
+  full_future_utility_gain_CI_lower_min: 0.0
+  action_future_mean_error_reduction_px_min: 3.0
+  action_future_positive_point_fraction_min: 0.55
+  full_future_severe_16px_rate_reduction_min: 0.02
+  full_future_harmful_all_rows_max: 0.03
+  full_future_harmful_action_rows_max: 0.10
+  full_future_nonnegative_video_fraction_min: 0.75
+  memory_incremental_error_reduction_px_min: 0.5
+  memory_incremental_error_reduction_CI_lower_px_min: 0.0
+  memory_incremental_utility_gain_min: 0.005
+  memory_better_video_fraction_min: 0.60
+  native_replay_max_abs_px: 0.0001
+  exact_replay_required: true
+  decision_pass: AUTHORIZE_GATE3C1F_OFFICIAL_TAPVID_BENCHMARK_PREREGISTRATION
+  decision_fail: STOP_GATE3C1E_CAUSAL_FUTURE_ROLLOUT
+
+execution:
+  primary_output: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_PRIMARY_2026-07-20.json
+  replay_output: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_REPLAY_2026-07-20.json
+  exact_replay_required_before_decision: true
+
+locked_data:
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

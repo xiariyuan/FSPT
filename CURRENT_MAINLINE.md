@@ -95,6 +95,13 @@ has 28.0638% action coverage, 62.2739% 12-pixel action precision, 0.7252%
 all-row harmful rate, and 97.6% nonnegative videos. Formal decision:
 AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION. These remain
 failure-row commit metrics, not complete-video AJ/OA or a paper-baseline claim.
+
+Gate 3C1E v0 is preregistered and not run. It must reproduce all 1,379 sealed
+model-validation selector decisions before CoTracker initialization, then compare
+native, coordinate-only, and coordinate-plus-four-level-memory trajectories on
+visible future frames 16--23. A pass requires positive all-row future benefit,
+controlled future harm, independent memory gain, and exact fresh-process replay.
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 ```
 
 Read first:
@@ -125,6 +132,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

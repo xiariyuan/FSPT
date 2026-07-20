@@ -614,3 +614,47 @@ locked for the v1 route.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1E deployable causal future-rollout preregistration
+
+### Status
+
+```text
+PREREGISTERED_NOT_RUN
+future rollout metrics unread
+```
+
+Gate 3C1D v1 completed with exact replay on checkpoint, fit-only audit, and
+model-validation. The unchanged selector reduces mean frame-15 commit error by
+`+3.7312`, `+3.2180`, and `+3.4864` px on the three renewed partitions,
+respectively. The model-validation decision authorizes only preregistration of a
+deployable future-rollout audit.
+
+Gate 3C1E freezes the Gate 3C1D primary bundle and policy:
+
+```text
+support >= 0.30
+value   >= 1.0 px
+harm    <= 0.20
+```
+
+Before CoTracker initialization, all `1,379` model-validation rows must reproduce
+the sealed selected slot, action, and output candidate exactly. The runner then
+evaluates frames `16--23` under native, coordinate-only, and coordinate plus
+deterministic four-level memory actions. The primary new gates require at least
+`+1.0 px` all-row future error reduction, a positive video-cluster CI, controlled
+future harm, and at least `+0.5 px` memory gain beyond coordinate-only.
+
+A passing exact replay may authorize only a separately preregistered official
+TAP-Vid benchmark. It does not itself establish a paper-table AJ/OA gain.
+Calibration, final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain
+locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
