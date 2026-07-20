@@ -903,3 +903,35 @@ DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F2 failure diagnostic preregistration
+
+### Status
+
+```text
+PREREGISTERED_EXPOSED_DIAGNOSTIC_NOT_RUN
+no new confirmation or external data
+```
+
+The diagnostic reruns only the 44 Gate 3C1F2 videos with sealed actions. It must
+first reproduce every entry, candidate, shortlist, action, coordinate, and
+visibility digest from the exact-replay result. It then evaluates actual modified
+tracks, modified coordinates with native visibility, native coordinates with
+modified visibility, and two GT-visibility localization oracles.
+
+Per-action frames 15--23 record coordinate threshold hits, visibility/confidence,
+false-negative recovery, new false negatives, removed false positives, new false
+positives, and official Jaccard numerator/denominator contributions. The purpose
+is to separate coverage dilution from coordinate--visibility coupling. No sweep,
+retraining, or post-hoc policy selection is included.
+
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

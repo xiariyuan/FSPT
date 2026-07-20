@@ -134,6 +134,12 @@ error reduction is +15.2680 px, 98.04% are positive, and none is harmful by more
 than 4 px. The current bottleneck is population coverage and AJ leverage, not
 action quality. Formal decision: STOP_BEFORE_OFFICIAL_TAPVID. External data
 remain locked; any redesign requires a new raw-record-disjoint confirmation.
+
+A post-failure Gate 3C1F2 diagnostic is preregistered on only the 44 sealed
+action videos. It must exactly reproduce every formal entry/candidate/action/
+coordinate/visibility digest before comparing actual modified trajectories with
+coordinate/visibility cross views and GT-visibility localization oracles. No
+threshold sweep, retraining, or new data is authorized by this diagnostic.
 ```
 
 Read first:
@@ -172,6 +178,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_PLAN_2026-07-20.
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

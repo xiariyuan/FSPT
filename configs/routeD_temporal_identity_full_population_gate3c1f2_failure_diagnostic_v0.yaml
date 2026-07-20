@@ -1,0 +1,98 @@
+schema_version: routeD_temporal_identity_full_population_failure_diagnostic_gate3c1f2_v0
+date: 2026-07-20
+claim_scope: >-
+  Post-failure exposed-data diagnostic on only the 44 sealed Gate 3C1F2 action
+  videos. It decomposes complete-video metrics into coordinate and visibility
+  effects without threshold tuning, retraining, new confirmation data, or any
+  external benchmark claim.
+
+authorized_parent:
+  path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_REPLAY_2026-07-20.json
+  file_sha256: a0c4cdb255f203c957bf4d689b12365f34e0d8ef57c292f72f790ee200dd9239
+  payload_sha256: a76f7d93f35a6ab0a64c65dd54a8ca17a1e7749cc18f6aa40c47ef05db524d63
+  scientific_payload_sha256: e1000928de9565aba106612aa2bca7c89566f8859d3325e9c00b91ae2fe9b9e4
+  required_decision: STOP_BEFORE_OFFICIAL_TAPVID
+
+formal_config:
+  path: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_full_population_gate3c1f2_v0.yaml
+  sha256: db7cdaebcb758babd0ee2decad14ce3db2c6fbad28093e773d1d6eda56068b0d
+
+implementation:
+  diagnostic_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/diagnose_routeD_temporal_identity_full_population_gate3c1f2_v0.py
+    sha256: edeae6e447049ce45a8698974543107149153f7b1be05411ebf1d69a47a97080
+  frozen_formal_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_full_population_gate3c1f2_v0.py
+    sha256: ca646f69b055f7549165c950ad17bae585389b5ad9bea4e6e2e8f8cbee3a3b29
+
+action_source_indices:
+  - 0
+  - 1
+  - 2
+  - 11
+  - 13
+  - 15
+  - 19
+  - 20
+  - 22
+  - 24
+  - 28
+  - 30
+  - 31
+  - 34
+  - 36
+  - 38
+  - 39
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+  - 47
+  - 50
+  - 52
+  - 53
+  - 58
+  - 66
+  - 67
+  - 69
+  - 77
+  - 84
+  - 85
+  - 91
+  - 92
+  - 99
+  - 105
+  - 107
+  - 110
+  - 114
+  - 116
+  - 122
+  - 123
+  - 124
+
+trajectory_views:
+  - native
+  - actual_modified
+  - modified_coordinates_native_visibility
+  - native_coordinates_modified_visibility
+  - native_coordinates_gt_visibility_oracle
+  - modified_coordinates_gt_visibility_oracle
+
+affected_frames: [15, 23]
+thresholds_px: [1, 2, 4, 8, 16]
+
+bootstrap:
+  seed: 314159
+  samples: 10000
+
+output:
+  work_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_full_population_gate3c1f2_failure_diagnostic_v0
+  result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_V0_2026-07-20.json
+
+locked_data:
+  new_raw_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
