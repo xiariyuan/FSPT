@@ -38,10 +38,16 @@ def test_gate3c1g1_authority_cache_and_outputs_are_frozen():
     assert len(config["model_grid"]) == 10
     assert len(config["threshold_grid"]) == 37
     assert all(value is False for value in config["locked_data"].values())
-    assert not PRIMARY.exists()
-    assert not REPLAY.exists()
-    assert not Path(config["determinism"]["primary_bundle"]).exists()
-    assert not Path(config["determinism"]["replay_bundle"]).exists()
+    assert PRIMARY.is_file()
+    assert REPLAY.is_file()
+    primary = json.loads(PRIMARY.read_text())
+    replay = json.loads(REPLAY.read_text())
+    assert replay["exact_replay"] is True
+    assert all(replay["replay_comparison"].values())
+    assert replay["gate"]["decision"] == "STOP_GATE3C1G1_VISIBILITY_MODEL"
+    assert replay["scientific"]["scientific_payload_sha256"] == primary["scientific"]["scientific_payload_sha256"]
+    assert Path(config["determinism"]["primary_bundle"]).is_file()
+    assert Path(config["determinism"]["replay_bundle"]).is_file()
 
 
 def test_gate3c1g1_synthetic_primary_waits_for_replay():

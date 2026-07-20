@@ -1080,3 +1080,35 @@ population or external benchmark has been read.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1G1 nested visibility model result
+
+### Status
+
+```text
+COMPLETED_EXACT_REPLAY
+STOP_GATE3C1G1_VISIBILITY_MODEL
+```
+
+The 5-outer/4-inner source-video nested OOF protocol completed and fresh-process
+replay reproduced the outer scores, masks, final selection, and full scientific
+payload exactly. GT-visible AUC/AP are `0.5460/0.5252`; recall is `28.89%` and
+occluded false-positive rate is `26.52%`. Nested-OOF calibrated AJ changes by
+`-0.0051` points versus actual modified and `-0.00094` points versus native, with
+CI crossing zero. OA loses `0.1417` points versus actual modified.
+
+All five outer folds select different candidates, and the full-data final
+selection is infeasible under the frozen recall/FPR/OA constraints. Broad
+replacement of all action-frame visibility is rejected. The next structural
+hypothesis should preserve all existing states except native-occluded to
+modified-visible activation transitions and gate only those new activations.
+No new raw population or external benchmark was read.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
