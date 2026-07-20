@@ -61,6 +61,50 @@ def _validate_parent(config: Mapping[str, Any]) -> None:
         raise ValueError("Gate 3C1A did not authorize eval-cache preregistration")
 
 
+
+def _validate_runtime_authorization(
+    config: Mapping[str, Any], partition: str
+) -> None:
+    if partition == "checkpoint_selection":
+        return
+    authorization = config.get("runtime_authorization", {})
+    if partition == "fit_only_internal_audit":
+        result_key = "required_checkpoint_replay_result"
+    elif partition == "original_model_validation":
+        result_key = "required_future_rollout_replay_result"
+    else:
+        raise ValueError("Gate 3C eval-cache partition is not authorized")
+    result_path = Path(authorization[result_key])
+    if not result_path.is_file():
+        raise ValueError(f"{partition} replay authorization is absent")
+    expected_sha = authorization.get("required_result_sha256")
+    if expected_sha is not None and file_sha256(result_path) != expected_sha:
+        raise ValueError(f"{partition} authorization result hash drift")
+    result = json.loads(result_path.read_text())
+    if result.get("partition") != authorization["required_partition"]:
+        raise ValueError(f"{partition} authorization partition drift")
+    if bool(result.get("exact_replay")) is not bool(
+        authorization["required_exact_replay"]
+    ):
+        raise ValueError(f"{partition} authorization replay failed")
+    gate = result.get("gate", {})
+    if bool(gate.get("pass")) is not bool(
+        authorization["required_gate_pass"]
+    ):
+        raise ValueError(f"{partition} authorization gate failed")
+    if gate.get("decision") != authorization["required_decision"]:
+        raise ValueError(f"{partition} authorization decision drift")
+
+
+def _expected_sources_for_partition(partition: str) -> list[int]:
+    if partition == "checkpoint_selection":
+        return list(range(384, 448))
+    if partition == "fit_only_internal_audit":
+        return list(range(448, 512))
+    if partition == "original_model_validation":
+        return list(range(48, 64))
+    raise ValueError("Gate 3C eval-cache partition is not authorized")
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", required=True)
@@ -86,36 +130,10 @@ def main() -> None:
             raise ValueError("Gate 3C1B eval-cache frozen weight hash drift")
 
     partition = str(config["partition"]["name"])
-    if partition not in ("checkpoint_selection", "fit_only_internal_audit"):
-        raise ValueError("Gate 3C1B eval-cache partition is not authorized")
-    if partition == "fit_only_internal_audit":
-        authorization = config.get("runtime_authorization", {})
-        result_path = Path(
-            authorization["required_checkpoint_replay_result"]
-        )
-        if not result_path.is_file():
-            raise ValueError("checkpoint-selection replay authorization is absent")
-        result = json.loads(result_path.read_text())
-        if result.get("partition") != authorization["required_partition"]:
-            raise ValueError("checkpoint authorization partition drift")
-        if bool(result.get("exact_replay")) is not bool(
-            authorization["required_exact_replay"]
-        ):
-            raise ValueError("checkpoint authorization replay failed")
-        gate = result.get("gate", {})
-        if bool(gate.get("pass")) is not bool(
-            authorization["required_gate_pass"]
-        ):
-            raise ValueError("checkpoint authorization gate failed")
-        if gate.get("decision") != authorization["required_decision"]:
-            raise ValueError("checkpoint authorization decision drift")
+    _validate_runtime_authorization(config, partition)
     bounds = [int(value) for value in config["partition"]["source_indices"]]
     expected_sources = list(range(bounds[0], bounds[1] + 1))
-    expected_exact = (
-        list(range(384, 448))
-        if partition == "checkpoint_selection"
-        else list(range(448, 512))
-    )
+    expected_exact = _expected_sources_for_partition(partition)
     if expected_sources != expected_exact:
         raise ValueError("Gate 3C1B eval-cache source membership drift")
     if len(expected_sources) != int(config["partition"]["expected_videos"]):

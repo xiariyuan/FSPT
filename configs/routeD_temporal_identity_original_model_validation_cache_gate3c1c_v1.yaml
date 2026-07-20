@@ -1,0 +1,92 @@
+schema_version: routeD_temporal_identity_eval_cache_gate3c1b_v0
+date: 2026-07-20
+claim_scope: >-
+  Frozen causal feature cache for the original model-validation indices 48--63.
+  Gate 3C1B selector weights, Gate 3C1C state actions, and all validation gates
+  are already committed. Calibration, final holdout, DAVIS, Kinetics, and the
+  official Kinetics 1,144 protocol remain unread.
+
+authorized_parent:
+  gate3c1a_result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_RESULT_2026-07-19.md
+  gate3c1a_result_sha256: e29d9da0634fead3960648015c53648b8459b846fb9d42f7ac01fadf42bdc00c
+  gate3c1a_summary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_2026-07-19.json
+  gate3c1a_summary_sha256: 38565047ae38f4b075e4e3f830ecad367bf532041dba192ec61e5fc7bbbc8bcf
+
+runtime_authorization:
+  required_future_rollout_replay_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_REPLAY_2026-07-20.json
+  required_result_sha256: 55fe24120bccae57845988ede178f03d882269a7ad836d4ffa0db15b8cd8baa3
+  required_partition: fit_only_internal_audit
+  required_exact_replay: true
+  required_gate_pass: true
+  required_decision: AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION
+
+determinism_seed: 193721
+partition:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json
+  manifest_sha256: afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961
+  name: original_model_validation
+  source_indices: [48, 63]
+  expected_videos: 16
+  read_state:
+    checkpoint_selection_read: true
+    fit_only_internal_audit_read: true
+    original_model_validation_read: true
+    external_read: false
+
+backbones:
+  cotracker3:
+    checkpoint: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+    checkpoint_sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+    input_raster: 256
+    observed_frames: [0, 15]
+    reverse_tracklet_frames: [15, 0]
+    frozen: true
+  dinov3:
+    model_dir: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m
+    weights: /gemini/code/FSPT/third_party_weights/dinov3/facebook_dinov3_vits16plus_pretrain_lvd1689m/model.safetensors
+    weights_sha256: 208146e499dace99e4c9376ddb8a26f77d64c31c46c4dc4b86ff8bc63b0235e2
+    frozen: true
+
+failure_membership:
+  commit_frame: 15
+  future_evaluation_frames: [16, 23]
+  original_query_frame_less_than: 8
+  gt_visible_at_commit: true
+  gt_visible_in_future_min_frames: 4
+  native_future_mean_error_px_min: 16.0
+  clean_future_mean_error_px_max: 4.0
+  per_video_cap: 16
+  ranking: descending_native_future_mean_error_then_point_index
+  membership_may_use_teacher: true
+  teacher_available_to_candidate_coordinates_or_features: false
+
+candidate_bank:
+  representation: M1_geometry_native
+  mandatory_native_candidate_zero: true
+  nonnative_top_k: 128
+  nms_radius_grid_cells: 3
+  local_refinement_window_grid_cells: 5
+  local_softmax_temperature: 0.05
+  deduplicate_radius_input_px: 4.0
+  geometry_support_radius: 3
+  geometry_token_trim_fraction: 0.125
+  reverse_tracklet_microbatch_failure_rows: 1
+
+feature_contract:
+  observed_frames: [0, 15]
+  temporal_shape_per_row: [129, 16, 9]
+  static_shape_per_row: [129, 14]
+  valid_shape_per_row: [129]
+  storage_dtype: float32
+  label_positive_radius_px: 12.0
+  raw_dinov3_descriptors_persisted: false
+  candidate_coordinates_persisted: true
+  candidate_scores_persisted: true
+  teacher_distances_persisted_as_labels: true
+  candidate_hash_frozen_before_teacher_labels: true
+
+cache:
+  output_root: /gemini/code/FSPT/outputs/routeD_temporal_identity_original_model_validation_cache_gate3c1c_v1_20260720
+  atomic_writes: true
+  resume_requires_sidecar_validation: true
+  all_16_sidecars_required_before_index: true

@@ -301,36 +301,96 @@ def _validate_parent(config: Mapping[str, Any]) -> None:
         parent["required_audit_gate_pass"]
     ):
         raise ValueError("Gate 3C1B audit replay did not authorize Gate 3C1C")
+    authorization = config.get("model_validation_authorization")
+    if authorization is not None:
+        for path_key, sha_key in (
+            ("gate3c1c_result", "gate3c1c_result_sha256"),
+            ("gate3c1c_summary", "gate3c1c_summary_sha256"),
+            ("gate3c1c_replay", "gate3c1c_replay_sha256"),
+        ):
+            if file_sha256(authorization[path_key]) != authorization[sha_key]:
+                raise ValueError(f"Gate 3C1C model-validation authorization hash drift: {path_key}")
+        gate3c1c_summary = json.loads(
+            Path(authorization["gate3c1c_summary"]).read_text()
+        )
+        if gate3c1c_summary.get("summary_payload_sha256") != authorization[
+            "gate3c1c_summary_payload_sha256"
+        ]:
+            raise ValueError("Gate 3C1C authorization summary payload drift")
+        gate3c1c_replay = json.loads(
+            Path(authorization["gate3c1c_replay"]).read_text()
+        )
+        if (
+            not bool(gate3c1c_replay.get("exact_replay"))
+            or not bool(gate3c1c_replay.get("gate", {}).get("pass"))
+            or gate3c1c_replay.get("gate", {}).get("decision")
+            != authorization["required_decision"]
+        ):
+            raise ValueError("Gate 3C1C did not authorize original model validation")
+
+
+def _expected_read_state(config: Mapping[str, Any]) -> dict[str, bool]:
+    partition = config["partition"]
+    payload = partition.get("expected_read_state")
+    if payload is None:
+        payload = {
+            "checkpoint_selection_read": True,
+            "fit_only_internal_audit_read": True,
+            "original_model_validation_read": False,
+            "external_read": False,
+        }
+    required = (
+        "checkpoint_selection_read",
+        "fit_only_internal_audit_read",
+        "original_model_validation_read",
+        "external_read",
+    )
+    if set(payload) != set(required):
+        raise ValueError("Gate 3C1C expected read-state keys drift")
+    return {key: bool(payload[key]) for key in required}
 
 
 def _load_candidate_index(config: Mapping[str, Any]) -> dict[str, Any]:
     partition = config["partition"]
     index_path = Path(partition["candidate_cache_index"])
-    if file_sha256(index_path) != partition["candidate_cache_index_sha256"]:
+    expected_index_sha = partition.get("candidate_cache_index_sha256")
+    if expected_index_sha is not None and file_sha256(index_path) != expected_index_sha:
         raise ValueError("Gate 3C1C candidate index file hash drift")
     index = json.loads(index_path.read_text())
-    if index.get("index_payload_sha256") != partition[
-        "candidate_cache_index_payload_sha256"
-    ]:
+    expected_payload_sha = partition.get("candidate_cache_index_payload_sha256")
+    if expected_payload_sha is not None and index.get("index_payload_sha256") != expected_payload_sha:
         raise ValueError("Gate 3C1C candidate index payload drift")
-    expected = list(range(int(partition["source_indices"][0]), int(partition["source_indices"][1]) + 1))
+    cache_config = partition.get("candidate_cache_config")
+    if cache_config is not None:
+        cache_config_path = Path(cache_config)
+        if file_sha256(cache_config_path) != partition["candidate_cache_config_sha256"]:
+            raise ValueError("Gate 3C1C candidate cache config hash drift")
+        if index.get("config_sha256") != partition["candidate_cache_config_sha256"]:
+            raise ValueError("Gate 3C1C candidate index/config hash mismatch")
+    expected = list(
+        range(
+            int(partition["source_indices"][0]),
+            int(partition["source_indices"][1]) + 1,
+        )
+    )
     if index.get("partition") != partition["name"]:
         raise ValueError("Gate 3C1C candidate partition drift")
     if index.get("completed_source_indices") != expected:
         raise ValueError("Gate 3C1C candidate membership drift")
     if int(index.get("videos", -1)) != int(partition["expected_videos"]):
         raise ValueError("Gate 3C1C candidate video-count drift")
-    if int(index.get("failure_rows", -1)) != int(partition["expected_failure_rows"]):
+    expected_rows = partition.get("expected_failure_rows")
+    if expected_rows is not None and int(index.get("failure_rows", -1)) != int(expected_rows):
         raise ValueError("Gate 3C1C candidate failure-row drift")
-    state = index.get("read_state", {})
-    if not bool(state.get("checkpoint_selection_read")) or not bool(
-        state.get("fit_only_internal_audit_read")
-    ):
-        raise ValueError("Gate 3C1C parent read-state drift")
-    if bool(state.get("original_model_validation_read")) or bool(
-        state.get("external_read")
-    ):
-        raise ValueError("Gate 3C1C parent reports locked-data contamination")
+    expected_state = _expected_read_state(config)
+    actual_state = {
+        key: bool(index.get("read_state", {}).get(key)) for key in expected_state
+    }
+    if actual_state != expected_state:
+        raise ValueError("Gate 3C1C candidate read-state drift")
+    if actual_state["external_read"]:
+        raise ValueError("Gate 3C1C candidate index reports external contamination")
+    index["_index_file_sha256"] = file_sha256(index_path)
     return index
 
 
@@ -403,15 +463,10 @@ def evaluate(
             payload = torch.load(sidecar_path, map_location="cpu", weights_only=False)
             verify_temporal_identity_cache_payload(
                 payload,
-                expected_partition="fit_only_internal_audit",
+                expected_partition=config["partition"]["name"],
                 expected_source_index=source_index,
                 expected_config_sha256=candidate_index["config_sha256"],
-                expected_read_state={
-                    "checkpoint_selection_read": True,
-                    "fit_only_internal_audit_read": True,
-                    "original_model_validation_read": False,
-                    "external_read": False,
-                },
+                expected_read_state=_expected_read_state(config),
             )
             tensors = payload["tensors"]
             point_indices = tensors["point_indices"].long()
@@ -628,7 +683,10 @@ def evaluate(
             if device.startswith("cuda"):
                 torch.cuda.empty_cache()
 
-    if len(commit_rows) != int(config["partition"]["expected_failure_rows"]):
+    expected_rows = config["partition"].get("expected_failure_rows")
+    if expected_rows is None:
+        expected_rows = int(candidate_index["failure_rows"])
+    if len(commit_rows) != int(expected_rows):
         raise ValueError("Gate 3C1C completed failure-row drift")
     commit_error = [float(row["commit_error_px"]) for row in commit_rows]
     commit = {
@@ -733,9 +791,7 @@ def evaluate(
         "config": str(config_path),
         "config_sha256": file_sha256(config_path),
         "candidate_cache_index": config["partition"]["candidate_cache_index"],
-        "candidate_cache_index_sha256": config["partition"][
-            "candidate_cache_index_sha256"
-        ],
+        "candidate_cache_index_sha256": candidate_index["_index_file_sha256"],
         "scientific": scientific,
         "point_records": point_records,
         "video_records": video_records,
@@ -743,12 +799,7 @@ def evaluate(
         "replay_comparison": comparison,
         "exact_replay": exact_replay,
         "gate": {"checks": checks, "pass": passed, "decision": decision},
-        "read_state": {
-            "checkpoint_selection_read": True,
-            "fit_only_internal_audit_read": True,
-            "original_model_validation_read": False,
-            "external_read": False,
-        },
+        "read_state": _expected_read_state(config),
         "claim_boundary": config["claim_scope"],
     }
     result["result_payload_sha256"] = canonical_json_sha256(result)

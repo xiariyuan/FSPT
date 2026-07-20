@@ -91,3 +91,74 @@ def test_gate_checks_require_exact_replay_and_memory_increment():
         gates=gates,
     )
     assert not checks["memory_incremental_error"]
+
+
+def test_expected_read_state_supports_original_model_validation():
+    from scripts.audit_routeD_temporal_identity_future_rollout_gate3c1c_v0 import (
+        _expected_read_state,
+    )
+
+    config = {
+        "partition": {
+            "expected_read_state": {
+                "checkpoint_selection_read": True,
+                "fit_only_internal_audit_read": True,
+                "original_model_validation_read": True,
+                "external_read": False,
+            }
+        }
+    }
+    assert _expected_read_state(config)["original_model_validation_read"]
+    assert not _expected_read_state(config)["external_read"]
+
+
+def test_candidate_index_can_be_verified_by_preregistered_cache_config(tmp_path):
+    import hashlib
+    import json
+
+    from scripts.audit_routeD_temporal_identity_future_rollout_gate3c1c_v0 import (
+        _load_candidate_index,
+    )
+
+    cache_config = tmp_path / "cache.yaml"
+    cache_config.write_text("schema_version: test\n")
+    config_sha = hashlib.sha256(cache_config.read_bytes()).hexdigest()
+    index_path = tmp_path / "cache_index.json"
+    index_path.write_text(
+        json.dumps(
+            {
+                "partition": "original_model_validation",
+                "config_sha256": config_sha,
+                "completed_source_indices": list(range(48, 64)),
+                "videos": 16,
+                "failure_rows": 123,
+                "read_state": {
+                    "checkpoint_selection_read": True,
+                    "fit_only_internal_audit_read": True,
+                    "original_model_validation_read": True,
+                    "external_read": False,
+                },
+            }
+        )
+    )
+    config = {
+        "partition": {
+            "candidate_cache_index": str(index_path),
+            "candidate_cache_config": str(cache_config),
+            "candidate_cache_config_sha256": config_sha,
+            "name": "original_model_validation",
+            "source_indices": [48, 63],
+            "expected_videos": 16,
+            "expected_read_state": {
+                "checkpoint_selection_read": True,
+                "fit_only_internal_audit_read": True,
+                "original_model_validation_read": True,
+                "external_read": False,
+            },
+        }
+    }
+    loaded = _load_candidate_index(config)
+    assert loaded["failure_rows"] == 123
+    assert loaded["_index_file_sha256"] == hashlib.sha256(
+        index_path.read_bytes()
+    ).hexdigest()

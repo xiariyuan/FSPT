@@ -45,12 +45,19 @@ CI [+4.1980,+12.4154]. On the one-shot fit-only audit 448--511, support improves
 and identity-only controls remain weaker. Formal decision:
 AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION.
 
-Gate 3C1C v0 is preregistered and not run. It freezes a teacher-nearest oracle
-inside the already frozen native-plus-eight shortlist, then compares native,
-coordinate-only, and coordinate-plus-deterministic-memory actions on frames
-16--23 using only fit-only indices 448--511. It must prove an incremental memory
-contribution beyond coordinate-only. Original model-validation 48--63 and all
-external/final partitions remain locked.
+Gate 3C1C v0 completed and passed with exact replay on fit-only indices
+448--511. The teacher-nearest shortlist oracle reduces mean future error from
+34.4136 px native to 14.9708 px with coordinate plus deterministic four-level
+memory; coordinate-only reaches only 33.2747 px. Full-state reduction is
++19.4428 px with video-cluster 95% CI [+17.4422,+20.4299]. Memory contributes
++18.3039 px beyond coordinate-only and is better on 98.4127% of failure videos.
+Formal decision: AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION.
+
+Gate 3C1C v1 original model-validation is preregistered and not run. It reuses
+the identical shortlist, teacher restriction, state actions, metrics, bootstrap
+seeds, and pass thresholds on locked indices 48--63. A pass authorizes only
+Gate 3C1D causal top-1 selector preregistration. Calibration, final holdout, and
+all external datasets remain locked.
 ```
 
 Read first:
@@ -72,6 +79,8 @@ docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_RESULT_2026-07-19.md
 docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

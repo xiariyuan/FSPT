@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_PASS
 ```
 
 ## Question
@@ -113,3 +113,15 @@ deployable coordinate selector or external evaluation.
 Possible positive results are teacher-nearest shortlist state-action evidence.
 They are not causal top-1 selection performance, end-to-end tracker improvement,
 model-validation performance, or external benchmark improvement.
+
+
+## Final result
+
+All preregistered state-action and integrity gates passed with exact replay.
+The formal decision is:
+
+```text
+AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION
+```
+
+See `docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_RESULT_2026-07-20.md`.

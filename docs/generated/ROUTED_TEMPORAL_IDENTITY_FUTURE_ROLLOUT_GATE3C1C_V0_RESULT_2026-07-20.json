@@ -1,0 +1,175 @@
+{
+  "schema_version": "routeD_temporal_identity_future_rollout_gate3c1c_v0_result",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION",
+  "partition": "fit_only_internal_audit",
+  "source_indices": [
+    448,
+    511
+  ],
+  "videos": 64,
+  "failure_rows": 753,
+  "scientific": {
+    "commit": {
+      "rows": 753,
+      "mean_error_px": 12.990982295388719,
+      "median_error_px": 9.019405364990234,
+      "recall_within_4px": 0.10225763612217796,
+      "recall_within_8px": 0.42363877822045154,
+      "recall_within_12px": 0.6401062416998672
+    },
+    "actions": {
+      "native": {
+        "points": 753,
+        "mean_l2_error_px": 34.413584016392115,
+        "severe_16px_rate": 0.977924808800458,
+        "threshold_utility": 0.005012647920395749
+      },
+      "coordinate_only": {
+        "points": 753,
+        "mean_l2_error_px": 33.2747340398639,
+        "severe_16px_rate": 0.9735613104356713,
+        "threshold_utility": 0.006237273254143606
+      },
+      "coordinate_plus_memory": {
+        "points": 753,
+        "mean_l2_error_px": 14.970805669369135,
+        "severe_16px_rate": 0.30138335554089996,
+        "threshold_utility": 0.22518244725843745
+      }
+    },
+    "comparisons": {
+      "full_vs_native": {
+        "rows": 753,
+        "mean_error_reduction_px": 19.44277834702298,
+        "threshold_utility_gain": 0.2201697993380417,
+        "severe_16px_rate_reduction": 0.676541453259558,
+        "positive_point_fraction": 0.9827357237715804,
+        "error_reduction_video_cluster_CI": {
+          "mean": 18.870556656942764,
+          "lower": 17.442215089559497,
+          "upper": 20.42986929639256,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193721
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.22327818375016306,
+          "lower": 0.2041633512628749,
+          "upper": 0.24277118610382784,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193722
+        }
+      },
+      "coordinate_vs_native": {
+        "rows": 753,
+        "mean_error_reduction_px": 1.1388499765282134,
+        "threshold_utility_gain": 0.0012246253337478575,
+        "severe_16px_rate_reduction": 0.004363498364786703,
+        "positive_point_fraction": 0.6162018592297477,
+        "error_reduction_video_cluster_CI": {
+          "mean": 1.255883458753797,
+          "lower": 0.6373936414470052,
+          "upper": 1.9893662142889816,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193731
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.001957928632097251,
+          "lower": 0.0004018683813210919,
+          "upper": 0.00395990356727397,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193732
+        }
+      },
+      "memory_vs_coordinate": {
+        "rows": 753,
+        "mean_error_reduction_px": 18.303928370494766,
+        "threshold_utility_gain": 0.21894517400429386,
+        "severe_16px_rate_reduction": 0.6721779548947713,
+        "positive_point_fraction": 0.9760956175298805,
+        "error_reduction_video_cluster_CI": {
+          "mean": 17.614673198188964,
+          "lower": 16.26142939556818,
+          "upper": 18.995005297627998,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193741
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.22132025511806583,
+          "lower": 0.202127655318859,
+          "upper": 0.24058568008634626,
+          "videos": 63,
+          "samples": 10000,
+          "seed": 193742
+        }
+      }
+    },
+    "memory_better_video_fraction": 0.9841269841269841,
+    "native_replay_max_abs_px": 0.0,
+    "selected_indices_digest": "db8c18e8236cf9ca7bafd8242d7c1a962bbf9706262ffe609236d8d666956423",
+    "teacher_selected_digest": "d0d7583bba82d37c68371b25391462fa3e1e414c48bc4a4f3d90aebfb4eab0b6",
+    "future_coordinate_digest": {
+      "native": "4e6f61edf1e0a31ac9786057f5b44dbff4e03241c55933d9f3d8a1ee688294ac",
+      "coordinate_only": "10f0810b24b0a21bb36c2cf8ecf1636420ab7d76b60e78b977bbc2c765808400",
+      "coordinate_plus_memory": "43c3aa05cddbb679c57d37d5f8ec548f46258630fa1a4665851ac14bdae84e14"
+    },
+    "point_records_digest": "884693e3ef2549678c51b6dab4d3629bf3cc82440fa600799ecabafd3811b075",
+    "video_records_digest": "7e0deceb18b372d8b8fcc76d8bbbb156d497c4fa6640083c2a32b4bd1707463a",
+    "scientific_payload_sha256": "214067b00ad46871de9538930ab2ce52edd7f949a3c32c6249316bddbc6607a6"
+  },
+  "gate": {
+    "checks": {
+      "shortlist_recall_within_12px": true,
+      "shortlist_median_commit_error": true,
+      "full_state_error_reduction": true,
+      "full_state_error_CI_lower": true,
+      "full_state_utility_gain": true,
+      "full_state_utility_CI_lower": true,
+      "full_state_positive_fraction": true,
+      "full_state_severe_reduction": true,
+      "memory_incremental_error": true,
+      "memory_incremental_utility": true,
+      "memory_better_video_fraction": true,
+      "native_replay_parity": true,
+      "exact_replay": true
+    },
+    "pass": true,
+    "decision": "AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION"
+  },
+  "exact_replay": true,
+  "replay_comparison": {
+    "selected_indices_digest": true,
+    "teacher_selected_digest": true,
+    "future_coordinate_digest": true,
+    "point_records_digest": true,
+    "video_records_digest": true,
+    "scientific_payload_sha256": true
+  },
+  "primary_result_sha256": "538281b9490bc0948e8419fd3558120ddd8b5a97537c2a155b502e1ea5e3ff12",
+  "replay_result_sha256": "55fe24120bccae57845988ede178f03d882269a7ad836d4ffa0db15b8cd8baa3",
+  "config_sha256": "3da601d1fa66ff125ca10976a95555bb69154707b6d3402f317b1bb57f80600f",
+  "candidate_cache_index_sha256": "4598ac1b8e197ef6914019573f0423bed5f46deb057e234fe4d226eec77e7af6",
+  "read_state": {
+    "checkpoint_selection_read": true,
+    "fit_only_internal_audit_read": true,
+    "original_model_validation_read": false,
+    "external_read": false
+  },
+  "locked_data": {
+    "original_model_validation_indices_48_63_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Teacher-nearest shortlist future rollout on fit-only indices 448--511. This is not deployable top-1 selection, original model-validation, or external tracking improvement.",
+  "summary_payload_sha256": "99d62ebb19366a7b57a7c82d0f72ac5867ee46501c3c45849205d67e35a8d2bd"
+}

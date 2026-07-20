@@ -161,3 +161,79 @@ Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+---
+
+## 2026-07-20 — Gate 3C1C state-action result and original model-validation preregistration
+
+### Gate 3C1C v0 fit-only future rollout
+
+- partition: fit-only internal audit indices `448--511`
+- videos: `64`, failure videos: `63`, failure rows: `753`
+- teacher selection: nearest coordinate only inside the already frozen
+  query-closure native-plus-eight shortlist
+- shortlist 12 px support: `64.0106%`
+- shortlist median commit error: `9.0194 px`
+
+Future rollout results over frames `16--23`:
+
+| action | mean future error | severe >16 px | threshold utility |
+|---|---:|---:|---:|
+| native | 34.4136 px | 0.97792 | 0.00501 |
+| coordinate only | 33.2747 px | 0.97356 | 0.00624 |
+| coordinate + four-level memory | 14.9708 px | 0.30138 | 0.22518 |
+
+Full state versus native:
+
+- mean error reduction: `+19.4428 px`
+- video-cluster 95% CI: `[+17.4422, +20.4299] px`
+- threshold-utility gain: `+0.22017`
+- utility 95% CI: `[+0.20416, +0.24277]`
+- positive-point fraction: `98.2736%`
+- severe-rate reduction: `+0.67654`
+
+Memory versus coordinate-only:
+
+- incremental error reduction: `+18.3039 px`
+- video-cluster 95% CI: `[+16.2614, +18.9950] px`
+- incremental utility: `+0.21895`
+- memory-better video fraction: `98.4127%`
+
+Native cached/recomputed parity is exact. Every selected-index, teacher-selected,
+future-coordinate, point-record, video-record, and scientific-payload digest
+replayed exactly.
+
+Formal decision:
+
+```text
+AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION
+```
+
+Claim boundary: this is a teacher-nearest shortlist state-action oracle. It is
+not deployable top-1 selection or external tracking improvement.
+
+### Gate 3C1C v1 original model-validation protocol
+
+The protocol for original model-validation indices `48--63` is frozen but not
+run. It makes no numerical or architectural change relative to Gate 3C1C v0:
+
+- identical query-closure shortlist;
+- identical teacher-nearest restriction;
+- identical native / coordinate-only / coordinate-plus-memory branches;
+- identical metrics, bootstrap seeds, and pass thresholds;
+- candidate cache generation requires the exact Gate 3C1C v0 replay result and
+  its pinned file hash before index 48 can be opened.
+
+```text
+pass -> AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION
+fail -> STOP_QUERY_CLOSURE_STATE_ACTION_BEFORE_TOP1
+```
+
+At this entry, indices `48--63` remain unread. Calibration, final holdout,
+DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
