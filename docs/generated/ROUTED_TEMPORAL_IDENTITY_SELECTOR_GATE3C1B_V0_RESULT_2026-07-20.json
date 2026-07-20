@@ -1,0 +1,227 @@
+{
+  "schema_version": "routeD_temporal_identity_selector_gate3c1b_v0_result",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION",
+  "selector": {
+    "schema_version": "routeD_query_closure_identity_selector_gate3c1b_v0",
+    "cycle_weight": 2.0,
+    "query_frame_identity_weight": 1.0,
+    "mean_identity_weight": 1.0,
+    "minimum_identity_weight": 1.0,
+    "mandatory_native": true,
+    "retained_nonnative": 8,
+    "trainable_parameters": 0
+  },
+  "checkpoint_selection": {
+    "source_indices": [
+      384,
+      447
+    ],
+    "videos": 64,
+    "videos_with_failures": 63,
+    "failure_rows": 631,
+    "methods": {
+      "primary": {
+        "rows": 631,
+        "supported_4px_rows": 81,
+        "recall_4px": 0.12836767733097076,
+        "supported_8px_rows": 278,
+        "recall_8px": 0.44057053327560425,
+        "supported_12px_rows": 426,
+        "recall_12px": 0.6751188635826111,
+        "mean_minimum_distance_px": 12.660594940185547,
+        "median_minimum_distance_px": 8.824193954467773,
+        "oracle_conditional_recall_12px": 0.7006578947368421
+      },
+      "static_m1": {
+        "rows": 631,
+        "supported_4px_rows": 64,
+        "recall_4px": 0.10142631083726883,
+        "supported_8px_rows": 224,
+        "recall_8px": 0.3549920618534088,
+        "supported_12px_rows": 371,
+        "recall_12px": 0.58795565366745,
+        "mean_minimum_distance_px": 13.755697250366211,
+        "median_minimum_distance_px": 10.296100616455078,
+        "oracle_conditional_recall_12px": 0.6101973684210527
+      },
+      "cycle_only": {
+        "rows": 631,
+        "supported_4px_rows": 67,
+        "recall_4px": 0.10618066787719727,
+        "supported_8px_rows": 244,
+        "recall_8px": 0.3866877853870392,
+        "supported_12px_rows": 380,
+        "recall_12px": 0.6022186875343323,
+        "mean_minimum_distance_px": 13.910049438476562,
+        "median_minimum_distance_px": 9.843770027160645,
+        "oracle_conditional_recall_12px": 0.625
+      },
+      "identity_only": {
+        "rows": 631,
+        "supported_4px_rows": 64,
+        "recall_4px": 0.10142631083726883,
+        "supported_8px_rows": 237,
+        "recall_8px": 0.37559428811073303,
+        "supported_12px_rows": 385,
+        "recall_12px": 0.6101426482200623,
+        "mean_minimum_distance_px": 13.959872245788574,
+        "median_minimum_distance_px": 9.7722749710083,
+        "oracle_conditional_recall_12px": 0.6332236842105263
+      }
+    },
+    "paired_video_support_gain_12px": {
+      "mean": 0.08286777339757435,
+      "lower": 0.041980084587657264,
+      "upper": 0.1241538416682964
+    },
+    "gate": {
+      "applicable": true,
+      "checks": {
+        "pooled_support_gain": true,
+        "absolute_support_recall": true,
+        "paired_video_ci_lower_positive": true,
+        "median_minimum_distance_improvement": true,
+        "within8_recall_gain_positive": true,
+        "nonnegative_video_fraction": true,
+        "exact_replay": true
+      },
+      "pass": true,
+      "pooled_support_gain_12px": 0.08716320991516113,
+      "median_minimum_distance_improvement_px": 1.4719066619873047,
+      "within8_recall_gain": 0.08557847142219543,
+      "nonnegative_video_fraction": 0.7936507936507936,
+      "decision": "AUTHORIZE_GATE3C1B_FIT_ONLY_AUDIT_448_511"
+    },
+    "exact_replay": true,
+    "replay_comparison": {
+      "selected_indices_digest": true,
+      "primary_score_digest": true,
+      "method_metrics_digest": true,
+      "video_records_digest": true
+    },
+    "cache_index_payload_sha256": "b2063381391df7f50592fa9e8114db8a2feba886422455194bd3db69c6b0b7af",
+    "cache_index_file_sha256": "9bf3109ce81673d22ada4a104325679509ca738ab4446d805be2aac1dcfce6b3",
+    "primary_result_sha256": "aad346d8b69a9b04c41f4866c6490c83b75116d30fe45f120c64ded6eb57869b",
+    "replay_result_sha256": "a713b4df5d9fe37519a6478900741d0cd1a90aa1a7daeb5ebcd5017e135e1c48"
+  },
+  "fit_only_internal_audit": {
+    "source_indices": [
+      448,
+      511
+    ],
+    "videos": 64,
+    "videos_with_failures": 63,
+    "failure_rows": 753,
+    "methods": {
+      "primary": {
+        "rows": 753,
+        "supported_4px_rows": 77,
+        "recall_4px": 0.102257639169693,
+        "supported_8px_rows": 319,
+        "recall_8px": 0.42363879084587097,
+        "supported_12px_rows": 482,
+        "recall_12px": 0.6401062607765198,
+        "mean_minimum_distance_px": 12.990983009338379,
+        "median_minimum_distance_px": 9.019405364990234,
+        "oracle_conditional_recall_12px": 0.6648275862068965
+      },
+      "static_m1": {
+        "rows": 753,
+        "supported_4px_rows": 69,
+        "recall_4px": 0.09163346886634827,
+        "supported_8px_rows": 275,
+        "recall_8px": 0.365205854177475,
+        "supported_12px_rows": 441,
+        "recall_12px": 0.5856573581695557,
+        "mean_minimum_distance_px": 13.802172660827637,
+        "median_minimum_distance_px": 10.288314819335938,
+        "oracle_conditional_recall_12px": 0.6082758620689656
+      },
+      "cycle_only": {
+        "rows": 753,
+        "supported_4px_rows": 71,
+        "recall_4px": 0.09428951144218445,
+        "supported_8px_rows": 272,
+        "recall_8px": 0.3612217903137207,
+        "supported_12px_rows": 420,
+        "recall_12px": 0.5577689409255981,
+        "mean_minimum_distance_px": 14.52833366394043,
+        "median_minimum_distance_px": 10.3644437789917,
+        "oracle_conditional_recall_12px": 0.5793103448275863
+      },
+      "identity_only": {
+        "rows": 753,
+        "supported_4px_rows": 72,
+        "recall_4px": 0.09561753273010254,
+        "supported_8px_rows": 283,
+        "recall_8px": 0.3758300244808197,
+        "supported_12px_rows": 453,
+        "recall_12px": 0.6015936136245728,
+        "mean_minimum_distance_px": 13.573700904846191,
+        "median_minimum_distance_px": 9.70755672454834,
+        "oracle_conditional_recall_12px": 0.6248275862068966
+      }
+    },
+    "paired_video_support_gain_12px": {
+      "mean": 0.08105499190943581,
+      "lower": 0.028084241823544583,
+      "upper": 0.13521322745770686
+    },
+    "gate": {
+      "applicable": true,
+      "checks": {
+        "pooled_support_gain": true,
+        "absolute_support_recall": true,
+        "paired_video_ci_lower_positive": true,
+        "median_minimum_distance_improvement": true,
+        "within8_recall_gain_positive": true,
+        "nonnegative_video_fraction": true,
+        "exact_replay": true
+      },
+      "pass": true,
+      "pooled_support_gain_12px": 0.05444890260696411,
+      "median_minimum_distance_improvement_px": 1.2689094543457031,
+      "within8_recall_gain": 0.058432936668395996,
+      "nonnegative_video_fraction": 0.7301587301587301,
+      "decision": "AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION"
+    },
+    "exact_replay": true,
+    "replay_comparison": {
+      "selected_indices_digest": true,
+      "primary_score_digest": true,
+      "method_metrics_digest": true,
+      "video_records_digest": true
+    },
+    "cache_index_payload_sha256": "dcbf793dc7893609ce1e003e68c27e1b22132a2da5494df47568931acb791994",
+    "cache_index_file_sha256": "4598ac1b8e197ef6914019573f0423bed5f46deb057e234fe4d226eec77e7af6",
+    "primary_result_sha256": "d26796e19521d4ecbdb70d0c9ef8c5c36a721b376e03a1355459410603e704b8",
+    "replay_result_sha256": "132c624501538d17f452fc3fd9e27d21cb9ef61c72a3239294d70be0abe34932"
+  },
+  "integrity": {
+    "checkpoint_exact_membership": true,
+    "audit_exact_membership": true,
+    "all_checkpoint_sidecars_verified": true,
+    "all_audit_sidecars_verified": true,
+    "checkpoint_replay_exact": true,
+    "audit_replay_exact": true
+  },
+  "read_state": {
+    "checkpoint_selection_read": true,
+    "fit_only_internal_audit_read": true,
+    "original_model_validation_read": false,
+    "external_read": false
+  },
+  "locked_data": {
+    "original_model_validation_indices_48_63_read": false,
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Causal nine-candidate shortlist support on checkpoint-selection and fit-only internal audit. This is not top-1 coordinate selection, future rollout, state-write improvement, original model-validation, or external performance.",
+  "summary_payload_sha256": "685ea052ec89fbe54665d9c2b0cb00f20bba59d07b5b2210ece223a09a7c561a"
+}

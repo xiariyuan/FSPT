@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN_ON_CHECKPOINT_SELECTION
+COMPLETED_PASS
 ```
 
 Indices 384--511 remain unread at preregistration time.
@@ -120,3 +120,15 @@ candidate in a nine-candidate shortlist. It does not establish that selecting or
 committing any candidate improves frames 16--23. Coordinate selection, future
 rollout, state writeback, original model validation, calibration, final holdout,
 DAVIS, Kinetics, and official Kinetics 1,144 remain separate and locked.
+
+
+## Final result
+
+Checkpoint-selection 384--447 and the one-shot fit-only audit 448--511 both
+passed every frozen gate with exact replay. The formal decision is:
+
+```text
+AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION
+```
+
+See `docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_RESULT_2026-07-20.md`.

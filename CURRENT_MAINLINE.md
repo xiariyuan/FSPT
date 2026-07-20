@@ -37,14 +37,20 @@ decision: AUTHORIZE_GATE3C1B_SELECTOR_PREREGISTRATION. Checkpoint-selection
 384--447, fit-only audit 448--511, original model-validation 48--63, calibration,
 final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain unread.
 
-Gate 3C1B v0 is now preregistered but has not read checkpoint-selection data.
-The primary selector is a zero-parameter query-closure identity energy that
-always retains native plus eight non-native candidates. On gradient-train only,
-it raises 12-pixel retained support from 51.8797% to 59.2481%; cycle-only and
-identity-only controls reach 54.7669% and 55.2782%, and a full-cache replay is
-exact. This is design evidence, not independent performance. Indices 384--447
-will be the first confirmation gate; 448--511 remain hard-blocked until its
-exact replay passes.
+Gate 3C1B v0 completed and passed with exact replay on both independent
+development partitions. On checkpoint-selection 384--447, retained 12-pixel
+support improves 58.7956% -> 67.5119% (+8.7163 points), with equal-video 95%
+CI [+4.1980,+12.4154]. On the one-shot fit-only audit 448--511, support improves
+58.5657% -> 64.0106% (+5.4449 points), with CI [+2.8084,+13.5213]. Cycle-only
+and identity-only controls remain weaker. Formal decision:
+AUTHORIZE_GATE3C1C_FUTURE_ROLLOUT_PREREGISTRATION.
+
+Gate 3C1C v0 is preregistered and not run. It freezes a teacher-nearest oracle
+inside the already frozen native-plus-eight shortlist, then compares native,
+coordinate-only, and coordinate-plus-deterministic-memory actions on frames
+16--23 using only fit-only indices 448--511. It must prove an incremental memory
+contribution beyond coordinate-only. Original model-validation 48--63 and all
+external/final partitions remain locked.
 ```
 
 Read first:
@@ -64,6 +70,8 @@ docs/ROUTED_TEMPORAL_IDENTITY_FEATURE_PROBE_GATE3C1_V0_RESULT_2026-07-19.md
 docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_PLAN_2026-07-19.md
 docs/ROUTED_TEMPORAL_IDENTITY_TRAIN_CACHE_GATE3C1A_V0_RESULT_2026-07-19.md
 docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17
