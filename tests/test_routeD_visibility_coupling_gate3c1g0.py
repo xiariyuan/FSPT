@@ -1,6 +1,9 @@
 from pathlib import Path
+import json
 
 import torch
+
+from projects.mmp_tracker.mmp_tracker.routeD_kubric_cache import canonical_json_sha256
 
 from projects.mmp_tracker.mmp_tracker.routeD_visibility_coupling_v0 import (
     VISIBILITY_FEATURE_CHANNELS,
@@ -45,19 +48,28 @@ def test_visibility_feature_flattening_preserves_identities():
     assert flat["frame_indices"].tolist() == [15, 16, 17, 15, 16, 17]
 
 
-def test_gate3c1g0_cache_config_is_exact_and_output_unread():
+def test_gate3c1g0_cache_config_and_materialized_result_are_exact():
     config, _, _, reference = _validate_config(CONFIG.resolve())
     assert len(config["source_indices"]) == 44
     assert sum(reference[index]["scientific"]["top1_action_rows"] for index in config["source_indices"]) == 89
     assert config["expected_support"]["frame_rows"] == 801
     assert all(value is False for value in config["locked_data"].values())
-    assert not Path(config["output_root"]).exists()
+    root = Path(config["output_root"])
+    assert root.is_dir()
+    index = json.loads((root / "cache_index.json").read_text())
+    assert index["videos"] == 44
+    assert index["actions"] == 89
+    assert index["frame_rows"] == 801
+    assert index["index_payload_sha256"] == "a990040bcd8a86808451c8e77c6bed3b38ec2032522b9ef3bd1372f08dc1ea72"
+    summary_path = Path("docs/generated/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_SUMMARY_2026-07-20.json")
+    summary = json.loads(summary_path.read_text())
+    without_hash = dict(summary)
+    embedded = without_hash.pop("summary_payload_sha256")
+    assert embedded == canonical_json_sha256(without_hash)
+    assert summary["formal_decision"] == "AUTHORIZE_GATE3C1G1_NESTED_VIDEO_OOF_PREREGISTRATION"
 
 
 def test_low_dim_probe_is_frozen_negative_result():
-    import json
-    from projects.mmp_tracker.mmp_tracker.routeD_kubric_cache import canonical_json_sha256
-
     path = Path(
         "docs/generated/ROUTED_VISIBILITY_COUPLING_GATE3C1G0_LOW_DIM_PROBE_2026-07-20.json"
     )

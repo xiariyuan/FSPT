@@ -1004,3 +1004,47 @@ No new raw population or external data is read.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1G0 richer visibility cache result
+
+### Status
+
+```text
+COMPLETED_PASS
+AUTHORIZE_GATE3C1G1_NESTED_VIDEO_OOF_PREREGISTRATION
+```
+
+The formal richer causal cache completed on all 44 exposed Gate 3C1F2 action
+videos, 89 sealed actions, and 801 action-frame rows. The feature schema is
+frozen at 66 causal channels. Every video reproduces the sealed entry, candidate,
+shortlist, action, coordinate, and visibility digests before feature extraction.
+Independent reload verifies every sidecar file, payload, tensor hash, tensor
+digest, source identity, and the final index payload.
+
+```text
+cache index file SHA256:
+5c690647e8fee4ae812e24f132622f3941fa12682b5e000f7ce08851d2493b45
+
+cache index payload SHA256:
+a990040bcd8a86808451c8e77c6bed3b38ec2032522b9ef3bd1372f08dc1ea72
+
+combined sidecar digest:
+c6edcef339c5deaa81a235a4f634aeb45e2c5e1878bc1e0b18fae9dfc7e8cf82
+
+combined tensor digest:
+8b7a61cb111ec3bb76d54161558d5c24c2e89cfbb636cb30488c088b7e7ab464
+```
+
+GT labels, coordinate errors, categories, and threshold hits remain separate
+from the causal feature channels. This result authorizes only a separately
+preregistered nested source-video OOF stage. New raw population, DAVIS,
+Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

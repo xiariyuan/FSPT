@@ -1,0 +1,40 @@
+{
+  "schema_version": "routeD_visibility_coupling_cache_gate3c1g0_v0_result",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_visibility_coupling_cache_gate3c1g0_v0.yaml",
+  "config_sha256": "9a2cf78c283c8990e95fd5fa35c89359fa4b7093f8d9c17319cb74d8b14965f0",
+  "cache_index": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_visibility_coupling_cache_gate3c1g0_v0_20260720/cache_index.json",
+  "cache_index_file_sha256": "5c690647e8fee4ae812e24f132622f3941fa12682b5e000f7ce08851d2493b45",
+  "cache_index_payload_sha256": "a990040bcd8a86808451c8e77c6bed3b38ec2032522b9ef3bd1372f08dc1ea72",
+  "support": {
+    "videos": 44,
+    "actions": 89,
+    "frame_rows": 801,
+    "feature_dim": 66
+  },
+  "combined_sidecar_digest": "c6edcef339c5deaa81a235a4f634aeb45e2c5e1878bc1e0b18fae9dfc7e8cf82",
+  "combined_tensor_digest": "8b7a61cb111ec3bb76d54161558d5c24c2e89cfbb636cb30488c088b7e7ab464",
+  "checks": {
+    "videos_exact": true,
+    "actions_exact": true,
+    "frame_rows_exact": true,
+    "feature_dim_exact": true,
+    "all_sidecars_verified": true,
+    "all_tensor_hashes_verified": true,
+    "all_payload_hashes_verified": true,
+    "sealed_pipeline_exact": true,
+    "causal_feature_label_separation": true,
+    "locked_data_unchanged": true
+  },
+  "locked_data": {
+    "new_raw_population_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "formal_decision": "AUTHORIZE_GATE3C1G1_NESTED_VIDEO_OOF_PREREGISTRATION",
+  "claim_boundary": "Exposed-development richer causal visibility cache only. This result authorizes a separately preregistered nested source-video OOF design stage; it does not authorize a new raw-population confirmation or any external TAP-Vid benchmark.",
+  "summary_payload_sha256": "22078b9853755e563bc9850b641b56d8b778623b5f72b570634237bea0019713"
+}
