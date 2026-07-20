@@ -935,3 +935,37 @@ DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F2 coordinate--visibility failure diagnostic result
+
+### Status
+
+```text
+COMPLETED_EXPOSED_DIAGNOSTIC
+SEALED_GATE3C1F2_PIPELINE_REPRODUCED_EXACTLY
+```
+
+All 44 action videos and 89 actions reproduce the committed Gate 3C1F2 entry,
+candidate, shortlist, action, coordinate, and visibility digests. Under GT
+visibility, modified coordinates improve equal-video AJ by `+0.2921` points with
+a positive paired CI. Keeping native visibility suppresses the coordinate gain,
+while applying modified visibility to native coordinates reduces AJ by `-0.2195`
+points with a strictly negative CI.
+
+Visibility transitions identify the structural failure: failure actions recover
+220 GT-visible false negatives and create only two new occluded false positives;
+ambiguous actions recover 42 and create eight; `other` actions recover only six
+but create 176 new occluded false positives. The next redesign should preserve
+the frozen coordinate/memory action and learn a causal post-writeback visibility
+decision. Any confirmation requires another raw-record-disjoint population.
+
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

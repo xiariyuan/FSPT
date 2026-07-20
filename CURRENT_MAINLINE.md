@@ -135,11 +135,15 @@ than 4 px. The current bottleneck is population coverage and AJ leverage, not
 action quality. Formal decision: STOP_BEFORE_OFFICIAL_TAPVID. External data
 remain locked; any redesign requires a new raw-record-disjoint confirmation.
 
-A post-failure Gate 3C1F2 diagnostic is preregistered on only the 44 sealed
-action videos. It must exactly reproduce every formal entry/candidate/action/
-coordinate/visibility digest before comparing actual modified trajectories with
-coordinate/visibility cross views and GT-visibility localization oracles. No
-threshold sweep, retraining, or new data is authorized by this diagnostic.
+The post-failure Gate 3C1F2 diagnostic completed on all 44 sealed action videos
+and reproduced every formal entry/candidate/action/coordinate/visibility digest.
+Under GT visibility, modified coordinates improve action-video AJ by +0.2921
+points with a positive CI. Native visibility suppresses recovered coordinates;
+modified visibility alone on native coordinates reduces AJ by -0.2195 points.
+Failure actions recover 220 visible false negatives with only two new occluded
+false positives, while `other` actions recover six but create 176 false positives.
+The next redesign target is causal post-writeback visibility calibration, not the
+frozen coordinate selector. No new confirmation or external data was read.
 ```
 
 Read first:
@@ -179,6 +183,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_RESULT_2026-07-2
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

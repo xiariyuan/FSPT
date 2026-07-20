@@ -42,8 +42,19 @@ def test_diagnostic_config_is_exact_and_selects_only_sealed_action_videos():
     assert len(action_sources) == 44
     assert sum(reference[index]["scientific"]["top1_action_rows"] for index in action_sources) == 89
     assert all(value is False for value in config["locked_data"].values())
-    assert not Path(config["output"]["work_root"]).exists()
-    assert not Path(config["output"]["result"]).exists()
+    work_root = Path(config["output"]["work_root"])
+    result_path = Path(config["output"]["result"])
+    assert len(list(work_root.glob("video_*.json"))) == 44
+    result = json.loads(result_path.read_text())
+    assert result["scientific"]["videos"] == 44
+    assert result["scientific"]["actions"] == 89
+    assert result["scientific"]["sealed_pipeline_exact"] is True
+    assert result["scientific"]["frame_records_digest"] == (
+        "6f378af3b98e987b5d77af63198647e5d4d6bc0115686d2a6811d5f910522591"
+    )
+    assert result["scientific"]["scientific_payload_sha256"] == (
+        "8a73a832391c3cfd1cdb017c538a0f1988e6eb97a0ecd5008b059fdb89152f9a"
+    )
 
 
 def _synthetic_record(source_index: int):
