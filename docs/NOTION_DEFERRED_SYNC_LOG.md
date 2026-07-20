@@ -736,3 +736,40 @@ holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F0 causal full-population entry result
+
+```text
+COMPLETED_PASS
+EXACT_REPLAY_PASS
+AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA
+```
+
+The frozen 130-D HGB entry rule is:
+
+```text
+entry probability >= 0.93
+native joint probability <= 0.02
+```
+
+Five-fold source-video OOF on 376 rows gives AUC/AP `0.8514/0.8090`, `14.63%`
+failure recall, `0%` clean false apply, and `100%` action precision. Independent
+fit-validation on 160 rows gives AUC/AP `0.7570/0.7864`, `15.00%` failure recall,
+`0%` clean false apply, and `100%` precision.
+
+Primary and fresh-process replay exactly match every feature, label, group, OOF
+prediction, validation prediction, point-record, operating-point, and scientific
+payload digest. Only the primary bundle is authorized downstream.
+
+The result authorizes a third raw-record-disjoint Kubric complete-population
+confirmation after excluding all 1,024 identities used by Gate 3C0 and Gate 3C2.
+DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

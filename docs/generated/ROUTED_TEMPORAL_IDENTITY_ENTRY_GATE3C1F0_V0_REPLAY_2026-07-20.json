@@ -1,0 +1,109 @@
+{
+  "schema_version": "routeD_temporal_identity_entry_result_gate3c1f0_v0",
+  "date": "2026-07-20",
+  "status": "completed",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_entry_gate3c1f0_v0.yaml",
+  "config_sha256": "6410801e45ee876a6a730720a9ea3d513853f0262e38cfab90104f1d2bc5c35d",
+  "bundle_artifact": {
+    "path": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/replay_bundle.joblib",
+    "file_sha256": "ac25440f3f15e15033e73f783af172796afb218c1964c736d758928fb5fb003f"
+  },
+  "frozen_bundle_artifact": {
+    "path": "/gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/primary_bundle.joblib",
+    "file_sha256": "ac25440f3f15e15033e73f783af172796afb218c1964c736d758928fb5fb003f"
+  },
+  "scientific": {
+    "oof_metrics": {
+      "rows": 376,
+      "failure_rows": 164,
+      "clean_rows": 212,
+      "AUC": 0.8514150943396227,
+      "AP": 0.8090300897644429,
+      "action_rows": 24,
+      "action_coverage": 0.06382978723404255,
+      "failure_recall": 0.14634146341463414,
+      "clean_false_apply_rate": 0.0,
+      "action_precision": 1.0
+    },
+    "validation_metrics": {
+      "rows": 160,
+      "failure_rows": 80,
+      "clean_rows": 80,
+      "AUC": 0.7570312499999999,
+      "AP": 0.7864113741475205,
+      "action_rows": 12,
+      "action_coverage": 0.075,
+      "failure_recall": 0.15,
+      "clean_false_apply_rate": 0.0,
+      "action_precision": 1.0
+    },
+    "training_digests": {
+      "train_features": "982c64a77fe1a135fb8563399be3a2976b6d7b152a1fbdae74984cf7d3187456",
+      "train_labels": "e392725a0ea7f53e9b1539f1b842360b412254d81f66318f095ab5caae9caa5b",
+      "train_joint": "cde00203106729c43da13581fae6b3a18545be9949a84d7dab90d2ef8723d5f4",
+      "train_groups": "215eb6a823f18caabb7e683afabeacbebc868f7de5f479cc66c679517fd504cd",
+      "oof_probability": "72375bda125c8ce0c972b4ef1862d0a688e9b3f1af39e79793cd658a016743f7",
+      "validation_features": "da8313b93f165a1af31cd7732528252ab8ea50270a4e56a277d402b6895eb953",
+      "validation_labels": "18a77480b5c9ff89269118ff2a44b95878219459a518b42fe372479f191f82dc",
+      "validation_joint": "e8f64615edf83e0c29a846ef16b3502a2b7003ab2b96fd1758b1456f2b3bb301",
+      "validation_probability": "7c6150e9bc973966e5cb30ddaab5d0385da1d0af4f10fc1387af519a70053d86"
+    },
+    "train_point_records_digest": "966c8bf98188fcf4b3a2cf9c5dd165f286ded60bc85a57c1f560f0188c716fdd",
+    "validation_point_records_digest": "f00f84965806aa5a7a97281bd24c0efd203caf37591754c892bae7b389c7b7b1",
+    "operating_point": {
+      "entry_probability_min": 0.93,
+      "native_joint_probability_max": 0.02,
+      "semantics": "both_conditions_required",
+      "candidate_generation_only_after_entry": true
+    },
+    "scientific_payload_sha256": "f6a3f3f2fa6e28589cc9fe033bf917af4e8ec87cfc5d24f0cacda10ab38536d7"
+  },
+  "reference": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_PRIMARY_2026-07-20.json",
+  "replay_comparison": {
+    "oof_metrics": true,
+    "validation_metrics": true,
+    "training_digests": true,
+    "train_point_records_digest": true,
+    "validation_point_records_digest": true,
+    "operating_point": true,
+    "scientific_payload_sha256": true
+  },
+  "exact_replay": true,
+  "gate": {
+    "checks": {
+      "oof": {
+        "AUC": true,
+        "AP": true,
+        "failure_recall": true,
+        "clean_false_apply": true,
+        "action_precision": true
+      },
+      "validation": {
+        "AUC": true,
+        "AP": true,
+        "failure_recall": true,
+        "clean_false_apply": true,
+        "action_precision": true
+      },
+      "exact_replay": true
+    },
+    "pass": true,
+    "decision": "AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA"
+  },
+  "runtime_versions": {
+    "python": "3.11.8",
+    "numpy": "1.26.4",
+    "torch": "2.2.2+cu121",
+    "scikit_learn": "1.4.2",
+    "joblib": "1.4.2"
+  },
+  "locked_data": {
+    "new_raw_disjoint_population_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Fit and exact-replay qualification of a causal, low-cost full-population entry classifier. Inputs are limited to CoTracker observed-history trajectory, visibility/confidence, and four frozen native memory/support levels through frame 15. This gate does not open new raw data or any external benchmark.",
+  "result_payload_sha256": "0957fb7f74b0576ef28940b52a746d578b4eda1494558aee79b63a4010e9178e"
+}

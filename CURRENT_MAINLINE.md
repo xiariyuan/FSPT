@@ -107,13 +107,14 @@ A complete-video benchmark still requires a fully causal full-population entry
 contract because the isolated natural-failure population used future GT only to
 define the scientific audit set.
 
-Gate 3C1F0 v0 is preregistered and not run. A separate 130-D causal HGB entry
-model uses only observed CoTracker trajectory, visibility/confidence, and four
-native memory/support levels. The frozen operating point is entry probability
->=0.93 and native joint probability <=0.02. On exposed 16-video design data the
-complete two-stage policy gives +0.0858 AJ point, +0.4707 delta point, and +0.5242
-OA point; delta/OA CIs are positive but AJ CI crosses zero. A passing entry replay
-may authorize only a third raw-record-disjoint Kubric full-population confirmation.
+Gate 3C1F0 v0 completed and passed with exact replay. The 130-D causal HGB
+entry model uses only observed CoTracker trajectory, visibility/confidence, and
+four native memory/support levels. The frozen operating point is entry
+probability >=0.93 and native joint probability <=0.02. Five-fold source-video
+OOF gives 14.63% failure recall with 0% clean false apply and 100% precision;
+independent fit-only validation gives 15.00%, 0%, and 100%. Formal decision:
+AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA. The exposed 16-video
+complete-policy pilot remains design-only; its AJ CI crosses zero.
 ```
 
 Read first:
@@ -147,6 +148,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17
