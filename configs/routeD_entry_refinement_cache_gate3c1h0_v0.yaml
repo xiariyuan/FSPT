@@ -1,0 +1,196 @@
+schema_version: routeD_entry_refinement_cache_gate3c1h0_v0
+date: '2026-07-20'
+claim_scope: Exposed third-population causal entry-refinement cache. The cache may
+  support a separately preregistered entry redesign but cannot authorize a new raw-population
+  confirmation or external benchmark.
+authorized_parent:
+  replay_path: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_REPLAY_2026-07-20.json
+  replay_file_sha256: a0c4cdb255f203c957bf4d689b12365f34e0d8ef57c292f72f790ee200dd9239
+  replay_payload_sha256: a76f7d93f35a6ab0a64c65dd54a8ca17a1e7749cc18f6aa40c47ef05db524d63
+  replay_scientific_payload_sha256: e1000928de9565aba106612aa2bca7c89566f8859d3325e9c00b91ae2fe9b9e4
+  primary_work_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_full_population_gate3c1f2_v0/primary
+implementation:
+  cache_builder:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_entry_refinement_cache_gate3c1h0_v0.py
+    sha256: 492a8489c7f5371b6af243877dfbfbf8d0cbf75bf82e421d5adc41c62e389fc6
+  formal_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_full_population_gate3c1f2_v0.py
+    sha256: ca646f69b055f7549165c950ad17bae585389b5ad9bea4e6e2e8f8cbee3a3b29
+  entry_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_entry_v0.py
+    sha256: a99fead45a91e462283029eb93ccfc42216d735802543d1399fbbf97911c5e89
+  state_restorer:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_counterfactual_state_restorer.py
+    sha256: 61b40b3a581b48267605f3f19dfa0a1a34dfb4e3d7f05cad528581116fdc89a9
+  interface_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_cotracker3_interface.py
+    sha256: 2b36e17a81cb9930bf1e999640d44e55946016a44d1608df3f8673484983d51b
+  state_transplant_adapter:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/audit_routeD_oracle_state_transplant_gate1.py
+    sha256: 672cabad0a29183326d3eb1f500415770f6249ab2940b714db766677302c8791
+  memory_selector:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_counterfactual_state_restorer_cache.py
+    sha256: 67878d5f1aa202f9b743bb724038099989adf993a6719c84c184ff519b04c3bf
+assets:
+  manifest:
+    path: /gemini/code/FSPT/outputs/routeD_temporal_identity_full_population_kubric128_seed271828_20260720/train.index.json
+    sha256: 060e0f9de3aeb945932ea15b9a0a7ab70aa88c1d703fa313c9e0db21ad2f3c01
+  entry_bundle:
+    path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/primary_bundle.joblib
+    sha256: ac25440f3f15e15033e73f783af172796afb218c1964c736d758928fb5fb003f
+  checkpoint:
+    path: /gemini/code/FSPT/baselines/cotracker/checkpoints/scaled_online.pth
+    sha256: 205d34789f19699d64b22cf93f9b697f15f28d4025240e31532e504109837218
+data:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_full_population_kubric128_seed271828_20260720/train.index.json
+backbone:
+  input_raster: 256
+entry_contract:
+  query_frame_less_than: 8
+  feature_dim: 130
+  operating_point:
+    entry_probability_min: 0.93
+    native_joint_probability_max: 0.02
+source_indices:
+- 0
+- 1
+- 2
+- 3
+- 4
+- 5
+- 6
+- 7
+- 8
+- 9
+- 10
+- 11
+- 12
+- 13
+- 14
+- 15
+- 16
+- 17
+- 18
+- 19
+- 20
+- 21
+- 22
+- 23
+- 24
+- 25
+- 26
+- 27
+- 28
+- 29
+- 30
+- 31
+- 32
+- 33
+- 34
+- 35
+- 36
+- 37
+- 38
+- 39
+- 40
+- 41
+- 42
+- 43
+- 44
+- 45
+- 46
+- 47
+- 48
+- 49
+- 50
+- 51
+- 52
+- 53
+- 54
+- 55
+- 56
+- 57
+- 58
+- 59
+- 60
+- 61
+- 62
+- 63
+- 64
+- 65
+- 66
+- 67
+- 68
+- 69
+- 70
+- 71
+- 72
+- 73
+- 74
+- 75
+- 76
+- 77
+- 78
+- 79
+- 80
+- 81
+- 82
+- 83
+- 84
+- 85
+- 86
+- 87
+- 88
+- 89
+- 90
+- 91
+- 92
+- 93
+- 94
+- 95
+- 96
+- 97
+- 98
+- 99
+- 100
+- 101
+- 102
+- 103
+- 104
+- 105
+- 106
+- 107
+- 108
+- 109
+- 110
+- 111
+- 112
+- 113
+- 114
+- 115
+- 116
+- 117
+- 118
+- 119
+- 120
+- 121
+- 122
+- 123
+- 124
+- 125
+- 126
+- 127
+expected_support:
+  videos: 128
+  rows: 5596
+  feature_dim: 130
+  current_entry_rows: 537
+determinism:
+  seed: 193721
+output_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_entry_refinement_cache_gate3c1h0_v0_20260720
+locked_data:
+  fourth_raw_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

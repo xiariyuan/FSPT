@@ -1112,3 +1112,57 @@ No new raw population or external benchmark was read.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1G1 post-failure activation oracle
+
+### Status
+
+```text
+COMPLETED_EXPOSED_ORACLE_DIAGNOSTIC
+REJECT_ACTIVATION_ONLY_AS_SUFFICIENT_MAINLINE
+```
+
+Among 801 action-frame rows, 454 are `native=occluded, modified=visible`
+activations across 36 videos. Of these, 268 are GT-visible, 186 are GT-occluded,
+and 193 are visible and within 16 px. A GT-visible activation oracle improves
+action-video AJ by only `+0.0770` points. A utility16 oracle reaches only
+`+0.1107` points, below the frozen `+0.15`-point action-video requirement.
+Activation gating may remain a safety component but cannot alone recover the
+complete-population AJ target.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
+
+---
+
+## 2026-07-20 — Gate 3C1H0 full-population entry cache preregistration
+
+### Status
+
+```text
+PREREGISTERED_UNOPENED
+formal 128-video output absent
+```
+
+Gate 3C1H0 freezes an exposed-development cache over all 128 third-population
+videos and 5,596 eligible points. Every video must reproduce the committed Gate
+3C1F2 digests for eligible indices, 130-D entry features, entry probability,
+entry mask, and native coordinates before any row is stored. Future-derived
+failure/clean/ambiguous/other labels remain separate from causal features.
+
+A source-0 smoke passes with 53 rows, five current entries, exact sealed digests,
+and category counts 13 failure / 10 clean / 26 ambiguous / 4 other. The fourth
+raw population, DAVIS, Kinetics, final holdout, and official Kinetics 1,144
+remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

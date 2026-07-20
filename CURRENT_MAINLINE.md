@@ -165,6 +165,22 @@ full-data selection is infeasible under the frozen constraints. Formal decision:
 STOP_GATE3C1G1_VISIBILITY_MODEL. Broad action-frame visibility replacement is
 closed. The next structural hypothesis may gate only native-occluded to
 modified-visible activations, preserving all other visibility states.
+
+
+A fixed post-failure activation oracle then evaluated only `native=0 ->
+modified=1` transitions. There are 454 such rows on 36 videos: 268 GT-visible,
+186 GT-occluded, and 193 visible-and-within-16px. GT-visible gating can add only
++0.0770 action-video AJ points; utility16 gating can add at most +0.1107 points,
+below the frozen +0.15-point requirement. Activation-only calibration is
+therefore insufficient as a mainline even under oracle labels.
+
+Gate 3C1H0 full-population entry refinement cache is preregistered and unopened.
+It will reproduce five sealed Gate 3C1F2 digests on all 128 exposed third-
+population videos, then store 5,596 eligible rows of 130-D causal entry features
+with separate failure/clean/ambiguous/other labels. The purpose is to learn from
+realistic `other` negatives and increase safe action coverage. A complete cache
+can authorize only a separately preregistered entry-model stage; the fourth raw
+population and all external data remain locked.
 ```
 
 Read first:
@@ -209,6 +225,8 @@ docs/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_PLAN_2026-07-20.md
 docs/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_RESULT_2026-07-20.md
 docs/ROUTED_VISIBILITY_COUPLING_GATE3C1G1_V0_PLAN_2026-07-20.md
 docs/ROUTED_VISIBILITY_COUPLING_GATE3C1G1_V0_RESULT_2026-07-20.md
+docs/ROUTED_VISIBILITY_ACTIVATION_ORACLE_GATE3C1G1_POST_FAILURE_RESULT_2026-07-20.md
+docs/ROUTED_ENTRY_REFINEMENT_CACHE_GATE3C1H0_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

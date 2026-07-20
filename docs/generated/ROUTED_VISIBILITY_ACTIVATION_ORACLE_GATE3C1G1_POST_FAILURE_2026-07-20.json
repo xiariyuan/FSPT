@@ -1,0 +1,71 @@
+{
+  "schema_version": "routeD_visibility_activation_oracle_gate3c1g1_post_failure_v0",
+  "date": "2026-07-20",
+  "status": "completed_exposed_oracle_diagnostic",
+  "formal_interpretation": "REJECT_ACTIVATION_ONLY_AS_SUFFICIENT_MAINLINE",
+  "parent_replay": {
+    "path": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_VISIBILITY_COUPLING_GATE3C1G1_V0_REPLAY_2026-07-20.json",
+    "sha256": "c9f398af025ac4a2cc647fd8537a49b8422edfefeb3d2229a5372fb77b705a70"
+  },
+  "support": {
+    "activation_rows": 454,
+    "activation_videos": 36,
+    "activation_gt_visible": 268,
+    "activation_gt_occluded": 186,
+    "activation_utility16": 193
+  },
+  "equal_video_means": {
+    "native": {
+      "AJ": 0.2527230444005133,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8303055515781694
+    },
+    "actual": {
+      "AJ": 0.25282712012931224,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8349343439086461
+    },
+    "gt_visible_oracle": {
+      "AJ": 0.2535972885907598,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8386876082058753
+    },
+    "utility16_oracle": {
+      "AJ": 0.2539336306160397,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8371745704568447
+    },
+    "within8_oracle": {
+      "AJ": 0.25374944230040936,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8351870165749606
+    },
+    "within4_oracle": {
+      "AJ": 0.25342746074468414,
+      "delta_avg": 0.37664580459359537,
+      "OA": 0.8341089207168182
+    }
+  },
+  "paired_video_CI": {
+    "gt_visible_oracle_minus_actual_AJ": {
+      "mean": 0.0007701684614475343,
+      "lower": 0.00047805513674846223,
+      "upper": 0.0011119331348467523,
+      "videos": 44,
+      "samples": 10000,
+      "seed": 271801
+    },
+    "utility16_oracle_minus_actual_AJ": {
+      "mean": 0.0011065104867274377,
+      "lower": 0.0007192242405128569,
+      "upper": 0.0015744946740053395,
+      "videos": 44,
+      "samples": 10000,
+      "seed": 271802
+    }
+  },
+  "required_action_video_AJ_gain_fraction": 0.0015,
+  "maximum_observed_oracle_AJ_gain_fraction": 0.0011065104867274411,
+  "claim_boundary": "Exposed post-failure oracle upper bound only. No causal model, new raw population, or external benchmark is authorized.",
+  "summary_payload_sha256": "0778053a733bec01ce4db8da2571fc7e1c440f74f6cdd7dc196adbdf9841e963"
+}
