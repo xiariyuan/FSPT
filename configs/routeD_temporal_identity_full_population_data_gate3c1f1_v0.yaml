@@ -1,0 +1,87 @@
+schema_version: routeD_temporal_identity_full_population_data_gate3c1f1_v0
+date: 2026-07-20
+claim_scope: >-
+  Third raw-record-disjoint Kubric population for one-shot complete-population
+  confirmation of the frozen causal entry plus Gate 3C1D top-1 and Gate 3C1E
+  memory-writeback pipeline. This gate qualifies data identity only and does not
+  authorize an external benchmark or any threshold adjustment.
+
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_RESULT_2026-07-20.md
+  result_sha256: 061022c25ac453a97d9e142551ba7f2a43dd1070974a60be36496212d50c227e
+  replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_REPLAY_2026-07-20.json
+  replay_sha256: 43f457abde9ba563322864e8f802fa0a156d6a952a3e23d403a69f06c9da28df
+  replay_payload_sha256: 0957fb7f74b0576ef28940b52a746d578b4eda1494558aee79b63a4010e9178e
+  required_decision: AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA
+  entry_bundle: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/primary_bundle.joblib
+  entry_bundle_sha256: ac25440f3f15e15033e73f783af172796afb218c1964c736d758928fb5fb003f
+
+source:
+  tfds_root: /gemini/code/datasets/tapvid_kubric
+  builder_dir: /gemini/code/datasets/tapvid_kubric/256x256/1.0.0
+  split: train
+  available_tfrecord_shards: 1024
+  available_raw_records: 9749
+  dataset_info: /gemini/code/datasets/tapvid_kubric/256x256/1.0.0/dataset_info.json
+  dataset_info_sha256: 69864ea9a301422920220fa1c34c0c1695790697237f7beddad1ac2c9cc96205
+
+exclusions:
+  - manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json
+    manifest_sha256: afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961
+    raw_records: 512
+  - manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_kubric512_seed314159_20260720/train.index.json
+    manifest_sha256: 8937a2ef925b6c97c994da7b755b91b401d2239162c1254b720567f66e028105
+    raw_records: 512
+
+implementation:
+  frozen_base_preprocessor:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/preprocess_kubric_tfrecord_no_tf.py
+    sha256: 3f92997ed961f9f3067735a43cece90fbb6794c0ce5dfb2b691632e5977c352b
+  excluding_materializer:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/preprocess_kubric_tfrecord_excluding_manifest_v1.py
+    sha256: 19ec0c94f75fced039b5a8a10718791b16f05215de7d780bb5c662db34449591
+  qualification_packager:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/package_routeD_temporal_identity_full_population_data_gate3c1f1_v0.py
+    sha256: 470dbe97087c07e1418c0148f0c105d1c425b99cd389599c7a4c205ef7e304e6
+
+expected_selection:
+  excluded_raw_records: 1024
+  excluded_identity_digest: 6569347faf10aa3189581186b919e94bb39aaac33172552436ec30a0e8e24c89
+  selected_identity_digest: 85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28
+  first_identity: [movi_e-train.tfrecord-00107-of-01024, 5]
+  last_identity: [movi_e-train.tfrecord-00120-of-01024, 9]
+  selected_source_files: 14
+  output_shards: 8
+
+materialization:
+  output_dir: /gemini/code/FSPT/outputs/routeD_temporal_identity_full_population_kubric128_seed271828_20260720
+  max_samples: 128
+  num_points: 64
+  shard_size: 16
+  sampling_strategy: uniform
+  hard_fraction: 0.5
+  seed: 271828
+  workers: 8
+  hash_selected_source_files: true
+  output_directory_must_be_empty: true
+
+confirmation_contract:
+  partition_name: raw_disjoint_full_population_confirmation_v0
+  source_indices: [0, 127]
+  threshold_or_model_adjustment_forbidden: true
+  entry_bundle_frozen: true
+  top1_bundle_and_policy_frozen: true
+  memory_writeback_frozen: true
+  complete_video_official_tap_metrics_required: true
+  exact_replay_required: true
+
+formal_decisions:
+  pass: AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION
+  fail: STOP_GATE3C1F1_AND_REPAIR_DATA_IDENTITY
+
+locked_data:
+  new_raw_population_metrics_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

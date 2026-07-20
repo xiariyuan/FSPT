@@ -115,6 +115,13 @@ OOF gives 14.63% failure recall with 0% clean false apply and 100% precision;
 independent fit-only validation gives 15.00%, 0%, and 100%. Formal decision:
 AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA. The exposed 16-video
 complete-policy pilot remains design-only; its AJ CI crosses zero.
+
+Gate 3C1F1 v0 is preregistered and not materialized. It will create exactly 128
+new Kubric videos after excluding all 1,024 raw identities used by Gate 3C0 and
+Gate 3C2. The frozen selected identity digest is
+`85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28`.
+This is a data-identity gate only; no new population metric may be read before a
+separate Gate 3C1F2 complete-population protocol is committed.
 ```
 
 Read first:
@@ -149,6 +156,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_PLAN_2026-07-20.
 docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_DATA_GATE3C1F1_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

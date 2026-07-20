@@ -773,3 +773,39 @@ DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F1 third raw-record-disjoint population preregistration
+
+```text
+PREREGISTERED_NOT_MATERIALIZED
+new population metrics unread
+```
+
+The data gate excludes both prior 512-video manifests, totaling 1,024 unique raw
+identities with combined digest
+`6569347faf10aa3189581186b919e94bb39aaac33172552436ec30a0e8e24c89`.
+
+The frozen third population contains exactly 128 videos:
+
+```text
+first identity: movi_e-train.tfrecord-00107-of-01024:5
+last identity:  movi_e-train.tfrecord-00120-of-01024:9
+selected source files: 14
+selected identity digest:
+85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28
+```
+
+It will be written as eight 16-video shards using uniform 64-point sampling and
+seed `271828`. Every selected source TFRecord must hash exactly. This gate
+qualifies identity only; no model metrics may be read until Gate 3C1F2 is
+separately preregistered. DAVIS, Kinetics, final holdout, and official Kinetics
+1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
