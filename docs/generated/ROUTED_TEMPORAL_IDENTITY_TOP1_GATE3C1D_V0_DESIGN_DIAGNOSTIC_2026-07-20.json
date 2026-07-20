@@ -1,0 +1,97 @@
+{
+  "schema_version": "routeD_temporal_identity_top1_gate3c1d_v0_design_diagnostic",
+  "date": "2026-07-20",
+  "partition": "gradient_train_design_only",
+  "source_indices": [
+    64,
+    383
+  ],
+  "rows": 3325,
+  "analytic_top1": {
+    "within4": 0.009624060243368149,
+    "within8": 0.04240601509809494,
+    "within12": 0.09533834457397461,
+    "within16": 0.1825563907623291,
+    "mean": 32.509822845458984,
+    "median": 27.078125,
+    "improves_native": 0.5657142996788025,
+    "harm_gt_native4": 0.27248120307922363
+  },
+  "analytic_top1_with_native_competition": {
+    "within4": 0.004511278122663498,
+    "within8": 0.012030075304210186,
+    "within12": 0.029774436727166176,
+    "within16": 0.09203007817268372,
+    "mean": 33.69969940185547,
+    "median": 27.828125,
+    "improves_native": 0.11458646506071091,
+    "harm_gt_native4": 0.08932330459356308
+  },
+  "shortlist_oracle": {
+    "within4": 0.10285714268684387,
+    "within8": 0.38255637884140015,
+    "within12": 0.5930827260017395,
+    "within16": 0.7106766700744629,
+    "mean": 14.474669456481934,
+    "median": 9.8515625,
+    "improves_native": 0.9738345742225647,
+    "harm_gt_native4": 0.0
+  },
+  "analytic_risk_signals": {
+    "margin_vs_native": {
+      "auc": 0.4814946682663266,
+      "ap": 0.09739467820895932,
+      "mean_pos": 0.09837278723716736,
+      "mean_neg": 0.010942479595541954
+    },
+    "top_gap": {
+      "auc": 0.49939068897241423,
+      "ap": 0.1024184753564531,
+      "mean_pos": 0.41655233502388,
+      "mean_neg": 0.40410688519477844
+    },
+    "best_score": {
+      "auc": 0.5710135747365594,
+      "ap": 0.11849393601044178,
+      "mean_pos": 9.685064315795898,
+      "mean_neg": 9.355449676513672
+    },
+    "negative_cycle": {
+      "auc": 0.48075112004161347,
+      "ap": 0.09562638522928892,
+      "mean_pos": 1.8116066455841064,
+      "mean_neg": 1.8151532411575317
+    },
+    "identity_sum": {
+      "auc": 0.5807725140949057,
+      "ap": 0.11866490706606259,
+      "mean_pos": 6.061851978302002,
+      "mean_neg": 5.725142955780029
+    }
+  },
+  "group_held_probe": {
+    "train_rows": 2635,
+    "validation_rows": 690,
+    "candidate_positive_prevalence": {
+      "train": 0.09837655492304449,
+      "val": 0.11127214170692432
+    },
+    "hist_gradient_boosting": {
+      "candidate_AUC": 0.8488880276503036,
+      "candidate_AP": 0.4926088481809798,
+      "raw_top1": {
+        "within4": 0.06376811594202898,
+        "within8": 0.22608695652173913,
+        "within12": 0.3884057971014493,
+        "mean": 20.32807731628418,
+        "median": 15.25390625,
+        "improves_native": 0.8304347826086956,
+        "harm_gt_native4": 0.1289855072463768
+      },
+      "oracle_12px": 0.6318840579710145
+    }
+  },
+  "decision": "PREREGISTER_HGB_CANDIDATE_PROBABILITY_WITH_NATIVE_SAFE_ABSTENTION",
+  "claim_boundary": "Gradient-train design evidence only. The probe used a float16 temporary feature copy; the formal protocol uses the committed float32 102-D feature implementation and does not inherit probe predictions or thresholds.",
+  "payload_sha256": "0875e44e48a4bf2d5a0223d388c6f4e94f2c7f1a0fa94dfd6f8922a58827ee4f"
+}

@@ -1,0 +1,151 @@
+schema_version: routeD_temporal_identity_top1_gate3c1d_v0
+date: 2026-07-20
+claim_scope: >-
+  Causal top-1 commit selection inside the frozen native-plus-eight query-closure
+  shortlist. Gate 3C1D predicts 12-pixel commit support and abstains to native
+  under a frozen checkpoint-selected probability threshold. It does not yet
+  claim future-rollout improvement, final-holdout performance, or external gain.
+
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.md
+  result_sha256: f64f26822b2c72115f12f25fca7e138ce6a8a47ea0a0c1234f5f0951d7c57ad4
+  summary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.json
+  summary_sha256: 3b12704465db830e9acd120cd877e0b1bcbc2fd7c32f9b3b342d94dcf4fdc500
+  summary_payload_sha256: 82e9b20d5bc68bd02dee8883cb678a17af43193dfb14fc40a00049e3e94539f7
+  replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_REPLAY_2026-07-20.json
+  replay_sha256: 347d0fd7099fd6b2cfeecad50e5815d8737493de87e93ad513b734bdd44e5d8b
+  required_decision: AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION
+
+implementation:
+  analytic_shortlist:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_selector.py
+    sha256: f1cc17538546d916410df5255c6add73dfb2f46b3d3349ec650f44fa1ac40832
+  top1_features:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_top1.py
+    sha256: 6ad2b4ff515cc82cfa88743f47bab3829e3af0d734a2a94eda3f8fe8ad479170
+  gate_runner:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/run_routeD_temporal_identity_top1_gate3c1d_v0.py
+    sha256: fe102b27160e7695f1e6646a95f9efb8bea4c36cf8ea31f18b5b7fbb39510d0f
+
+cache_indices:
+  gradient_train:
+    path: /gemini/code/FSPT/outputs/routeD_temporal_identity_train_cache_gate3c1a_20260719/cache_index.json
+    file_sha256: 88a7127330a540e5a6bd4a57517eda08af399535e64e4906d78188deb1aa966a
+    payload_sha256: 82092788cd214d2974be8a5e590713e36c7d559b28a693c33c5839fe7f342725
+    config_sha256: 895c0d6bb916c2b9e2a94b3c787524f91f79ba510e7dc6a09a0eca6db5ad7ae7
+    source_indices: [64, 383]
+    failure_rows: 3325
+  checkpoint_selection:
+    path: /gemini/code/FSPT/outputs/routeD_temporal_identity_checkpoint_cache_gate3c1b_20260720/cache_index.json
+    file_sha256: 9bf3109ce81673d22ada4a104325679509ca738ab4446d805be2aac1dcfce6b3
+    payload_sha256: b2063381391df7f50592fa9e8114db8a2feba886422455194bd3db69c6b0b7af
+    config_sha256: d5e153439cffcd38e6e554777c30f7544ac04ca250b868cb4cc5f3b84dc65ac0
+    source_indices: [384, 447]
+    failure_rows: 631
+  fit_only_internal_audit:
+    path: /gemini/code/FSPT/outputs/routeD_temporal_identity_audit_cache_gate3c1b_20260720/cache_index.json
+    file_sha256: 4598ac1b8e197ef6914019573f0423bed5f46deb057e234fe4d226eec77e7af6
+    payload_sha256: dcbf793dc7893609ce1e003e68c27e1b22132a2da5494df47568931acb791994
+    config_sha256: 8e34dca788955a0e5c7ec3def01f1c24928fd2d25f3587849607cfa2977f222f
+    source_indices: [448, 511]
+    failure_rows: 753
+  original_model_validation:
+    path: /gemini/code/FSPT/outputs/routeD_temporal_identity_original_model_validation_cache_gate3c1c_v1_20260720/cache_index.json
+    file_sha256: c986d35acec436674a985b551199635c8f42a17df4c3b9da3ca6b93101cc8d1c
+    payload_sha256: 8c41d13b158541845b79c67deac5bcf6993375313d127b9a1d2cf7de1c2e737b
+    config_sha256: 4d6af12d269b8ebea3d3f646fb584dd87ff43fc98dee426029c224fa212e35d0
+    source_indices: [48, 63]
+    failure_rows: 192
+
+feature_contract:
+  schema_version: routeD_query_closure_shortlist_top1_features_gate3c1d_v0
+  full_bank_feature_dim: 98
+  shortlist_feature_dim: 102
+  shortlist_size: 9
+  candidate_relative_zscore_epsilon: 0.0001
+  temporal_summary_channels: [0, 1, 2, 3, 6, 7, 8]
+  teacher_unavailable_to_features: true
+  future_unavailable_to_features: true
+
+model:
+  type: sklearn_hist_gradient_boosting_classifier
+  max_iter: 250
+  learning_rate: 0.05
+  max_leaf_nodes: 31
+  l2_regularization: 1.0
+  min_samples_leaf: 30
+  random_state: 17
+  label: teacher_candidate_distance_px_le_12
+  train_partition: gradient_train
+  train_once_on_all_gradient_rows: true
+  class_reweighting: none
+
+threshold_selection:
+  partition: checkpoint_selection
+  fixed_grid: [0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.55, 0.60]
+  rule: lowest_threshold_passing_all_checkpoint_commit_gates
+  selected_candidate: maximum_predicted_probability_inside_frozen_shortlist
+  action_requires_nonnative_candidate: true
+  below_threshold_action: exact_native_abstention
+  gates:
+    action_coverage_min: 0.20
+    action_precision_within_12px_min: 0.65
+    mean_commit_error_reduction_px_min: 2.0
+    video_cluster_error_reduction_CI_lower_px_min: 1.0
+    harmful_all_rows_gt_native_plus_4px_max: 0.02
+
+confirmation_gates:
+  fit_only_internal_audit:
+    action_coverage_min: 0.10
+    action_precision_within_12px_min: 0.60
+    mean_commit_error_reduction_px_min: 2.0
+    video_cluster_error_reduction_CI_lower_px_min: 0.0
+    harmful_all_rows_gt_native_plus_4px_max: 0.025
+    candidate_AUC_min: 0.75
+    candidate_AP_min: 0.25
+    exact_replay_required: true
+    decision_pass: AUTHORIZE_GATE3C1D_ORIGINAL_MODEL_VALIDATION
+    decision_fail: STOP_GATE3C1D_TOP1_SELECTOR
+  original_model_validation:
+    action_coverage_min: 0.10
+    action_precision_within_12px_min: 0.60
+    mean_commit_error_reduction_px_min: 2.0
+    video_cluster_error_reduction_CI_lower_px_min: 0.0
+    harmful_all_rows_gt_native_plus_4px_max: 0.025
+    candidate_AUC_min: 0.75
+    candidate_AP_min: 0.25
+    exact_replay_required: true
+    decision_pass: AUTHORIZE_GATE3C1E_END_TO_END_ROLLOUT_PREREGISTRATION
+    decision_fail: STOP_GATE3C1D_TOP1_SELECTOR
+
+bootstrap:
+  unit: source_video
+  samples: 10000
+  seed: 193721
+
+artifacts:
+  primary_model: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_top1_gate3c1d_v0/primary_model.joblib
+  replay_model: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_top1_gate3c1d_v0/replay_model.joblib
+  checkpoint_primary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_PRIMARY_2026-07-20.json
+  checkpoint_replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_REPLAY_2026-07-20.json
+  audit_primary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_AUDIT_PRIMARY_2026-07-20.json
+  audit_replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_AUDIT_REPLAY_2026-07-20.json
+  model_validation_primary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_MODEL_VALIDATION_PRIMARY_2026-07-20.json
+  model_validation_replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_MODEL_VALIDATION_REPLAY_2026-07-20.json
+
+authorization_chain:
+  fit_only_internal_audit:
+    required_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_REPLAY_2026-07-20.json
+    required_partition: checkpoint_selection
+    required_decision: AUTHORIZE_GATE3C1D_FIT_ONLY_AUDIT
+  original_model_validation:
+    required_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_AUDIT_REPLAY_2026-07-20.json
+    required_partition: fit_only_internal_audit
+    required_decision: AUTHORIZE_GATE3C1D_ORIGINAL_MODEL_VALIDATION
+
+locked_data:
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

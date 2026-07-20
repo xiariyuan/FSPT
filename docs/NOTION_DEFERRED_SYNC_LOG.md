@@ -301,3 +301,48 @@ holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1D causal top-1 selector preregistration
+
+### Training-only mechanism diagnosis
+
+The fixed query-closure energy remains useful for shortlist retention but is not
+a valid direct top-1 confidence:
+
+- analytic best non-native 12 px top-1 support: `9.5338%`;
+- analytic candidate-vs-native 12 px support: `2.9774%`;
+- same native-plus-eight shortlist oracle support: `59.3083%`;
+- analytic margin AUC: `0.4815`;
+- analytic top-two gap AUC: `0.4994`.
+
+A source-video-held, gradient-train-only HGB mechanism probe produced candidate
+AUC/AP `0.8489/0.4926` and raw top-1 12 px support `38.8406%`. The probe used a
+temporary float16 feature copy and is design evidence only. Formal execution
+rebuilds committed float32 features from source sidecars.
+
+### Frozen Gate 3C1D protocol
+
+- train exactly once on gradient-train indices `64--383`;
+- model: fixed `HistGradientBoostingClassifier`, no architecture or epoch sweep;
+- features: `102-D` causal shortlist-candidate representation;
+- checkpoint indices `384--447` may choose only the lowest passing threshold
+  from `[0.25,0.30,0.35,0.40,0.45,0.50,0.55,0.60]`;
+- low-confidence or native-winning rows abstain to exact native state;
+- audit `448--511` and original model-validation `48--63` cannot change model,
+  feature contract, or threshold;
+- primary/fresh-process replay compares shortlist, feature, probability, output,
+  threshold-grid, record, and scientific-payload digests;
+- analytic shortlist, feature builder, and runner source hashes are pinned.
+
+Formal claim scope is commit-level top-1 selection only. Future rollout with the
+causal policy is reserved for Gate 3C1E. Calibration, final holdout, DAVIS,
+Kinetics, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
