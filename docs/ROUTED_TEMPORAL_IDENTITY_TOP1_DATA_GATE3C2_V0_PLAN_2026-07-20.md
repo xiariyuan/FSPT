@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_PASS
 ```
 
 ## Why new data is required
@@ -95,3 +95,11 @@ fail -> STOP_GATE3C2_AND_REPAIR_RAW_IDENTITY_RENEWAL
 
 Gate 3C2 is a data-identity gate. It cannot establish top-1 accuracy, future
 rollout improvement, final-holdout gain, or external performance.
+
+
+## Final result
+
+The exact 512-member renewal was materialized and independently qualified. All
+identity, source-hash, membership, and locked-data checks passed. Formal decision:
+`AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION`. See
+`docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md`.

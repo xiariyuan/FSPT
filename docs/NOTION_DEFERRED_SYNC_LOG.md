@@ -449,3 +449,39 @@ order before writing the final manifest.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C2 raw-record-disjoint renewal result
+
+```text
+COMPLETED_PASS
+AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION
+```
+
+- new videos: `512`;
+- output shards: `32`;
+- selected source TFRecords: `55`, all hashes exact;
+- existing identities excluded: `512`;
+- raw overlap: `0`;
+- selected identity digest:
+  `ae7f8c4231dc81b52327020c43914def5ec6a4666bc374bd2a5539d1be5bcf37`;
+- renewal manifest SHA256:
+  `8937a2ef925b6c97c994da7b755b91b401d2239162c1254b720567f66e028105`;
+- summary payload SHA256:
+  `576f3a97f9a878726dda6eca7047c38413c343882decb23b8947c1e70d6db03b`.
+
+Renewed partition sizes are 256 checkpoint, 128 fit-only audit, and 128 model
+validation videos. No renewed model metric has been read. A two-stage v1 protocol
+may now be designed on the already exposed old development population, but must
+be committed before any renewed feature-cache or metric access.
+
+Calibration, final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain
+locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

@@ -1,0 +1,397 @@
+{
+  "schema_version": "routeD_temporal_identity_top1_data_gate3c2_v0_summary",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_top1_data_gate3c2_v0.yaml",
+  "config_sha256": "dcf0cc8bd749ff3905f41bb38493733b65e90f4f4fc43f1c8148d9f6bdb5b58e",
+  "renewal_manifest": "/gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_kubric512_seed314159_20260720/train.index.json",
+  "renewal_manifest_sha256": "8937a2ef925b6c97c994da7b755b91b401d2239162c1254b720567f66e028105",
+  "excluded_manifest": "/gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json",
+  "excluded_manifest_sha256": "afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961",
+  "excluded_identities": 512,
+  "selected_identities": 512,
+  "raw_identity_overlap": [],
+  "selected_identity_digest": "ae7f8c4231dc81b52327020c43914def5ec6a4666bc374bd2a5539d1be5bcf37",
+  "partitions": {
+    "checkpoint_selection_v1": {
+      "start": 0,
+      "end": 255,
+      "videos": 256,
+      "raw_identity_digest": "c4e2abf2cc062ef0fcff8c239397f11dbb41c1096958f16b2615656975c4653d"
+    },
+    "fit_only_internal_audit_v1": {
+      "start": 256,
+      "end": 383,
+      "videos": 128,
+      "raw_identity_digest": "1c530d9a0ffc0e06ca88ddcb8d338428f3d050c4dd42fd2f5a2265e722e8b96c"
+    },
+    "model_validation_v1": {
+      "start": 384,
+      "end": 511,
+      "videos": 128,
+      "raw_identity_digest": "5b737ec10091e6744e4f598673cbb2068b8b3fdbdb2b6fa28ceb0b3ffc55f056"
+    }
+  },
+  "checks": {
+    "sample_count_exact": true,
+    "shard_count_exact": true,
+    "selected_identities_unique": true,
+    "raw_identity_overlap_empty": true,
+    "excluded_identity_count_exact": true,
+    "excluded_identity_digest_exact": true,
+    "selected_identity_digest_exact": true,
+    "selected_first_identity_exact": true,
+    "selected_last_identity_exact": true,
+    "exclusion_manifest_authority_exact": true,
+    "dataset_info_authority_exact": true,
+    "available_raw_records_exact": true,
+    "all_selected_source_hashes_exact": true,
+    "partition_union_exact": true,
+    "partition_membership_disjoint": true,
+    "partition_identity_digests_exact": true,
+    "locked_data_unread": true
+  },
+  "source_hash_checks": [
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00053-of-01024",
+      "expected_sha256": "941fbcd60cacbfca39e87f298ed134de02a89c627e121ce88d63260fb92cfdfe",
+      "actual_sha256": "941fbcd60cacbfca39e87f298ed134de02a89c627e121ce88d63260fb92cfdfe",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00054-of-01024",
+      "expected_sha256": "ac40b0718d9be0fb37be7dcacb78b575f5cd8b3797985ecbb87543626af1ef42",
+      "actual_sha256": "ac40b0718d9be0fb37be7dcacb78b575f5cd8b3797985ecbb87543626af1ef42",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00055-of-01024",
+      "expected_sha256": "4308e4683beba5849aa5d7977c6116e334a3d53300ea3959cdfc6779711c7b08",
+      "actual_sha256": "4308e4683beba5849aa5d7977c6116e334a3d53300ea3959cdfc6779711c7b08",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00056-of-01024",
+      "expected_sha256": "831977eb02449ba29193a08399d2227952694ff1d300c9f8932ee8c1f867d6ba",
+      "actual_sha256": "831977eb02449ba29193a08399d2227952694ff1d300c9f8932ee8c1f867d6ba",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00057-of-01024",
+      "expected_sha256": "2b38c75c70addf21a1e5c87cf165e6563d92dcc12c6d78e69d33aefdf9797d22",
+      "actual_sha256": "2b38c75c70addf21a1e5c87cf165e6563d92dcc12c6d78e69d33aefdf9797d22",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00058-of-01024",
+      "expected_sha256": "b5ee0583a1d51a034f0c0a28f18dd21129f54735accc50ee5924aee045a6bf69",
+      "actual_sha256": "b5ee0583a1d51a034f0c0a28f18dd21129f54735accc50ee5924aee045a6bf69",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00059-of-01024",
+      "expected_sha256": "2bc186d4f793e3294f69da75aec943a7b46eedeb5af836f3cbc8abdceac1e181",
+      "actual_sha256": "2bc186d4f793e3294f69da75aec943a7b46eedeb5af836f3cbc8abdceac1e181",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00060-of-01024",
+      "expected_sha256": "4865b5dc9a424d8ca8d03188961d2e2adf94430938e0a7898333e2bf76174af8",
+      "actual_sha256": "4865b5dc9a424d8ca8d03188961d2e2adf94430938e0a7898333e2bf76174af8",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00061-of-01024",
+      "expected_sha256": "86daced122403bbf0cc2126edecf05f224a8c181c5222554f10406e5ab9a288a",
+      "actual_sha256": "86daced122403bbf0cc2126edecf05f224a8c181c5222554f10406e5ab9a288a",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00062-of-01024",
+      "expected_sha256": "71048e2e5d1061e5afd3264cc454a3ce299a7ebb5eb8223369d532c24d253496",
+      "actual_sha256": "71048e2e5d1061e5afd3264cc454a3ce299a7ebb5eb8223369d532c24d253496",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00063-of-01024",
+      "expected_sha256": "ad30f1254a5d23f674be799e0081c311536eb8b3b1d3e40145e242407d6cc1a7",
+      "actual_sha256": "ad30f1254a5d23f674be799e0081c311536eb8b3b1d3e40145e242407d6cc1a7",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00064-of-01024",
+      "expected_sha256": "3af9ae4ca6ba775e08a105d181016201d990bb9dff3edf12cbe8806dc881cb34",
+      "actual_sha256": "3af9ae4ca6ba775e08a105d181016201d990bb9dff3edf12cbe8806dc881cb34",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00065-of-01024",
+      "expected_sha256": "365aa23cd3c79b660ff7c1e954f8e4bb9c690a300b5060d047ac7850187bb44d",
+      "actual_sha256": "365aa23cd3c79b660ff7c1e954f8e4bb9c690a300b5060d047ac7850187bb44d",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00066-of-01024",
+      "expected_sha256": "dfc1f00463c2398e82206bd5db9b6d892b6d5443c2196f40962cf489363a0ef9",
+      "actual_sha256": "dfc1f00463c2398e82206bd5db9b6d892b6d5443c2196f40962cf489363a0ef9",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00067-of-01024",
+      "expected_sha256": "80768c4b7894ba8cc597f5e6a50138e746014b7b333e86a27a7550781357a977",
+      "actual_sha256": "80768c4b7894ba8cc597f5e6a50138e746014b7b333e86a27a7550781357a977",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00068-of-01024",
+      "expected_sha256": "deff01aa2dc04885e77ed29e7c366b4157d38d76865744c8de93a8e91d4c10f9",
+      "actual_sha256": "deff01aa2dc04885e77ed29e7c366b4157d38d76865744c8de93a8e91d4c10f9",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00069-of-01024",
+      "expected_sha256": "a3f480328049684056b789cefcdb03d7356c6a9512526ec9083d75c6add12b08",
+      "actual_sha256": "a3f480328049684056b789cefcdb03d7356c6a9512526ec9083d75c6add12b08",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00070-of-01024",
+      "expected_sha256": "9d3e10cec58a86199370c0f822a04baf923b9b6e3cde4a05d2d760b8b39347e4",
+      "actual_sha256": "9d3e10cec58a86199370c0f822a04baf923b9b6e3cde4a05d2d760b8b39347e4",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00071-of-01024",
+      "expected_sha256": "dc506a868ba0e19add77b7e4f21d7d8f9e87638cbd016ac0ca69cc3e553811bd",
+      "actual_sha256": "dc506a868ba0e19add77b7e4f21d7d8f9e87638cbd016ac0ca69cc3e553811bd",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00072-of-01024",
+      "expected_sha256": "d4edfb502581b2a66df25b5078fa2c305faf3c386ac312b88949650d3d239efb",
+      "actual_sha256": "d4edfb502581b2a66df25b5078fa2c305faf3c386ac312b88949650d3d239efb",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00073-of-01024",
+      "expected_sha256": "dd574ff0556f7d7e21243a7af7389cbd12f1e6491c6e7bcfa2ad5df476458456",
+      "actual_sha256": "dd574ff0556f7d7e21243a7af7389cbd12f1e6491c6e7bcfa2ad5df476458456",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00074-of-01024",
+      "expected_sha256": "a5f4c846a76dbea3150f3ee369e50b7355adf03bc85ada2c99fa7b7271c3af4e",
+      "actual_sha256": "a5f4c846a76dbea3150f3ee369e50b7355adf03bc85ada2c99fa7b7271c3af4e",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00075-of-01024",
+      "expected_sha256": "b5c39272a96ea19140b264803af37bf180c7367c20f6d51b1262738881602475",
+      "actual_sha256": "b5c39272a96ea19140b264803af37bf180c7367c20f6d51b1262738881602475",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00076-of-01024",
+      "expected_sha256": "7e95e68dcbe46969ed7b75462ebb036a04119d0c994129c6e9a2df985b1430e0",
+      "actual_sha256": "7e95e68dcbe46969ed7b75462ebb036a04119d0c994129c6e9a2df985b1430e0",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00077-of-01024",
+      "expected_sha256": "5b015ac5509f9d8d8edc85bd96219e7dbf563414f489677363b0ab67b7d3efa5",
+      "actual_sha256": "5b015ac5509f9d8d8edc85bd96219e7dbf563414f489677363b0ab67b7d3efa5",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00078-of-01024",
+      "expected_sha256": "37752916cb3135c8816f4ed43342b0b63ba2bd64bd74ff3bfe7d5ddfc810b7f5",
+      "actual_sha256": "37752916cb3135c8816f4ed43342b0b63ba2bd64bd74ff3bfe7d5ddfc810b7f5",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00079-of-01024",
+      "expected_sha256": "2be6eea59e230c674ebf649d2acfc7310831b246e0ee7d7289bdfe9f60e08e22",
+      "actual_sha256": "2be6eea59e230c674ebf649d2acfc7310831b246e0ee7d7289bdfe9f60e08e22",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00080-of-01024",
+      "expected_sha256": "81e7aed18fde940e1ffdb837bfd86ba30b2cf3d13428c036257950b4e6e16173",
+      "actual_sha256": "81e7aed18fde940e1ffdb837bfd86ba30b2cf3d13428c036257950b4e6e16173",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00081-of-01024",
+      "expected_sha256": "ea1197b1b0e8194e07bd96d8d859080458f76ed5be17c093cabc3b8d24a91d34",
+      "actual_sha256": "ea1197b1b0e8194e07bd96d8d859080458f76ed5be17c093cabc3b8d24a91d34",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00082-of-01024",
+      "expected_sha256": "12059ad5e8f377bcbdf7c1706a32778999fafe76370e06ddc8b4d446d7f32c7e",
+      "actual_sha256": "12059ad5e8f377bcbdf7c1706a32778999fafe76370e06ddc8b4d446d7f32c7e",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00083-of-01024",
+      "expected_sha256": "068f97928a4f1902bae3c22a2907b9370802e1a638beeb212898091c2d91ea1b",
+      "actual_sha256": "068f97928a4f1902bae3c22a2907b9370802e1a638beeb212898091c2d91ea1b",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00084-of-01024",
+      "expected_sha256": "b862cafd907ff1e597628aff337c4067f02a1e4f347bdb77318d7dc0aaccfc18",
+      "actual_sha256": "b862cafd907ff1e597628aff337c4067f02a1e4f347bdb77318d7dc0aaccfc18",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00085-of-01024",
+      "expected_sha256": "ebaffa4928b9b2a667e0850466b0964604273a33d6e53797f1020f49878b0a5d",
+      "actual_sha256": "ebaffa4928b9b2a667e0850466b0964604273a33d6e53797f1020f49878b0a5d",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00086-of-01024",
+      "expected_sha256": "cfd316f595e82a89b9007aab13de22caa53021431a7c0c6d0a396bef382ed142",
+      "actual_sha256": "cfd316f595e82a89b9007aab13de22caa53021431a7c0c6d0a396bef382ed142",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00087-of-01024",
+      "expected_sha256": "8ffc3dec3760a2649a557c58d9efd4b8f038d7a588ac77eeff86f6344887ff3b",
+      "actual_sha256": "8ffc3dec3760a2649a557c58d9efd4b8f038d7a588ac77eeff86f6344887ff3b",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00088-of-01024",
+      "expected_sha256": "5e9a4800f70ee8910a0eed0bf1458f54cc247fa7cb64349e06e4c79021e75cc1",
+      "actual_sha256": "5e9a4800f70ee8910a0eed0bf1458f54cc247fa7cb64349e06e4c79021e75cc1",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00089-of-01024",
+      "expected_sha256": "a896f0cd1fa61747f1c765bfd8d69b6563eae3cb9ab1db0dcd3b4bdc74d4a42c",
+      "actual_sha256": "a896f0cd1fa61747f1c765bfd8d69b6563eae3cb9ab1db0dcd3b4bdc74d4a42c",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00090-of-01024",
+      "expected_sha256": "f1b77969e66882c618ace3fe77077d36ae70fa510ce0662cff9622fadf218118",
+      "actual_sha256": "f1b77969e66882c618ace3fe77077d36ae70fa510ce0662cff9622fadf218118",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00091-of-01024",
+      "expected_sha256": "83983beefddd5902b195a2c8bbc92b819777cd7a6550ccfcaf30d7f02b912779",
+      "actual_sha256": "83983beefddd5902b195a2c8bbc92b819777cd7a6550ccfcaf30d7f02b912779",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00092-of-01024",
+      "expected_sha256": "3825cc3afeb080b51272fd4b3f319245417f3f300fe906d4f42f5a7d5d6893bf",
+      "actual_sha256": "3825cc3afeb080b51272fd4b3f319245417f3f300fe906d4f42f5a7d5d6893bf",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00093-of-01024",
+      "expected_sha256": "4edd2a8f16b24c8a9eaeb9eb002405d5f03d1c23c77494045871f0d90120cd39",
+      "actual_sha256": "4edd2a8f16b24c8a9eaeb9eb002405d5f03d1c23c77494045871f0d90120cd39",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00094-of-01024",
+      "expected_sha256": "461a263113d820ea35a8d69076efa20c18f43179b6bb30f062f6eb276e7f1969",
+      "actual_sha256": "461a263113d820ea35a8d69076efa20c18f43179b6bb30f062f6eb276e7f1969",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00095-of-01024",
+      "expected_sha256": "095c6ca712d0013ad1ff1f6d9e2c76fa611ffd34c531cbdc2b9a62f166ab6a45",
+      "actual_sha256": "095c6ca712d0013ad1ff1f6d9e2c76fa611ffd34c531cbdc2b9a62f166ab6a45",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00096-of-01024",
+      "expected_sha256": "7d542fb6aa5095962103bf22d1f92960d2c0e8e83015241a94aa70f735ca08ed",
+      "actual_sha256": "7d542fb6aa5095962103bf22d1f92960d2c0e8e83015241a94aa70f735ca08ed",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00097-of-01024",
+      "expected_sha256": "4554ad857e9fb55f30b91f2971ced729302c849a76416760cdf982218d58a315",
+      "actual_sha256": "4554ad857e9fb55f30b91f2971ced729302c849a76416760cdf982218d58a315",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00098-of-01024",
+      "expected_sha256": "10470c37950d5165da192fd5001c663ac3ee8c2a61d5e3ab21c03f53e8a256a2",
+      "actual_sha256": "10470c37950d5165da192fd5001c663ac3ee8c2a61d5e3ab21c03f53e8a256a2",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00099-of-01024",
+      "expected_sha256": "d5f9bb581638db6baeec4f40902f36ffadfe084e54f9cccbcf671ca25f21ad20",
+      "actual_sha256": "d5f9bb581638db6baeec4f40902f36ffadfe084e54f9cccbcf671ca25f21ad20",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00100-of-01024",
+      "expected_sha256": "bd88cc72d644aae16938402f0bc0293a1bfdc1bc8b45d8685d26362bc623f68f",
+      "actual_sha256": "bd88cc72d644aae16938402f0bc0293a1bfdc1bc8b45d8685d26362bc623f68f",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00101-of-01024",
+      "expected_sha256": "64a324e41fbc94b0b98eb4475f50efabcaca6e42ab27a784f3a34abe88898faf",
+      "actual_sha256": "64a324e41fbc94b0b98eb4475f50efabcaca6e42ab27a784f3a34abe88898faf",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00102-of-01024",
+      "expected_sha256": "2c1780e5782144151de6f9275c3a3360c9d9718b540674b31f3b38a7a7845ac7",
+      "actual_sha256": "2c1780e5782144151de6f9275c3a3360c9d9718b540674b31f3b38a7a7845ac7",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00103-of-01024",
+      "expected_sha256": "b2c7f9107a706c9d22ab7d040c081c2490def94744f24288dcd1b8524d7bfc79",
+      "actual_sha256": "b2c7f9107a706c9d22ab7d040c081c2490def94744f24288dcd1b8524d7bfc79",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00104-of-01024",
+      "expected_sha256": "f23e4d5c5469af47c5223a4e35047369d7e70c227bca8d649ec677d9e37f89ca",
+      "actual_sha256": "f23e4d5c5469af47c5223a4e35047369d7e70c227bca8d649ec677d9e37f89ca",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00105-of-01024",
+      "expected_sha256": "ff207b7976c142d6b65d6583fed3efd4583a73c0ec374e5af7431a1c8afa1d79",
+      "actual_sha256": "ff207b7976c142d6b65d6583fed3efd4583a73c0ec374e5af7431a1c8afa1d79",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00106-of-01024",
+      "expected_sha256": "b5abed3c9cd396692aa261831c54d390a6a18b8def804a47515977f470f932d4",
+      "actual_sha256": "b5abed3c9cd396692aa261831c54d390a6a18b8def804a47515977f470f932d4",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00107-of-01024",
+      "expected_sha256": "cd2b2705d57c15e9c45fcf7dfecbb7a63af949c22a4a38d33ee4ebb67f1e24ce",
+      "actual_sha256": "cd2b2705d57c15e9c45fcf7dfecbb7a63af949c22a4a38d33ee4ebb67f1e24ce",
+      "exact": true
+    }
+  ],
+  "locked_data": {
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Raw-record-disjoint Kubric renewal for a redesigned Gate 3C1D v1 top-1 selector. This gate qualifies data identity and partitions only. It does not authorize a tracking claim, final holdout, or external evaluation.",
+  "summary_payload_sha256": "576f3a97f9a878726dda6eca7047c38413c343882decb23b8947c1e70d6db03b"
+}
