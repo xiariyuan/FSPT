@@ -80,16 +80,19 @@ def _atomic_json_save(value: Any, path: Path) -> None:
 
 
 def _selector_config(payload: Mapping[str, Any]) -> QueryClosureIdentitySelectorConfig:
-    primary = payload["primary_selector"]
+    mechanism = payload["mechanism"]
+    selection = payload["selection"]
     return QueryClosureIdentitySelectorConfig(
-        cycle_weight=float(primary["cycle_weight"]),
+        cycle_weight=float(mechanism["cycle_weight"]),
         query_frame_identity_weight=float(
-            primary["query_frame_identity_weight"]
+            mechanism["query_frame_identity_weight"]
         ),
-        mean_identity_weight=float(primary["mean_identity_weight"]),
-        minimum_identity_weight=float(primary["minimum_identity_weight"]),
-        retained_nonnative=int(primary["retained_nonnative"]),
-        zscore_epsilon=float(primary["zscore_epsilon"]),
+        mean_identity_weight=float(mechanism["mean_identity_weight"]),
+        minimum_identity_weight=float(mechanism["minimum_identity_weight"]),
+        retained_nonnative=int(selection["retained_nonnative"]),
+        zscore_epsilon=float(
+            mechanism["candidate_relative_zscore_epsilon"]
+        ),
     )
 
 
