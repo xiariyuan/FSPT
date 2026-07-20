@@ -1,0 +1,96 @@
+schema_version: routeD_temporal_identity_top1_data_gate3c2_v0
+date: 2026-07-20
+claim_scope: >-
+  Raw-record-disjoint Kubric renewal for a redesigned Gate 3C1D v1 top-1
+  selector. This gate qualifies data identity and partitions only. It does not
+  authorize a tracking claim, final holdout, or external evaluation.
+
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md
+  result_sha256: d9f1e4a8e5c38c67371d8f2df4209c7d74d879ffe7ae688c26775243d051651f
+  summary: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.json
+  summary_sha256: 010a0229050695778f12a58b71673ebb74fb1be29b23e2cc5f8fa3c8de240053
+  summary_payload_sha256: 23e6c3f1a55e49b42790f71e484eb7ebb516962de8c94592a70388d220394503
+  checkpoint_replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_REPLAY_2026-07-20.json
+  checkpoint_replay_sha256: 7ad30da43a9a0772af9ae75e73714b8d32f6b90e35895388b5bb1a517f9f1170
+  required_decision: STOP_GATE3C1D_TOP1_SELECTOR
+
+source:
+  tfds_root: /gemini/code/datasets/tapvid_kubric
+  builder_dir: /gemini/code/datasets/tapvid_kubric/256x256/1.0.0
+  split: train
+  available_tfrecord_shards: 1024
+  available_raw_records: 9749
+  dataset_info: /gemini/code/datasets/tapvid_kubric/256x256/1.0.0/dataset_info.json
+  dataset_info_sha256: 69864ea9a301422920220fa1c34c0c1695790697237f7beddad1ac2c9cc96205
+
+exclusion:
+  manifest: /gemini/code/FSPT/outputs/routeD_temporal_identity_kubric512_seed42_20260719/train.index.json
+  manifest_sha256: afd3af1b2af07f8c3483907c94539dc40a7dff5bb290a587eb7db5083953f961
+  excluded_raw_records: 512
+  exact_raw_identity_exclusion_required: true
+  point_resampling_does_not_count_as_disjoint: true
+
+implementation:
+  frozen_base_preprocessor:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/preprocess_kubric_tfrecord_no_tf.py
+    sha256: 3f92997ed961f9f3067735a43cece90fbb6794c0ce5dfb2b691632e5977c352b
+  excluding_materializer:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/preprocess_kubric_tfrecord_excluding_manifest_v1.py
+    sha256: 2507107da9be80f411bfb196f545731a9b0b77828bb267d9fe7835e74f6ac986
+  qualification_packager:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/package_routeD_temporal_identity_top1_data_gate3c2_v0.py
+    sha256: a98a5fe5b6a72175a7f1324e4a04351c36e7577f4c2b147ce5a59b05a02e6229
+
+expected_selection:
+  selected_identity_digest: ae7f8c4231dc81b52327020c43914def5ec6a4666bc374bd2a5539d1be5bcf37
+  first_identity: [movi_e-train.tfrecord-00053-of-01024, 7]
+  last_identity: [movi_e-train.tfrecord-00107-of-01024, 4]
+  selected_source_files: 55
+  partition_identity_digests:
+    checkpoint_selection_v1: c4e2abf2cc062ef0fcff8c239397f11dbb41c1096958f16b2615656975c4653d
+    fit_only_internal_audit_v1: 1c530d9a0ffc0e06ca88ddcb8d338428f3d050c4dd42fd2f5a2265e722e8b96c
+    model_validation_v1: 5b737ec10091e6744e4f598673cbb2068b8b3fdbdb2b6fa28ceb0b3ffc55f056
+
+materialization:
+  output_dir: /gemini/code/FSPT/outputs/routeD_temporal_identity_top1v1_kubric512_seed314159_20260720
+  max_samples: 512
+  num_points: 64
+  shard_size: 16
+  sampling_strategy: uniform
+  hard_fraction: 0.5
+  seed: 314159
+  hash_selected_source_files: true
+  output_directory_must_be_empty: true
+
+partition:
+  checkpoint_selection_v1: [0, 255]
+  fit_only_internal_audit_v1: [256, 383]
+  model_validation_v1: [384, 511]
+
+redesign_development_pool:
+  current_512_status: development_exposed_after_completed_gates
+  allowed_existing_raw_indices: [0, 511]
+  allowed_uses:
+    - two_stage_ranker_training
+    - out_of_fold_action_value_training
+    - mechanism_diagnosis
+  prohibited_use_of_renewal_partitions_before_preregistration: true
+
+future_model_contract:
+  required_design: two_stage_candidate_ranking_plus_row_level_action_value_and_harm_risk
+  action_model_inputs_must_use_out_of_fold_candidate_predictions: true
+  single_scalar_candidate_probability_threshold_reuse_forbidden: true
+  renewal_threshold_tuning_only_on_checkpoint_selection_v1: true
+  audit_and_model_validation_threshold_adjustment_forbidden: true
+
+locked_data:
+  calibration_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
+
+formal_decisions:
+  data_gate_pass: AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION
+  data_gate_fail: STOP_GATE3C2_AND_REPAIR_RAW_IDENTITY_RENEWAL

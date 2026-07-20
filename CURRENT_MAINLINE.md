@@ -74,6 +74,15 @@ rejects the single-stage candidate probability plus scalar threshold policy, not
 the query-closure shortlist or coordinate-plus-memory recovery mechanism. A new
 independent data expansion is required before a redesigned top-1 v1 can be
 formally confirmed.
+
+Gate 3C2 v0 is preregistered but not run. The MOVi-E train source contains 9,749
+raw records; the existing temporal-identity population uses 512. Gate 3C2 freezes
+exactly 512 additional identities after excluding all existing raw records, with
+combined identity digest
+`ae7f8c4231dc81b52327020c43914def5ec6a4666bc374bd2a5539d1be5bcf37`.
+The renewed split is checkpoint 0--255, audit 256--383, and model validation
+384--511. A pass authorizes only preregistration of a two-stage ranker plus
+out-of-fold row-level value/harm model; it does not authorize renewed metrics.
 ```
 
 Read first:
@@ -100,6 +109,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_PLAN_2
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

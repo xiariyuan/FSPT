@@ -394,3 +394,48 @@ official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C2 raw-record-disjoint top-1 data renewal preregistration
+
+### Capacity and necessity
+
+The MOVi-E train source contains `9,749` records across `1,024` TFRecord shards.
+The existing temporal-identity population uses exactly `512` raw records. No new
+external dataset or pretrained model is required. A new point seed on an existing
+video is explicitly not considered independent.
+
+### Frozen renewal membership
+
+- excluded manifest: existing Gate 3C0 512-sample manifest;
+- renewed samples: `512`;
+- first raw identity: `movi_e-train.tfrecord-00053-of-01024:7`;
+- last raw identity: `movi_e-train.tfrecord-00107-of-01024:4`;
+- selected source files: `55`;
+- full selected identity digest:
+  `ae7f8c4231dc81b52327020c43914def5ec6a4666bc374bd2a5539d1be5bcf37`.
+
+Frozen partitions:
+
+```text
+checkpoint selection v1: 0--255
+fit-only audit v1:       256--383
+model validation v1:     384--511
+```
+
+The historical Gate 3C0 preprocessor remains byte-unchanged. A new wrapper adds
+exact manifest exclusion and precomputes the full selected identity plan before
+decoding. Source files containing selected samples are independently hashed.
+
+A data-gate pass authorizes only preregistration of a two-stage v1 policy:
+candidate ranking plus an out-of-fold row-level expected-value/harm-risk model.
+The failed v0 single candidate-probability threshold is forbidden. Calibration,
+final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
