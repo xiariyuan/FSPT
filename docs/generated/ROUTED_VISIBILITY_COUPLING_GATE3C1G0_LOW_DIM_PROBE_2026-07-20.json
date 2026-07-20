@@ -1,0 +1,95 @@
+{
+  "schema_version": "routeD_visibility_coupling_low_dim_probe_gate3c1g0_v0",
+  "date": "2026-07-20",
+  "status": "completed_exposed_diagnostic",
+  "formal_interpretation": "REJECT_LOW_DIM_VISIBILITY_CALIBRATION_AS_PRIMARY_REDESIGN",
+  "inputs": {
+    "failure_diagnostic": {
+      "path": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_V0_2026-07-20.json",
+      "sha256": "d1ce550eb40f27fb58426a26b9e18ac768d47016b76eb65083a2c42628852b9a"
+    },
+    "formal_replay": {
+      "path": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_REPLAY_2026-07-20.json",
+      "sha256": "a0c4cdb255f203c957bf4d689b12365f34e0d8ef57c292f72f790ee200dd9239"
+    },
+    "probe_script": {
+      "path": "/gemini/code/FSPT_v9a60_clean/scripts/probe_routeD_visibility_coupling_gate3c1g0_v0.py",
+      "sha256": "e24f25829da0e5d01761da53ac045ea4df2329c2a161747969f8c307df95ade8"
+    }
+  },
+  "rows": 801,
+  "videos": 44,
+  "causal_feature_dim": 19,
+  "baseline_modified_visibility": {
+    "pooled_affected_frame_AJ": 0.09244669620974144,
+    "visible_rows": 456
+  },
+  "models": {
+    "gt_visible": {
+      "hgb": {
+        "group_OOF_AUC": 0.4823388203017832,
+        "group_OOF_AP": 0.488703036657381,
+        "best_grid_record": {
+          "pooled_affected_frame_AJ": 0.08674298431163122,
+          "frame_OA": 0.5093632958801498,
+          "GT_visible_recall": 0.8641975308641975,
+          "GT_occluded_false_positive_rate": 0.8535353535353535,
+          "utility16_precision": 0.36191860465116277,
+          "predicted_visible_rows": 688,
+          "threshold": 0.07500000000000001
+        },
+        "prediction_digest": "63ba7eda4681ba8ffbfda32158aaab6c4e7a4fc2071f47f4d05b956cb096f580",
+        "grid_digest": "477a7085cce2bbc65a6152b8cc121454afc87b6466efb345b322dc16c3b68e5a"
+      },
+      "log": {
+        "group_OOF_AUC": 0.6233383214864696,
+        "group_OOF_AP": 0.5661891834648258,
+        "best_grid_record": {
+          "pooled_affected_frame_AJ": 0.09816258895786352,
+          "frame_OA": 0.6117353308364545,
+          "GT_visible_recall": 0.9061728395061729,
+          "GT_occluded_false_positive_rate": 0.6893939393939394,
+          "utility16_precision": 0.4125,
+          "predicted_visible_rows": 640,
+          "threshold": 0.3500000000000001
+        },
+        "prediction_digest": "e358e67a6320d0baa672773435d7152026c12df6b3a18fdea6af06b8cbb8e9e8",
+        "grid_digest": "57510cb2c8d3de24ae844cbeb2b0ed52450e0a683bd064946520c7aa267b3ca5"
+      }
+    },
+    "utility16": {
+      "hgb": {
+        "group_OOF_AUC": 0.5366653066775466,
+        "group_OOF_AP": 0.44315174067817176,
+        "best_grid_record": {
+          "pooled_affected_frame_AJ": 0.08280743429142323,
+          "frame_OA": 0.5106117353308365,
+          "GT_visible_recall": 0.7876543209876543,
+          "GT_occluded_false_positive_rate": 0.7727272727272727,
+          "utility16_precision": 0.36,
+          "predicted_visible_rows": 625,
+          "threshold": 0.05
+        },
+        "prediction_digest": "606a993e583f476d6af3717140d1b55d11eca0397793a2df47adb0269163e014",
+        "grid_digest": "e410c286645c3ef42f5f20a797e6269255fdcd555ab2aeed668c87f863adee93"
+      },
+      "log": {
+        "group_OOF_AUC": 0.5469944240446076,
+        "group_OOF_AP": 0.4215001396273627,
+        "best_grid_record": {
+          "pooled_affected_frame_AJ": 0.09132214107528959,
+          "frame_OA": 0.5418227215980025,
+          "GT_visible_recall": 0.9654320987654321,
+          "GT_occluded_false_positive_rate": 0.8914141414141414,
+          "utility16_precision": 0.364247311827957,
+          "predicted_visible_rows": 744,
+          "threshold": 0.05
+        },
+        "prediction_digest": "5df96dcc3f25600485678dd50b0df36bf600ab4f47a7f6bea9718076eaa796e2",
+        "grid_digest": "7aab9c7e288717fa910c87ccc777df9148eb88e95b1b0ed3926bc31101c07759"
+      }
+    }
+  },
+  "claim_boundary": "Exposed action-frame diagnostic only; no new population or external claim.",
+  "summary_payload_sha256": "81b8e50037d3e14d74fcafd4adf27bea914cb40d2a010ad156162bfc97c8ae60"
+}

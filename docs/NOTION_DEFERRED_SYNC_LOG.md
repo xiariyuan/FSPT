@@ -969,3 +969,38 @@ DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1G0 richer visibility cache preregistration
+
+### Status
+
+```text
+PREREGISTERED_EXPOSED_CACHE_NOT_BUILT
+formal cache output unread
+```
+
+A 19-D grouped source-video OOF probe is rejected as the primary redesign. The
+best regularized logistic model reaches GT-visible AUC `0.6233`, AP `0.5662`,
+and pooled affected-frame AJ `0.09816` versus the frozen modified-visibility
+baseline `0.09245`, while still producing `68.94%` occluded false positives.
+
+Gate 3C1G0 freezes a 66-D causal feature schema over the 44 exposed action videos,
+89 sealed actions, and frames 15--23. It adds DINO query/commit identity, four
+levels of CoTracker commit/current/previous identity consistency, trajectory
+dynamics, native/modified visibility state, and sealed entry/top-1 evidence. GT,
+coordinate errors, categories, and future-after-prediction frames are prohibited
+from model features. Complete trajectories and labels are stored only for later
+nested video-OOF evaluation.
+
+A source-0 smoke build passes with three actions, 27 frame rows, all 66 channels,
+exact sealed digests, and tensor reload. The formal 44-video cache remains unbuilt.
+No new raw population or external data is read.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

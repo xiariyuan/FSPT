@@ -144,6 +144,14 @@ Failure actions recover 220 visible false negatives with only two new occluded
 false positives, while `other` actions recover six but create 176 false positives.
 The next redesign target is causal post-writeback visibility calibration, not the
 frozen coordinate selector. No new confirmation or external data was read.
+
+Gate 3C1G0 richer visibility cache is preregistered and not formally built. A
+19-D grouped-OOF probe was insufficient: the best pooled action-frame AJ was
+0.09816 versus the frozen 0.09245 baseline, with 68.94% occluded false positives.
+The frozen 66-D replacement adds DINO query identity, four-level CoTracker
+commit/current consistency, trajectory dynamics, and sealed action evidence. The
+formal cache remains limited to the 44 exposed action videos, 89 actions, and 801
+frame rows; it cannot authorize confirmation or external evaluation.
 ```
 
 Read first:
@@ -184,6 +192,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_RESULT_2026-07-20.md
+docs/ROUTED_VISIBILITY_COUPLING_CACHE_GATE3C1G0_V0_PLAN_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

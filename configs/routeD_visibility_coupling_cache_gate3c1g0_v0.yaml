@@ -1,0 +1,110 @@
+schema_version: routeD_visibility_coupling_cache_gate3c1g0_v0
+date: 2026-07-20
+claim_scope: >-
+  Exposed-development causal feature cache for post-writeback visibility modeling.
+  The cache contains only the 44 sealed Gate 3C1F2 action videos and 89 sealed
+  actions. It authorizes no confirmation, external benchmark, or tracking claim.
+
+authorized_parent:
+  diagnostic_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_FULL_POPULATION_GATE3C1F2_FAILURE_DIAGNOSTIC_V0_2026-07-20.json
+  diagnostic_result_sha256: d1ce550eb40f27fb58426a26b9e18ac768d47016b76eb65083a2c42628852b9a
+  diagnostic_result_payload_sha256: 82c653b31bb78c3b5d876bb6a113657f5279c135250bf599d499f8410ce5b881
+  diagnostic_scientific_payload_sha256: 8a73a832391c3cfd1cdb017c538a0f1988e6eb97a0ecd5008b059fdb89152f9a
+  diagnostic_config: /gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_full_population_gate3c1f2_failure_diagnostic_v0.yaml
+  diagnostic_config_sha256: d9bdf5b38a743f5f2dffe9ec22245c387b2c30df66544f0a1c01b0d70b4270cd
+
+implementation:
+  feature_schema:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_visibility_coupling_v0.py
+    sha256: 2bd51bba9287e48ab7811a7bc9a58a12e18189d5277440bbd77bb7d702828172
+  cache_builder:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/build_routeD_visibility_coupling_cache_gate3c1g0_v0.py
+    sha256: b1f1c3e3caf874e2ea2568561d38836bdce9c25b1858d447546a204bf5943c1f
+  low_dim_probe:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/probe_routeD_visibility_coupling_gate3c1g0_v0.py
+    sha256: e24f25829da0e5d01761da53ac045ea4df2329c2a161747969f8c307df95ade8
+
+source_indices:
+  - 0
+  - 1
+  - 2
+  - 11
+  - 13
+  - 15
+  - 19
+  - 20
+  - 22
+  - 24
+  - 28
+  - 30
+  - 31
+  - 34
+  - 36
+  - 38
+  - 39
+  - 41
+  - 42
+  - 43
+  - 44
+  - 45
+  - 47
+  - 50
+  - 52
+  - 53
+  - 58
+  - 66
+  - 67
+  - 69
+  - 77
+  - 84
+  - 85
+  - 91
+  - 92
+  - 99
+  - 105
+  - 107
+  - 110
+  - 114
+  - 116
+  - 122
+  - 123
+  - 124
+
+expected_support:
+  videos: 44
+  actions: 89
+  frames_per_action: 9
+  frame_rows: 801
+
+feature_contract:
+  schema_version: routeD_post_writeback_visibility_features_gate3c1g0_v0
+  feature_dim: 66
+  frames: [15, 23]
+  causal_current_or_past_frames_only: true
+  inputs:
+    - native_and_modified_coordinates_and_dynamics
+    - native_and_modified_visibility_confidence
+    - DINO_query_commit_previous_and_native_modified_identity
+    - four_level_CoTracker_commit_previous_and_native_modified_identity
+    - sealed_entry_and_top1_predictions
+  prohibited_inputs:
+    - GT_visibility
+    - GT_coordinates
+    - coordinate_error
+    - Gate3C1F2_category
+    - future_frame_after_prediction_time
+
+labels_and_evaluation_only:
+  - GT_visibility
+  - native_and_modified_coordinate_error
+  - threshold_hits_at_1_2_4_8_16
+  - complete_video_AJ_delta_avg_OA
+
+output_root: /gemini/code/FSPT_v9a60_clean/outputs/routeD_visibility_coupling_cache_gate3c1g0_v0_20260720
+
+locked_data:
+  new_raw_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false
