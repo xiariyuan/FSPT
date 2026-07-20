@@ -1,0 +1,127 @@
+{
+  "schema_version": "routeD_temporal_identity_full_population_data_gate3c1f1_v0_summary",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_full_population_data_gate3c1f1_v0.yaml",
+  "config_sha256": "74e0871cdfccfa14be667f64b168c4a8af1fbc99cb021336297a7cf84d5e69e7",
+  "renewal_manifest": "/gemini/code/FSPT/outputs/routeD_temporal_identity_full_population_kubric128_seed271828_20260720/train.index.json",
+  "renewal_manifest_sha256": "060e0f9de3aeb945932ea15b9a0a7ab70aa88c1d703fa313c9e0db21ad2f3c01",
+  "excluded_identities": 1024,
+  "selected_identities": 128,
+  "selected_identity_digest": "85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28",
+  "checks": {
+    "sample_count_exact": true,
+    "shard_count_exact": true,
+    "selected_unique": true,
+    "exclusion_unique": true,
+    "raw_overlap_empty": true,
+    "excluded_count_exact": true,
+    "excluded_digest_exact": true,
+    "selected_digest_exact": true,
+    "first_identity_exact": true,
+    "last_identity_exact": true,
+    "source_file_count_exact": true,
+    "all_source_hashes_exact": true,
+    "exclusion_authority_exact": true,
+    "dataset_info_exact": true,
+    "available_raw_records_exact": true,
+    "locked_data_unread": true
+  },
+  "source_hash_checks": [
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00107-of-01024",
+      "expected_sha256": "cd2b2705d57c15e9c45fcf7dfecbb7a63af949c22a4a38d33ee4ebb67f1e24ce",
+      "actual_sha256": "cd2b2705d57c15e9c45fcf7dfecbb7a63af949c22a4a38d33ee4ebb67f1e24ce",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00108-of-01024",
+      "expected_sha256": "71c2ba832fa548bb81299fc8552820eb1effaea3012cab5df931b0d2ca1d6fbf",
+      "actual_sha256": "71c2ba832fa548bb81299fc8552820eb1effaea3012cab5df931b0d2ca1d6fbf",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00109-of-01024",
+      "expected_sha256": "b65918a46f6abd0415f8e6ed1722198819d5d5cfbb8eb67a465168308f54a25b",
+      "actual_sha256": "b65918a46f6abd0415f8e6ed1722198819d5d5cfbb8eb67a465168308f54a25b",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00110-of-01024",
+      "expected_sha256": "a559c7f46ee45c60328c7afa4b60fa10a9ff77924ca6ba214f9a66355289ea32",
+      "actual_sha256": "a559c7f46ee45c60328c7afa4b60fa10a9ff77924ca6ba214f9a66355289ea32",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00111-of-01024",
+      "expected_sha256": "350cc701d445731cf29847e759c29cc1cab5aec15d0ad3c84091e80f496270c4",
+      "actual_sha256": "350cc701d445731cf29847e759c29cc1cab5aec15d0ad3c84091e80f496270c4",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00112-of-01024",
+      "expected_sha256": "aa5aa770add76ab96de972ec587a7a18c8afd1041496db2d629ce2f5b0ad3d76",
+      "actual_sha256": "aa5aa770add76ab96de972ec587a7a18c8afd1041496db2d629ce2f5b0ad3d76",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00113-of-01024",
+      "expected_sha256": "c80b986544ecbd23346bb1eb50d7b2155d45e05b056eaf8112ea3c13bc369c4a",
+      "actual_sha256": "c80b986544ecbd23346bb1eb50d7b2155d45e05b056eaf8112ea3c13bc369c4a",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00114-of-01024",
+      "expected_sha256": "832fd84f784377fde1b28413e329f6b9294a6756565a0f51367cbb1bf11a07f6",
+      "actual_sha256": "832fd84f784377fde1b28413e329f6b9294a6756565a0f51367cbb1bf11a07f6",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00115-of-01024",
+      "expected_sha256": "05c0dfa9c905680409c17f05af60159b560ee0c9f676ca1f004edc99fd4a9634",
+      "actual_sha256": "05c0dfa9c905680409c17f05af60159b560ee0c9f676ca1f004edc99fd4a9634",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00116-of-01024",
+      "expected_sha256": "fff5cb10bfc85d5d881c779a3b1b63d73aea41b6b409c5ecbff6715c722d4eb6",
+      "actual_sha256": "fff5cb10bfc85d5d881c779a3b1b63d73aea41b6b409c5ecbff6715c722d4eb6",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00117-of-01024",
+      "expected_sha256": "b93efc57ae4cb8267cc5b685f74e423a6313c4444dc861d717317bd8cdc38f01",
+      "actual_sha256": "b93efc57ae4cb8267cc5b685f74e423a6313c4444dc861d717317bd8cdc38f01",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00118-of-01024",
+      "expected_sha256": "da65f5f8ea63d9be31ceb378f58e5c1b148ea5123ed55e3a607a4c13012be0a9",
+      "actual_sha256": "da65f5f8ea63d9be31ceb378f58e5c1b148ea5123ed55e3a607a4c13012be0a9",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00119-of-01024",
+      "expected_sha256": "c0f1600080d9f6220b10515198157a78dbc97b9dbac97d681d08181e9f50ed17",
+      "actual_sha256": "c0f1600080d9f6220b10515198157a78dbc97b9dbac97d681d08181e9f50ed17",
+      "exact": true
+    },
+    {
+      "path": "/gemini/code/datasets/tapvid_kubric/256x256/1.0.0/movi_e-train.tfrecord-00120-of-01024",
+      "expected_sha256": "89b79694be8ec0846a328eb78fe472139037b158f9adfccd4b9982f721b1b3dd",
+      "actual_sha256": "89b79694be8ec0846a328eb78fe472139037b158f9adfccd4b9982f721b1b3dd",
+      "exact": true
+    }
+  ],
+  "locked_data": {
+    "new_raw_population_metrics_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Third raw-record-disjoint Kubric population for one-shot complete-population confirmation of the frozen causal entry plus Gate 3C1D top-1 and Gate 3C1E memory-writeback pipeline. This gate qualifies data identity only and does not authorize an external benchmark or any threshold adjustment.",
+  "summary_payload_sha256": "25688db59aa64a84c1be877ea8c136f5b6d471eb5a064ac2385cd0846beac461"
+}

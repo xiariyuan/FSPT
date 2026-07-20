@@ -809,3 +809,30 @@ separately preregistered. DAVIS, Kinetics, final holdout, and official Kinetics
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F1 raw-record-disjoint full-population data result
+
+### Status
+
+```text
+COMPLETED_PASS
+AUTHORIZE_GATE3C1F2_FULL_POPULATION_CONFIRMATION_PREREGISTRATION
+```
+
+The third Kubric population contains exactly 128 videos in eight shards. It
+excludes all 1,024 raw identities used by Gate 3C0 and Gate 3C2. The new manifest
+SHA256 is `060e0f9de3aeb945932ea15b9a0a7ab70aa88c1d703fa313c9e0db21ad2f3c01`;
+the selected identity digest is
+`85193d0aa6381c7d78442e85bf87750ce72a497995a92016001ca0cf51832f28`.
+All 14 source TFRecords independently rehash exactly and raw overlap is zero.
+No tracking metric from this population has been read. DAVIS, Kinetics, final
+holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
