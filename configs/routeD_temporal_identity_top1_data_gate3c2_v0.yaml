@@ -37,7 +37,7 @@ implementation:
     sha256: 3f92997ed961f9f3067735a43cece90fbb6794c0ce5dfb2b691632e5977c352b
   excluding_materializer:
     path: /gemini/code/FSPT_v9a60_clean/scripts/preprocess_kubric_tfrecord_excluding_manifest_v1.py
-    sha256: 2507107da9be80f411bfb196f545731a9b0b77828bb267d9fe7835e74f6ac986
+    sha256: 19ec0c94f75fced039b5a8a10718791b16f05215de7d780bb5c662db34449591
   qualification_packager:
     path: /gemini/code/FSPT_v9a60_clean/scripts/package_routeD_temporal_identity_top1_data_gate3c2_v0.py
     sha256: a98a5fe5b6a72175a7f1324e4a04351c36e7577f4c2b147ce5a59b05a02e6229
@@ -61,6 +61,7 @@ materialization:
   hard_fraction: 0.5
   seed: 314159
   hash_selected_source_files: true
+  workers: 8
   output_directory_must_be_empty: true
 
 partition:

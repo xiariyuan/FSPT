@@ -42,8 +42,10 @@ Each partition identity digest is also pinned in the config.
 The historical Gate 3C0 preprocessor remains byte-unchanged. A new wrapper imports
 its frozen decoder/track generator and adds exact manifest exclusion. TFRecord
 files fully covered by the exclusion set are skipped using the hash-pinned TFDS
-`dataset_info.json` shard lengths, avoiding unnecessary reads while preserving
-identity order.
+`dataset_info.json` shard lengths. Decoding is parallelized across eight source
+files, but every worker receives the precomputed global sample index and seed;
+source-stage outputs are assembled strictly in source/record order and checked
+against the frozen identity plan before the final manifest is written.
 
 ## Frozen partitions
 

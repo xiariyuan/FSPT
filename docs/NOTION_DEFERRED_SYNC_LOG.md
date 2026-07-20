@@ -434,6 +434,16 @@ candidate ranking plus an out-of-fold row-level expected-value/harm-risk model.
 The failed v0 single candidate-probability threshold is forbidden. Calibration,
 final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
 
+### Materialization engineering note
+
+The first post-preregistration execution used the frozen serial decoder. It was
+stopped after the first output shard because the measured throughput would make
+the 512-record run unnecessarily long. No final manifest or Gate 3C2 result was
+created. Membership, point seeds, partitioning, and output schema were unchanged.
+A separate implementation-only fix parallelizes decoding across eight TFRecord
+files, then reassembles and verifies samples in the original frozen identity
+order before writing the final manifest.
+
 ### Notion synchronization status
 
 - status: pending
