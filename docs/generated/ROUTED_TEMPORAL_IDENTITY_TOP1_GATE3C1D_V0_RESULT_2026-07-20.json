@@ -1,0 +1,129 @@
+{
+  "schema_version": "routeD_temporal_identity_top1_gate3c1d_v0_summary",
+  "date": "2026-07-20",
+  "status": "completed_fail",
+  "pass": false,
+  "formal_decision": "STOP_GATE3C1D_TOP1_SELECTOR",
+  "preregister_commit": "db83a73",
+  "config": "/gemini/code/FSPT_v9a60_clean/configs/routeD_temporal_identity_top1_gate3c1d_v0.yaml",
+  "config_sha256": "d3cc35914e277cce6014b5bbc437c0c2536522799e1ca1005ad862ea1941d28f",
+  "partition": "checkpoint_selection",
+  "source_indices": [
+    384,
+    447
+  ],
+  "rows": 631,
+  "primary_result": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_PRIMARY_2026-07-20.json",
+  "primary_result_sha256": "f404413f8dd74a1c4298cf45a8fdb12797c7b2ea0ed785d093edce08c95e1c07",
+  "replay_result": "/gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_CHECKPOINT_REPLAY_2026-07-20.json",
+  "replay_result_sha256": "7ad30da43a9a0772af9ae75e73714b8d32f6b90e35895388b5bb1a517f9f1170",
+  "exact_replay": true,
+  "replay_comparison": {
+    "feature_digest": true,
+    "shortlist_digest": true,
+    "probability_digest": true,
+    "output_slot_digest": true,
+    "frozen_threshold": true,
+    "threshold_grid_digest": true,
+    "records_digest": true,
+    "scientific_payload_sha256": true
+  },
+  "model_primary_sha256": "39c944d94881b690476f36b5d754a6fcf581c327fb15d5d2d8a1039aa995bb69",
+  "model_replay_sha256": "39c944d94881b690476f36b5d754a6fcf581c327fb15d5d2d8a1039aa995bb69",
+  "candidate_metrics": {
+    "candidate_AUC": 0.8273721369505155,
+    "candidate_AP": 0.4227084655463796,
+    "raw_top1_within_12px": 0.358161648177496
+  },
+  "threshold_grid": [
+    {
+      "threshold": 0.25,
+      "action_coverage": 0.4611727416798732,
+      "action_precision_within_12px": 0.5154639175257731,
+      "mean_commit_error_reduction_px": 4.662825107574463,
+      "video_cluster_error_reduction_CI_lower_px": 2.968375269308804,
+      "harmful_all_rows_gt_native_plus_4px": 0.042789223454833596,
+      "pass": false
+    },
+    {
+      "threshold": 0.3,
+      "action_coverage": 0.31695721077654515,
+      "action_precision_within_12px": 0.56,
+      "mean_commit_error_reduction_px": 3.205034017562866,
+      "video_cluster_error_reduction_CI_lower_px": 2.1268382546506706,
+      "harmful_all_rows_gt_native_plus_4px": 0.022187004754358162,
+      "pass": false
+    },
+    {
+      "threshold": 0.35,
+      "action_coverage": 0.23454833597464342,
+      "action_precision_within_12px": 0.6081081081081081,
+      "mean_commit_error_reduction_px": 2.445162057876587,
+      "video_cluster_error_reduction_CI_lower_px": 1.498242805549313,
+      "harmful_all_rows_gt_native_plus_4px": 0.011093502377179081,
+      "pass": false
+    },
+    {
+      "threshold": 0.4,
+      "action_coverage": 0.1664025356576862,
+      "action_precision_within_12px": 0.6476190476190476,
+      "mean_commit_error_reduction_px": 1.8492422103881836,
+      "video_cluster_error_reduction_CI_lower_px": 0.9903747866787609,
+      "harmful_all_rows_gt_native_plus_4px": 0.006339144215530904,
+      "pass": false
+    },
+    {
+      "threshold": 0.45,
+      "action_coverage": 0.11251980982567353,
+      "action_precision_within_12px": 0.704225352112676,
+      "mean_commit_error_reduction_px": 1.285781741142273,
+      "video_cluster_error_reduction_CI_lower_px": 0.5919167409044883,
+      "harmful_all_rows_gt_native_plus_4px": 0.004754358161648178,
+      "pass": false
+    },
+    {
+      "threshold": 0.5,
+      "action_coverage": 0.07606973058637084,
+      "action_precision_within_12px": 0.75,
+      "mean_commit_error_reduction_px": 0.9512755870819092,
+      "video_cluster_error_reduction_CI_lower_px": 0.6339401366277819,
+      "harmful_all_rows_gt_native_plus_4px": 0.0,
+      "pass": false
+    },
+    {
+      "threshold": 0.55,
+      "action_coverage": 0.0491283676703645,
+      "action_precision_within_12px": 0.8387096774193549,
+      "mean_commit_error_reduction_px": 0.5906366109848022,
+      "video_cluster_error_reduction_CI_lower_px": 0.313010718241807,
+      "harmful_all_rows_gt_native_plus_4px": 0.0,
+      "pass": false
+    },
+    {
+      "threshold": 0.6,
+      "action_coverage": 0.022187004754358162,
+      "action_precision_within_12px": 0.8571428571428571,
+      "mean_commit_error_reduction_px": 0.222113698720932,
+      "video_cluster_error_reduction_CI_lower_px": 0.08959882945295365,
+      "harmful_all_rows_gt_native_plus_4px": 0.0,
+      "pass": false
+    }
+  ],
+  "failed_gate_checks": {
+    "action_coverage": false,
+    "mean_error_reduction": false,
+    "error_CI_lower": false,
+    "threshold_found": false
+  },
+  "audit_read": false,
+  "original_model_validation_top1_read": false,
+  "locked_data": {
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Commit-level HGB top-1 selector failed the frozen checkpoint gate. No top-1 audit, top-1 original-model validation, end-to-end rollout, calibration, final holdout, or external result was run.",
+  "summary_payload_sha256": "23e6c3f1a55e49b42790f71e484eb7ebb516962de8c94592a70388d220394503"
+}

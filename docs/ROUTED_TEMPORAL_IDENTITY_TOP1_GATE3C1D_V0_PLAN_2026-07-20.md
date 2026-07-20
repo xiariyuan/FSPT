@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_FAIL
 ```
 
 ## Why Gate 3C1D is separate from shortlist retention
@@ -159,3 +159,12 @@ Gate 3C1D is a commit-level top-1 gate. A positive result would establish a
 causal, native-safe coordinate decision but would not yet establish future
 tracking improvement. End-to-end coordinate-plus-memory rollout is reserved for
 Gate 3C1E after all three commit confirmations pass.
+
+
+## Final result
+
+Gate 3C1D v0 completed on checkpoint-selection indices `384--447` and replayed
+exactly. No threshold in the frozen grid passed all checkpoint gates. Formal
+decision: `STOP_GATE3C1D_TOP1_SELECTOR`. Fit-only top-1 audit and original-model
+top-1 confirmation were not run. See
+`docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md`.

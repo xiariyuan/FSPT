@@ -62,15 +62,18 @@ AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION. The result remains a
 teacher-nearest oracle, not deployable top-1 selection. Calibration, final
 holdout, and all external datasets remain locked.
 
-Gate 3C1D v0 is preregistered and has not read any new partition. It trains one
-fixed 102-D HistGradientBoosting candidate-success model on gradient-train
-64--383, selects the lowest passing native-safe abstention threshold from the
-frozen grid on checkpoint-selection 384--447, and then confirms unchanged on
-fit-only audit 448--511 and original model-validation 48--63. The analytic
-query-closure score remains shortlist-only because direct top-1 support is just
-9.5338% on training-only design data. All implementation hashes, model
-hyperparameters, thresholds, gates, and replay digests are frozen before formal
-checkpoint results are read.
+Gate 3C1D v0 completed and failed with exact fresh-process replay on
+checkpoint-selection 384--447. Candidate discrimination is real (AUC/AP
+0.8274/0.4227; raw top-1 12-pixel support 35.8162%), but no frozen threshold
+simultaneously meets coverage, precision, aggregate improvement, CI, and harmful
+rate gates. Threshold 0.35 retains coverage and improvement but precision is only
+60.81%; threshold 0.40 nearly reaches precision but falls below coverage and
+improvement gates. Formal decision: STOP_GATE3C1D_TOP1_SELECTOR. Top-1 audit
+448--511 and top-1 original-model confirmation 48--63 were not run. The failure
+rejects the single-stage candidate probability plus scalar threshold policy, not
+the query-closure shortlist or coordinate-plus-memory recovery mechanism. A new
+independent data expansion is required before a redesigned top-1 v1 can be
+formally confirmed.
 ```
 
 Read first:
@@ -96,6 +99,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

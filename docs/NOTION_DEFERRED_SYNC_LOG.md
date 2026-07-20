@@ -346,3 +346,51 @@ Kinetics, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1D causal top-1 selector result
+
+### Formal result
+
+```text
+COMPLETED_FAIL
+EXACT_REPLAY_PASS
+STOP_GATE3C1D_TOP1_SELECTOR
+```
+
+Checkpoint-selection indices `384--447` contained `631` failure rows. The fixed
+HGB produced candidate AUC/AP `0.8274/0.4227` and raw top-1 12 px support
+`35.8162%`, but no frozen threshold passed all native-safe policy gates.
+
+| threshold | coverage | action precision | error reduction | CI lower | harmful rate |
+|---:|---:|---:|---:|---:|---:|
+| 0.25 | 46.12% | 51.55% | +4.663 px | +2.968 px | 4.28% |
+| 0.30 | 31.70% | 56.00% | +3.205 px | +2.127 px | 2.22% |
+| 0.35 | 23.45% | 60.81% | +2.445 px | +1.498 px | 1.11% |
+| 0.40 | 16.64% | 64.76% | +1.849 px | +0.990 px | 0.63% |
+| 0.45 | 11.25% | 70.42% | +1.286 px | +0.592 px | 0.48% |
+| 0.50 | 7.61% | 75.00% | +0.951 px | +0.634 px | 0.00% |
+| 0.55 | 4.91% | 83.87% | +0.591 px | +0.313 px | 0.00% |
+| 0.60 | 2.22% | 85.71% | +0.222 px | +0.090 px | 0.00% |
+
+Primary/replay model files are byte-identical. Feature, shortlist, probability,
+output-slot, threshold-grid, point-record, and scientific-payload digests are
+exact. Per protocol, top-1 audit `448--511` and top-1 original-model validation
+`48--63` were not run.
+
+### Mechanism conclusion
+
+The failure is a precision/coverage frontier, not absence of candidate signal.
+A redesigned v1 should separate candidate ranking from row-level action value and
+harm risk, using out-of-fold candidate predictions for the safety model. Because
+`384--447` is now observed, a new raw-record-disjoint Kubric expansion is needed
+for independent confirmation. Calibration, final holdout, DAVIS, Kinetics, and
+official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
