@@ -1,0 +1,175 @@
+{
+  "schema_version": "routeD_temporal_identity_future_rollout_gate3c1c_v1_model_validation_result",
+  "date": "2026-07-20",
+  "status": "completed_pass",
+  "pass": true,
+  "formal_decision": "AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION",
+  "partition": "original_model_validation",
+  "source_indices": [
+    48,
+    63
+  ],
+  "videos": 16,
+  "failure_rows": 192,
+  "scientific": {
+    "commit": {
+      "rows": 192,
+      "mean_error_px": 11.358793681487441,
+      "median_error_px": 7.890810966491699,
+      "recall_within_4px": 0.13541666666666666,
+      "recall_within_8px": 0.515625,
+      "recall_within_12px": 0.7291666666666666
+    },
+    "actions": {
+      "native": {
+        "points": 192,
+        "mean_l2_error_px": 34.554946978886925,
+        "severe_16px_rate": 0.970703125,
+        "threshold_utility": 0.005989583471091464
+      },
+      "coordinate_only": {
+        "points": 192,
+        "mean_l2_error_px": 32.95392192155123,
+        "severe_16px_rate": 0.958984375,
+        "threshold_utility": 0.009616815649981921
+      },
+      "coordinate_plus_memory": {
+        "points": 192,
+        "mean_l2_error_px": 13.886996041983366,
+        "severe_16px_rate": 0.2632068453046183,
+        "threshold_utility": 0.25079241361042176
+      }
+    },
+    "comparisons": {
+      "full_vs_native": {
+        "rows": 192,
+        "mean_error_reduction_px": 20.667950936903555,
+        "threshold_utility_gain": 0.24480283013933027,
+        "severe_16px_rate_reduction": 0.7074962796953818,
+        "positive_point_fraction": 0.9895833333333334,
+        "error_reduction_video_cluster_CI": {
+          "mean": 20.96846667490295,
+          "lower": 15.884899766589156,
+          "upper": 27.849467927616818,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193721
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.24930424567695514,
+          "lower": 0.2050593372549092,
+          "upper": 0.2914834570701845,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193722
+        }
+      },
+      "coordinate_vs_native": {
+        "rows": 192,
+        "mean_error_reduction_px": 1.6010250573356946,
+        "threshold_utility_gain": 0.003627232178890457,
+        "severe_16px_rate_reduction": 0.01171875,
+        "positive_point_fraction": 0.640625,
+        "error_reduction_video_cluster_CI": {
+          "mean": 2.5040992030769074,
+          "lower": 0.24817896075853152,
+          "upper": 6.7152295064216165,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193731
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.002468377987333086,
+          "lower": -0.0005580357808087553,
+          "upper": 0.006728980760575117,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193732
+        }
+      },
+      "memory_vs_coordinate": {
+        "rows": 192,
+        "mean_error_reduction_px": 19.06692587956786,
+        "threshold_utility_gain": 0.24117559796043983,
+        "severe_16px_rate_reduction": 0.6957775296953818,
+        "positive_point_fraction": 0.9791666666666666,
+        "error_reduction_video_cluster_CI": {
+          "mean": 18.46436747182604,
+          "lower": 15.259954055698389,
+          "upper": 22.248323376741524,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193741
+        },
+        "utility_gain_video_cluster_CI": {
+          "mean": 0.2468358676896221,
+          "lower": 0.20136489810483876,
+          "upper": 0.2881146689552543,
+          "videos": 16,
+          "samples": 10000,
+          "seed": 193742
+        }
+      }
+    },
+    "memory_better_video_fraction": 1.0,
+    "native_replay_max_abs_px": 0.0,
+    "selected_indices_digest": "2a78e359e820677284456b58c5be0c6362e47145386cdb9cdf1e9bc3319aea2d",
+    "teacher_selected_digest": "ec569752442398973faca4f4a3105977fce416f38afd7044e64950c1838d51f7",
+    "future_coordinate_digest": {
+      "native": "648faa8ed2c6e69a6b11af8af0427edd88dd0b9af9b6e80e8aeded86322d48a3",
+      "coordinate_only": "a1583ea27bf1c87fd5b6a02cf2e71145b886c9d03bfa5136cad35672371e4e9d",
+      "coordinate_plus_memory": "23fa4e0af81e721d65016070b53d484bb12a16ab121c8f47a3460bab70ca27d2"
+    },
+    "point_records_digest": "3625001c5b00fd4caee4da910099ee91a79bf300084c1681ca04f2e4c2d85851",
+    "video_records_digest": "bda35c38bfbe028fc16e2e648006575159faf03815dc8ab71337e4383fa7826d",
+    "scientific_payload_sha256": "75b8fc9961acb13edc5de6fbd0946e620c0b06008b0e6ece23bb085eb9330f90"
+  },
+  "gate": {
+    "checks": {
+      "shortlist_recall_within_12px": true,
+      "shortlist_median_commit_error": true,
+      "full_state_error_reduction": true,
+      "full_state_error_CI_lower": true,
+      "full_state_utility_gain": true,
+      "full_state_utility_CI_lower": true,
+      "full_state_positive_fraction": true,
+      "full_state_severe_reduction": true,
+      "memory_incremental_error": true,
+      "memory_incremental_utility": true,
+      "memory_better_video_fraction": true,
+      "native_replay_parity": true,
+      "exact_replay": true
+    },
+    "pass": true,
+    "decision": "AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION"
+  },
+  "exact_replay": true,
+  "replay_comparison": {
+    "selected_indices_digest": true,
+    "teacher_selected_digest": true,
+    "future_coordinate_digest": true,
+    "point_records_digest": true,
+    "video_records_digest": true,
+    "scientific_payload_sha256": true
+  },
+  "primary_result_sha256": "efd67ed20abb1e1ebaa20a1aa4521865211149a7afe550ec01ea1b3fa3c64d62",
+  "replay_result_sha256": "347d0fd7099fd6b2cfeecad50e5815d8737493de87e93ad513b734bdd44e5d8b",
+  "config_sha256": "426bedd397938c114b5214a50840dd21ab11c63b1177000a002e0a3be1ec179c",
+  "candidate_cache_index_sha256": "c986d35acec436674a985b551199635c8f42a17df4c3b9da3ca6b93101cc8d1c",
+  "candidate_cache_index_payload_sha256": "8c41d13b158541845b79c67deac5bcf6993375313d127b9a1d2cf7de1c2e737b",
+  "read_state": {
+    "checkpoint_selection_read": true,
+    "fit_only_internal_audit_read": true,
+    "original_model_validation_read": true,
+    "external_read": false
+  },
+  "locked_data": {
+    "calibration_read": false,
+    "final_holdout_read": false,
+    "tapvid_davis_read": false,
+    "tapvid_kinetics_read": false,
+    "official_kinetics_1144_rerun": false
+  },
+  "claim_boundary": "Teacher-nearest shortlist future rollout on original model-validation indices 48--63. This is not deployable top-1 selection, calibration, final holdout, or external tracking improvement.",
+  "summary_payload_sha256": "82e9b20d5bc68bd02dee8883cb678a17af43193dfb14fc40a00049e3e94539f7"
+}

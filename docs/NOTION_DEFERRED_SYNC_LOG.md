@@ -237,3 +237,67 @@ DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+---
+
+## 2026-07-20 — Gate 3C1C v1 original model-validation result
+
+### Cache integrity
+
+- source indices: `48--63`
+- videos: `16`
+- videos with natural failures: `16`
+- failure rows: `192`
+- exact source membership and all sidecar hashes: pass
+- complete top-128 12 px support: `96.8750%`
+- static M1 native-plus-eight support: `64.5833%`
+- read state: checkpoint selection, fit-only audit, and original model validation
+  read; external data unread
+
+### Frozen query-closure shortlist
+
+- retained 12 px support: `72.9167%`
+- median teacher-nearest commit error: `7.8908 px`
+- teacher access occurred only after shortlist indices were frozen and hashed
+
+### Future rollout
+
+| action | mean future error | severe >16 px | threshold utility |
+|---|---:|---:|---:|
+| native | 34.5549 px | 0.97070 | 0.00599 |
+| coordinate only | 32.9539 px | 0.95898 | 0.00962 |
+| coordinate + four-level memory | 13.8870 px | 0.26321 | 0.25079 |
+
+Full state versus native:
+
+- error reduction: `+20.6680 px`
+- video-cluster 95% CI: `[+15.8849, +27.8495] px`
+- threshold-utility gain: `+0.24480`
+- utility 95% CI: `[+0.20506, +0.29148]`
+- positive-point fraction: `98.9583%`
+- severe-rate reduction: `+0.70750`
+
+Memory versus coordinate-only:
+
+- incremental error reduction: `+19.0669 px`
+- video-cluster 95% CI: `[+15.2600, +22.2483] px`
+- incremental utility: `+0.24118`
+- memory-better video fraction: `100%`
+
+Every scientific digest and native replay reproduced exactly.
+
+Formal decision:
+
+```text
+AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION
+```
+
+Claim boundary: teacher-nearest oracle only. Gate 3C1D must replace the teacher
+with a causal top-1 decision and native-safe abstention. Calibration, final
+holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized

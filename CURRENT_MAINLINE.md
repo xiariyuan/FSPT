@@ -53,11 +53,14 @@ memory; coordinate-only reaches only 33.2747 px. Full-state reduction is
 +18.3039 px beyond coordinate-only and is better on 98.4127% of failure videos.
 Formal decision: AUTHORIZE_GATE3C1C_ORIGINAL_MODEL_VALIDATION_PREREGISTRATION.
 
-Gate 3C1C v1 original model-validation is preregistered and not run. It reuses
-the identical shortlist, teacher restriction, state actions, metrics, bootstrap
-seeds, and pass thresholds on locked indices 48--63. A pass authorizes only
-Gate 3C1D causal top-1 selector preregistration. Calibration, final holdout, and
-all external datasets remain locked.
+Gate 3C1C v1 original model-validation completed and passed with exact replay
+on indices 48--63. Query-closure shortlist support is 72.9167% within 12 px and
+median commit error is 7.8908 px. Full state reduces future error by +20.6680 px
+with video-cluster 95% CI [+15.8849,+27.8495]; memory contributes +19.0669 px
+beyond coordinate-only and improves all 16 videos. Formal decision:
+AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION. The result remains a
+teacher-nearest oracle, not deployable top-1 selection. Calibration, final
+holdout, and all external datasets remain locked.
 ```
 
 Read first:
@@ -81,6 +84,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_SELECTOR_GATE3C1B_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

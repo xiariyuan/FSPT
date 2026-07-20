@@ -3,7 +3,7 @@
 ## Status
 
 ```text
-PREREGISTERED_NOT_RUN
+COMPLETED_PASS
 ```
 
 Original model-validation indices 48--63 remain unread at preregistration time.
@@ -79,3 +79,15 @@ During preregistration, indices 48--63, calibration, final holdout, DAVIS,
 Kinetics, and official Kinetics 1,144 remain unread or not rerun. The committed
 cache builder must verify Gate 3C1C v0 authorization before index 48 can be
 opened.
+
+
+## Final result
+
+All unchanged state-action and exact-replay gates passed on indices 48--63.
+The formal decision is:
+
+```text
+AUTHORIZE_GATE3C1D_CAUSAL_TOP1_SELECTOR_PREREGISTRATION
+```
+
+See `docs/ROUTED_TEMPORAL_IDENTITY_FUTURE_ROLLOUT_GATE3C1C_V1_MODEL_VALIDATION_RESULT_2026-07-20.md`.
