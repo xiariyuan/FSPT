@@ -96,12 +96,16 @@ all-row harmful rate, and 97.6% nonnegative videos. Formal decision:
 AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION. These remain
 failure-row commit metrics, not complete-video AJ/OA or a paper-baseline claim.
 
-Gate 3C1E v0 is preregistered and not run. It must reproduce all 1,379 sealed
-model-validation selector decisions before CoTracker initialization, then compare
-native, coordinate-only, and coordinate-plus-four-level-memory trajectories on
-visible future frames 16--23. A pass requires positive all-row future benefit,
-controlled future harm, independent memory gain, and exact fresh-process replay.
-DAVIS, Kinetics, final holdout, and official Kinetics 1,144 remain locked.
+Gate 3C1E v0 completed and passed with exact replay. On renewed model-validation
+384--511, coordinate plus deterministic four-level memory reduces mean visible
+future error on frames 16--23 by +3.6673 px over all 1,379 failure rows, with
+video-cluster 95% CI [+3.2492,+4.6715]. On the 387 frozen action rows, reduction
+is +13.0150 px. Coordinate-only contributes only +0.0700 px; memory contributes
++3.5973 px beyond coordinate-only and is better on 96% of source videos. Formal
+decision: AUTHORIZE_GATE3C1F_OFFICIAL_TAPVID_BENCHMARK_PREREGISTRATION.
+A complete-video benchmark still requires a fully causal full-population entry
+contract because the isolated natural-failure population used future GT only to
+define the scientific audit set.
 ```
 
 Read first:
@@ -133,6 +137,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

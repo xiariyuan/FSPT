@@ -658,3 +658,39 @@ locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1E deployable causal future-rollout result
+
+```text
+COMPLETED_PASS
+EXACT_REPLAY_PASS
+AUTHORIZE_GATE3C1F_OFFICIAL_TAPVID_BENCHMARK_PREREGISTRATION
+```
+
+All `1,379` causal selector decisions exactly reproduce the sealed Gate 3C1D
+model-validation replay before CoTracker initialization. The frozen policy acts
+on `387` rows.
+
+Coordinate plus deterministic four-level memory reduces visible future error on
+frames `16--23` by `+3.6673 px` over all failure rows, with video-cluster 95% CI
+`[+3.2492,+4.6715]`. On action rows the reduction is `+13.0150 px`; `94.06%` of
+action rows improve and future harm above native by more than 4 px is `3.10%`.
+All-row harmful rate is `0.87%`, and `96%` of source videos are nonnegative.
+
+Coordinate-only improves by only `+0.0700 px`. Four-level memory contributes
+`+3.5973 px` beyond coordinate-only, with CI `[+3.1859,+4.5559]`, confirming that
+memory reinstatement is the dominant mechanism.
+
+A paper-table benchmark still requires a causal full-population entry contract.
+The natural-failure audit population was defined using future ground truth only
+for scientific isolation and cannot be used as a runtime trigger. DAVIS,
+Kinetics, final holdout, and official Kinetics 1,144 remain unread by Gate 3C1E.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
