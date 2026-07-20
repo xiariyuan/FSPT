@@ -85,16 +85,16 @@ validation 384--511. Formal decision:
 AUTHORIZE_GATE3C1D_V1_TWO_STAGE_TOP1_PREREGISTRATION. No renewed selector metric
 has been read.
 
-Gate 3C1D v1 is preregistered and has not read any renewed feature or policy
-metric. On the already exposed 4,901-row development pool, strict nested
-source-video diagnosis showed that value/harm gates without an independent
-support condition have zero passing policies. The frozen redesign ranks by
-predicted expected distance, then requires separate 12-pixel support, predicted
-positive value, and low harmful-action risk. A design-only nested point reaches
-31.7282% coverage, 65.6592% action precision, +3.9970 px mean error reduction,
-and 0.7958% all-row harmful rate. Formal execution uses five-fold OOF row-model
-training and a frozen 480-policy grid on renewed checkpoint 0--255. Checkpoint
-failure stops without opening renewed audit 256--383.
+Gate 3C1D v1 completed and passed with exact replay on all three renewed,
+raw-record-disjoint partitions. The checkpoint-frozen policy is support >=0.30,
+predicted value >=1 px, and predicted harm <=0.20 after expected-distance top-1
+ranking. Mean commit-error reductions are +3.7312 px on checkpoint 0--255,
++3.2180 px on fit-only audit 256--383, and +3.4864 px on model validation
+384--511; all video-cluster CI lower bounds exceed +2.96 px. Model validation
+has 28.0638% action coverage, 62.2739% 12-pixel action precision, 0.7252%
+all-row harmful rate, and 97.6% nonnegative videos. Formal decision:
+AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION. These remain
+failure-row commit metrics, not complete-video AJ/OA or a paper-baseline claim.
 ```
 
 Read first:
@@ -124,6 +124,7 @@ docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_PLAN_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_DATA_GATE3C2_V0_RESULT_2026-07-20.md
 docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_PLAN_2026-07-20.md
+docs/ROUTED_TEMPORAL_IDENTITY_TOP1_GATE3C1D_V1_RESULT_2026-07-20.md
 ```
 
 ## Active override — 2026-07-17

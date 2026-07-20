@@ -575,3 +575,42 @@ locked.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1D v1 two-stage causal top-1 result
+
+```text
+COMPLETED_PASS
+EXACT_REPLAY_PASS_ON_CHECKPOINT_AUDIT_AND_MODEL_VALIDATION
+AUTHORIZE_GATE3C1E_CAUSAL_TOP1_FUTURE_ROLLOUT_PREREGISTRATION
+```
+
+The checkpoint-selected policy is frozen at support `>=0.30`, predicted value
+`>=1 px`, and predicted harm `<=0.20` after expected-distance top-1 ranking.
+Raw-record-disjoint results are:
+
+| Partition | Coverage | Precision <=12 px | Commit reduction | CI lower | All-row harm |
+|---|---:|---:|---:|---:|---:|
+| checkpoint 0--255 | 29.7258% | 66.6262% | +3.7312 px | +3.4295 px | 0.6854% |
+| audit 256--383 | 24.8724% | 62.1701% | +3.2180 px | +2.9634 px | 0.0729% |
+| model validation 384--511 | 28.0638% | 62.2739% | +3.4864 px | +3.1016 px | 0.7252% |
+
+On final model validation, native mean commit error is `34.3669 px` and policy
+error is `30.8805 px`, a `10.144%` relative reduction. Nonnegative-video
+fraction is `97.6%`. Every stage has exact scientific replay.
+
+This is a deployable causal selector result on the frozen natural-failure task,
+not a complete-video TAP-Vid result. Gate 3C1E must test coordinate plus
+four-level memory future rollout. Only a later official-protocol AJ/delta/OA run
+may be compared directly with the CoTracker3 paper baseline.
+
+Calibration, final holdout, DAVIS, Kinetics, and official Kinetics 1,144 remain
+locked for the v1 route.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
