@@ -1,0 +1,151 @@
+{
+  "schema_version": "routeD_temporal_identity_full_population_entry_design_diagnostic_v0",
+  "date": "2026-07-20",
+  "status": "design_only_exposed_data",
+  "entry_fixed_rule": {
+    "entry_probability_min": 0.93,
+    "native_joint_probability_max": 0.02
+  },
+  "entry_fit_metrics": {
+    "oof": {
+      "AUC": 0.8514150943396227,
+      "AP": 0.8090300897644429,
+      "rows": 376,
+      "actions": 24,
+      "coverage": 0.06382978723404255,
+      "failure_recall": 0.14634146341463414,
+      "clean_false_apply_rate": 0.0,
+      "action_precision": 1.0
+    },
+    "validation": {
+      "AUC": 0.7570312499999999,
+      "AP": 0.7864113741475205,
+      "rows": 160,
+      "actions": 12,
+      "coverage": 0.075,
+      "failure_recall": 0.15,
+      "clean_false_apply_rate": 0.0,
+      "action_precision": 1.0
+    }
+  },
+  "full_population_pilot": {
+    "source_indices": [
+      48,
+      63
+    ],
+    "videos": 16,
+    "broad_joint_0_30": {
+      "videos": 16,
+      "eligible": 706,
+      "entry_triggers": 122,
+      "top1_actions": 48,
+      "entry_categories": {
+        "other": 61,
+        "failure": 56,
+        "ambiguous": 5
+      },
+      "action_categories": {
+        "other": 22,
+        "failure": 24,
+        "ambiguous": 2
+      },
+      "mean_gains": {
+        "AJ": 0.0008169669995034875,
+        "delta_avg": 0.004898266392035996,
+        "OA": 0.007434705294383344
+      },
+      "positive_videos": {
+        "AJ": 6,
+        "delta_avg": 8,
+        "OA": 9
+      },
+      "negative_videos": {
+        "AJ": 3,
+        "delta_avg": 1,
+        "OA": 0
+      },
+      "native_mean": {
+        "AJ": 0.2512795982443049,
+        "delta_avg": 0.3702786197761015,
+        "OA": 0.8476215674712708
+      },
+      "modified_mean": {
+        "AJ": 0.2520965652438084,
+        "delta_avg": 0.3751768861681375,
+        "OA": 0.8550562727656541
+      },
+      "action_future_mean_reduction_px": 13.940931677818298,
+      "action_future_positive_fraction": 0.875,
+      "action_future_harm_gt4_fraction": 0.125
+    },
+    "safe_joint_0_02": {
+      "videos": 16,
+      "eligible": 706,
+      "entry_triggers": 82,
+      "top1_actions": 37,
+      "entry_categories": {
+        "other": 40,
+        "failure": 39,
+        "ambiguous": 3
+      },
+      "action_categories": {
+        "failure": 20,
+        "other": 16,
+        "ambiguous": 1
+      },
+      "mean_gains": {
+        "AJ": 0.0008576182676439306,
+        "delta_avg": 0.004707313836327602,
+        "OA": 0.005242295987156316
+      },
+      "positive_videos": {
+        "AJ": 5,
+        "delta_avg": 6,
+        "OA": 6
+      },
+      "negative_videos": {
+        "AJ": 2,
+        "delta_avg": 1,
+        "OA": 1
+      },
+      "native_mean": {
+        "AJ": 0.2512795982443049,
+        "delta_avg": 0.3702786197761015,
+        "OA": 0.8476215674712708
+      },
+      "modified_mean": {
+        "AJ": 0.2521372165119488,
+        "delta_avg": 0.37498593361242916,
+        "OA": 0.8528638634584271
+      },
+      "action_future_mean_reduction_px": 16.51021969836691,
+      "action_future_positive_fraction": 0.9565217391304348,
+      "action_future_harm_gt4_fraction": 0.043478260869565216
+    },
+    "safe_paired_video_CI_points": {
+      "AJ": {
+        "mean_points": 0.08576182676439306,
+        "lower_points": -0.026820626274645827,
+        "upper_points": 0.20728149371534157
+      },
+      "delta_avg": {
+        "mean_points": 0.47073138363276024,
+        "lower_points": 0.061677158790386655,
+        "upper_points": 1.0038387730340386
+      },
+      "OA": {
+        "mean_points": 0.5242295987156316,
+        "lower_points": 0.1594150594806977,
+        "upper_points": 0.9488590238716563
+      }
+    }
+  },
+  "interpretation": {
+    "entry_signal_feasible": true,
+    "safe_full_population_delta_and_OA_CI_positive": true,
+    "safe_full_population_AJ_CI_positive": false,
+    "new_raw_record_disjoint_confirmation_required": true,
+    "external_benchmark_unopened": true
+  },
+  "payload_sha256": "41936c829e1c51205da34c6053ca3291d4abdc7df4ea15033976536728fc5b26"
+}

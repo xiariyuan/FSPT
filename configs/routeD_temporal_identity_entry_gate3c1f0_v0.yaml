@@ -1,0 +1,98 @@
+schema_version: routeD_temporal_identity_entry_gate3c1f0_v0
+date: 2026-07-20
+claim_scope: Fit and exact-replay qualification of a causal, low-cost full-population
+  entry classifier. Inputs are limited to CoTracker observed-history trajectory, visibility/confidence,
+  and four frozen native memory/support levels through frame 15. This gate does not
+  open new raw data or any external benchmark.
+authorized_parent:
+  result: /gemini/code/FSPT_v9a60_clean/docs/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_RESULT_2026-07-20.md
+  result_sha256: e19495901c789afbb234a4a746773196ece6cafd2b60d60d5b82ef0b02844eb1
+  replay: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_CAUSAL_FUTURE_ROLLOUT_GATE3C1E_V0_REPLAY_2026-07-20.json
+  replay_sha256: 97a4c4972ff2db03ad18b8a2c0e6a2bd477bd1c1e03b89bba19eb87e4d58c406
+  required_decision: AUTHORIZE_GATE3C1F_OFFICIAL_TAPVID_BENCHMARK_PREREGISTRATION
+implementation:
+  trainer:
+    path: /gemini/code/FSPT_v9a60_clean/scripts/train_routeD_temporal_identity_entry_gate3c1f0_v0.py
+    sha256: b16147fc86127e18727b5e5183604c20f8eec795fb1b2b434dcadba941677333
+  feature_builder:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_temporal_identity_entry_v0.py
+    sha256: a99fead45a91e462283029eb93ccfc42216d735802543d1399fbbf97911c5e89
+  cache_verifier:
+    path: /gemini/code/FSPT_v9a60_clean/projects/mmp_tracker/mmp_tracker/routeD_counterfactual_state_restorer_cache.py
+    sha256: 15a428b312a4e36c9eab1aab0c0692c24b1695e99afa1fd3f85c78f576f64441
+data:
+  train:
+    path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719/train/cache_index.json
+    file_sha256: ab93e070adc4d623aeada811a88b16def3f4bb2137946f3728327806ae331517
+    payload_sha256: bd6d9593e5032a23f578d57f04f6733b5e27698db76fc4257963d1b64788b227
+    partition: train
+    source_indices:
+    - 8
+    - 31
+    failure_rows: 164
+    clean_rows: 212
+  validation:
+    path: /gemini/code/FSPT_v9a60_clean/outputs/routeD_counterfactual_state_restorer_cache_20260719/fit_internal_validation/cache_index.json
+    file_sha256: 4216898d32c65a60360087bd7c4026d2db7d6877bfa06a934932a429112e4bef
+    payload_sha256: 51250ece1726853646e1b87810ec7c87ef8d02ed2299eea20576e38d70ff69bd
+    partition: fit_internal_validation
+    source_indices:
+    - 32
+    - 47
+    failure_rows: 80
+    clean_rows: 80
+  role: already_exposed_design_and_fit_only_data
+feature_contract:
+  schema_version: routeD_temporal_identity_full_population_entry_features_gate3c1f0_v0
+  dimension: 130
+  trajectory_shape:
+  - 8
+  - 9
+  memory_levels: 4
+  teacher_available: false
+  future_available: false
+model:
+  type: HistGradientBoostingClassifier
+  max_iter: 240
+  learning_rate: 0.04
+  max_leaf_nodes: 15
+  l2_regularization: 3.0
+  min_samples_leaf: 15
+  random_state: 17
+  early_stopping: false
+oof:
+  folds: 5
+  unit: source_video
+  complete_out_of_fold_prediction_required: true
+operating_point:
+  entry_probability_min: 0.93
+  native_joint_probability_max: 0.02
+  semantics: both_conditions_required
+  candidate_generation_only_after_entry: true
+gates:
+  oof:
+    AUC_min: 0.82
+    AP_min: 0.78
+    failure_recall_min: 0.12
+    clean_false_apply_rate_max: 0.01
+    action_precision_min: 0.95
+  validation:
+    AUC_min: 0.73
+    AP_min: 0.75
+    failure_recall_min: 0.12
+    clean_false_apply_rate_max: 0.01
+    action_precision_min: 0.95
+artifacts:
+  primary_bundle: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/primary_bundle.joblib
+  replay_bundle: /gemini/code/FSPT_v9a60_clean/outputs/routeD_temporal_identity_entry_gate3c1f0_v0/replay_bundle.joblib
+  primary_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_PRIMARY_2026-07-20.json
+  replay_result: /gemini/code/FSPT_v9a60_clean/docs/generated/ROUTED_TEMPORAL_IDENTITY_ENTRY_GATE3C1F0_V0_REPLAY_2026-07-20.json
+formal_decisions:
+  pass: AUTHORIZE_GATE3C1F0_RAW_DISJOINT_FULL_POPULATION_DATA
+  fail: STOP_GATE3C1F0_CAUSAL_ENTRY
+locked_data:
+  new_raw_disjoint_population_read: false
+  final_holdout_read: false
+  tapvid_davis_read: false
+  tapvid_kinetics_read: false
+  official_kinetics_1144_rerun: false

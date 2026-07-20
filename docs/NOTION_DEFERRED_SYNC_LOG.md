@@ -694,3 +694,45 @@ Kinetics, final holdout, and official Kinetics 1,144 remain unread by Gate 3C1E.
 - status: pending
 - destination: unresolved while connector is unavailable
 - synchronized at: not yet synchronized
+
+
+---
+
+## 2026-07-20 — Gate 3C1F0 causal full-population entry preregistration
+
+```text
+PREREGISTERED_NOT_RUN
+new raw-record-disjoint population unread
+```
+
+The natural-failure population used by Gate 3C1D/E is not a runtime trigger
+because its membership uses future ground truth. Gate 3C1F0 freezes a separate
+130-D causal HGB entry model using only observed CoTracker trajectory,
+visibility/confidence, and four native feature/support memory levels.
+
+Frozen entry rule:
+
+```text
+entry probability >= 0.93
+native joint probability <= 0.02
+```
+
+On old exposed data, five-fold source-video OOF gives `14.63%` failure recall,
+`0%` clean false apply, and `100%` precision. Independent fit-validation gives
+`15.00%`, `0%`, and `100%`, respectively.
+
+A 16-video design-only complete-population pilot with the unchanged Gate 3C1D
+selector gives `+0.0858` AJ point, `+0.4707` delta point, and `+0.5242` OA point.
+The delta/OA paired-video confidence intervals are positive, but the AJ interval
+crosses zero. Final actions improve future error by `+16.51 px` on average;
+`95.65%` improve and `4.35%` are harmful by more than 4 px.
+
+A passing exact replay authorizes only a third raw-record-disjoint Kubric
+population excluding all previous 1,024 identities. DAVIS, Kinetics, final
+holdout, and official Kinetics 1,144 remain locked.
+
+### Notion synchronization status
+
+- status: pending
+- destination: unresolved while connector is unavailable
+- synchronized at: not yet synchronized
